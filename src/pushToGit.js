@@ -12,7 +12,18 @@ const GOOGLE_SHEET_ID=process.env.GOOGLE_SHEET_ID
 debugger
 const dataset = await Dataset.open(site);
 const { items: data } = await dataset.getData()
+const sortedData =data.sort((a, b) => {
+    const dateA = new Date(a.timestamp);
+    const dateB = new Date(b.timestamp);
+    return dateA.getTime() - dateB.getTime();
+  });
 
+// 2. Extract the oldest (first element after ascending sort)
+const oldestEntry = data[0];
+const oldestTimestamp = oldestEntry.timestamp;
+// 3. Extract the newest (last element after ascending sort)
+const newestEntry = data[data.length - 1];
+const newestTimestamp = newestEntry.timestamp;
 const dataWithoutError = data.filter(f => !f.error)
 const dataWithError = data.filter(f => f.error)
 
@@ -23,7 +34,7 @@ if (dataWithoutError.length > 0) {
     await logDataToGoogleSheet({ dataWithoutErrorLength: dataWithoutError.length, dataWithErrorLength: dataWithError.length, site, serviceAccountCredentials:GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,GOOGLE_SHEET_ID })
 }
 else {
-    await logDataToGoogleSheet({ dataWithoutErrorLength: dataWithoutError.length, dataWithErrorLength: dataWithError.length, site, serviceAccountCredentials:GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,GOOGLE_SHEET_ID })
+    await logDataToGoogleSheet({ dataWithoutErrorLength: dataWithoutError.length, dataWithErrorLength: dataWithError.length, site, serviceAccountCredentials:GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,GOOGLE_SHEET_ID,start:oldestTimestamp, end:newestTimestamp })
 
     console.log('ERROR length:', dataWithError.length)
     console.log('ERROR :', dataWithError[0])
