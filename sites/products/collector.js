@@ -111,7 +111,8 @@ export async function second({
                         img,
                         link,
                         pageTitle,
-                        pageURL
+                        pageURL,
+                        timestamp: new Date().toISOString(),
                     };
                 } catch (error) {
                     return {
