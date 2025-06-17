@@ -11,7 +11,7 @@ const test = process.env.test;
 const HEADLESS = process.env.HEADLESS;
 
 const siteUrls = urls.find(f => f.site === site)
-debugger
+
 
 
 const crawler = new PuppeteerCrawler({

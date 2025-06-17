@@ -11,14 +11,14 @@ const gitFolder = process.env.gitFolder;
 const productsDataset = await Dataset.open(site);
 
 const selectors = urls.find(f => f.site === site)
-debugger
+
 export const router = createPuppeteerRouter();
 
 router.addDefaultHandler(async (props) => {
-  debugger
+  
 
   const data = await first({ ...props, label: "default", ...selectors })
-  debugger
+  
   if (data) {
     await productsDataset.pushData(data);
   }
@@ -27,7 +27,7 @@ router.addDefaultHandler(async (props) => {
 router.addHandler("second", async (props) => {
 
   const data = await second({ ...props, label: "second", ...selectors })
-  debugger
+  
   if (data) {
     await productsDataset.pushData(data);
   }
@@ -44,7 +44,7 @@ async function resultHandler({
 }) {
   const url = await page.url();
 
-  debugger
+  
   console.log(`enqueueing new URLs: ${label}`, url);
 
 

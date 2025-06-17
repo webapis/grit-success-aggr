@@ -2,7 +2,7 @@
 
 import scroller, { autoScroll } from "./scroller.js";
 export default async function first({ page, enqueueLinks, request, log, addRequests }) {
-    debugger
+    
 
     await page.evaluate(() => {
         return new Promise(resolve => setTimeout(resolve, 5000));
