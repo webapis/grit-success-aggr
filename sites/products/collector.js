@@ -8,7 +8,7 @@ dotenv.config({ silent: true });
 const site = process.env.site;
 const siteUrls = urls.find(f => f.site === site)
 debugger
-export default async function first({ page, enqueueLinks, request, log, addRequests,requestQueue }) {
+export default async function first({ page, enqueueLinks, request, log, addRequests,requestQueue,productListSelector }) {
 
     await page.evaluate(() => {
         return new Promise(resolve => setTimeout(resolve, 5000));
@@ -16,7 +16,27 @@ export default async function first({ page, enqueueLinks, request, log, addReque
 
     });
 
+    // Check if there are any product items on the page
+    const productItemsCount = await page.$$eval(productListSelector, elements => elements.length);
 
+    if (productItemsCount > 0) {
+        if (siteUrls.funcPageSelector) {
+            const nextPages = await page.evaluate((funcPageSelector) => {
+                return eval(funcPageSelector)
+            }, siteUrls.funcPageSelector)
+            // This will execute the function defined in funcPageSelector   
+
+            debugger
+            if (nextPages.length > 0) {
+                debugger
+               const mappedNextPages= nextPages.map(m=>{
+                return {url: url+"?tp="+m, label: 'second'};
+               })
+                await addRequests(mappedNextPages);
+                
+            }
+        }
+    }
 
     console.log('inside first route')
     await enqueueLinks({
@@ -57,23 +77,7 @@ export async function second({
     const productItemsCount = await page.$$eval(productListSelector, elements => elements.length);
 
     if (productItemsCount > 0) {
-        if (siteUrls.funcPageSelector) {
-            const nextPages = await page.evaluate((funcPageSelector) => {
-                return eval(funcPageSelector)
-            }, siteUrls.funcPageSelector)
-            // This will execute the function defined in funcPageSelector   
-
-            debugger
-            if (nextPages.length > 0) {
-                debugger
-               const mappedNextPages= nextPages.map(m=>{
-                return {url: url+"?tp="+m, label: 'second'};
-               })
-                await addRequests(mappedNextPages);
-                
-            }
-        }
-
+   
         if (isAutoScroll) {
             console.log('autoscrolling')
             await autoScroll(page, 150)
