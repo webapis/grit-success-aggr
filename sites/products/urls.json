@@ -106,7 +106,7 @@
         "titleSelector": ".showcase-title a",
         "imageSelector": "(document)=>'https:'+ document.querySelector('.showcase-image [data-src]').getAttribute('data-src')",
         "linkSelector": ".showcase-image a",
-        "funcPageSelector": "Array.from({ length: Math.max(...Array.from(document.querySelectorAll('.paginate-content a')).map(a => a.innerText).filter(f => Number(f))) }, (_, i) => i + 1).filter(f => f !== 1).map(m => 'https://www.alfa-beta.com.tr/kategori/kisa-abiye-elbiseler?tp=' + m)",
+        "funcPageSelector": "Array.from({ length: Math.max(...Array.from(document.querySelectorAll('.paginate-content a')).map(a => a.innerText).filter(f => Number(f))) }, (_, i) => i + 1).filter(f => f !== 1)",
         "paginationType": "postfix",
         "paginationPostfix": "?tp=",
         "schedule": "0 0 * * 4",

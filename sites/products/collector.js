@@ -67,10 +67,8 @@ export async function second({
             if (nextPages.length > 0) {
                 debugger
                const mappedNextPages= nextPages.map(m=>{
-                return {url: m, label: 'second'};
+                return {url: url+"?tp="+m, label: 'second'};
                })
-             
-              
                 await addRequests(mappedNextPages);
                 
             }
