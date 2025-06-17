@@ -1,0 +1,33 @@
+name: sponsor56-70
+on:
+   workflow_dispatch:  # Allows manual triggering
+   schedule:
+     - cron: '0 5 * * 5'  # Runs at 5:00 AM UTC on Friday
+    #  - cron: '0 14 * * *'  # Runs at 2:00 PM UTC daily
+env:
+  MONGODB_URL: ${{secrets.MONGODB_URL}}
+  GH_TOKEN: ${{secrets.GH_TOKEN}}
+  GOOGLE_SERVICE_ACCOUNT_CREDENTIALS: ${{secrets.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS}}
+  GOOGLE_SHEET_ID: ${{secrets.GOOGLE_SHEET_ID}}
+jobs:
+  prepare_matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      sites: ${{ steps.set-sites.outputs.sites }}
+    steps:
+      - id: set-sites
+        run: |
+          SITES_ARRAY='["gant","lacoste","pierrecardin","pullandbear","marksandspencer","hm","paulmark","morrez","yaygan","ltbjeans","efor","edliskids","breeze","cartersoshkosh","sagaza"]'
+          echo "sites=$SITES_ARRAY" >> $GITHUB_OUTPUT
+
+  dizitv_job:
+    needs: prepare_matrix
+    strategy:
+      # Ensure other jobs continue even if one fails
+      fail-fast: false
+      matrix:
+        site: ${{ fromJSON(needs.prepare_matrix.outputs.sites) }}
+    uses: ./.github/workflows/reusableProdPuppeteer.yml
+    with:
+      site: ${{ matrix.site }}
+    secrets: inherit

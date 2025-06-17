@@ -1,0 +1,17 @@
+name: sponsorProdManualAggregPuppeteer
+on:
+   workflow_dispatch:
+    inputs:
+      site:
+        description: 'site'
+        required: true
+        type: string
+env:
+  MONGODB_URL: ${{secrets.MONGODB_URL}}
+  GH_TOKEN: ${{secrets.GH_TOKEN}}
+jobs:
+  dizitv_job:
+    uses: ./.github/workflows/reusableProdPuppeteer.yml
+    with:
+      site: ${{inputs.site}}
+    secrets: inherit

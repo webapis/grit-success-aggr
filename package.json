@@ -1,0 +1,28 @@
+{
+  "name": "grit-success-aggr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "startProd": "node prodCrawler.js",
+    "startProdPuppteer": "node prodCrawlerPuppeteer.js",
+    "uploadData": "node src/pushToGit.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "crawlee": "^3.11.1",
+    "dotenv": "^16.4.5",
+    "google-auth-library": "^9.15.0",
+    "google-spreadsheet": "^4.1.4",
+    "make-dir": "4.0.0",
+    "mongodb": "^6.8.0",
+    "node-fetch": "2.6.1",
+    "playwright": "^1.46.0",
+    "puppeteer": "^19.11.1"
+  }
+}

@@ -1,0 +1,2025 @@
+[
+    {
+        "site": "koton",
+        "urls": [
+            "https://www.koton.com/"
+        ],
+        "productListSelector": ".list__products",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-item__info-name",
+        "imageSelector": "(document)=>JSON.parse(document.querySelector('.js-insider-product').innerText).product_image_url",
+        "imageAttr": "srcset",
+        "linkSelector": ".product-link",
+        "schedule": "0 0 * * 2",
+        "id": "1"
+    },
+    {
+        "site": "defacto",
+        "urls": [
+            "https://www.defacto.com.tr/statik/sitemap"
+        ],
+        "productListSelector": "#product-container",
+        "productItemSelector": "[data-documents]",
+        "titleSelector": ".product-card__title a",
+        "imageSelector": "(document)=>'https://dfcdn.defacto.com.tr/376/'+ JSON.parse(document.getAttribute('data-documents')).PictureName",
+        "linkSelector": ".image-box a",
+        "schedule": "0 0 * * 3",
+        "id": "2"
+    },
+    {
+        "site": "desa",
+        "urls": [
+            "https://www.desa.com.tr/"
+        ],
+        "productListSelector": ".js-list-content-item-wrapper",
+        "productItemSelector": ".product-item-box",
+        "titleSelector": ".product-name a",
+        "imageSelector": "(document)=>document.querySelector('.product-item-image').getAttribute('data-src')",
+        "imageAttr": "srс",
+        "linkSelector": ".product-name a",
+        "schedule": "0 0 * * 4",
+        "id": "3"
+    },
+    {
+        "site": "divarese",
+        "urls": [
+            "https://www.divarese.com.tr/"
+        ],
+        "productListSelector": ".products",
+        "productItemSelector": ".products__item",
+        "titleSelector": ".product__title",
+        "imageSelector": ".product__previewPicture [data-srcset]",
+        "imageAttr": "data-srcset",
+        "linkSelector": "a.product__imageWrapper",
+        "schedule": "0 0 * * 4",
+        "id": "4"
+    },
+    {
+        "site": "elleshoes",
+        "urls": [
+            "https://www.elleshoes.com/"
+        ],
+        "productListSelector": ".ProductList",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName a",
+        "imageSelector": ".productSliderImage",
+        "imageAttr": "data-src",
+        "linkSelector": ".detailLink",
+        "schedule": "0 0 * * 4",
+        "id": "5"
+    },
+    {
+        "site": "manuatelier",
+        "urls": [
+            "https://tr.manuatelier.com/"
+        ],
+        "productListSelector": ".collection__products",
+        "productItemSelector": ".grid-item.product-item",
+        "titleSelector": ".product-item__image a",
+        "imageSelector": "img",
+        "imageAttr": "srс",
+        "linkSelector": ".product-item__image a",
+        "schedule": "0 0 * * 4",
+        "id": "6"
+    },
+    {
+        "site": "adl",
+        "urls": [
+            "https://www.adl.com.tr"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-item__name",
+        "imageSelector": ".d-block source",
+        "imageAttr": "srcset",
+        "linkSelector": ".product-item__name",
+        "schedule": "0 0 * * 4",
+        "id": "7"
+    },
+    {
+        "site": "alfa-beta",
+        "urls": [
+            "https://www.alfa-beta.com.tr"
+        ],
+        "productListSelector": "#product-list-container",
+        "productItemSelector": ".showcase",
+        "titleSelector": ".showcase-title a",
+        "imageSelector": "(document)=>'https:'+ document.querySelector('.showcase-image [data-src]').getAttribute('data-src')",
+        "linkSelector": ".showcase-image a",
+        "schedule": "0 0 * * 4",
+        "id": "8"
+    },
+    {
+        "site": "biancoenero",
+        "urls": [
+            "https://biancoenero.com.tr/"
+        ],
+        "productListSelector": ".collection__main",
+        "productItemSelector": ".product-card",
+        "titleSelector": ".product-title",
+        "imageSelector": ".product-card__image",
+        "linkSelector": ".product-title",
+        "schedule": "0 0 * * 4",
+        "id": "9"
+    },
+    {
+        "site": "bsl",
+        "urls": [
+            "https://www.bsl.com.tr/tr/site-haritasi"
+        ],
+        "productListSelector": ".PrdContainer",
+        "productItemSelector": ".Prd",
+        "titleSelector": ".PName",
+        "imageSelector": "source[data-srcset]",
+        "imageAttr": "data-srcset",
+        "linkSelector": ".PrdImgsBox a",
+        "schedule": "0 0 * * 4",
+        "id": "10"
+    },
+    {
+        "site": "lovemybody",
+        "urls": [
+            "https://www.lovemybody.com.tr/"
+        ],
+        "productListSelector": ".product-item-box",
+        "productItemSelector": ".product-item-box",
+        "titleSelector": ".product-name",
+        "imageSelector": ".product-image",
+        "linkSelector": "a.product-name",
+        "schedule": "0 0 * * 4",
+        "id": "11"
+    },
+    {
+        "site": "beautyomelette",
+        "urls": [
+            "https://clothing.beautyomelette.com/",
+            "https://cosmetics.beautyomelette.com/"
+        ],
+        "productListSelector": ".productItem",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName a",
+        "imageSelector": "[data-original]",
+        "imageAttr": "data-original",
+        "linkSelector": ".productName a",
+        "schedule": "0 0 * * 4",
+        "id": "12"
+    },
+    {
+        "site": "birelin",
+        "urls": [
+            "https://www.birelin.com/"
+        ],
+        "productListSelector": ".ProductList",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName.detailUrl a",
+        "imageSelector": "[data-original]",
+        "imageAttr": "data-original",
+        "linkSelector": ".productName.detailUrl a",
+        "schedule": "0 0 * * 4",
+        "id": "13"
+    },
+    {
+        "site": "ekolonline",
+        "urls": [
+            "https://www.ekolonline.com"
+        ],
+        "productListSelector": ".productList",
+        "productItemSelector": ".product-list-item",
+        "titleSelector": ".mainTitle",
+        "imageSelector": "[data-img]",
+        "imageAttr": "data-img",
+        "linkSelector": "a.product-figure",
+        "schedule": "0 0 * * 4",
+        "id": "14"
+    },
+    {
+        "site": "fever",
+        "urls": [
+            "https://www.fever.com.tr/"
+        ],
+        "productListSelector": ".catalogWrapper",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productDetails .detailLink",
+        "imageSelector": "[itemprop='image'][content]",
+        "imageAttr": "content",
+        "linkSelector": ".productDetails .detailLink",
+        "schedule": "0 0 * * 4",
+        "id": "15"
+    },
+    {
+        "site": "gustoeshop",
+        "urls": [
+            "https://gustoeshop.com/"
+        ],
+        "productListSelector": "#catalog-list",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-title a",
+        "imageSelector": ".image-inner source",
+        "imageAttr": "srcset",
+        "linkSelector": ".product-title a",
+        "schedule": "0 0 * * 4",
+        "id": "16"
+    },
+    {
+        "site": "ipekyol",
+        "urls": [
+            "https://www.ipekyol.com.tr/"
+        ],
+        "productListSelector": ".prd-list",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".name",
+        "imageSelector": "[data-image-src]",
+        "imageAttr": "data-image-src",
+        "linkSelector": ".prd-lnk",
+        "schedule": "0 0 * * 4",
+        "id": "17"
+    },
+    {
+        "site": "joinus",
+        "urls": [
+            "https://joinus.com.tr"
+        ],
+        "productListSelector": ".product-collection",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-title",
+        "imageSelector": "(document)=> 'https:'  + document.querySelector('[data-srcset]').getAttribute('data-srcset')",
+        "linkSelector": ".product-title",
+        "schedule": "0 0 * * 4",
+        "id": "18"
+    },
+    {
+        "site": "jusdepommes",
+        "urls": [
+            "https://jusdepommes.com/"
+        ],
+        "productListSelector": ".collection__products",
+        "productItemSelector": ".product-grid-item",
+        "titleSelector": ".product__grid__title",
+        "imageSelector": "(document)=>'https:' + document.querySelector('[data-bgset]').getAttribute('data-bgset').trim().split(',')[2].trim().split(' ')",
+        "linkSelector": ".product__grid__info a",
+        "schedule": "0 0 * * 4",
+        "id": "19"
+    },
+    {
+        "site": "lovemetoo",
+        "urls": [
+            "https://lovemetoo.com.tr/"
+        ],
+        "productListSelector": ".product-block",
+        "productItemSelector": ".product-block",
+        "titleSelector": ".product-block__title",
+        "imageSelector": "(document)=>'https:' + document.querySelector('[data-lazy-bgset-src]').getAttribute('data-lazy-bgset-src')",
+        "linkSelector": ".product-link",
+        "schedule": "0 0 * * 4",
+        "id": "20"
+    },
+    {
+        "site": "machka",
+        "urls": [
+            "https://www.machka.com.tr/"
+        ],
+        "productListSelector": ".ems-prd",
+        "productItemSelector": ".ems-prd",
+        "titleSelector": ".ems-prd-title",
+        "imageSelector": "[data-image-src]",
+        "imageAttr": "data-image-src",
+        "linkSelector": ".item-link",
+        "schedule": "0 0 * * 4",
+        "id": "21"
+    },
+    {
+        "site": "modalogy",
+        "urls": [
+            "https://www.modalogy.com.tr/"
+        ],
+        "productListSelector": ".ProductListContent",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName",
+        "imageSelector": "[data-original]",
+        "imageAttr": "data-original",
+        "linkSelector": ".detailUrl",
+        "schedule": "0 0 * * 4",
+        "id": "22"
+    },
+    {
+        "site": "network",
+        "urls": [
+            "https://www.network.com.tr"
+        ],
+        "productListSelector": ".products",
+        "productItemSelector": ".products__item",
+        "titleSelector": ".product__title",
+        "imageSelector": "[data-srcset]",
+        "imageAttr": "data-srcset",
+        "linkSelector": "a",
+        "breadcrumb": "(document)=>document.querySelectorAll('.breadcrumb a').length>0 ? Array.from(document.querySelectorAll('.breadcrumb a')).map(m => m.innerText).join(' ') : '_'",
+        "schedule": "0 0 * * 4",
+        "id": "23"
+    },
+    {
+        "site": "nocturne",
+        "urls": [
+            "https://www.nocturne.com.tr/"
+        ],
+        "productListSelector": ".product-list",
+        "productItemSelector": ".pitem",
+        "titleSelector": ".product-name",
+        "imageSelector": "[data-original]",
+        "imageAttr": "data-original",
+        "linkSelector": ".product-image a",
+        "schedule": "0 0 * * 4",
+        "id": "24"
+    },
+    {
+        "site": "oxxo",
+        "urls": [
+            "https://www.oxxo.com.tr/"
+        ],
+        "productListSelector": ".Products",
+        "productItemSelector": ".Prd",
+        "titleSelector": ".PName",
+        "imageSelector": "(document)=>document.querySelector('.img1.PImage[data-src]')?  document.querySelector('.img1.PImage[data-src]').getAttribute('data-src'):document.queryselector('.img1.PImage').src",
+        "linkSelector": "a[data-product]",
+        "schedule": "0 0 * * 4",
+        "id": "25"
+    },
+    {
+        "site": "rueonline",
+        "urls": [
+            "https://www.rueonline.com/"
+        ],
+        "productListSelector": ".ProductList",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName.detailUrl a",
+        "imageSelector": "[data-original]",
+        "imageAttr": "data-original",
+        "linkSelector": ".productName.detailUrl a",
+        "schedule": "0 0 * * 4",
+        "id": "26"
+    },
+    {
+        "site": "setre",
+        "urls": [
+            "https://www.setre.com"
+        ],
+        "productListSelector": ".ProductListContent",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName.detailUrl",
+        "imageSelector": ".productImage [data-original]",
+        "imageAttr": "data-original",
+        "linkSelector": ".productName.detailUrl a",
+        "schedule": "0 0 * * 4",
+        "id": "27"
+    },
+    {
+        "site": "sherin",
+        "urls": [
+            "https://www.sherin.com.tr/"
+        ],
+        "productListSelector": ".ProductList",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName.detailUrl a",
+        "imageSelector": ".imageItem img",
+        "imageAttr": "data-src",
+        "linkSelector": ".productName.detailUrl a",
+        "schedule": "0 0 * * 4",
+        "id": "28"
+    },
+    {
+        "site": "themolc",
+        "urls": [
+            "https://www.themolc.com/"
+        ],
+        "productListSelector": "#product-list-container",
+        "productItemSelector": ".showcase",
+        "titleSelector": ".showcase-title a",
+        "imageSelector": "(document)=>'https:'+ document.querySelector('.showcase-image [data-src]').getAttribute('data-src')",
+        "linkSelector": ".showcase-image a",
+        "schedule": "0 0 * * 4",
+        "id": "29"
+    },
+    {
+        "site": "tuvanam",
+        "urls": [
+            "https://tuvanam.com/"
+        ],
+        "productListSelector": ".ProductListWrapper",
+        "productItemSelector": ".ProductItem__Wrapper",
+        "titleSelector": ".ProductItem__Title a",
+        "imageSelector": "(document)=>document.querySelector('.ProductItem__Image[srcset]')&&'https:'+document.querySelector('.ProductItem__Image[srcset]')?.getAttribute('srcset').split(',')[1].trim().split(' ')[0]||'https:'+document.querySelector('[data-src]')?.getAttribute('data-src').replace('{width}','400')",
+        "linkSelector": "h2.ProductItem__Title.Heading a",
+        "schedule": "0 0 * * 4",
+        "id": "30"
+    },
+    {
+        "site": "twist",
+        "urls": [
+            "https://www.twist.com.tr/"
+        ],
+        "productListSelector": ".prd-list",
+        "productItemSelector": ".prd",
+        "titleSelector": ".prd-name",
+        "imageSelector": "(document)=>document.querySelector('[data-large]')?.getAttribute('data-large')|| document.querySelector('[data-background]')?.getAttribute('data-background')",
+        "linkSelector": ".prd-lnk",
+        "schedule": "0 0 * * 4",
+        "id": "31"
+    },
+    {
+        "site": "wheneverco",
+        "urls": [
+            "https://www.wheneverco.com/"
+        ],
+        "productListSelector": ".product-list",
+        "productItemSelector": ".product-list-item",
+        "titleSelector": ".product-name",
+        "imageSelector": "(document)=>'https:' + document.querySelector('.product-image [data-lazysrc]').getAttribute('data-lazysrc')",
+        "linkSelector": ".product-image a",
+        "schedule": "0 0 * * 4",
+        "id": "32"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "yargici",
+        "urls": [
+            "https://www.yargici.com"
+        ],
+        "productListSelector": ".product-list-container",
+        "productItemSelector": ".prod-card",
+        "titleSelector": ".productbox-name",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": "a",
+        "breadcrumb": "document.querySelectorAll('.breadcrumb a') ? Array.from(document.querySelectorAll('.breadcrumb a')).map(m => m.innerText).join(' ') : ' '",
+        "schedule": "0 0 * * 4",
+        "id": "33"
+    },
+    {
+        "site": "brooksbrothers",
+        "urls": [
+            "https://www.brooksbrothers.com.tr/"
+        ],
+        "productListSelector": ".max-w-xl.fade-in",
+        "productItemSelector": ".max-w-xl.fade-in",
+        "titleSelector": "h3.text-primary a.inline-block.line-clamp-2",
+        "imageSelector": "(document)=>document.querySelector('[srcset]')?.getAttribute('srcset').split(',')[7].trim().split(' ')[0]",
+        "linkSelector": "h3.text-primary a.inline-block.line-clamp-2",
+        "schedule": "0 0 * * 4",
+        "id": "34"
+    },
+    {
+        "site": "colins",
+        "urls": [
+            "https://www.colins.com.tr/"
+        ],
+        "productListSelector": ".catalog-category",
+        "productItemSelector": ".productCartMain",
+        "titleSelector": ".product-name h3",
+        "imageSelector": "[data-secondary-image-src]",
+        "imageAttr": "data-secondary-image-src",
+        "linkSelector": "a.product-name",
+        "schedule": "0 0 * * 4",
+        "id": "35"
+    },
+    {
+        "site": "dahliabianca",
+        "urls": [
+            "https://www.dahliabianca.com/"
+        ],
+        "productListSelector": ".product-grid",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-title",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": ".product-title a",
+        "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb a')).map(m=>m.innerText).join(' ')",
+        "schedule": "0 0 * * 4",
+        "id": "36"
+    },
+    {
+        "site": "ilvi",
+        "urls": [
+            "https://www.ilvi.com/"
+        ],
+        "productListSelector": ".ProductList",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName a",
+        "imageSelector": "[data-original]",
+        "imageAttr": "data-original",
+        "linkSelector": ".productName a",
+        "schedule": "0 0 * * 4",
+        "id": "37"
+    },
+    {
+        "site": "lufian",
+        "urls": [
+            "https://www.lufian.com/"
+        ],
+        "productListSelector": "#product-list-panel",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-title",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": "a.product-title",
+        "schedule": "0 0 * * 4",
+        "id": "38"
+    },
+    {
+        "site": "penti",
+        "urls": [
+            "https://www.penti.com/"
+        ],
+        "productListSelector": ".prd-link",
+        "productItemSelector": ".prd-link",
+        "titleSelector": "(document)=> document.querySelector('.prd-title h2')?.innerText||JSON.parse(document.querySelector('[data-gtm-product]').getAttribute('data-gtm-product')).name",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": "(document)=>document.href",
+        "schedule": "0 0 * * 4",
+        "id": "39"
+    },
+    {
+        "site": "wcollection",
+        "urls": [
+            "https://www.wcollection.com.tr/site-haritasi"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-title .title h3",
+        "imageSelector": "swiper-slide img",
+        "linkSelector": "(document)=>Array.from(document.querySelectorAll('a'))?.map(m=>m.href).reverse()[0]",
+        "waitForSeconds": 5000,
+        "schedule": "0 0 * * 4",
+        "id": "40"
+    },
+    {
+        "site": "woody",
+        "urls": [
+            "https://www.woody.com.tr/"
+        ],
+        "productListSelector": ".product-grid",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName",
+        "imageSelector": "(document)=>'https://www.woody.com.tr'+ document.querySelector('.imgInner.stImage [srcset]').getAttribute('srcset')",
+        "linkSelector": ".productName",
+        "schedule": "0 0 * * 4",
+        "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb-item')).map(m=>m.innerText).join(' ').toLowerCase()",
+        "id": "41"
+    },
+    {
+        "site": "mango",
+        "urls": [
+            "https://shop.mango.com/tr/sitemap"
+        ],
+        "productListSelector": "[class^='Grid_grid']",
+        "productItemSelector": "[class^='ProductCard_productCard']",
+        "titleSelector": "(document)=> document.querySelector('div[class^=\"ProductDetails_productInfo\"] meta[content]').getAttribute('content')",
+        "imageSelector": "(document)=>document.querySelector(\"[class^='ProductImage_productImage'] img\").srcset.split(',')[0]",
+        "linkSelector": "[class^='ProductImage_productImage'] a",
+        "waitForSeconds": 5000,
+        "schedule": "0 0 * * 4",
+        "id": "42"
+    },
+    {
+        "site": "beymen",
+        "urls": [
+            "https://www.beymen.com/tr"
+        ],
+        "productListSelector": ".o-productList",
+        "productItemSelector": ".o-productList__itemWrapper",
+        "titleSelector": ".m-productCard__desc",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": ".m-productCard__photo a",
+        "schedule": "0 0 * * 4",
+        "id": "43"
+    },
+    {
+        "site": "hmdtekstil",
+        "urls": [
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_61",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_68",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_62",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_64",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_65",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_66",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_63",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_60",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_70",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_97",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_67",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_69",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=71_74",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=71_76",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=71_73",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=71_72",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=71_75",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=71_77",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=84_89",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=84_90",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=84_88",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=84_85",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=84_101",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=78_81",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=78_82",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=78_80",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=78_92",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=78_83",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=78_79",
+            "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=78_100"
+        ],
+        "productListSelector": ".main-products.product-grid",
+        "productItemSelector": ".product-layout",
+        "titleSelector": ".caption .name  a",
+        "imageSelector": "(document)=>document.querySelector('.img-responsive.img-first').srcset.split(' ')[0].trim()",
+        "linkSelector": ".caption .name  a",
+        "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb a')).map(m=>m.innerText).join(' ')",
+        "schedule": "0 0 * * 4",
+        "id": "44"
+    },
+    {
+        "site": "matras",
+        "urls": [
+            "https://www.matras.com/yeni-urun",
+            "https://www.matras.com/canta-modelleri",
+            "https://www.matras.com/ayakkabi-modelleri",
+            "https://www.matras.com/bot",
+            "https://www.matras.com/cuzdan-modelleri",
+            "https://www.matras.com/kemer-modelleri",
+            "https://www.matras.com/aksesuar",
+            "https://www.matras.com/seyahat",
+            "https://www.matras.com/yeni-urun",
+            "https://www.matras.com/canta-modelleri",
+            "https://www.matras.com/ayakkabi-modelleri",
+            "https://www.matras.com/bot",
+            "https://www.matras.com/cuzdan-modelleri",
+            "https://www.matras.com/kemer-modelleri",
+            "https://www.matras.com/aksesuar",
+            "https://www.matras.com/seyahat"
+        ],
+        "productListSelector": ".col-md-3.col-sm-3.col-xs-6.wow",
+        "productItemSelector": ".col-md-3.col-sm-3.col-xs-6.wow",
+        "titleSelector": "(document)=>document.querySelector('.product_name').innerText.trim()",
+        "imageSelector": ".product_image img",
+        "linkSelector": ".product_name",
+        "schedule": "0 0 * * 4",
+        "id": "45"
+    },
+    {
+        "site": "ateliergalin",
+        "urls": [
+            "https://www.ateliergalin.com/collections/all"
+        ],
+        "productListSelector": "#product-grid",
+        "productItemSelector": ".grid__item",
+        "titleSelector": "(document)=> document.querySelector('.card__heading a').innerText.trim()",
+        "imageSelector": "(document)=>'https:'+ document.querySelector('.card__media img').srcset.split(',')[4].split(' ')[0]",
+        "linkSelector": "h3.card__heading a",
+        "schedule": "0 0 * * 4",
+        "id": "46"
+    },
+    {
+        "site": "diesel",
+        "urls": [
+            "https://global.diesel.com/man/"
+        ],
+        "productListSelector": ".product-grid-item",
+        "productItemSelector": ".product-grid-item",
+        "titleSelector": ".product-tile-body__link",
+        "imageSelector": "(document)=>document.querySelector('.product-tile-image__picture  img.lazyloaded')?.scr ||document.querySelector('.product-tile-image__picture  img.swiper-lazy')?.dataset.src",
+        "linkSelector": ".product-tile-body__link",
+        "schedule": "0 0 * * 4",
+        "id": "47"
+    },
+    {
+        "site": "uspoloassn",
+        "urls": [
+            "https://tr.uspoloassn.com/"
+        ],
+        "productListSelector": ".js-product-list-item",
+        "productItemSelector": ".js-product-list-item",
+        "titleSelector": ".product__name a",
+        "imageSelector": ".swiper-wrapper img",
+        "imageAttr": "data-src",
+        "linkSelector": ".product__name a",
+        "schedule": "0 0 * * 4",
+        "id": "48"
+    },
+    {
+        "site": "gap",
+        "urls": [
+            "https://gap.com.tr/"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-item__info-product-name",
+        "imageSelector": "(document)=>document.querySelector('picture source')?.srcset ||document.querySelector('picture source')?.getAttribute('data-srcset')",
+        "linkSelector": ".product-item__body a",
+        "schedule": "0 0 * * 4",
+        "id": "49"
+    },
+    {
+        "site": "burberry",
+        "urls": [
+            "https://tr.burberry.com/"
+        ],
+        "productListSelector": ".product-listing-shelf__product-card",
+        "productItemSelector": ".product-listing-shelf__product-card",
+        "titleSelector": ".product-card-v2-title",
+        "imageSelector": ".media-carousel-container__media.product-card-v2-carousel-container__media__source",
+        "linkSelector": "a",
+        "schedule": "0 0 * * 4",
+        "id": "50"
+    },
+    {
+        "site": "buenoshoes",
+        "urls": [
+            "https://www.buenoshoes.com.tr/"
+        ],
+        "productListSelector": ".divUrun",
+        "productItemSelector": ".divUrun",
+        "titleSelector": ".divUAd a",
+        "imageSelector": "(document)=>'https://www.buenoshoes.com.tr/' + document.querySelector('[data-src]').getAttribute('data-src')",
+        "linkSelector": ".divUAd a",
+        "schedule": "0 0 * * 4",
+        "id": "51"
+    },
+    {
+        "site": "camper",
+        "urls": [
+            "https://www.camper.com/tr_TR"
+        ],
+        "productListSelector": ".grid-item",
+        "productItemSelector": ".grid-item",
+        "titleSelector": "p.name",
+        "imageSelector": "[srcset]",
+        "imageAttr": "srcset",
+        "linkSelector": ".grid-item a",
+        "schedule": "0 0 * * 4",
+        "id": "52"
+    },
+    {
+        "site": "converse",
+        "urls": [
+            "https://www.converse.com.tr/"
+        ],
+        "productListSelector": ".products__items",
+        "productItemSelector": ".js-product-wrapper.product-item",
+        "titleSelector": ".product-item__name",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": ".js-product-anchor",
+        "schedule": "0 0 * * 4",
+        "id": "53"
+    },
+    {
+        "site": "eclecticconceptstore",
+        "urls": [
+            "https://eclecticconceptstore.com.tr/product-category/men/",
+            "https://eclecticconceptstore.com.tr/product-category/women/",
+            "https://eclecticconceptstore.com.tr/"
+        ],
+        "productListSelector": ".c-product-grid",
+        "productItemSelector": ".c-product-grid__item",
+        "titleSelector": ".c-product-grid__title",
+        "imageSelector": ".woocommerce-loop-product__link [data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": ".woocommerce-loop-product__link",
+        "schedule": "0 0 * * 4",
+        "id": "54"
+    },
+    {
+        "site": "edwards",
+        "urls": [
+            "https://www.edwards.com.tr/kadin/",
+            "https://www.edwards.com.tr/erkek/"
+        ],
+        "productListSelector": ".product-grid-item",
+        "productItemSelector": ".product-grid-item",
+        "titleSelector": ".product-tile-body__link",
+        "imageSelector": "(document)=> document.querySelector('.product-tile-image__picture  img.lazyloaded')?.scr ||document.querySelector('.product-tile-image__picture  img.swiper-lazy')?.dataset.src",
+        "linkSelector": ".product-tile-body__link",
+        "schedule": "0 0 * * 4",
+        "id": "55"
+    },
+    {
+        "site": "gant",
+        "urls": [
+            "https://www.gant.com.tr/"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-name__link",
+        "imageSelector": ".product-item-image",
+        "linkSelector": ".product-name__link",
+        "schedule": "0 0 * * 4",
+        "id": "56"
+    },
+    {
+        "site": "lacoste",
+        "urls": [
+            "https://www.lacoste.com.tr/"
+        ],
+        "productListSelector": ".product-item-box",
+        "productItemSelector": ".product-item-box",
+        "titleSelector": ".product-info--name",
+        "imageSelector": ".js-product-item-image",
+        "linkSelector": ".product-info--name a",
+        "schedule": "0 0 * * 4",
+        "id": "57"
+    },
+    {
+        "site": "pierrecardin",
+        "urls": [
+            "https://www.pierrecardin.com.tr/"
+        ],
+        "productListSelector": ".js-product-list-item",
+        "productItemSelector": ".js-product-list-item",
+        "titleSelector": ".product__listing--content h3",
+        "imageSelector": "(document)=> document.querySelectorAll('[data-src]')[1].getAttribute('data-src')",
+        "linkSelector": ".product__listing--content h3 a",
+        "schedule": "0 0 * * 4",
+        "id": "58"
+    },
+    {
+        "site": "pullandbear",
+        "urls": [
+            "https://www.pullandbear.com/tr/erkek-n6228",
+            "https://www.pullandbear.com/tr/kadin-n6417"
+        ],
+        "productListSelector": "legacy-product",
+        "productItemSelector": "legacy-product",
+        "titleSelector": ".name span",
+        "imageSelector": "(document)=>document.querySelector('.image-responsive')?.src || document.querySelector('.image-responsive')?.getAttribute('data-src')",
+        "linkSelector": ".carousel-item-container",
+        "schedule": "0 0 * * 4",
+        "id": "59"
+    },
+    {
+        "site": "marksandspencer",
+        "urls": [
+            "https://www.marksandspencer.com.tr/"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-item__name",
+        "imageSelector": "(document)=> document.querySelector('.pz-image-placeholder source ')?.srcset || document.querySelector('.pz-image-placeholder source ')?.getAttribute('data-srcset')",
+        "linkSelector": ".product-item__name",
+        "schedule": "0 0 * * 4",
+        "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb a')).map(m=>m.innerText).join(' ').toLowerCase()",
+        "id": "60"
+    },
+    {
+        "site": "hm",
+        "urls": [
+            "https://www2.hm.com/tr_tr/index.html"
+        ],
+        "productListSelector": "article[data-category]",
+        "productItemSelector": "article[data-category]",
+        "titleSelector": "a",
+        "titleAttr": "title",
+        "imageSelector": "(document)=>m.querySelector('[imagetype='PRODUCT_IMAGE']').srcset.split(',')[8].trim().split(' ')[0]",
+        "linkSelector": "a",
+        "schedule": "0 0 * * 4",
+        "id": "61"
+    },
+    {
+        "site": "paulmark",
+        "urls": [
+            "https://www.paulmark.com.tr/"
+        ],
+        "productListSelector": ".productItemLayout.ViewProduct",
+        "productItemSelector": ".productItemLayout.ViewProduct",
+        "titleSelector": "img",
+        "titleAttr": "alt",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": "a.item-img",
+        "schedule": "0 0 * * 4",
+        "id": "62"
+    },
+    {
+        "site": "morrez",
+        "urls": [
+            "https://morrez.com/"
+        ],
+        "productListSelector": ".grid [data-id]",
+        "productItemSelector": ".grid [data-id]",
+        "titleSelector": ".product-name",
+        "imageSelector": "(document)=>document.querySelector('.product-slider-image-container img').srcset.split(',')[10].trim().split(' ')[0]",
+        "linkSelector": "a",
+        "schedule": "0 0 * * 4",
+        "id": "63"
+    },
+    {
+        "site": "yaygan",
+        "urls": [
+            "https://www.yaygan.com/"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-title",
+        "imageSelector": "a.image-wrapper img",
+        "linkSelector": ".image-wrapper",
+        "schedule": "0 0 * * 4",
+        "id": "64"
+    },
+    {
+        "site": "ltbjeans",
+        "urls": [
+            "https://www.ltbjeans.com/tr-TR"
+        ],
+        "productListSelector": ".product-grid-item",
+        "productItemSelector": ".product-grid-item",
+        "titleSelector": ".product-tile-body__link",
+        "imageSelector": "(document)=> document.querySelector('.product-tile-image__picture  img.lazyloaded')?.scr ||document.querySelector('.product-tile-image__picture  img.swiper-lazy')?.dataset.src",
+        "linkSelector": ".product-tile-body__link",
+        "schedule": "0 0 * * 4",
+        "id": "65"
+    },
+    {
+        "site": "efor",
+        "urls": [
+            "https://www.efor.com.tr/"
+        ],
+        "productListSelector": ".js-product-item",
+        "productItemSelector": ".js-product-item",
+        "titleSelector": ".product-details  [itemprop='name']",
+        "imageSelector": "[data-original]",
+        "imageAttr": "data-original",
+        "linkSelector": ".innerwrap.product.ecommerceClick",
+        "schedule": "0 0 * * 4",
+        "id": "66"
+    },
+    {
+        "site": "edliskids",
+        "urls": [
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/dis-giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/dis-giyim/mont/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/dis-giyim/ceket/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/dis-giyim/yelek/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/yeni-dogan-giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/elbise/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/body-kiz-bebek/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/esofman-giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/pantolon/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/jean/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/takimlar-giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/tayt/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/etek/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/t-shirt/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/sort/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/sweatshirt/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/salopet/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/mayo-bikini-giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/dis-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/dis-giyim-kiz-cocuk/mont-dis-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/dis-giyim-kiz-cocuk/kaban/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/dis-giyim-kiz-cocuk/ceket-dis-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/dis-giyim-kiz-cocuk/yelek-dis-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/elbise-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/t-shirt-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/etek-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/pantolon-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/jean-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/tayt-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/pijama/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/bolero/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/sweatshirt-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/body-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/mayo-bikini/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/esofman-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/sort-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/dis-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/dis-giyim-erkek-bebek/mont-dis-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/dis-giyim-erkek-bebek/ceket-dis-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/dis-giyim-erkek-bebek/yelek-dis-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/yeni-dogan/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/t-shirt-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim/sort-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim/bermuda/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim/pantolon-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/yelek-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/salopet-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim/gomlek-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/jean-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/body-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/esofman-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/sweatshirt-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/takimlar-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/dis-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/dis-giyim-erkek-cocuk/ceket-dis-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/dis-giyim-erkek-cocuk/mont-dis-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/dis-giyim-erkek-cocuk/yelek-dis-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/gomlek-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/sort-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/pantolon-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/jean-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/bermuda-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/pijama-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/t-shirt-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/esofman-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/sweatshirt-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/takimlar-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/smokin/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/unisex/",
+            "https://www.edliskids.com/urun-kategori/unisex/mont-unisex/",
+            "https://www.edliskids.com/urun-kategori/unisex/yelek-unisex",
+            "https://www.edliskids.com/urun-kategori/unisex/body/",
+            "https://www.edliskids.com/urun-kategori/unisex/esofman-takim/",
+            "https://www.edliskids.com/urun-kategori/unisex/t-shirt-unisex/",
+            "https://www.edliskids.com/urun-kategori/ayakkabi/",
+            "https://www.edliskids.com/urun-kategori/ayakkabi/bebek/",
+            "https://www.edliskids.com/urun-kategori/ayakkabi/erkek-cocuk-ayakkabi/",
+            "https://www.edliskids.com/urun-kategori/ayakkabi/kiz-cocuk-ayakkabi/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/atki-bere/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/canta/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/papyon/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/kravat/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/kemer/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/yaka-cicegi/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/plaj-havlu/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/panco-havlu/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/dis-giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/dis-giyim/mont/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/dis-giyim/ceket/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/dis-giyim/yelek/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/yeni-dogan-giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/elbise/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/body-kiz-bebek/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/esofman-giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/pantolon/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/jean/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/takimlar-giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/tayt/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/etek/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/t-shirt/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/sort/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/sweatshirt/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/salopet/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/mayo-bikini-giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/giyim/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/dis-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/dis-giyim-kiz-cocuk/mont-dis-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/dis-giyim-kiz-cocuk/kaban/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/dis-giyim-kiz-cocuk/ceket-dis-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/dis-giyim-kiz-cocuk/yelek-dis-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/elbise-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/t-shirt-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/etek-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/pantolon-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/jean-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/tayt-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/pijama/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/bolero/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/sweatshirt-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/body-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/mayo-bikini/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/esofman-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim/sort-giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/giyim-kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/dis-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/dis-giyim-erkek-bebek/mont-dis-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/dis-giyim-erkek-bebek/ceket-dis-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/dis-giyim-erkek-bebek/yelek-dis-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/yeni-dogan/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/t-shirt-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim/sort-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim/bermuda/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim/pantolon-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/yelek-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/salopet-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim/gomlek-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/jean-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/body-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/esofman-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/sweatshirt-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/takimlar-giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/giyim-erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/dis-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/dis-giyim-erkek-cocuk/ceket-dis-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/dis-giyim-erkek-cocuk/mont-dis-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/dis-giyim-erkek-cocuk/yelek-dis-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/gomlek-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/sort-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/pantolon-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/jean-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/bermuda-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/pijama-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/t-shirt-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/esofman-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/sweatshirt-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/takimlar-giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/smokin/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/giyim-erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/unisex/",
+            "https://www.edliskids.com/urun-kategori/unisex/mont-unisex/",
+            "https://www.edliskids.com/urun-kategori/unisex/yelek-unisex",
+            "https://www.edliskids.com/urun-kategori/unisex/body/",
+            "https://www.edliskids.com/urun-kategori/unisex/esofman-takim/",
+            "https://www.edliskids.com/urun-kategori/unisex/t-shirt-unisex/",
+            "https://www.edliskids.com/urun-kategori/ayakkabi/",
+            "https://www.edliskids.com/urun-kategori/ayakkabi/bebek/",
+            "https://www.edliskids.com/urun-kategori/ayakkabi/erkek-cocuk-ayakkabi/",
+            "https://www.edliskids.com/urun-kategori/ayakkabi/kiz-cocuk-ayakkabi/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/atki-bere/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/canta/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/papyon/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/kravat/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/kemer/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/yaka-cicegi/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/plaj-havlu/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/panco-havlu/",
+            "https://edliskids.com/hakkimizda/",
+            "https://edliskids.com/iletisim/",
+            "https://www.edliskids.com/mesafeli-satislar-yonetmeligi.pdf",
+            "https://www.edliskids.com/iade-degisim.pdf",
+            "https://www.edliskids.com/gizlilik-politikasi.pdf",
+            "https://www.edliskids.com/cerez-politikasi.pdf",
+            "https://www.edliskids.com/kvkk-aydinlatma-metni.pdf",
+            "https://www.edliskids.com/kvkk-politikasi.pdf",
+            "https://www.edliskids.com/kvkk-basvuru-formu.pdf",
+            "https://www.edliskids.com/urun-kategori/yeni-dogan/",
+            "https://www.edliskids.com/urun-kategori/kiz-bebek/",
+            "https://www.edliskids.com/urun-kategori/kiz-cocuk/",
+            "https://www.edliskids.com/urun-kategori/erkek-bebek/",
+            "https://www.edliskids.com/urun-kategori/erkek-cocuk/",
+            "https://www.edliskids.com/urun-kategori/ayakkabi/",
+            "https://www.edliskids.com/urun-kategori/aksesuar/",
+            "https://www.edliskids.com/urun-kategori/outlet/"
+        ],
+        "productListSelector": ".products",
+        "productItemSelector": ".product",
+        "titleSelector": ".woocommerce-loop-product__title a",
+        "imageSelector": ".attachment-woocommerce_thumbnail.size-woocommerce_thumbnail",
+        "linkSelector": ".woocommerce-loop-product__title a",
+        "schedule": "0 0 * * 4",
+        "id": "67"
+    },
+    {
+        "site": "breeze",
+        "urls": [
+            "https://www.breeze.com.tr/"
+        ],
+        "productListSelector": "#ProductPageProductList",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName a",
+        "imageSelector": "[data-original]",
+        "imageAttr": "data-original",
+        "linkSelector": "a.detailLink",
+        "schedule": "0 0 * * 4",
+        "id": "68"
+    },
+    {
+        "site": "cartersoshkosh",
+        "urls": [
+            "https://www.cartersoshkosh.com.tr/"
+        ],
+        "productListSelector": ".products__items",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-name",
+        "imageSelector": ".d-block img",
+        "linkSelector": ".d-block",
+        "schedule": "0 0 * * 4",
+        "id": "69"
+    },
+    {
+        "site": "sagaza",
+        "urls": [
+            "https://sagaza.com/"
+        ],
+        "productListSelector": ".collection__content",
+        "productItemSelector": ".product-grid-item",
+        "titleSelector": ".product__grid__title",
+        "imageSelector": "(document)=> 'https:'  + document.querySelector('[srcset]').getAttribute('srcset').trim().split(' ')[0]",
+        "linkSelector": "a",
+        "schedule": "0 0 * * 4",
+        "id": "70"
+    },
+    {
+        "site": "panco",
+        "urls": [
+            "https://www.panco.com.tr/"
+        ],
+        "productListSelector": "[data-testid='product-box']",
+        "productItemSelector": "[data-testid='product-box']",
+        "titleSelector": "[class^='product_card_product_title']",
+        "imageSelector": ".inline-block img",
+        "linkSelector": "[class^='product_card_product_title']",
+        "schedule": "0 0 * * 4",
+        "id": "71"
+    },
+    {
+        "site": "pembecida",
+        "urls": [
+            "https://www.pembecida.com/"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-title",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": ".product-title",
+        "schedule": "0 0 * * 4",
+        "id": "72"
+    },
+    {
+        "site": "milkywilky",
+        "urls": [
+            "https://www.milkywilky.com.tr/"
+        ],
+        "productListSelector": ".products",
+        "productItemSelector": ".product",
+        "titleSelector": ".woocommerce-loop-product__title",
+        "imageSelector": ".attachment-woocommerce_thumbnail",
+        "linkSelector": ".woocommerce-LoopProduct-link",
+        "schedule": "0 0 * * 4",
+        "id": "73"
+    },
+    {
+        "site": "jackjones",
+        "urls": [
+            "https://jackjones.com.tr/"
+        ],
+        "productListSelector": ".scroll-product-item",
+        "productItemSelector": ".scroll-product-item",
+        "titleSelector": ".card-title",
+        "imageSelector": ".card-product img",
+        "linkSelector": ".card-product a[data-href]",
+        "schedule": "0 0 * * 4",
+        "id": "74"
+    },
+    {
+        "site": "smile",
+        "urls": [
+            "https://smile.com.tr/"
+        ],
+        "productListSelector": ".productItem",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".list-pro-title.detailLink",
+        "imageSelector": ".ndImage",
+        "linkSelector": ".detailLink",
+        "schedule": "0 0 * * 4",
+        "id": "75"
+    },
+    {
+        "site": "victorbaron",
+        "urls": [
+            "https://victorbaron.com.tr/"
+        ],
+        "productListSelector": ".product-layout",
+        "productItemSelector": ".product-layout",
+        "titleSelector": ".description",
+        "imageSelector": ".product-img img",
+        "linkSelector": ".product-img",
+        "schedule": "0 0 * * 4",
+        "id": "76"
+    },
+    {
+        "site": "altinyildizclassics",
+        "urls": [
+            "https://www.altinyildizclassics.com/"
+        ],
+        "productListSelector": "ac-product-card",
+        "productItemSelector": "ac-product-card",
+        "titleSelector": ".ac-pc__name",
+        "imageSelector": "img",
+        "linkSelector": "a",
+        "schedule": "0 0 * * 4",
+        "id": "77"
+    },
+    {
+        "site": "bisse",
+        "urls": [
+            "https://www.bisse.com/"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-title",
+        "imageSelector": ".image-nd",
+        "linkSelector": ".product-title",
+        "schedule": "0 0 * * 4",
+        "id": "78"
+    },
+    {
+        "site": "brango",
+        "urls": [
+            "https://www.brango.com.tr/"
+        ],
+        "productListSelector": ".products-list__item",
+        "productItemSelector": ".products-list__item",
+        "titleSelector": ".product-info-detail",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": ".product-info-detail",
+        "schedule": "0 0 * * 4",
+        "id": "79"
+    },
+    {
+        "site": "damattween",
+        "urls": [
+            "https://www.damattween.com/"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-item__name",
+        "imageSelector": ".product-item__img",
+        "linkSelector": "a",
+        "schedule": "0 0 * * 4",
+        "id": "80"
+    },
+    {
+        "site": "centone",
+        "urls": [
+            "https://www.centone.com.tr/"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".name",
+        "imageSelector": "(document)=>document.querySelector('.b-lazy[data-src]')?.getAttribute('data-src')||document.querySelector('.b-lazy').src",
+        "imageAttr": "srс",
+        "linkSelector": ".name",
+        "schedule": "0 0 * * 4",
+        "id": "81"
+    },
+    {
+        "site": "dsdamat",
+        "urls": [
+            "https://www.dsdamat.com/"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-item__name",
+        "imageSelector": ".product-item__img.js-img-firstly",
+        "linkSelector": "a",
+        "schedule": "0 0 * * 4",
+        "id": "82"
+    },
+    {
+        "site": "duk",
+        "urls": [
+            "https://www.duk.com.tr/"
+        ],
+        "productListSelector": ".item",
+        "productItemSelector": ".item",
+        "titleSelector": ".p-name",
+        "imageSelector": ".image img",
+        "linkSelector": ".image",
+        "schedule": "0 0 * * 4",
+        "id": "83"
+    },
+    {
+        "site": "kigili",
+        "urls": [
+            "https://www.kigili.com/"
+        ],
+        "productListSelector": ".js-list-content-product-item",
+        "productItemSelector": ".js-list-content-product-item",
+        "titleSelector": ".product-name a",
+        "imageSelector": ".product-item-image",
+        "imageAttr": "data-default-img",
+        "linkSelector": ".product-name a",
+        "schedule": "0 0 * * 4",
+        "id": "84"
+    },
+    {
+        "site": "maleindustry",
+        "urls": [
+            "https://www.maleindustry.com.tr/erkek-sneaker-modelleri"
+        ],
+        "productListSelector": ".divUrun",
+        "productItemSelector": ".divUrun",
+        "titleSelector": ".divUAd a",
+        "titleAttr": "title",
+        "imageSelector": "(document)=>'https://www.maleindustry.com.tr/'+ document.querySelector('[data-src]').getAttribute('data-src')",
+        "linkSelector": ".divUAd a",
+        "schedule": "0 0 * * 4",
+        "id": "85"
+    },
+    {
+        "site": "wemsey",
+        "urls": [
+            "https://www.wemsey.com.tr/"
+        ],
+        "productListSelector": ".product_item",
+        "productItemSelector": ".product_item",
+        "titleSelector": "(document)=> document.querySelector('.pro_detail').querySelectorAll('.pro_name')[1].innerText",
+        "imageSelector": ".img_box img",
+        "linkSelector": ".pro_name a",
+        "schedule": "0 0 * * 4",
+        "id": "86"
+    },
+    {
+        "site": "tubabutik",
+        "urls": [
+            "https://tubabutik.com/kadin-ceket-modelleri"
+        ],
+        "productListSelector": "#productList",
+        "productItemSelector": ".relative.flex.h-full.w-full.grow.flex-col",
+        "titleSelector": "a.flex.grow.flex-col div",
+        "imageSelector": "(document)=>document.querySelector('a img[srcset]').getAttribute('srcset').split(',')[4].trim().split(' ')[0]",
+        "linkSelector": "a.flex.grow.flex-col",
+        "schedule": "0 0 * * 4",
+          "id": "87"
+    },
+    {
+        "site": "tarikediz",
+        "urls": [
+            "https://www.tarikediz.com/"
+        ],
+        "productListSelector": "#ProductPageProductList",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName a",
+        "imageSelector": "(document)=>document.querySelector('.detailLink.detailUrl [data-src]').getAttribute('data-src')",
+        "linkSelector": ".productName a",
+        "schedule": "0 0 * * 4",
+          "id": "88"
+    },
+    {
+        "site": "hollylolly",
+        "urls": [
+            "https://www.hollylolly.net/"
+        ],
+        "productListSelector": "#ProductPageProductList",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName.detailUrl a",
+        "titleAttr": "title",
+        "imageSelector": "[data-original]",
+        "imageAttr": "data-original",
+        "linkSelector": ".productName.detailUrl a",
+        "schedule": "0 0 * * 4",
+          "id": "89"
+    },
+    {
+        "site": "perspectivewoman",
+        "urls": [
+            "https://perspectivewoman.com/"
+        ],
+        "productListSelector": ".grid__item",
+        "productItemSelector": ".grid__item",
+        "titleSelector": ".grid-product__title",
+        "imageSelector": "(document)=>'https:'+document.querySelector('.grid-product__image').getAttribute('srcset').split(',')[1].trim().split(' ')[0]",
+        "linkSelector": ".grid-product__link",
+        "schedule": "0 0 * * 4",
+          "id": "90"
+    },
+    {
+        "site": "rivus",
+        "urls": [
+            "https://rivus.com.tr/"
+        ],
+        "productListSelector": "#ProductPageProductList",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName.detailUrl a",
+        "titleAttr": "title",
+        "imageSelector": "[src-last]",
+        "imageAttr": "src-last",
+        "linkSelector": ".productName.detailUrl a",
+        "schedule": "0 0 * * 4",
+          "id": "91"
+    },
+    {
+        "site": "arzukaprol",
+        "urls": [
+            "https://arzukaprol.com/"
+        ],
+        "productListSelector": ".product-grid",
+        "productItemSelector": ".grid__item",
+        "titleSelector": "(document)=>document.querySelector('.card__heading a').innerText.trim()",
+        "imageSelector": "(document)=>'https:'+ document.querySelector('.card__media img').getAttribute('srcset').split(',')[2].trim().split(' ')[0]",
+        "linkSelector": ".card__heading a",
+        "schedule": "0 0 * * 4",
+          "id": "92"
+    },
+    {
+        "site": "sorbe",
+        "urls": [
+            "https://www.sorbe.co/"
+        ],
+        "productListSelector": "#ProductListMainContainer",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName.detailUrl a",
+        "titleAttr": "title",
+        "imageSelector": "[data-original]",
+        "imageAttr": "data-original",
+        "linkSelector": ".productName.detailUrl a",
+        "schedule": "0 0 * * 4",
+          "id": "93"
+    },
+    {
+        "site": "victoriassecret",
+        "urls": [
+            "https://www.victoriassecret.com.tr/"
+        ],
+        "productListSelector": ".productItem",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName.detailUrl a",
+        "imageSelector": ".productSliderImage",
+        "linkSelector": ".productName.detailUrl a",
+        "schedule": "0 0 * * 4",
+          "id": "94"
+    },
+    {
+        "site": "maisonju",
+        "urls": [
+            "https://www.maisonju.com/"
+        ],
+        "productListSelector": ".grid__item",
+        "productItemSelector": ".grid__item",
+        "titleSelector": ".grid-product__title",
+        "imageSelector": "(document)=> 'https:'  + document.querySelector('[srcset]').getAttribute('srcset').split(',')[1].trim().split(' ')[0]",
+        "linkSelector": ".grid-product__link",
+        "schedule": "0 0 * * 4",
+          "id": "95"
+    },
+    {
+        "site": "berr-in",
+        "urls": [
+            "https://berr-in.com/kadin-elbise-modelleri"
+        ],
+        "productListSelector": ".product-layout",
+        "productItemSelector": ".product-layout",
+        "titleSelector": ".name a",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": ".name a",
+        "schedule": "0 0 * * 4",
+          "id": "96"
+    },
+    {
+        "site": "nevermore",
+        "urls": [
+            "https://www.nevermore.com.tr/"
+        ],
+        "productListSelector": ".card-product",
+        "productItemSelector": ".card-product",
+        "titleSelector": ".title-special",
+        "imageSelector": ".image img",
+        "linkSelector": ".c-p-i-link",
+        "schedule": "0 0 * * 4",
+          "id": "97"
+    },
+    {
+        "site": "dilekhanif",
+        "urls": [
+            "https://www.dilekhanif.com/"
+        ],
+        "productListSelector": ".grid__item",
+        "productItemSelector": ".grid__item",
+        "titleSelector": ".grid-product__title",
+        "imageSelector": "(document)=> 'https:'  + document.querySelector('[srcset]').getAttribute('srcset').split(',')[1].trim().split(' ')[0]",
+        "linkSelector": ".grid-product__link",
+        "schedule": "0 0 * * 4",
+          "id": "98"
+    },
+    {
+        "site": "bizeonline",
+        "urls": [
+            "https://www.bizeonline.com"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-title",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": "a.image-wrapper",
+        "schedule": "0 0 * * 4",
+          "id": "99"
+    },
+    {
+        "site": "dressweden",
+        "urls": [
+            "https://dressweden.com/"
+        ],
+        "productListSelector": "div[data-id]",
+        "productItemSelector": "div[data-id]",
+        "titleSelector": ".product-name",
+        "imageSelector": "(document)=> document.querySelector('[srcset]').getAttribute('srcset').split(',')[9].trim().split(' ')[0]",
+        "linkSelector": "a",
+        "schedule": "0 0 * * 4",
+          "id": "100"
+    },
+    {
+        "site": "niqozza",
+        "urls": [
+            "https://www.niqozza.com"
+        ],
+        "productListSelector": ".ProductListContent ",
+        "productItemSelector": ".productItem",
+        "titleSelector": ".productName.detailUrl a",
+        "imageSelector": "[data-original]",
+        "imageAttr": "data-original",
+        "linkSelector": ".productName.detailUrl a",
+        "schedule": "0 0 * * 4",
+          "id": "101"
+    },
+    {
+        "site": "olegcassini",
+        "urls": [
+            "https://olegcassini.com.tr/"
+        ],
+        "productListSelector": "[data-id]",
+        "productItemSelector": "[data-id]",
+        "titleSelector": ".product-name",
+        "imageSelector": "(document)=> document.querySelector('.category-products-image[srcset]').getAttribute('srcset').split(',')[10].trim().split(' ')[0]",
+        "linkSelector": "a",
+        "schedule": "0 0 * * 4",
+          "id": "102"
+        
+    },
+    {
+        "site": "pinkoturkey",
+        "urls": [
+            "https://www.pinkoturkey.com/"
+        ],
+        "productListSelector": ".showcase",
+        "productItemSelector": ".showcase",
+        "titleSelector": ".showcase-title",
+        "imageSelector": "(document)=> 'https:'  + document.querySelector('[data-src]').getAttribute('data-src')",
+        "imageAttr": "srс",
+        "linkSelector": ".showcase-title a",
+        "schedule": "0 0 * * 4",
+          "id": "103"
+    },
+    {
+        "site": "silkandcashmere",
+        "urls": [
+            "https://silkandcashmere.com/"
+        ],
+        "productListSelector": ".product-item",
+        "productItemSelector": ".product-item",
+        "titleSelector": ".product-item__product-title a",
+        "imageSelector": ".image__img",
+        "linkSelector": ".product-item__product-title a",
+        "schedule": "0 0 * * 4",
+          "id": "104"
+    },
+    {
+        "site": "aldoshoes",
+        "urls": [
+            "https://www.aldoshoes.com.tr/"
+        ],
+        "productListSelector": ".item",
+        "productItemSelector": ".item",
+        "titleSelector": ".product-name span",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": ".product-image",
+        "schedule": "0 0 * * 4",
+          "id": "105"
+    },
+    {
+        "site": "gigiis",
+        "urls": [
+            "https://www.gigiis.com/"
+        ],
+        "productListSelector": ".product-block",
+        "productItemSelector": ".product-block",
+        "titleSelector": "span.title",
+        "imageSelector": "(document)=> 'https:'  + document.querySelector('[data-srcset]').getAttribute('data-srcset').split(',')[2].trim().split(' ')[0]",
+        "linkSelector": ".product-block__inner a",
+        "schedule": "0 0 * * 4",
+          "id": "106"
+    },
+    {
+        "site": "ninewest",
+        "urls": [
+            "https://www.ninewest.com.tr/"
+        ],
+        "productListSelector": ".product-list__item",
+        "productItemSelector": ".product-list__item",
+        "titleSelector": ".product-name",
+        "imageSelector": "[data-src]",
+        "imageAttr": "data-src",
+        "linkSelector": "a[data-product-id]",
+        "schedule": "0 0 * * 4",
+          "id": "107"
+    },
+    {
+        "site": "shopseizetheday",
+        "urls": [
+            "https://www.shopseizetheday.com/"
+        ],
+        "productListSelector": ".product",
+        "productItemSelector": ".product",
+        "titleSelector": ".mfn-woo-product-title a",
+        "imageSelector": "(document)=> document.querySelector('.attachment-woocommerce_thumbnail').srcset.split(',')[0].trim().split(' ')[0]",
+        "linkSelector": ".mfn-woo-product-title a",
+        "schedule": "0 0 * * 4",
+          "id": "108"
+    },
+    {
+        "site": "serpil",
+        "urls": [
+            "https://serpil.com.tr/"
+        ],
+        "productListSelector": ".product-grid-item",
+        "productItemSelector": ".product-grid-item",
+        "titleSelector": ".product-title",
+        "imageSelector": "(doculent)=>'https://serpil.com.tr'+ document.querySelector('[data-src]').getAttribute('data-src')",
+        "linkSelector": ".product-title",
+        "schedule": "0 0 * * 4",
+          "id": "109"
+    },
+    {
+        "site": "bejfinefactory",
+        "urls": [
+            "https://www.bejfinefactory.com/"
+        ],
+        "productListSelector": ".card-product",
+        "productItemSelector": ".card-product",
+        "titleSelector": ".c-p-i-link .title",
+        "imageSelector": ".img-auto",
+        "linkSelector": ".c-p-i-link",
+        "schedule": "0 0 * * 4",
+          "id": "110"
+    },
+    {
+        "site": "dilvin",
+        "urls": [
+            "https://www.dilvin.com.tr/"
+        ],
+        "productListSelector": ".product",
+        "productItemSelector": ".product",
+        "titleSelector": ".item-name a",
+        "imageSelector": ".img-responsive",
+        "linkSelector": "a",
+        "schedule": "0 0 * * 4",
+          "id": "111"
+    },
+    {
+        "site": "ihandmore",
+        "urls": [
+            "https://ihandmore.com/"
+        ],
+        "productListSelector": ".product",
+        "productItemSelector": ".product",
+        "titleSelector": "(document)=>document.querySelector('.entry-title.qode-pli-title a')?.innerText || document.querySelector('[itemprop=\"name\"]').innerText",
+        "imageSelector": "(document)=>document.querySelector('[srcset]').getAttribute('srcset').split(',')[2].trim().split(' ')[0]",
+        "linkSelector": "(document)=> document.querySelector('.entry-title.qode-pli-title a')?.href || document.querySelector(' [itemprop=\"url\"]').href",
+        "schedule": "0 0 * * 4",
+          "id": "112"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    },
+    {
+        "site": "",
+        "urls": [
+            ""
+        ],
+        "productListSelector": "",
+        "productItemSelector": "",
+        "titleSelector": "",
+        "imageSelector": "",
+        "imageAttr": "srс",
+        "linkSelector": "",
+        "schedule": "0 0 * * 4"
+    }
+]
