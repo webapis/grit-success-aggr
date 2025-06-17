@@ -28,37 +28,16 @@ router.addHandler("second", async (props) => {
 
   const data = await second({ ...props, label: "second", ...selectors })
   
-  if (data) {
-    await productsDataset.pushData(data);
-  }
-});
-
-async function resultHandler({
-  request,
-  page,
-  log,
-  pushData,
-  enqueueLinks,
-  addRequests,
-  label,
-}) {
   const url = await page.url();
 
-  
   console.log(`enqueueing new URLs: ${label}`, url);
 
-
-
-  const data = await second({
-    page,
-    enqueueLinks,
-    request,
-    log,
-    addRequests,
-    ...selectors
-  });
   if (data) {
     await productsDataset.pushData(data);
   }
 
-}
+});
+
+
+
+
