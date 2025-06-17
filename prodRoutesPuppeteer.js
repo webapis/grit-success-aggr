@@ -28,9 +28,6 @@ router.addHandler("second", async (props) => {
 
   const data = await second({ ...props, label: "second", ...selectors })
   
-  const url = await page.url();
-
-  console.log(`enqueueing new URLs: ${label}`, url);
 
   if (data) {
     await productsDataset.pushData(data);

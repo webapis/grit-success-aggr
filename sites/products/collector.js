@@ -26,24 +26,24 @@ export default async function first({ page, enqueueLinks, request, log, addReque
         selector: 'a',
         label: 'second',
     });
-    if (productItemsCount > 0) {
-        if (siteUrls.funcPageSelector) {
-            const nextPages = await page.evaluate((funcPageSelector) => {
-                return eval(funcPageSelector)
-            }, siteUrls.funcPageSelector)
-            // This will execute the function defined in funcPageSelector   
+    // if (productItemsCount > 0) {
+    //     if (siteUrls.funcPageSelector) {
+    //         const nextPages = await page.evaluate((funcPageSelector) => {
+    //             return eval(funcPageSelector)
+    //         }, siteUrls.funcPageSelector)
+    //         // This will execute the function defined in funcPageSelector   
 
-            debugger
-            if (nextPages.length > 0) {
-                debugger
-               const mappedNextPages= nextPages.map(m=>{
-                return {url: url+"?tp="+m, label: 'second'};
-               })
-                await addRequests(mappedNextPages);
+    //         debugger
+    //         if (nextPages.length > 0) {
+    //             debugger
+    //            const mappedNextPages= nextPages.map(m=>{
+    //             return {url: url+"?tp="+m, label: 'second'};
+    //            })
+    //             await addRequests(mappedNextPages);
                 
-            }
-        }
-    }
+    //         }
+    //     }
+    // }
 
 }
 
