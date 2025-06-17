@@ -9,7 +9,8 @@ export async function logDataToGoogleSheet({
   serviceAccountCredentials,
   start,
   end,
-  span
+  span,
+  totalPages = 0
 }) {
   try {
     // Create a new JWT client for authentication
@@ -47,7 +48,8 @@ export async function logDataToGoogleSheet({
       'Error Entries',
       'Start Time',
       'End Time',
-      'Span (ms)'
+      'Span (ms)',
+      'Total Pages'
     ];
 
     if (sheet.headerValues.length === 0) {
@@ -62,7 +64,8 @@ export async function logDataToGoogleSheet({
       'Error Entries': dataWithErrorLength,
       'Start Time': start ,
       'End Time': end,
-      'Span (ms)': span
+      'Span (ms)': span,
+      'Total Pages': totalPages
 
     });
 
