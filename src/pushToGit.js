@@ -31,7 +31,7 @@ const dataWithError = data.filter(f => f.error)
 if (dataWithoutError.length > 0) {
     console.log('collected data length', dataWithoutError.length)
     await uploadCollection({ fileName: site || URL_CATEGORIES, data: dataWithoutError, gitFolder: site })
-    await logDataToGoogleSheet({ dataWithoutErrorLength: dataWithoutError.length, dataWithErrorLength: dataWithError.length, site, serviceAccountCredentials:GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,GOOGLE_SHEET_ID })
+    await logDataToGoogleSheet({ dataWithoutErrorLength: dataWithoutError.length, dataWithErrorLength: dataWithError.length, site, serviceAccountCredentials:GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,GOOGLE_SHEET_ID,start:oldestTimestamp, end:newestTimestamp })
 }
 else {
     await logDataToGoogleSheet({ dataWithoutErrorLength: dataWithoutError.length, dataWithErrorLength: dataWithError.length, site, serviceAccountCredentials:GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,GOOGLE_SHEET_ID,start:oldestTimestamp, end:newestTimestamp })
