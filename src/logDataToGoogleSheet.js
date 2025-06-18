@@ -10,7 +10,8 @@ export async function logDataToGoogleSheet({
   start,
   end,
   span,
-  totalPages = 0
+  totalPages = 0,
+  uniquePageURLs
 }) {
   try {
     // Create a new JWT client for authentication
@@ -49,7 +50,8 @@ export async function logDataToGoogleSheet({
       'Start Time',
       'End Time',
       'Span (min)',
-      'Total Pages'
+      'Total Pages',
+      'Unique Page URLs'
     ];
 
     if (sheet.headerValues.length === 0) {
@@ -65,7 +67,9 @@ export async function logDataToGoogleSheet({
       'Start Time': start ,
       'End Time': end,
       'Span (min)': span,
-      'Total Pages': totalPages
+      'Total Pages': totalPages,
+      'Unique Page URLs': uniquePageURLs.length // Assuming you want to log this as well, set to 0 or modify as needed
+
 
     });
 
