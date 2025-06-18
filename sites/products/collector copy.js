@@ -161,10 +161,10 @@ export async function second({
             console.log(data.filter(f => f.error)[0]);
         }
 
-         if (siteUrls.paginationSelector && !url.includes(siteUrls.paginationPostfix)) {
-            const nextPages = await page.evaluate((paginationSelector) => {
-                return Array.from({ length: Math.max(...Array.from(document.querySelectorAll(paginationSelector)).map(a => a.innerText).filter(f => Number(f))) }, (_, i) => i + 1).filter(f => f !== 1)
-            }, siteUrls.paginationSelector)
+         if (siteUrls.funcPageSelector && !url.includes(siteUrls.paginationPostfix)) {
+            const nextPages = await page.evaluate((funcPageSelector) => {
+                return eval(funcPageSelector)
+            }, siteUrls.funcPageSelector)
             // This will execute the function defined in funcPageSelector   
 
             debugger
