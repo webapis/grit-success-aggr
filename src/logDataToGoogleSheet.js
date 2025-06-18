@@ -48,7 +48,7 @@ export async function logDataToGoogleSheet({
       'Error Entries',
       'Start Time',
       'End Time',
-      'Span (ms)',
+      'Span (min)',
       'Total Pages'
     ];
 
@@ -64,7 +64,7 @@ export async function logDataToGoogleSheet({
       'Error Entries': dataWithErrorLength,
       'Start Time': start ,
       'End Time': end,
-      'Span (ms)': span,
+      'Span (min)': span,
       'Total Pages': totalPages
 
     });

@@ -22,6 +22,6 @@ export default  function getAggrTimeSpan({data}) {
 
         oldestTimestamp,
         newestTimestamp,
-        minutesSpan
+        minutesSpan: minutesSpan.toFixed(1)
     };
 }
