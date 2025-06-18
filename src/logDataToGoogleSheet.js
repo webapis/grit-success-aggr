@@ -43,7 +43,6 @@ export async function logDataToGoogleSheet({
 
     // Check and set headers if not exist
     const headerValues = [
-      'Timestamp', 
       'Site', 
       'Successful Entries', 
       'Error Entries',
@@ -60,7 +59,6 @@ export async function logDataToGoogleSheet({
 
     // Add a new row with the current data
     await sheet.addRow({
-      'Timestamp': new Date().toISOString(),
       'Site': site,
       'Successful Entries': dataWithoutErrorLength,
       'Error Entries': dataWithErrorLength,
