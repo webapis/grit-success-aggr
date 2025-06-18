@@ -171,7 +171,8 @@ export async function second({
             if (nextPages.length > 0) {
                 debugger
                const mappedNextPages= nextPages.map(m=>{
-                return {url: url.replace('??','?')+siteUrls.paginationPostfix + m, label: 'second'};
+                const contactUrl = url+siteUrls.paginationPostfix + m
+                return {url:contactUrl.replace('??','?') , label: 'second'};
                })
 
                console.log('mappedNextPages', mappedNextPages);
