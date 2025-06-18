@@ -94,7 +94,7 @@
         "imageAttr": "srcset",
         "linkSelector": ".product-item__name",
         "paginationSelector":".pagination__item.js-pagination-item",
-        "paginationPostfix": "?page=",
+        "paginationPostfix": "page=",
         "schedule": "0 0 * * 4",
         "id": "7"
     },
