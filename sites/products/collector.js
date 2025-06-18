@@ -176,7 +176,7 @@ export async function second({
                })
 
                console.log('mappedNextPages', mappedNextPages);
-              //  await addRequests(mappedNextPages);
+                await addRequests(mappedNextPages);
                 
             }
         }
