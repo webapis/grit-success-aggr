@@ -162,7 +162,7 @@ export async function second({
             console.log(data.filter(f => f.error)[0]);
         }
 
-         if (siteUrls.funcPageSelector) {
+         if (siteUrls.funcPageSelector && !url.includes(siteUrls.paginationPostfix)) {
             const nextPages = await page.evaluate((funcPageSelector) => {
                 return eval(funcPageSelector)
             }, siteUrls.funcPageSelector)
@@ -172,7 +172,7 @@ export async function second({
             if (nextPages.length > 0) {
                 debugger
                const mappedNextPages= nextPages.map(m=>{
-                return {url: url+"?tp="+m, label: 'second'};
+                return {url: url+siteUrls.paginationPostfix + m, label: 'second'};
                })
 
                console.log('mappedNextPages', mappedNextPages);
