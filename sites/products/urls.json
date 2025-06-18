@@ -79,6 +79,8 @@
         "imageSelector": "img",
         "imageAttr": "srс",
         "linkSelector": ".product-item__image a",
+        "funcPageSelector":"(function(url) { return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.pagination-custom__page')).map(a => a.innerText).filter(f => Number(f)))}, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber; return { url: nextUrl.replace('??','?'), label: 'second' }; }); })",
+        "paginationPostfix":["?page="],
         "schedule": "0 0 * * 4",
         "id": "6"
     },
