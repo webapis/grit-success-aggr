@@ -17,7 +17,7 @@ export default async function first({ page, enqueueLinks, request, log, addReque
     });
 
     // Check if there are any product items on the page
-    const productItemsCount = await page.$$eval(productListSelector, elements => elements.length);
+ 
 
 
 
@@ -26,26 +26,7 @@ export default async function first({ page, enqueueLinks, request, log, addReque
         selector: 'a',
         label: 'second',
     });
-    if (productItemsCount > 0) {
-        if (siteUrls.funcPageSelector) {
-            const nextPages = await page.evaluate((funcPageSelector) => {
-                return eval(funcPageSelector)
-            }, siteUrls.funcPageSelector)
-            // This will execute the function defined in funcPageSelector   
-
-            debugger
-            if (nextPages.length > 0) {
-                debugger
-               const mappedNextPages= nextPages.map(m=>{
-                return {url: url+"?tp="+m, label: 'second'};
-               })
-
-               console.log('mappedNextPages', mappedNextPages);
-              //  await addRequests(mappedNextPages);
-                
-            }
-        }
-    }
+ 
 
 }
 
@@ -180,6 +161,26 @@ export async function second({
         if (data.filter(f => f.error).length > 0) {
             console.log(data.filter(f => f.error)[0]);
         }
+
+         if (siteUrls.funcPageSelector) {
+            const nextPages = await page.evaluate((funcPageSelector) => {
+                return eval(funcPageSelector)
+            }, siteUrls.funcPageSelector)
+            // This will execute the function defined in funcPageSelector   
+
+            debugger
+            if (nextPages.length > 0) {
+                debugger
+               const mappedNextPages= nextPages.map(m=>{
+                return {url: url+"?tp="+m, label: 'second'};
+               })
+
+               console.log('mappedNextPages', mappedNextPages);
+              //  await addRequests(mappedNextPages);
+                
+            }
+        }
+
         return data
     } else {
         console.log('not product page', url);
