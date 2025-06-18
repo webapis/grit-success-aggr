@@ -93,7 +93,7 @@
         "imageSelector": ".d-block source",
         "imageAttr": "srcset",
         "linkSelector": ".product-item__name",
-        "funcPageSelector": "Array.from({ length: Math.max(...Array.from(document.querySelectorAll('.pagination__item.js-pagination-item')).map(a => a.innerText).filter(f => Number(f))) }, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {  const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber;  return { url: nextUrl, label: 'second' };})",
+        "funcPageSelector":"(function(url) { return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.paginate-content a')).map(a => a.innerText).filter(f => Number(f)))}, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => { const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber; return { url: nextUrl, label: 'second' }; }); })",
         "paginationPostfix":"?page=",
         "schedule": "0 0 * * 4",
         "id": "7"
