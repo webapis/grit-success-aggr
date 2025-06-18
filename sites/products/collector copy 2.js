@@ -161,20 +161,22 @@ export async function second({
             console.log(data.filter(f => f.error)[0]);
         }
 
-   if (siteUrls.funcPageSelector && !url.includes(siteUrls.paginationPostfix)) {
-            const nextPages = await page.evaluate((funcPageSelector,_url) => {
-                const dynamicFunction = eval(funcPageSelector);
-                return dynamicFunction(_url)
-            }, siteUrls.funcPageSelector,url)
-  
+         if (siteUrls.paginationSelector && !url.includes(siteUrls.paginationPostfix)) {
+            const nextPages = await page.evaluate((paginationSelector) => {
+                return Array.from({ length: Math.max(...Array.from(document.querySelectorAll(paginationSelector)).map(a => a.innerText).filter(f => Number(f))) }, (_, i) => i + 1).filter(f => f !== 1)
+            }, siteUrls.paginationSelector)
+            // This will execute the function defined in funcPageSelector   
 
             debugger
             if (nextPages.length > 0) {
                 debugger
-            
+               const mappedNextPages= nextPages.map(m=>{
+                const contactUrl = url+siteUrls.paginationPostfix + m
+                return {url:contactUrl.replace('??','?') , label: 'second'};
+               })
 
-               console.log('nextPages', nextPages);
-                await addRequests(nextPages);
+               console.log('mappedNextPages', mappedNextPages);
+                await addRequests(mappedNextPages);
                 
             }
         }

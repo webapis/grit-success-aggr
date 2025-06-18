@@ -93,8 +93,8 @@
         "imageSelector": ".d-block source",
         "imageAttr": "srcset",
         "linkSelector": ".product-item__name",
-        "paginationSelector":".pagination__item.js-pagination-item",
-        "paginationPostfix": "?page=",
+        "funcPageSelector": "Array.from({ length: Math.max(...Array.from(document.querySelectorAll('.pagination__item.js-pagination-item')).map(a => a.innerText).filter(f => Number(f))) }, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {  const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber;  return { url: nextUrl, label: 'second' };})",
+        "paginationPostfix":"?page=",
         "schedule": "0 0 * * 4",
         "id": "7"
     },
@@ -108,7 +108,7 @@
         "titleSelector": ".showcase-title a",
         "imageSelector": "(document)=>'https:'+ document.querySelector('.showcase-image [data-src]').getAttribute('data-src')",
         "linkSelector": ".showcase-image a",
-        "paginationSelector": ".paginate-content a",
+        "funcPageSelector":  "(function(url) {\n  return Array.from({\n    length: Math.max(...Array.from(document.querySelectorAll('.paginate-content a')).map(a => a.innerText).filter(f => Number(f)))\n  }, (_, i) => i + 1)\n  .filter(f => f !== 1)\n  .map(pageNumber => url + '?tp=' + pageNumber);\n})",
         "paginationPostfix": "?tp=",
         "schedule": "0 0 * * 4",
         "id": "8"
