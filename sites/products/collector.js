@@ -44,7 +44,6 @@ export async function second({
     breadcrumb = () => "",
     waitForSeconds = 0,
     addRequests,
-    requestQueue
 }) {
     const url = await page.url();
 
