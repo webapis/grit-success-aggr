@@ -8,7 +8,7 @@ dotenv.config({ silent: true });
 const site = process.env.site;
 const siteUrls = urls.find(f => f.site === site)
 debugger
-export default async function first({ page, enqueueLinks, request, log, addRequests,productListSelector }) {
+export default async function first({ page, enqueueLinks, request, log, addRequests, productListSelector }) {
 
     await page.evaluate(() => {
         return new Promise(resolve => setTimeout(resolve, 5000));
@@ -17,7 +17,7 @@ export default async function first({ page, enqueueLinks, request, log, addReque
     });
 
     // Check if there are any product items on the page
- 
+
 
 
 
@@ -26,7 +26,7 @@ export default async function first({ page, enqueueLinks, request, log, addReque
         selector: 'a',
         label: 'second',
     });
- 
+
 
 }
 
@@ -59,7 +59,7 @@ export async function second({
     const productItemsCount = await page.$$eval(productListSelector, elements => elements.length);
 
     if (productItemsCount > 0) {
-   
+
         if (isAutoScroll) {
             console.log('autoscrolling')
             await autoScroll(page, 150)
@@ -161,21 +161,21 @@ export async function second({
             console.log(data.filter(f => f.error)[0]);
         }
 
-   if (siteUrls.funcPageSelector && url && url.every(sub => !siteUrls.paginationPostfix.includes(sub))) {
-            const nextPages = await page.evaluate((funcPageSelector,_url) => {
+        if (siteUrls.funcPageSelector && url.length > 0 && url.every(sub => !siteUrls.paginationPostfix.includes(sub))) {
+            const nextPages = await page.evaluate((funcPageSelector, _url) => {
                 const dynamicFunction = eval(funcPageSelector);
                 return dynamicFunction(_url)
-            }, siteUrls.funcPageSelector,url)
-  
+            }, siteUrls.funcPageSelector, url)
+
 
             debugger
             if (nextPages.length > 0) {
                 debugger
-            
 
-               console.log('nextPages', nextPages);
+
+                console.log('nextPages', nextPages);
                 await addRequests(nextPages);
-                
+
             }
         }
 
