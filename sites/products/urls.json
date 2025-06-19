@@ -79,8 +79,8 @@
 
         "imageSelector": "(document)=>'https:' + document.querySelector('.product-item__bg [srcset]').getAttribute('srcset').split(',')[6].split(' ').filter(f=>f)[0]",
         "linkSelector": "a.product-link",
-        "funcPageSelectorddd":"(function(url) { return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.pagination-custom__page')).map(a => a.innerText).filter(f => Number(f)))}, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber; return { url: nextUrl.replace('??','?'), label: 'second' }; }); })",
-        "paginationPostfixddd":["?page="],
+        "funcPageSelector":"(function(url) { return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.pagination-custom__page')).map(a => a.innerText).filter(f => Number(f)))}, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber; return { url: nextUrl.replace('??','?'), label: 'second' }; }); })",
+        "paginationPostfix":["?page="],
         "schedule": "0 0 * * 4",
         "id": "6"
     },
