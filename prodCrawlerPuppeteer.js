@@ -1,7 +1,7 @@
 import { PuppeteerCrawler } from "crawlee";
 import { router } from "./prodRoutesPuppeteer.js";
 import preNavigationHooks from "./crawler-helper/preNavigationHooksProd2.js";
-
+import puppeteer from './crawler-helper/puppeteer-stealth.js';
 
 import urls from './sites/products/urls.json' assert { type: 'json' };
 const gitFolder = process.env.gitFolder;
@@ -15,7 +15,9 @@ const siteUrls = urls.find(f => f.site === site)
 
 
 const crawler = new PuppeteerCrawler({
-  launchContext: { useChrome: local === 'true' ? true : false ,   launchOptions: {
+  launchContext: { useChrome: local === 'true' ? true : false ,
+    launcher: puppeteer,
+    launchOptions: {
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
