@@ -54,7 +54,7 @@ export async function second({
             await new Promise(resolve => setTimeout(resolve, seconds * 1)); // Wait for specified seconds
         }, waitForSeconds);
     }
-
+    console.log('product-list-container',productListSelector)
     // Check if there are any product items on the page
     const productItemsCount = await page.$$eval(productListSelector, elements => elements.length);
 
