@@ -8,11 +8,11 @@ export default  function getAggrTimeSpan({data}) {
     
     // 2. Extract the oldest (first element after ascending sort)
     const oldestEntry = sortedData[0];
-    const oldestTimestamp = oldestEntry.timestamp;
+    const oldestTimestamp = oldestEntry.timestamp ||0;
     console.log("oldestTimestamp", oldestTimestamp);
     // 3. Extract the newest (last element after ascending sort)
     const newestEntry = sortedData[sortedData.length - 1];
-    const newestTimestamp = newestEntry.timestamp;
+    const newestTimestamp = newestEntry.timestamp||0;
     console.log("newestTimestamp", newestTimestamp);
 
     const tsTimeDifferenceMillis = new Date(newestTimestamp).getTime() - new Date(oldestTimestamp).getTime();
