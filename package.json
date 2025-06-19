@@ -17,6 +17,7 @@
     "dotenv": "^16.4.5",
     "google-auth-library": "^9.15.0",
     "google-spreadsheet": "^4.1.4",
+    "googleapis": "^150.0.1",
     "make-dir": "4.0.0",
     "mongodb": "^6.8.0",
     "node-fetch": "2.6.1",

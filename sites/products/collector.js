@@ -3,6 +3,8 @@
 import dotenv from "dotenv";
 import scroller, { autoScroll } from "./scroller.js";
 import urls from './urls.json' assert { type: 'json' };
+import { uploadToGoogleDrive } from './uploadToGoogleDrive.js';
+import fs from 'fs';
 dotenv.config({ silent: true });
 
 const site = process.env.site;
@@ -16,8 +18,17 @@ export default async function first({ page, enqueueLinks, request, log, addReque
 
     });
 
-    // Check if there are any product items on the page
+    // take screenshot and upload to google drive
+const screenshotBuffer = await page.screenshot({ fullPage: true });
 
+const uploadResult = await uploadToGoogleDrive({
+  buffer: screenshotBuffer,
+  fileName: `screenshot-${site}-${Date.now()}.png`,
+  folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
+  serviceAccountCredentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')),
+});
+
+console.log('📸 Screenshot uploaded:', uploadResult.webViewLink);
 
 
 
