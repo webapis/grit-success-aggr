@@ -37,7 +37,7 @@ if (dataWithoutError.length > 0) {
         end: newestTimestamp,
         span: minutesSpan,
         totalPages: totalPages.count,
-        uniquePageURLs: 0,
+        uniquePageURLs,
     });
 
     console.warn('⚠️ No valid data collected.');
