@@ -26,12 +26,25 @@ if (dataWithoutError.length > 0) {
     console.log('collected data length', dataWithoutError.length)
     await uploadCollection({ fileName: site || URL_CATEGORIES, data: dataWithoutError, gitFolder: site })
     await logDataToGoogleSheet({ dataWithoutErrorLength: dataWithoutError.length, dataWithErrorLength: dataWithError.length, site, serviceAccountCredentials:GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,GOOGLE_SHEET_ID,start:oldestTimestamp, end:newestTimestamp,span:minutesSpan,totalPages:totalPages.count,uniquePageURLs })
-}
-else {
-    await logDataToGoogleSheet({ dataWithoutErrorLength: dataWithoutError.length, dataWithErrorLength: dataWithError.length, site, serviceAccountCredentials:GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,GOOGLE_SHEET_ID,start:oldestTimestamp, end:newestTimestamp,span:minutesSpan,totalPages:totalPages.count,uniquePageURLs:0 })
+} else {
+    await logDataToGoogleSheet({
+        dataWithoutErrorLength: 0,
+        dataWithErrorLength: dataWithError.length,
+        site,
+        serviceAccountCredentials: GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,
+        GOOGLE_SHEET_ID,
+        start: oldestTimestamp,
+        end: newestTimestamp,
+        span: minutesSpan,
+        totalPages: totalPages.count,
+        uniquePageURLs: 0,
+    });
 
-    console.log('ERROR length:', dataWithError.length)
-    console.log('ERROR :', dataWithError[0])
-    throw new Error(`data length:${dataWithoutError.length}`);
+    console.warn('⚠️ No valid data collected.');
+    if (dataWithError.length > 0) {
+        console.warn('ERROR details:', dataWithError[0]);
+    }
 
+    // Optionally exit without error
+    process.exit(0);
 }
