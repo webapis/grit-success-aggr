@@ -63,6 +63,8 @@
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
         "imageSelector": ".productSliderImage",
+        "paginationPostfix": ["?sayfa="],
+        "funcPageSelector": "(function(url) { const countItems = parseInt(document.querySelector('.UrunAdet').innerText.replace(/\\D/g, '')); const countPages = Math.ceil(countItems / 48); const start = 2; const end = countPages; const pages = Array.from({ length: end - start + 1 }, (_, i) => i + start); const urls = pages.map(pageNumber => url + '?page=' + pageNumber); return urls; })",
         "imageAttr": "data-src",
         "linkSelector": ".detailLink",
         "schedule": "0 0 * * 4",
