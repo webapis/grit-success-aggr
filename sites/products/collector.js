@@ -11,7 +11,7 @@ debugger
 export default async function first({ page, enqueueLinks, request, log, addRequests, productListSelector }) {
 
     await page.evaluate(() => {
-        return new Promise(resolve => setTimeout(resolve, 5000));
+        return new Promise(resolve => setTimeout(resolve, 10000));
 
 
     });
@@ -22,11 +22,12 @@ export default async function first({ page, enqueueLinks, request, log, addReque
 
 
     console.log('inside first route')
-    await enqueueLinks({
+ const result=   await enqueueLinks({
         selector: 'a',
         label: 'second',
     });
 
+    console.log('enqueueLinks result', result);
 
 }
 
