@@ -63,8 +63,14 @@
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
         "imageSelector": ".productSliderImage",
-        "paginationPostfix": ["?sayfa="],
-        "funcPageSelector": "(function(url) { const countItems = parseInt(document.querySelector('.UrunAdet').innerText.replace(/\\D/g, '')); const countPages = Math.ceil(countItems / 48); const start = 2; const end = countPages; const pages = Array.from({ length: end - start + 1 }, (_, i) => i + start); const urls = pages.map(pageNumber => url + '?page=' + pageNumber); return urls; })",
+        "paginationPostfix": [
+            "?sayfa="
+        ],
+        "isAutoScroll": true,
+        "funcPageSelector_CANCELED": "(function(url) { const countItems = parseInt(document.querySelector('.UrunAdet').innerText.replace(/\\D/g, '')); const countPages = Math.ceil(countItems / 48); const start = 2; const end = countPages; const pages = Array.from({ length: end - start + 1 }, (_, i) => i + start); const urls = pages.map(pageNumber => url + '?page=' + pageNumber); return urls.filter(f=>!f.includes('tum-urunler')); })",
+        "excludeUrlPatterns": [
+            "tum-urunler"
+        ],
         "imageAttr": "data-src",
         "linkSelector": ".detailLink",
         "schedule": "0 0 * * 4",
@@ -78,11 +84,12 @@
         "productListSelector": "#CollectionLoop",
         "productItemSelector": ".product-item",
         "titleSelector": "(document)=>document.querySelector('.product-link[aria-label]').getAttribute('aria-label')",
-
         "imageSelector": "(document)=>'https:' + document.querySelector('.product-item__bg [srcset]').getAttribute('srcset').split(',')[6].split(' ').filter(f=>f)[0]",
         "linkSelector": "a.product-link",
-        "funcPageSelector":"(function(url) { return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.pagination-custom__page')).map(a => a.innerText).filter(f => Number(f)))}, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber; return { url: nextUrl.replace('??','?'), label: 'second' }; }); })",
-        "paginationPostfix":["?page="],
+        "funcPageSelector": "(function(url) { return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.pagination-custom__page')).map(a => a.innerText).filter(f => Number(f)))}, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber; return { url: nextUrl.replace('??','?'), label: 'second' }; }); })",
+        "paginationPostfix": [
+            "?page="
+        ],
         "schedule": "0 0 * * 4",
         "id": "6"
     },
@@ -97,8 +104,10 @@
         "imageSelector": ".d-block source",
         "imageAttr": "srcset",
         "linkSelector": ".product-item__name",
-        "funcPageSelector":"(function(url) { return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.paginate-content a')).map(a => a.innerText).filter(f => Number(f)))}, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber; return { url: nextUrl.replace('??','?'), label: 'second' }; }); })",
-        "paginationPostfix":["?page="],
+        "funcPageSelector": "(function(url) { return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.paginate-content a')).map(a => a.innerText).filter(f => Number(f)))}, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber; return { url: nextUrl.replace('??','?'), label: 'second' }; }); })",
+        "paginationPostfix": [
+            "?page="
+        ],
         "schedule": "0 0 * * 4",
         "id": "7"
     },
@@ -113,7 +122,10 @@
         "imageSelector": "(document)=>'https:'+ document.querySelector('.showcase-image [data-src]').getAttribute('data-src')",
         "linkSelector": ".showcase-image a",
         "funcPageSelector": "(function(url) {return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.paginate-content a')).map(a => a.innerText).filter(f => Number(f)))} ,(_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('varyantlar') ? url + '&tp=' + pageNumber : url + '?tp=' + pageNumber; return { url: nextUrl, label: 'second' };});})",
-        "paginationPostfix": ["?tp=", "&tp="],
+        "paginationPostfix": [
+            "?tp=",
+            "&tp="
+        ],
         "schedule": "0 0 * * 4",
         "id": "8"
     },
@@ -1469,7 +1481,7 @@
         "imageSelector": "(document)=>document.querySelector('a img[srcset]').getAttribute('srcset').split(',')[4].trim().split(' ')[0]",
         "linkSelector": "a.flex.grow.flex-col",
         "schedule": "0 0 * * 4",
-          "id": "87"
+        "id": "87"
     },
     {
         "site": "tarikediz",
@@ -1482,7 +1494,7 @@
         "imageSelector": "(document)=>document.querySelector('.detailLink.detailUrl [data-src]').getAttribute('data-src')",
         "linkSelector": ".productName a",
         "schedule": "0 0 * * 4",
-          "id": "88"
+        "id": "88"
     },
     {
         "site": "hollylolly",
@@ -1497,7 +1509,7 @@
         "imageAttr": "data-original",
         "linkSelector": ".productName.detailUrl a",
         "schedule": "0 0 * * 4",
-          "id": "89"
+        "id": "89"
     },
     {
         "site": "perspectivewoman",
@@ -1510,7 +1522,7 @@
         "imageSelector": "(document)=>'https:'+document.querySelector('.grid-product__image').getAttribute('srcset').split(',')[1].trim().split(' ')[0]",
         "linkSelector": ".grid-product__link",
         "schedule": "0 0 * * 4",
-          "id": "90"
+        "id": "90"
     },
     {
         "site": "rivus",
@@ -1525,7 +1537,7 @@
         "imageAttr": "src-last",
         "linkSelector": ".productName.detailUrl a",
         "schedule": "0 0 * * 4",
-          "id": "91"
+        "id": "91"
     },
     {
         "site": "arzukaprol",
@@ -1538,7 +1550,7 @@
         "imageSelector": "(document)=>'https:'+ document.querySelector('.card__media img').getAttribute('srcset').split(',')[2].trim().split(' ')[0]",
         "linkSelector": ".card__heading a",
         "schedule": "0 0 * * 4",
-          "id": "92"
+        "id": "92"
     },
     {
         "site": "sorbe",
@@ -1553,7 +1565,7 @@
         "imageAttr": "data-original",
         "linkSelector": ".productName.detailUrl a",
         "schedule": "0 0 * * 4",
-          "id": "93"
+        "id": "93"
     },
     {
         "site": "victoriassecret",
@@ -1566,7 +1578,7 @@
         "imageSelector": ".productSliderImage",
         "linkSelector": ".productName.detailUrl a",
         "schedule": "0 0 * * 4",
-          "id": "94"
+        "id": "94"
     },
     {
         "site": "maisonju",
@@ -1579,7 +1591,7 @@
         "imageSelector": "(document)=> 'https:'  + document.querySelector('[srcset]').getAttribute('srcset').split(',')[1].trim().split(' ')[0]",
         "linkSelector": ".grid-product__link",
         "schedule": "0 0 * * 4",
-          "id": "95"
+        "id": "95"
     },
     {
         "site": "berr-in",
@@ -1593,7 +1605,7 @@
         "imageAttr": "data-src",
         "linkSelector": ".name a",
         "schedule": "0 0 * * 4",
-          "id": "96"
+        "id": "96"
     },
     {
         "site": "nevermore",
@@ -1606,7 +1618,7 @@
         "imageSelector": ".image img",
         "linkSelector": ".c-p-i-link",
         "schedule": "0 0 * * 4",
-          "id": "97"
+        "id": "97"
     },
     {
         "site": "dilekhanif",
@@ -1619,7 +1631,7 @@
         "imageSelector": "(document)=> 'https:'  + document.querySelector('[srcset]').getAttribute('srcset').split(',')[1].trim().split(' ')[0]",
         "linkSelector": ".grid-product__link",
         "schedule": "0 0 * * 4",
-          "id": "98"
+        "id": "98"
     },
     {
         "site": "bizeonline",
@@ -1633,7 +1645,7 @@
         "imageAttr": "data-src",
         "linkSelector": "a.image-wrapper",
         "schedule": "0 0 * * 4",
-          "id": "99"
+        "id": "99"
     },
     {
         "site": "dressweden",
@@ -1646,7 +1658,7 @@
         "imageSelector": "(document)=> document.querySelector('[srcset]').getAttribute('srcset').split(',')[9].trim().split(' ')[0]",
         "linkSelector": "a",
         "schedule": "0 0 * * 4",
-          "id": "100"
+        "id": "100"
     },
     {
         "site": "niqozza",
@@ -1660,7 +1672,7 @@
         "imageAttr": "data-original",
         "linkSelector": ".productName.detailUrl a",
         "schedule": "0 0 * * 4",
-          "id": "101"
+        "id": "101"
     },
     {
         "site": "olegcassini",
@@ -1673,8 +1685,7 @@
         "imageSelector": "(document)=> document.querySelector('.category-products-image[srcset]').getAttribute('srcset').split(',')[10].trim().split(' ')[0]",
         "linkSelector": "a",
         "schedule": "0 0 * * 4",
-          "id": "102"
-        
+        "id": "102"
     },
     {
         "site": "pinkoturkey",
@@ -1688,7 +1699,7 @@
         "imageAttr": "srс",
         "linkSelector": ".showcase-title a",
         "schedule": "0 0 * * 4",
-          "id": "103"
+        "id": "103"
     },
     {
         "site": "silkandcashmere",
@@ -1701,7 +1712,7 @@
         "imageSelector": ".image__img",
         "linkSelector": ".product-item__product-title a",
         "schedule": "0 0 * * 4",
-          "id": "104"
+        "id": "104"
     },
     {
         "site": "aldoshoes",
@@ -1715,7 +1726,7 @@
         "imageAttr": "data-src",
         "linkSelector": ".product-image",
         "schedule": "0 0 * * 4",
-          "id": "105"
+        "id": "105"
     },
     {
         "site": "gigiis",
@@ -1728,7 +1739,7 @@
         "imageSelector": "(document)=> 'https:'  + document.querySelector('[data-srcset]').getAttribute('data-srcset').split(',')[2].trim().split(' ')[0]",
         "linkSelector": ".product-block__inner a",
         "schedule": "0 0 * * 4",
-          "id": "106"
+        "id": "106"
     },
     {
         "site": "ninewest",
@@ -1742,7 +1753,7 @@
         "imageAttr": "data-src",
         "linkSelector": "a[data-product-id]",
         "schedule": "0 0 * * 4",
-          "id": "107"
+        "id": "107"
     },
     {
         "site": "shopseizetheday",
@@ -1755,7 +1766,7 @@
         "imageSelector": "(document)=> document.querySelector('.attachment-woocommerce_thumbnail').srcset.split(',')[0].trim().split(' ')[0]",
         "linkSelector": ".mfn-woo-product-title a",
         "schedule": "0 0 * * 4",
-          "id": "108"
+        "id": "108"
     },
     {
         "site": "serpil",
@@ -1768,7 +1779,7 @@
         "imageSelector": "(doculent)=>'https://serpil.com.tr'+ document.querySelector('[data-src]').getAttribute('data-src')",
         "linkSelector": ".product-title",
         "schedule": "0 0 * * 4",
-          "id": "109"
+        "id": "109"
     },
     {
         "site": "bejfinefactory",
@@ -1781,7 +1792,7 @@
         "imageSelector": ".img-auto",
         "linkSelector": ".c-p-i-link",
         "schedule": "0 0 * * 4",
-          "id": "110"
+        "id": "110"
     },
     {
         "site": "dilvin",
@@ -1794,7 +1805,7 @@
         "imageSelector": ".img-responsive",
         "linkSelector": "a",
         "schedule": "0 0 * * 4",
-          "id": "111"
+        "id": "111"
     },
     {
         "site": "ihandmore",
@@ -1807,7 +1818,7 @@
         "imageSelector": "(document)=>document.querySelector('[srcset]').getAttribute('srcset').split(',')[2].trim().split(' ')[0]",
         "linkSelector": "(document)=> document.querySelector('.entry-title.qode-pli-title a')?.href || document.querySelector(' [itemprop=\"url\"]').href",
         "schedule": "0 0 * * 4",
-          "id": "112"
+        "id": "112"
     },
     {
         "site": "",

@@ -10,7 +10,7 @@ dotenv.config({ silent: true });
 const site = process.env.site;
 const siteUrls = urls.find(f => f.site === site)
 debugger
-export default async function first({ page, enqueueLinks, request, log, addRequests, productListSelector }) {
+export default async function first({ page, enqueueLinks, request, log, addRequests, productListSelector,excludeUrlPatterns }) {
 
     await page.evaluate(() => {
         return new Promise(resolve => setTimeout(resolve, 10000));
@@ -33,11 +33,19 @@ console.log('📸 Screenshot uploaded:', uploadResult.webViewLink);
 
 
     console.log('inside first route')
- const result=   await enqueueLinks({
-        selector: 'a',
-        label: 'second',
-    });
-
+//  const result=   await enqueueLinks({
+//         selector: 'a',
+//         label: 'second',
+//     });
+const result=await enqueueLinks({
+    selector: 'a',
+    label: 'second',
+    transformRequestFunction: (requestOptions) => {
+        // Check if the URL includes any excluded pattern
+        const shouldExclude = excludeUrlPatterns.some(pattern => requestOptions.url.includes(pattern));
+        return shouldExclude ? null : requestOptions;
+    }
+});
     console.log('enqueueLinks result', result);
 
 }
