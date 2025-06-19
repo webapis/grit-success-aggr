@@ -8,7 +8,7 @@ dotenv.config({ silent: true });
 const site = process.env.site;
 const siteUrls = urls.find(f => f.site === site)
 debugger
-export default async function first({ page, enqueueLinks, request, log, addRequests,productListSelector }) {
+export default async function first({ page, enqueueLinks, request, log, addRequests, productListSelector }) {
 
     await page.evaluate(() => {
         return new Promise(resolve => setTimeout(resolve, 5000));
@@ -17,7 +17,7 @@ export default async function first({ page, enqueueLinks, request, log, addReque
     });
 
     // Check if there are any product items on the page
- 
+
 
 
 
@@ -26,7 +26,7 @@ export default async function first({ page, enqueueLinks, request, log, addReque
         selector: 'a',
         label: 'second',
     });
- 
+
 
 }
 
@@ -59,7 +59,7 @@ export async function second({
     const productItemsCount = await page.$$eval(productListSelector, elements => elements.length);
 
     if (productItemsCount > 0) {
-   
+
         if (isAutoScroll) {
             console.log('autoscrolling')
             await autoScroll(page, 150)
@@ -118,29 +118,64 @@ export async function second({
 
 
 
-            return Array.from(document.querySelectorAll(params.productItemSelector)).map(m => {
-                try {
-                    const title = isFunctionString(params.titleSelector) ? parseFunctionString2(params.titleSelector)(m) : m.querySelector(params.titleSelector).innerText;
-                    const img = isFunctionString(params.imageSelector) ? parseFunctionString2(params.imageSelector)(m) : (params.imageAttr === 'src' ? m.querySelector(params.imageSelector).src : m.querySelector(params.imageSelector).getAttribute(params.imageAttr))
-                    const link = isFunctionString(params.linkSelector) ? parseFunctionString2(params.linkSelector)(m) : m.querySelector(params.linkSelector).href;
+          return Array.from(document.querySelectorAll(params.productItemSelector)).map(m => {
+    try {
+        // --- TITLE ---
+        let title = '';
+        if (isFunctionString(params.titleSelector)) {
+            title = parseFunctionString2(params.titleSelector)(m);
+        } else {
+            const el = m.querySelector(params.titleSelector);
+            title = el?.innerText?.trim();
+            if (!title) {
+                throw new Error(`Empty or missing innerText for selector: ${params.titleSelector}`);
+            }
+        }
 
-                    return {
-                        title,
-                        price: 0, // Assuming price is fetched later
-                        img,
-                        link,
-                        pageTitle,
-                        pageURL,
-                        timestamp: new Date().toISOString(),
-                    };
-                } catch (error) {
-                    return {
-                        error: true,
-                        message: error.message,
-                        content: m.innerHTML
-                    };
-                }
-            });
+        // --- IMAGE ---
+        let img = '';
+        if (isFunctionString(params.imageSelector)) {
+            img = parseFunctionString2(params.imageSelector)(m);
+        } else {
+            const imgEl = m.querySelector(params.imageSelector);
+            img = params.imageAttr === 'src' 
+                ? imgEl?.src 
+                : imgEl?.getAttribute(params.imageAttr);
+            if (!img) {
+                throw new Error(`Missing or empty image (${params.imageAttr}) for selector: ${params.imageSelector}`);
+            }
+        }
+
+        // --- LINK ---
+        let link = '';
+        if (isFunctionString(params.linkSelector)) {
+            link = parseFunctionString2(params.linkSelector)(m);
+        } else {
+            const linkEl = m.querySelector(params.linkSelector);
+            link = linkEl?.href;
+            if (!link) {
+                throw new Error(`Missing or empty link href for selector: ${params.linkSelector}`);
+            }
+        }
+
+        return {
+            title,
+            price: 0, // Can be extended
+            img,
+            link,
+            pageTitle,
+            pageURL,
+            timestamp: new Date().toISOString(),
+        };
+    } catch (error) {
+        return {
+            error: true,
+            message: error.message,
+            content: m.outerHTML, // helpful for debugging in context
+        };
+    }
+});
+
         }, {
 
             productListSelector,
@@ -160,23 +195,26 @@ export async function second({
         if (data.filter(f => f.error).length > 0) {
             console.log(data.filter(f => f.error)[0]);
         }
+        debugger
+        if (
+            siteUrls.funcPageSelector &&
+            url.length > 0 &&
+            siteUrls.paginationPostfix.every(sub => !url.includes(sub))
+        ) {
+            const nextPages = await page.evaluate((funcPageSelector, _url) => {
+                const dynamicFunction = eval(funcPageSelector);
+                return dynamicFunction(_url)
+            }, siteUrls.funcPageSelector, url)
 
-         if (siteUrls.funcPageSelector && !url.includes(siteUrls.paginationPostfix)) {
-            const nextPages = await page.evaluate((funcPageSelector) => {
-                return eval(funcPageSelector)
-            }, siteUrls.funcPageSelector)
-            // This will execute the function defined in funcPageSelector   
 
             debugger
             if (nextPages.length > 0) {
                 debugger
-               const mappedNextPages= nextPages.map(m=>{
-                return {url: url+siteUrls.paginationPostfix + m, label: 'second'};
-               })
 
-               console.log('mappedNextPages', mappedNextPages);
-                await addRequests(mappedNextPages);
-                
+
+                console.log('nextPages', nextPages);
+                await addRequests(nextPages);
+
             }
         }
 

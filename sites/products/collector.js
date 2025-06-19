@@ -120,13 +120,53 @@ export async function second({
 
             return Array.from(document.querySelectorAll(params.productItemSelector)).map(m => {
                 try {
-                    const title = isFunctionString(params.titleSelector) ? parseFunctionString2(params.titleSelector)(m) : m.querySelector(params.titleSelector).innerText;
-                    const img = isFunctionString(params.imageSelector) ? parseFunctionString2(params.imageSelector)(m) : (params.imageAttr === 'src' ? m.querySelector(params.imageSelector).src : m.querySelector(params.imageSelector).getAttribute(params.imageAttr))
-                    const link = isFunctionString(params.linkSelector) ? parseFunctionString2(params.linkSelector)(m) : m.querySelector(params.linkSelector).href;
+                    // TITLE
+                    let title = '';
+                    if (isFunctionString(params.titleSelector)) {
+                        title = parseFunctionString2(params.titleSelector)(m);
+                    } else {
+                        const el = m.querySelector(params.titleSelector);
+                        title = el?.innerText?.trim();
+                        if (!title) {
+                            throw new Error(`Empty or missing innerText for selector: ${params.titleSelector}`);
+                        }
+                    }
+
+                    // IMAGE
+
+                    let img = '';
+                    if (isFunctionString(params.imageSelector)) {
+                        img = parseFunctionString2(params.imageSelector)(m);
+                    } else {
+                        const el = m.querySelector(params.imageSelector);
+                        if (!el) {
+                            throw new Error(`Image element not found for selector: ${params.imageSelector}`);
+                        }
+                        img = params.imageAttr === 'src' ? el.src : el.getAttribute(params.imageAttr);
+                        if (!img || img.trim() === '') {
+                            throw new Error(`Empty image attribute (${params.imageAttr}) for selector: ${params.imageSelector}`);
+                        }
+                    }
+
+
+                    // LINK
+                    let link = '';
+                    if (isFunctionString(params.linkSelector)) {
+                        link = parseFunctionString2(params.linkSelector)(m);
+                    } else {
+                        const el = m.querySelector(params.linkSelector);
+                        if (!el) {
+                            throw new Error(`Link element not found for selector: ${params.linkSelector}`);
+                        }
+                        link = el.href;
+                        if (!link || link.trim() === '') {
+                            throw new Error(`Empty href attribute for selector: ${params.linkSelector}`);
+                        }
+                    }
 
                     return {
                         title,
-                        price: 0, // Assuming price is fetched later
+                        price: 0,
                         img,
                         link,
                         pageTitle,
@@ -137,10 +177,13 @@ export async function second({
                     return {
                         error: true,
                         message: error.message,
-                        content: m.innerHTML
+                        content: m.outerHTML, // better than innerHTML for debugging
+                        url: document.URL,
+                        pageTitle,
                     };
                 }
             });
+
         }, {
 
             productListSelector,
