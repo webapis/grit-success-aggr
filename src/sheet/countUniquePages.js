@@ -12,4 +12,4 @@ function countUniquePages({data}) {
         uniquePageURLs: Array.from(uniquePages)
     };
 }
-export default countUniquePages;
+export default countUniquePages ||0;
