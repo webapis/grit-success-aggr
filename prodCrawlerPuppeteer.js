@@ -29,7 +29,7 @@ const crawler = new PuppeteerCrawler({
   navigationTimeoutSecs: 120,
   headless: HEADLESS === "false" ? false : true,
   requestHandlerTimeoutSecs: 600000,
-  maxRequestsPerCrawl: 20
+ // maxRequestsPerCrawl: 0
 });
 
 crawler.run(siteUrls.urls);

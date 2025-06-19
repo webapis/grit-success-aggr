@@ -64,7 +64,7 @@ export async function second({
             console.log('autoscrolling')
             await autoScroll(page, 150)
         } else {
-            await scroller(page, 150, 5);
+          //  await scroller(page, 150, 5);
         }
 
 
