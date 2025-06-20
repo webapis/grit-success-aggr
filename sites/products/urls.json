@@ -61,12 +61,6 @@
         ],
         "productListSelector": ".ProductList",
         "productItemSelector": ".productItem",
-        "pageSelectors": [
-            "ProductList",
-            "nav-item",
-            "nav-item-link",
-            "pasif"
-        ],
         "titleSelector": ".productName a",
         "imageSelector": ".productSliderImage",
         "paginationPostfix": [
@@ -89,9 +83,7 @@
         ],
         "productListSelector": "#CollectionLoop",
         "productItemSelector": ".product-item",
-        "pageSelectors": [
-           "navlink"
-        ],
+
         "titleSelector": "(document)=>document.querySelector('.product-link[aria-label]').getAttribute('aria-label')",
         "imageSelector": "(document)=>'https:' + document.querySelector('.product-item__bg [srcset]').getAttribute('srcset').split(',')[6].split(' ').filter(f=>f)[0]",
         "linkSelector": "a.product-link",
@@ -113,7 +105,6 @@
         ],
         "productListSelector": ".product-item",
         "productItemSelector": ".product-item",
-        "pageSelectors": ["navigation__desktop-grandchildlink","navigation__desktop-link "],
         "titleSelector": ".product-item__name",
         "imageSelector": ".d-block source",
         "imageAttr": "srcset",
@@ -132,7 +123,6 @@
         ],
         "productListSelector": "#product-list-container",
         "productItemSelector": ".showcase",
-        "pageSelector": "#navigation",
         "titleSelector": ".showcase-title a",
         "imageSelector": "(document)=>'https:'+ document.querySelector('.showcase-image [data-src]').getAttribute('data-src')",
         "linkSelector": ".showcase-image a",
