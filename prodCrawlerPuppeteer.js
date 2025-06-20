@@ -22,7 +22,8 @@ const crawler = new PuppeteerCrawler({
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
-      '--disable-gpu'
+      '--disable-gpu',
+      '--window-size=1920,1080'
     ]
   }},
   requestHandler: router,

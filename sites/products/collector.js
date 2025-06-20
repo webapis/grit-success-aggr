@@ -4,13 +4,14 @@ import dotenv from "dotenv";
 import scroller, { autoScroll } from "./scroller.js";
 import urls from './urls.json' assert { type: 'json' };
 import { uploadToGoogleDrive } from './uploadToGoogleDrive.js';
+import getFilteredLinks from './helpers/getFilteredLinks.js';
 import fs from 'fs';
 dotenv.config({ silent: true });
 
 const site = process.env.site;
 const siteUrls = urls.find(f => f.site === site)
 debugger
-export default async function first({ page, enqueueLinks, request, log, addRequests, productListSelector,excludeUrlPatterns }) {
+export default async function first({ page, enqueueLinks, request, log, addRequests, productListSelector, excludeUrlPatterns, pageSelector }) {
 
     await page.evaluate(() => {
         return new Promise(resolve => setTimeout(resolve, 10000));
@@ -19,34 +20,26 @@ export default async function first({ page, enqueueLinks, request, log, addReque
     });
 
     // take screenshot and upload to google drive
-const screenshotBuffer = await page.screenshot({ fullPage: true });
+    const screenshotBuffer = await page.screenshot({ fullPage: true });
 
-const uploadResult = await uploadToGoogleDrive({
-  buffer: screenshotBuffer,
-  fileName: `screenshot-${site}-${Date.now()}.png`,
-  folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-  serviceAccountCredentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')),
-});
+    const uploadResult = await uploadToGoogleDrive({
+        buffer: screenshotBuffer,
+        fileName: `screenshot-${site}-${Date.now()}.png`,
+        folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
+        serviceAccountCredentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')),
+    });
 
-console.log('📸 Screenshot uploaded:', uploadResult.webViewLink);
+    console.log('📸 Screenshot uploaded:', uploadResult.webViewLink);
 
 
-
+    debugger
     console.log('inside first route')
-//  const result=   await enqueueLinks({
-//         selector: 'a',
-//         label: 'second',
-//     });
-const result=await enqueueLinks({
-    selector: 'a',
-    label: 'second',
-    transformRequestFunction: (requestOptions) => {
-        // Check if the URL includes any excluded pattern
-        const shouldExclude = excludeUrlPatterns.some(pattern => requestOptions.url.includes(pattern));
-        return shouldExclude ? null : requestOptions;
-    }
-});
-    console.log('enqueueLinks result', result);
+    const nextUrls = await getFilteredLinks(page, siteUrls.pageSelectors, siteUrls.excludeUrlPatterns);
+    debugger
+  const  mappedUrls = nextUrls.map(url => { return { url, label: 'second' } })
+    await addRequests(mappedUrls);
+    debugger
+    console.log('mappedUrls', mappedUrls.length, mappedUrls);
 
 }
 
@@ -74,7 +67,7 @@ export async function second({
             await new Promise(resolve => setTimeout(resolve, seconds * 1)); // Wait for specified seconds
         }, waitForSeconds);
     }
-    console.log('product-list-container',productListSelector)
+    console.log('product-list-container', productListSelector)
     // Check if there are any product items on the page
     const productItemsCount = await page.$$eval(productListSelector, elements => elements.length);
 
@@ -84,7 +77,7 @@ export async function second({
             console.log('autoscrolling')
             await autoScroll(page, 150)
         } else {
-          //  await scroller(page, 150, 5);
+            //  await scroller(page, 150, 5);
         }
 
 
