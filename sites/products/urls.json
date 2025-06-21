@@ -102,13 +102,14 @@
         "urls": [
             "https://www.adl.com.tr"
         ],
-        "productListSelector": ".product-item",
+        "productListSelector": ".products__items",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__name",
         "imageSelector": ".d-block source",
         "imageAttr": "srcset",
         "linkSelector": ".product-item__name",
         "funcPageSelector": "(function(url) { return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.paginate-content a')).map(a => a.innerText).filter(f => Number(f)))}, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber; return { url: nextUrl.replace('??','?'), label: 'second' }; }); })",
+        "excludeUrlPatterns":["**/hakkimizda**"],
         "paginationPostfix": [
             "?page="
         ],
@@ -129,7 +130,8 @@
         "excludeUrlPatterns": [
             "**/uye-ol**",
             "**/sifremi-unuttum**",
-            "**/uye-girisi**"
+            "**/uye-girisi**",
+            "**/urun/**"
         ],
         "paginationPostfix": [
             "?tp=",
