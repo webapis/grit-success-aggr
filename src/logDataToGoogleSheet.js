@@ -61,6 +61,7 @@ export async function logDataToGoogleSheet({
       await sheet.setHeaderRow(headerValues);
     }
     if (siteUrls.paused) {
+      console.log(`Site ${site} is paused from aggregating. Adding paused entry to Google Sheet.`);
       await sheet.addRow({
         'Site': site,
         'Successful Entries': 'paused',
