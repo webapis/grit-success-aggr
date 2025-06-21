@@ -12,7 +12,10 @@ const HEADLESS = process.env.HEADLESS;
 
 const siteUrls = urls.find(f => f.site === site)
 
-
+if(siteUrls.paused) {
+  console.log(`Site ${site} is paused from aggregating. Exiting...`);
+  process.exit(0);
+}
 
 const crawler = new PuppeteerCrawler({
   launchContext: { useChrome: local === 'true' ? true : false ,
