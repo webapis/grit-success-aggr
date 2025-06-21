@@ -12,31 +12,35 @@ const HEADLESS = process.env.HEADLESS;
 
 const siteUrls = urls.find(f => f.site === site)
 
-if(siteUrls.paused) {
+if (siteUrls.paused) {
   console.log(`Site ${site} is paused from aggregating. Exiting...`);
   process.exit(0);
+} else {
+  const crawler = new PuppeteerCrawler({
+    launchContext: {
+      useChrome: local === 'true' ? true : false,
+      launcher: puppeteer,
+      launchOptions: {
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--window-size=1920,1080'
+        ]
+      }
+    },
+    requestHandler: router,
+    maxConcurrency: 1,
+    preNavigationHooks,
+    navigationTimeoutSecs: 120,
+    headless: HEADLESS === "false" ? false : true,
+    requestHandlerTimeoutSecs: 600000,
+    // maxRequestsPerCrawl: 20
+  });
+
+  crawler.run(siteUrls.urls);
+
 }
 
-const crawler = new PuppeteerCrawler({
-  launchContext: { useChrome: local === 'true' ? true : false ,
-    launcher: puppeteer,
-    launchOptions: {
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-      '--window-size=1920,1080'
-    ]
-  }},
-  requestHandler: router,
-  maxConcurrency: 1,
-  preNavigationHooks,
-  navigationTimeoutSecs: 120,
-  headless: HEADLESS === "false" ? false : true,
-  requestHandlerTimeoutSecs: 600000,
- // maxRequestsPerCrawl: 20
-});
-
-crawler.run(siteUrls.urls);
 
