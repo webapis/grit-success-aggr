@@ -83,11 +83,10 @@
         ],
         "productListSelector": "#CollectionLoop",
         "productItemSelector": ".product-item",
-
         "titleSelector": "(document)=>document.querySelector('.product-link[aria-label]').getAttribute('aria-label')",
         "imageSelector": "(document)=>'https:' + document.querySelector('.product-item__bg [srcset]').getAttribute('srcset').split(',')[6].split(' ').filter(f=>f)[0]",
         "linkSelector": "a.product-link",
-        "isAutoScroll":true,
+        "isAutoScroll": true,
         "funcPageSelector": "(function(url) { return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.pagination-custom__page')).map(a => a.innerText).filter(f => Number(f)))}, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber; return { url: nextUrl.replace('??','?'), label: 'second' }; }); })",
         "excludeUrlPatterns": [
             "category_ids="
@@ -127,6 +126,11 @@
         "imageSelector": "(document)=>'https:'+ document.querySelector('.showcase-image [data-src]').getAttribute('data-src')",
         "linkSelector": ".showcase-image a",
         "funcPageSelector": "(function(url) {return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.paginate-content a')).map(a => a.innerText).filter(f => Number(f)))} ,(_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('varyantlar') ? url + '&tp=' + pageNumber : url + '?tp=' + pageNumber; return { url: nextUrl, label: 'second' };});})",
+        "excludeUrlPatterns": [
+            "**/uye-ol**",
+            "**/sifremi-unuttum**",
+            "**/uye-girisi**"
+        ],
         "paginationPostfix": [
             "?tp=",
             "&tp="
