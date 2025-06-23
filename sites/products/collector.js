@@ -244,7 +244,7 @@ export async function second({
 
 
                 console.log('nextPages', nextPages);
-                await addRequests(nextPages);
+                await addRequests(nextPages.map((url)=>{return { url, label: 'second' }}));
 
             }
         }
