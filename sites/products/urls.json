@@ -51,6 +51,11 @@
         "imageSelector": ".product__previewPicture [data-srcset]",
         "imageAttr": "data-srcset",
         "linkSelector": "a.product__imageWrapper",
+        "funcPageSelector": "(function(url) { return Array.from({ length: (Math.ceil( document.querySelector('.js-total-products-count').innerText/60)) - 1 }, (_, i) => i + 2).map(pageNumber=> url+'?sayfa='+ pageNumber) })",
+        "paginationPostfix": [
+            "?sayfa="
+        ],
+        "excludeUrlPatterns":["**kadin-kategorisi**","**erkek-koleksiyonu**"],
         "schedule": "0 0 * * 4",
         "id": "4"
     },
