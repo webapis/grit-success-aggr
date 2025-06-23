@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID;
-const CREDENTIALS = JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString());
+const CREDENTIALS = JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8'))
 
 emitter.on('upload-successful-data', async ({ site, data }) => {
   await uploadCollection({
@@ -18,6 +18,7 @@ emitter.on('upload-successful-data', async ({ site, data }) => {
 });
 
 emitter.on('log-to-sheet', async ({ sheetTitle = 'Crawl Logs', rowData, message }) => {
+  console.log('Logging to Google Sheet:', sheetTitle, rowData);
   await logToGoogleSheet({
     sheetId: SHEET_ID,
     sheetTitle,
