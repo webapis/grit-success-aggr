@@ -55,7 +55,7 @@
         "paginationPostfix": [
             "?sayfa="
         ],
-        "excludeUrlPatterns":["**/kadin-kategorisi-13**","**/erkek-koleksiyonu-14**"],
+        "excludeUrlPatterns":["**/kadin-kategorisi-13**","**/erkek-koleksiyonu-14**","**/george-hogg-17**"],
         "schedule": "0 0 * * 4",
         "id": "4"
     },
