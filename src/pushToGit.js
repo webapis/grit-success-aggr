@@ -35,10 +35,8 @@ const baseRowData = {
     'Unique Page URLs': uniquePageURLs.length,
 };
 
-if (!siteUrls.paused) {
-    process.exit(0);
-} else
-    if (dataWithoutError.length > 0) {
+
+    if (!siteUrls.paused && dataWithoutError.length > 0) {
         debugger
         console.log('✅ Collected data length:', dataWithoutError.length);
 
@@ -54,7 +52,7 @@ if (!siteUrls.paused) {
         });
 
 
-    } else {
+    } else if (!siteUrls.paused) {
         debugger
         console.warn('⚠️ No valid data collected.');
 
