@@ -102,7 +102,7 @@
             "?page="
         ],
         "schedule": "0 0 * * 4",
-        "paused": true,
+        "paused": false,
         "pausedReason": "scrape manually",
         "id": "6"
     },
