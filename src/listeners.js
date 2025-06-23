@@ -18,13 +18,13 @@ emitter.on('upload-successful-data', async ({ site, data }) => {
 });
 
 emitter.on('log-to-sheet', async ({ sheetTitle = 'Crawl Logs', rowData, message }) => {
-  console.log('Logging to Google Sheet:', sheetTitle, rowData);
-  await logToGoogleSheet({
-    sheetId: SHEET_ID,
-    sheetTitle,
-    serviceAccountCredentials: CREDENTIALS,
-    rowData
-  });
+  console.log('Logging to Google Sheet:_____', sheetTitle, rowData);
+  // await logToGoogleSheet({
+  //   sheetId: SHEET_ID,
+  //   sheetTitle,
+  //   serviceAccountCredentials: CREDENTIALS,
+  //   rowData
+  // });
     if (message) {
         console.log(message);
     }
