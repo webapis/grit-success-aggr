@@ -7,7 +7,7 @@ import countUniquePages from "./sheet/countUniquePages.js";
 import getUniquePageURLs from "./sheet/getUniquePageURLs.js";
 import { emitAsync } from "./events.js";
 import './listeners.js'; // ← This registers event handlers
-import urls from './sites/products/urls.json' assert { type: 'json' };
+import urls from '../sites/products/urls.json' assert { type: 'json' };
 dotenv.config({ silent: true });
 
 const URL_CATEGORIES = process.env.URL_CATEGORIES;
