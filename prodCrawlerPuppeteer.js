@@ -49,7 +49,7 @@ process.exit(0);
     navigationTimeoutSecs: 120,
     headless: HEADLESS === "false" ? false : true,
     requestHandlerTimeoutSecs: 600000,
-     maxRequestsPerCrawl: 10
+   //  maxRequestsPerCrawl: 10
   });
 
   crawler.run(siteUrls.urls);
