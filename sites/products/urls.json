@@ -51,7 +51,7 @@
         "imageSelector": ".product__previewPicture [data-srcset]",
         "imageAttr": "data-srcset",
         "linkSelector": "a.product__imageWrapper",
-        "funcPageSelector": "(function(url) { return Array.from({ length: (Math.ceil( document.querySelector('.js-total-products-count').innerText/60)) - 1 }, (_, i) => i + 2).map(pageNumber=> url+'?sayfa='+ pageNumber) })",
+        "funcPageSelector": "(function(url) {const totalCount = Number(document.querySelector('.js-total-products-count')?.innerText || 0);const totalPages = Math.ceil(totalCount / 60);return Array.from({ length: totalPages - 1 }, (_, i) => i + 2).map(pageNumber => ({url: url + '?sayfa=' + pageNumber,label: 'second'}));})",
         "paginationPostfix": [
             "?sayfa="
         ],
