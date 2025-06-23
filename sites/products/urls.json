@@ -55,7 +55,7 @@
         "paginationPostfix": [
             "?sayfa="
         ],
-        "excludeUrlPatterns":["**kadin-kategorisi**","**erkek-koleksiyonu**"],
+        "excludeUrlPatterns":["**/kadin-kategorisi-13**","**/erkek-koleksiyonu-14**"],
         "schedule": "0 0 * * 4",
         "id": "4"
     },
