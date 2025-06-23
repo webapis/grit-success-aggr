@@ -97,6 +97,8 @@
             "?page="
         ],
         "schedule": "0 0 * * 4",
+        "paused": true,
+        "pausedReason": "scrape manually",
         "id": "6"
     },
     {
@@ -111,7 +113,10 @@
         "imageAttr": "srcset",
         "linkSelector": ".product-item__name",
         "funcPageSelector": "(function(url) { return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.paginate-content a')).map(a => a.innerText).filter(f => Number(f)))}, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber; return { url: nextUrl.replace('??','?'), label: 'second' }; }); })",
-        "excludeUrlPatterns":["**/hakkimizda**","**/basket**"],
+        "excludeUrlPatterns": [
+            "**/hakkimizda**",
+            "**/basket**"
+        ],
         "paginationPostfix": [
             "?page="
         ],
