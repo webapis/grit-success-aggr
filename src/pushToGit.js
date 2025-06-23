@@ -1,50 +1,69 @@
-import { logDataToGoogleSheet } from "./logDataToGoogleSheet.js";
+import { logToGoogleSheet } from "./sheet/logToGoogleSheet.js";
 import { uploadCollection } from "./uploadCollection.js";
 import dotenv from 'dotenv';
 import { Dataset } from 'crawlee';
 import getAggrTimeSpan from "./sheet/getAggrTimeSpan.js";
 import countUniquePages from "./sheet/countUniquePages.js";
 import getUniquePageURLs from "./sheet/getUniquePageURLs.js";
+
 dotenv.config({ silent: true });
 
-const URL_CATEGORIES = process.env.URL_CATEGORIES
-const site = process.env.site
-const GOOGLE_SERVICE_ACCOUNT_CREDENTIALS= JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8'))
-const GOOGLE_SHEET_ID=process.env.GOOGLE_SHEET_ID
-debugger
-const dataset = await Dataset.open(site);
-const { items: data } = await dataset.getData()
+const URL_CATEGORIES = process.env.URL_CATEGORIES;
+const site = process.env.site;
+const GOOGLE_SERVICE_ACCOUNT_CREDENTIALS = JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8'));
+const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
 
-const dataWithoutError = data.filter(f => !f.error)
-const dataWithError = data.filter(f => f.error)
-const { oldestTimestamp, newestTimestamp, minutesSpan } = getAggrTimeSpan({data})
-const totalPages =countUniquePages({data})
-const uniquePageURLs = getUniquePageURLs({ data:dataWithoutError })
-debugger
+const dataset = await Dataset.open(site);
+const { items: data } = await dataset.getData();
+
+const dataWithoutError = data.filter(f => !f.error);
+const dataWithError = data.filter(f => f.error);
+const { oldestTimestamp, newestTimestamp, minutesSpan } = getAggrTimeSpan({ data });
+const totalPages = countUniquePages({ data });
+const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
+
+const sheetTitle = 'Crawl Logs'; // 👈 You can change this per use case
+
+const baseRowData = {
+  Site: site,
+  'Successful Entries': dataWithoutError.length,
+  'Error Entries': dataWithError.length,
+  'Start Time': oldestTimestamp,
+  'End Time': newestTimestamp,
+  'Span (min)': minutesSpan,
+  'Total Pages': totalPages.count,
+  'Unique Page URLs': uniquePageURLs.length,
+};
 
 if (dataWithoutError.length > 0) {
-    console.log('collected data length', dataWithoutError.length)
-    await uploadCollection({ fileName: site || URL_CATEGORIES, data: dataWithoutError, gitFolder: site })
-    await logDataToGoogleSheet({ dataWithoutErrorLength: dataWithoutError.length, dataWithErrorLength: dataWithError.length, site, serviceAccountCredentials:GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,GOOGLE_SHEET_ID,start:oldestTimestamp, end:newestTimestamp,span:minutesSpan,totalPages:totalPages.count,uniquePageURLs })
+  console.log('✅ Collected data length:', dataWithoutError.length);
+
+  await uploadCollection({
+    fileName: site || URL_CATEGORIES,
+    data: dataWithoutError,
+    gitFolder: site,
+  });
+
+  await logToGoogleSheet({
+    sheetId: GOOGLE_SHEET_ID,
+    sheetTitle,
+    serviceAccountCredentials: GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,
+    rowData: baseRowData,
+  });
+
 } else {
-    await logDataToGoogleSheet({
-        dataWithoutErrorLength: 0,
-        dataWithErrorLength: dataWithError.length,
-        site,
-        serviceAccountCredentials: GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,
-        GOOGLE_SHEET_ID,
-        start: oldestTimestamp,
-        end: newestTimestamp,
-        span: minutesSpan,
-        totalPages: totalPages.count,
-        uniquePageURLs,
-    });
+  console.warn('⚠️ No valid data collected.');
 
-    console.warn('⚠️ No valid data collected.');
-    if (dataWithError.length > 0) {
-        console.warn('ERROR details:', dataWithError[0]);
-    }
+  await logToGoogleSheet({
+    sheetId: GOOGLE_SHEET_ID,
+    sheetTitle,
+    serviceAccountCredentials: GOOGLE_SERVICE_ACCOUNT_CREDENTIALS,
+    rowData: baseRowData, // still logs zeros
+  });
 
-    // Optionally exit without error
-    process.exit(0);
+  if (dataWithError.length > 0) {
+    console.warn('First error sample:', dataWithError[0]);
+  }
+
+  process.exit(0);
 }
