@@ -4,15 +4,13 @@ import dotenv from "dotenv";
 import scroller, { autoScroll } from "./scroller.js";
 import urls from './urls.json' assert { type: 'json' };
 import { uploadToGoogleDrive } from './uploadToGoogleDrive.js';
-import { PuppeteerCrawler, RequestQueue } from 'crawlee';
-import getFilteredLinks from './helpers/getFilteredLinks.js';
-import fs from 'fs';
+
 dotenv.config({ silent: true });
 
 const site = process.env.site;
 const siteUrls = urls.find(f => f.site === site)
 debugger
-const requestQueue = await RequestQueue.open();
+
 export default async function first({ page, enqueueLinks, request, log, addRequests, productListSelector, excludeUrlPatterns, pageSelector }) {
 
     await page.evaluate(() => {
@@ -36,15 +34,7 @@ export default async function first({ page, enqueueLinks, request, log, addReque
 
     debugger
     console.log('inside first route')
-    //     const nextUrls = await getFilteredLinks(page, siteUrls.pageSelectors, siteUrls.excludeUrlPatterns||[]);
-    //     debugger
-    //     const  mappedUrls = nextUrls.map(url => { return { url, label: 'second' } })
-    //     debugger
 
-    //    // await addRequests(mappedUrls);
-    //    await requestQueue.addRequests(mappedUrls);
-    //     debugger
-    //     console.log('mappedUrls', mappedUrls.length, mappedUrls);
     await enqueueLinks({
         selector: 'a',
         label: 'second',
