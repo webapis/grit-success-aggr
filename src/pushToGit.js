@@ -11,7 +11,7 @@ dotenv.config({ silent: true });
 
 const URL_CATEGORIES = process.env.URL_CATEGORIES;
 const site = process.env.site;
-
+const siteUrls = urls.find(f => f.site === site)
 const dataset = await Dataset.open(site);
 const { items: data } = await dataset.getData();
 
@@ -34,35 +34,38 @@ const baseRowData = {
     'Unique Page URLs': uniquePageURLs.length,
 };
 
-if (dataWithoutError.length > 0) {
-    debugger
-    console.log('✅ Collected data length:', dataWithoutError.length);
-
-    await uploadCollection({
-        fileName: site || URL_CATEGORIES,
-        data: dataWithoutError,
-        gitFolder: site,
-    });
-    await emitAsync('log-to-sheet', {
-        sheetTitle: 'Crawl Logs(success)',
-        message: console.log(`Site ${site} is logging data to Google Sheet.`),
-        rowData: baseRowData
-    });
-
-
-} else {
-    debugger
-    console.warn('⚠️ No valid data collected.');
-
-    await emitAsync('log-to-sheet', {
-        sheetTitle: 'Crawl Logs(failed)',
-        message: console.log(`Site ${site} is logging data to Google Sheet.`),
-        rowData: baseRowData
-    });
-
-    if (dataWithError.length > 0) {
-        console.warn('First error sample:', dataWithError[0]);
-    }
-
+if (!siteUrls.paused) {
     process.exit(0);
-}
+} else
+    if (dataWithoutError.length > 0) {
+        debugger
+        console.log('✅ Collected data length:', dataWithoutError.length);
+
+        await uploadCollection({
+            fileName: site || URL_CATEGORIES,
+            data: dataWithoutError,
+            gitFolder: site,
+        });
+        await emitAsync('log-to-sheet', {
+            sheetTitle: 'Crawl Logs(success)',
+            message: console.log(`Site ${site} is logging data to Google Sheet.`),
+            rowData: baseRowData
+        });
+
+
+    } else {
+        debugger
+        console.warn('⚠️ No valid data collected.');
+
+        await emitAsync('log-to-sheet', {
+            sheetTitle: 'Crawl Logs(failed)',
+            message: console.log(`Site ${site} is logging data to Google Sheet.`),
+            rowData: baseRowData
+        });
+
+        if (dataWithError.length > 0) {
+            console.warn('First error sample:', dataWithError[0]);
+        }
+
+        process.exit(0);
+    }
