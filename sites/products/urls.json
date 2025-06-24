@@ -23,6 +23,14 @@
         "titleSelector": ".product-card__title a",
         "imageSelector": "(document)=>'https://dfcdn.defacto.com.tr/376/'+ JSON.parse(document.getAttribute('data-documents')).PictureName",
         "linkSelector": ".image-box a",
+        "funcPageSelector": "((url)=>{if(Number(document.querySelector('.catalog__meta--product-count span').innerText)>24 ){return [...Array(Math.round(Number(document.querySelector('.catalog__meta--product-count span').innerText)/24) - 1)].map((_, i) => i + 2).map(pageNumber=>url+'?page='+pageNumber)}else{return []}})",
+        "paginationPostfix": [
+            "?page="
+        ],
+        "excludeUrlPatterns": [
+            "**/kadin-giyim**",
+            "**/erkek-giyim**"
+        ],
         "schedule": "0 0 * * 3",
         "id": "2"
     },
@@ -37,9 +45,14 @@
         "imageSelector": "(document)=>document.querySelector('.product-item-image').getAttribute('data-src')",
         "imageAttr": "srс",
         "linkSelector": ".product-name a",
-        "funcPageSelector":"(function(url) {if(Number(document.querySelector('.search-total-count').innerText)>72 ) {return [...Array(Math.round(Number(document.querySelector('.search-total-count').innerText)/72) - 1)].map((_, i) => i + 2).map(pageNumber=> url+'?page='+pageNumber)}else{return []}})",
-        "excludeUrlPatterns":["**/sosyal-sorumluluk**","**lookbook**"],
-        "paginationPostfix":["?page="],
+        "funcPageSelector": "(function(url) {if(Number(document.querySelector('.search-total-count').innerText)>72 ) {return [...Array(Math.round(Number(document.querySelector('.search-total-count').innerText)/72) - 1)].map((_, i) => i + 2).map(pageNumber=> url+'?page='+pageNumber)}else{return []}})",
+        "excludeUrlPatterns": [
+            "**/sosyal-sorumluluk**",
+            "**lookbook**"
+        ],
+        "paginationPostfix": [
+            "?page="
+        ],
         "schedule": "0 0 * * 4",
         "id": "3"
     },
@@ -55,8 +68,13 @@
         "imageAttr": "data-srcset",
         "linkSelector": "a.product__imageWrapper",
         "funcPageSelector": "(function(url) {const totalCount = Number(document.querySelector('.js-total-products-count')?.innerText || 0);const totalPages = Math.ceil(totalCount / 60);return Array.from({ length: totalPages - 1 }, (_, i) => i + 2).map(pageNumber => url + '?sayfa=' + pageNumber);})",
-        "excludeUrlPatterns":["**/kadin-kategorisi-13**","**/erkek-koleksiyonu-14**","**/george-hogg-17**","**-tum-**"],
-             "paginationPostfix": [
+        "excludeUrlPatterns": [
+            "**/kadin-kategorisi-13**",
+            "**/erkek-koleksiyonu-14**",
+            "**/george-hogg-17**",
+            "**-tum-**"
+        ],
+        "paginationPostfix": [
             "?sayfa="
         ],
         "schedule": "0 0 * * 4",
@@ -76,7 +94,7 @@
         "excludeUrlPatterns": [
             "**/tum-urunler**"
         ],
-              "paginationPostfix": [
+        "paginationPostfix": [
             "?sayfa="
         ],
         "imageAttr": "data-src",
@@ -101,7 +119,7 @@
         "excludeUrlPatterns": [
             "**category_ids=**"
         ],
-       "paginationPostfix": [
+        "paginationPostfix": [
             "?page="
         ],
         "schedule": "0 0 * * 4",
@@ -125,9 +143,9 @@
             "**/hakkimizda**",
             "**/basket**"
         ],
-  
         "paginationPostfix": [
-            "?page=","&page="
+            "?page=",
+            "&page="
         ],
         "schedule": "0 0 * * 4",
         "id": "7"
@@ -149,7 +167,6 @@
             "**/uye-girisi**",
             "**/urun/**"
         ],
-
         "paginationPostfix": [
             "?tp=",
             "&tp="
