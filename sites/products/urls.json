@@ -103,7 +103,7 @@
         "linkSelector": ".detailLink",
         "schedule": "0 0 * * 4",
         "id": "5",
-        "paused": false,
+        "paused": true,
         "pausedReason": "site is paused for srawlling problem"
     },
     {
