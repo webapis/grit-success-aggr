@@ -217,9 +217,10 @@ export async function second({
             console.log(data.filter(f => f.error)[0]);
         }
         debugger
-        if (
+         if (
             siteUrls.funcPageSelector &&
-            url.length > 0 
+            url.length > 0 &&
+            siteUrls.paginationPostfix.every(sub => !url.includes(sub))
         ) {
             const nextPages = await page.evaluate((funcPageSelector, _url) => {
                 const dynamicFunction = eval(funcPageSelector);

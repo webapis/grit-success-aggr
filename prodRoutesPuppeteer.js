@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import { createPuppeteerRouter, Dataset } from "crawlee";
 import first, { second } from "./sites/products/collector.js";
 import urls from './sites/products/urls.json' assert { type: 'json' };
-const local = process.env.local;
+
 dotenv.config({ silent: true });
 
 const site = process.env.site;

@@ -53,6 +53,9 @@
         "linkSelector": "a.product__imageWrapper",
         "funcPageSelector": "(function(url) {const totalCount = Number(document.querySelector('.js-total-products-count')?.innerText || 0);const totalPages = Math.ceil(totalCount / 60);return Array.from({ length: totalPages - 1 }, (_, i) => i + 2).map(pageNumber => url + '?sayfa=' + pageNumber);})",
         "excludeUrlPatterns":["**/kadin-kategorisi-13**","**/erkek-koleksiyonu-14**","**/george-hogg-17**","**-tum-**"],
+             "paginationPostfix": [
+            "?sayfa="
+        ],
         "schedule": "0 0 * * 4",
         "id": "4"
     },
@@ -69,6 +72,9 @@
         "funcPageSelector": "(function(url) { const countItems = parseInt(document.querySelector('.UrunAdet').innerText.replace(/\\D/g, '')); const countPages = Math.ceil(countItems / 48); const start = 2; const end = countPages; const pages = Array.from({ length: end - start + 1 }, (_, i) => i + start); return pages.map(pageNumber => url + '?page=' + pageNumber) })",
         "excludeUrlPatterns": [
             "**/tum-urunler**"
+        ],
+              "paginationPostfix": [
+            "?sayfa="
         ],
         "imageAttr": "data-src",
         "linkSelector": ".detailLink",
@@ -92,9 +98,11 @@
         "excludeUrlPatterns": [
             "**category_ids=**"
         ],
-
+       "paginationPostfix": [
+            "?page="
+        ],
         "schedule": "0 0 * * 4",
-        "paused": false,
+        "paused": true,
         "pausedReason": "scrape manually",
         "id": "6"
     },
@@ -115,6 +123,9 @@
             "**/basket**"
         ],
   
+        "paginationPostfix": [
+            "?page="
+        ],
         "schedule": "0 0 * * 4",
         "id": "7"
     },
@@ -136,6 +147,10 @@
             "**/urun/**"
         ],
 
+        "paginationPostfix": [
+            "?tp=",
+            "&tp="
+        ],
         "schedule": "0 0 * * 4",
         "id": "8"
     },
