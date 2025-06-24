@@ -31,7 +31,9 @@
             "**/kadin-giyim**",
             "**/erkek-giyim**",
             "**/cocuk-tumu**",
-            "**/firsati-yakala**"
+            "**/firsati-yakala**",
+            "**filtre=kategori**",
+            "**/saatlik-kampanyalar**"
         ],
         "schedule": "0 0 * * 3",
         "id": "2"
