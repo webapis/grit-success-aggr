@@ -29,7 +29,9 @@
         ],
         "excludeUrlPatterns": [
             "**/kadin-giyim**",
-            "**/erkek-giyim**"
+            "**/erkek-giyim**",
+            "**/cocuk-tumu**",
+            "**/firsati-yakala**"
         ],
         "schedule": "0 0 * * 3",
         "id": "2"
