@@ -38,7 +38,7 @@
         "imageAttr": "srс",
         "linkSelector": ".product-name a",
         "funcPageSelector":"(function(url) {if(Number(document.querySelector('.search-total-count').innerText)>72 ) {return [...Array(Math.round(Number(document.querySelector('.search-total-count').innerText)/72) - 1)].map((_, i) => i + 2).map(pageNumber=> url+'?page='+pageNumber)}else{return []}})",
-        "excludeUrlPatterns":["**/sosyal-sorumluluk**"],
+        "excludeUrlPatterns":["**/sosyal-sorumluluk**","**lookbook**"],
         "paginationPostfix":["?page="],
         "schedule": "0 0 * * 4",
         "id": "3"
