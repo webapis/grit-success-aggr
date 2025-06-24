@@ -33,7 +33,8 @@
             "**/cocuk-tumu**",
             "**/firsati-yakala**",
             "**filtre=kategori**",
-            "**/saatlik-kampanyalar**"
+            "**/saatlik-kampanyalar**",
+            "**cok-satanlar**"
         ],
         "schedule": "0 0 * * 3",
         "id": "2"
