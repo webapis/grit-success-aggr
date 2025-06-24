@@ -109,7 +109,7 @@
         "imageSelector": ".d-block source",
         "imageAttr": "srcset",
         "linkSelector": ".product-item__name",
-        "funcPageSelector": "(function(url) { return [...Array(Math.max(...[...document.querySelectorAll('.pagination__item.js-pagination-item')].map(m=>m.innerText).filter(f=>Number(f))) - 1)].map((_, i) => i + 2).map(m=> url +(url.includes('category_ids=') ?'&page=' :'?page=')+ m) })",
+        "funcPageSelector": "(function(url) { if([...document.querySelectorAll('.pagination__item.js-pagination-item')].length>0 ){return [...Array(Math.max(...[...document.querySelectorAll('.pagination__item.js-pagination-item')].map(m=>m.innerText).filter(f=>Number(f))) - 1)].map((_, i) => i + 2).map(m=> url +(url.includes('category_ids=') ?'&page=' :'?page=')+ m).map(m=>m.replace('??','?')) }else{return []}})",
         "excludeUrlPatterns": [
             "**/hakkimizda**",
             "**/basket**"
