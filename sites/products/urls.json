@@ -124,7 +124,7 @@
         ],
   
         "paginationPostfix": [
-            "?page="
+            "?page=","&page="
         ],
         "schedule": "0 0 * * 4",
         "id": "7"
