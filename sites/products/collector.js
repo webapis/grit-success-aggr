@@ -217,7 +217,7 @@ export async function second({
             console.log(data.filter(f => f.error)[0]);
         }
         debugger
-         if (
+        if (
             siteUrls.funcPageSelector &&
             url.length > 0 &&
             siteUrls.paginationPostfix.every(sub => !url.includes(sub))
@@ -231,10 +231,13 @@ export async function second({
             debugger
             if (nextPages.length > 0) {
                 debugger
-
-
-                console.log('nextPages', nextPages);
-                await addRequests(nextPages.map((url)=>{return { url, label: 'second' }}));
+                const cleanedPatterns = siteUrls.excludeUrlPatterns.map(p => p.replace(/\*/g, ''));
+                const filtered = nextPages
+                    .filter(url => !cleanedPatterns.some(pattern => url.includes(pattern)))
+                    .map(url => ({ url, label: 'second' }));
+            
+                console.log('filtered', filtered);
+                await addRequests(filtered);
 
             }
         }
