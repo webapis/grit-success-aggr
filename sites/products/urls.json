@@ -34,7 +34,8 @@
             "**/firsati-yakala**",
             "**filtre=kategori**",
             "**/saatlik-kampanyalar**",
-            "**cok-satanlar**"
+            "**cok-satanlar**",
+            "**filtre=cinsiyet**"
         ],
         "schedule": "0 0 * * 3",
         "id": "2"
