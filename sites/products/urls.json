@@ -10,6 +10,16 @@
         "imageSelector": "(document)=>JSON.parse(document.querySelector('.js-insider-product').innerText).product_image_url",
         "imageAttr": "srcset",
         "linkSelector": ".product-link",
+        "funcPageSelector": "((url)=>Array.from({ length: Math.max(...[...document.querySelectorAll('.pz-pagination-link')].map(m=>m.innerText).filter(f=>Number(f))) - 1 }, (_, i) => i + 2).map(pageNumber=> url+'?page='+pageNumber) )",
+        "paginationPostfix": [
+            "?page="
+        ],
+        "excludeUrlPatterns": [
+            "**erkek-giyim**",
+            "**kadin-giyim**",
+            "**genc-kadin-giyim**",
+            "**bebek-anasayfa**"
+        ],
         "schedule": "0 0 * * 2",
         "id": "1"
     },
