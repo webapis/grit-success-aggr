@@ -200,6 +200,13 @@
         "titleSelector": ".product-title",
         "imageSelector": ".product-card__image",
         "linkSelector": ".product-title",
+        "funcPageSelector": "((url)=>Array.from({ length: Math.max(...[...document.querySelectorAll('.pagination__link')].map(m=>m.innerText).filter(f=>Number(f))) - 1 }, (_, i) => i + 2).map(pageNumber=> url+'?page='+pageNumber) )",
+        "excludeUrlPatterns": [
+            "**/contact**"
+        ],
+        "paginationPostfix": [
+            "?page="
+        ],
         "schedule": "0 0 * * 4",
         "id": "9"
     },
@@ -214,6 +221,11 @@
         "imageSelector": "source[data-srcset]",
         "imageAttr": "data-srcset",
         "linkSelector": ".PrdImgsBox a",
+        "funcPageSelector":"((url)=>Array.from({ length:(Number(document.querySelector('.TotalProductCount').innerText.replace(/\\D/g, ''))/24)- 1 }, (_, i) => i + 2).map(pageNumber=>url+'?p='+pageNumber))",
+        "excludeUrlPatterns":["**Hakkimizda**"],
+        "paginationPostfix":[
+            "?p="
+        ],
         "schedule": "0 0 * * 4",
         "id": "10"
     },
