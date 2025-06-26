@@ -3,7 +3,8 @@ import { uploadCollection } from "./uploadCollection.js";
 import dotenv from 'dotenv';
 import { Dataset } from 'crawlee';
 import getAggrTimeSpan from "./sheet/getAggrTimeSpan.js";
-import countUniquePages from "./sheet/countUniquePages.js";
+import countUnique from "./sheet/countUnique.js";
+import countByField from "./scrap/countByField.js";
 import getUniquePageURLs from "./sheet/getUniquePageURLs.js";
 import { emitAsync } from "./events.js";
 import './listeners.js'; // ← This registers event handlers
@@ -19,52 +20,64 @@ const { items: data } = await dataset.getData();
 const dataWithoutError = data.filter(f => !f.error);
 const dataWithError = data.filter(f => f.error);
 const { oldestTimestamp, newestTimestamp, minutesSpan } = getAggrTimeSpan({ data });
-const totalPages = countUniquePages({ data });
+const totalPages = countUnique({ data, key: 'pageURL' });
+const totalUniqueObjects = countUnique({ data, key: 'link' });
+const validLinks = countByField( data, 'linkValid' );
+const validimgs = countByField( data, 'imgValid' );
+const validTitle = countByField( data, 'titleValid' );
+const validPageTitle = countByField( data, 'pageTitleValid' );
+debugger
 const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
 
 
 
 const baseRowData = {
     Site: site,
-    'Successful Entries': dataWithoutError.length,
-    'Error Entries': dataWithError.length,
+    'Total Objects': dataWithoutError.length,
+    'Invalid Titles': validTitle,
+    'Invalid Page Titles': validPageTitle,
+    'Invalid Links': validLinks,
+    'Invalid Images': validimgs,
+    'Total Unique Objects (by link)': totalUniqueObjects.count,
+    'Error Objects': dataWithError.length,
     'Start Time': oldestTimestamp,
     'End Time': newestTimestamp,
     'Span (min)': minutesSpan,
     'Total Pages': totalPages.count,
     'Unique Page URLs': uniquePageURLs.length,
+
 };
 
 
-    if (!siteUrls.paused && dataWithoutError.length > 0) {
-        debugger
-        console.log('✅ Collected data length:', dataWithoutError.length);
+if (!siteUrls.paused && dataWithoutError.length > 0) {
+    debugger
+    console.log('✅ Collected data length:', dataWithoutError.length);
 
-        await uploadCollection({
-            fileName: site || URL_CATEGORIES,
-            data: dataWithoutError,
-            gitFolder: site,
-        });
-        await emitAsync('log-to-sheet', {
-            sheetTitle: 'Crawl Logs(success)',
-            message: console.log(`Site ${site} is logging data to Google Sheet.`),
-            rowData: baseRowData
-        });
+    await uploadCollection({
+        fileName: site || URL_CATEGORIES,
+        data: dataWithoutError,
+        gitFolder: site,
+    });
+    await emitAsync('log-to-sheet', {
+        sheetTitle: 'Crawl Logs(success)',
+        message: console.log(`Site ${site} is logging data to Google Sheet.`),
+        rowData: baseRowData
+    });
 
 
-    } else if (!siteUrls.paused) {
-        debugger
-        console.warn('⚠️ No valid data collected.');
+} else if (!siteUrls.paused) {
+    debugger
+    console.warn('⚠️ No valid data collected.');
 
-        await emitAsync('log-to-sheet', {
-            sheetTitle: 'Crawl Logs(failed)',
-            message: console.log(`Site ${site} is logging data to Google Sheet.`),
-            rowData: baseRowData
-        });
+    await emitAsync('log-to-sheet', {
+        sheetTitle: 'Crawl Logs(failed)',
+        message: console.log(`Site ${site} is logging data to Google Sheet.`),
+        rowData: baseRowData
+    });
 
-        if (dataWithError.length > 0) {
-            console.warn('First error sample:', dataWithError[0]);
-        }
-
-        process.exit(0);
+    if (dataWithError.length > 0) {
+        console.warn('First error sample:', dataWithError[0]);
     }
+
+    process.exit(0);
+}

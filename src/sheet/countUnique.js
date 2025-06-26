@@ -1,9 +1,9 @@
-function countUniquePages({data}) {
+function countUnique({data,key}) {
     const uniquePages = new Set();
 
     data.forEach(product => {
-        if (product.pageURL) {
-            uniquePages.add(product.pageURL);
+        if (product[key]) {
+            uniquePages.add(product[key]);
         }
     });
 
@@ -12,4 +12,4 @@ function countUniquePages({data}) {
         uniquePageURLs: Array.from(uniquePages)
     };
 }
-export default countUniquePages;
+export default countUnique;

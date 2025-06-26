@@ -2,6 +2,9 @@
 
 import dotenv from "dotenv";
 import scroller, { autoScroll } from "./scroller.js";
+import isValidImageURL from "../../src/scrap/isValidImageURL.js";
+import isValidURL from "../../src/scrap/isValidURL.js";
+import isValidText from "../../src/scrap/isValidText.js";
 import urls from './urls.json' assert { type: 'json' };
 import { uploadToGoogleDrive } from './uploadToGoogleDrive.js';
 
@@ -242,7 +245,19 @@ export async function second({
             }
         }
 
-        return data
+        const validData = data.map(item => {
+            return {
+                ...item,
+                imgValid: isValidImageURL(item.img),
+                linkValid: isValidURL(item.link),
+                titleValid: isValidText(item.title),
+                pageTitleValid: isValidText(item.pageTitle),
+
+          
+            }
+        })
+
+        return validData
     } else {
         console.log('not product page', url);
         return [];

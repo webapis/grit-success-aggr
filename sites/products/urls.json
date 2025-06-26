@@ -21,7 +21,7 @@
         "productListSelector": "#product-container",
         "productItemSelector": "[data-documents]",
         "titleSelector": ".product-card__title a",
-        "imageSelector": "(document)=>'https://dfcdn.defacto.com.tr/376/'+ JSON.parse(document.getAttribute('data-documents')).PictureName",
+        "imageSelector": "(document)=>document.querySelector('[data-srcset]').getAttribute('data-srcset').split(',')[0].split(' ').filter(f=>f)[0]",
         "linkSelector": ".image-box a",
         "funcPageSelector": "((url)=>{if(Number(document.querySelector('.catalog__meta--product-count span').innerText)>24 ){return [...Array(Math.round(Number(document.querySelector('.catalog__meta--product-count span').innerText)/24) - 1)].map((_, i) => i + 2).map(pageNumber=>url+'?page='+pageNumber)}else{return []}})",
         "paginationPostfix": [
