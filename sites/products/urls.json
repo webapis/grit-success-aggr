@@ -18,7 +18,9 @@
             "**erkek-giyim**",
             "**kadin-giyim**",
             "**genc-kadin-giyim**",
-            "**bebek-anasayfa**"
+            "**bebek-anasayfa**",
+            "**filterable**",
+            "**indirim**"
         ],
         "schedule": "0 0 * * 2",
         "id": "1"
