@@ -151,6 +151,7 @@
         "urls": [
             "https://www.adl.com.tr"
         ],
+         "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
         "productListSelector": ".list__body .products__items .product-item__body",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__name",
