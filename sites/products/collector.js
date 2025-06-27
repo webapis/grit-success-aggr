@@ -38,19 +38,26 @@ export default async function first({ page, enqueueLinks, request, log, addReque
     debugger
     console.log('inside first route')
 
-    const { processedRequests } = await enqueueLinks({
-        selector: 'a',
-        label: 'second',
-        exclude: excludeUrlPatterns || [],
-    });
-    const candidateUrls = processedRequests.map(req => req.uniqueKey)
-    console.log('candidateUrls Total:', candidateUrls.length);
-
-
-    for (let i = 0; i < candidateUrls.length; i += 70) {
-        const chunk = candidateUrls.slice(i, i + 70);
-        console.log(`Chunk ${i / 70 + 1}:`, chunk);
+    if(siteUrls.navigationUrls){
+     const result=   await eval(siteUrls.navigationUrls)(page);
+     const mappedUrls = result.map(url => ({ url, label: 'second' }));
+     await addRequests(mappedUrls);
+     debugger
     }
+
+    // const { processedRequests } = await enqueueLinks({
+    //     selector: 'a',
+    //     label: 'second',
+    //     exclude: excludeUrlPatterns || [],
+    // });
+    // const candidateUrls = processedRequests.map(req => req.uniqueKey)
+    // console.log('candidateUrls Total:', candidateUrls.length);
+
+
+    // for (let i = 0; i < candidateUrls.length; i += 70) {
+    //     const chunk = candidateUrls.slice(i, i + 70);
+    //     console.log(`Chunk ${i / 70 + 1}:`, chunk);
+    // }
     debugger
 }
 

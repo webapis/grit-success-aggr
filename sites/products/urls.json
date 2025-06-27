@@ -236,8 +236,9 @@
     {
         "site": "lovemybody",
         "urls": [
-            "https://www.lovemybody.com.tr/"
+            "https://www.lovemybody.com.tr/kadin-elbise/"
         ],
+      "navigationUrls": "(async (page) => { const collectedUrls = []; const navLinks = await page.$$('.navigation__link.has-submenu-navigation-link.js-next-menu.js-nav-link'); for (const navLink of navLinks) { await navLink.hover(); await page.waitForSelector('.navigation__submenu__item__link', { timeout: 2000 }).catch(() => {}); const submenuUrls = await page.$$eval('.navigation__submenu__item__link', links => links.map(link => link.href)); collectedUrls.push(...submenuUrls); await page.waitForTimeout(500); } return collectedUrls; })",
         "productListSelector": ".product-item-box",
         "productItemSelector": ".product-item-box",
         "titleSelector": ".product-name",
