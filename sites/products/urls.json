@@ -4,7 +4,7 @@
         "urls": [
             "https://www.koton.com/"
         ],
-        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": ".list__products",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__info-name",
@@ -32,7 +32,7 @@
         "urls": [
             "https://www.defacto.com.tr/statik/sitemap"
         ],
-        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": "#product-container",
         "productItemSelector": "[data-documents]",
         "titleSelector": ".product-card__title a",
@@ -60,7 +60,7 @@
         "urls": [
             "https://www.desa.com.tr/"
         ],
-        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": ".js-list-content-item-wrapper",
         "productItemSelector": ".product-item-box",
         "titleSelector": ".product-name a",
@@ -83,7 +83,7 @@
         "urls": [
             "https://www.divarese.com.tr/"
         ],
-        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": ".products",
         "productItemSelector": ".products__item",
         "titleSelector": ".product__title",
@@ -108,7 +108,7 @@
         "urls": [
             "https://www.elleshoes.com/"
         ],
-        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": ".ProductList",
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
@@ -133,7 +133,7 @@
         "urls": [
             "https://tr.manuatelier.com/"
         ],
-        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": "#CollectionLoop",
         "productItemSelector": ".product-item",
         "titleSelector": "(document)=>document.querySelector('.product-link[aria-label]').getAttribute('aria-label')",
@@ -157,7 +157,7 @@
         "urls": [
             "https://www.adl.com.tr"
         ],
-        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": ".list__body .products__items .product-item__body",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__name",
@@ -181,7 +181,7 @@
         "urls": [
             "https://www.alfa-beta.com.tr"
         ],
-        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": "#product-list-container",
         "productItemSelector": ".showcase",
         "titleSelector": ".showcase-title a",
@@ -206,7 +206,7 @@
         "urls": [
             "https://biancoenero.com.tr/"
         ],
-        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": ".collection__main",
         "productItemSelector": ".product-card",
         "titleSelector": ".product-title",
@@ -227,7 +227,7 @@
         "urls": [
             "https://www.bsl.com.tr/tr/site-haritasi"
         ],
-        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": ".PrdContainer",
         "productItemSelector": ".Prd",
         "titleSelector": ".PName",
@@ -275,12 +275,14 @@
             "https://clothing.beautyomelette.com/",
             "https://cosmetics.beautyomelette.com/"
         ],
+         "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": ".productItem",
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
         "imageSelector": "[data-original]",
         "imageAttr": "data-original",
         "linkSelector": ".productName a",
+        "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "12"
     },

@@ -38,34 +38,34 @@ export default async function first({ page, enqueueLinks, request, log, addReque
     debugger
     console.log('inside first route')
 
-    if(siteUrls.navigationUrls){
+    if (siteUrls.navigationUrls) {
         try {
-               const result=   await eval(siteUrls.navigationUrls)(page);
-     debugger
-        console.log('navigationUrls', result);
-     const mappedUrls = result.filter(url => typeof url === 'string' && /^https?:\/\//.test(url)).map(url => ({ url, label: 'second' }));
-     debugger
-     await addRequests(mappedUrls);
-     debugger
+
+
+            let result = await page.evaluate((navigationUrls) => {
+                const dynamicFunction = eval(navigationUrls);
+
+                return dynamicFunction;
+
+            }, siteUrls.navigationUrls);
+
+            if (!Array.isArray(result)) {
+                debugger
+                result = await eval(siteUrls.navigationUrls)(page);
+            }
+            debugger
+            console.log('navigationUrls', result);
+            const mappedUrls = result.filter(url => typeof url === 'string' && /^https?:\/\//.test(url)).map(url => ({ url, label: 'second' }));
+            debugger
+            await addRequests(mappedUrls);
+            debugger
         } catch (error) {
             console.log('Error in navigationUrls:', error);
         }
-  
+
     }
 
-    // const { processedRequests } = await enqueueLinks({
-    //     selector: 'a',
-    //     label: 'second',
-    //     exclude: excludeUrlPatterns || [],
-    // });
-    // const candidateUrls = processedRequests.map(req => req.uniqueKey)
-    // console.log('candidateUrls Total:', candidateUrls.length);
 
-
-    // for (let i = 0; i < candidateUrls.length; i += 70) {
-    //     const chunk = candidateUrls.slice(i, i + 70);
-    //     console.log(`Chunk ${i / 70 + 1}:`, chunk);
-    // }
     debugger
 }
 
