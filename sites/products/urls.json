@@ -58,6 +58,7 @@
         "urls": [
             "https://www.desa.com.tr/"
         ],
+        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
         "productListSelector": ".js-list-content-item-wrapper",
         "productItemSelector": ".product-item-box",
         "titleSelector": ".product-name a",
