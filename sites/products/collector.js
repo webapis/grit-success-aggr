@@ -39,12 +39,18 @@ export default async function first({ page, enqueueLinks, request, log, addReque
     console.log('inside first route')
 
     if(siteUrls.navigationUrls){
-     const result=   await eval(siteUrls.navigationUrls)(page);
+        try {
+               const result=   await eval(siteUrls.navigationUrls)(page);
      debugger
         console.log('navigationUrls', result);
-     const mappedUrls = result.map(url => ({ url, label: 'second' }));
+     const mappedUrls = result.filter(url => typeof url === 'string' && /^https?:\/\//.test(url)).map(url => ({ url, label: 'second' }));
+     debugger
      await addRequests(mappedUrls);
      debugger
+        } catch (error) {
+            console.log('Error in navigationUrls:', error);
+        }
+  
     }
 
     // const { processedRequests } = await enqueueLinks({
