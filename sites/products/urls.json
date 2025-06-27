@@ -219,7 +219,7 @@
         "urls": [
             "https://www.bsl.com.tr/tr/site-haritasi"
         ],
-        "navigationUrls": "(()=>[...document.querySelectorAll('a')].map(m=>m.href))",
+       "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
         "productListSelector": ".PrdContainer",
         "productItemSelector": ".Prd",
         "titleSelector": ".PName",

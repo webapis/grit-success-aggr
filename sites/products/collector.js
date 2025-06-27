@@ -40,6 +40,8 @@ export default async function first({ page, enqueueLinks, request, log, addReque
 
     if(siteUrls.navigationUrls){
      const result=   await eval(siteUrls.navigationUrls)(page);
+     debugger
+        console.log('navigationUrls', result);
      const mappedUrls = result.map(url => ({ url, label: 'second' }));
      await addRequests(mappedUrls);
      debugger
