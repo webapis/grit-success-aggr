@@ -38,12 +38,20 @@ export default async function first({ page, enqueueLinks, request, log, addReque
     debugger
     console.log('inside first route')
 
-    await enqueueLinks({
+    const { processedRequests } = await enqueueLinks({
         selector: 'a',
         label: 'second',
         exclude: excludeUrlPatterns || [],
     });
+    const candidateUrls = processedRequests.map(req => req.uniqueKey)
+    console.log('candidateUrls Total:', candidateUrls.length);
 
+
+    for (let i = 0; i < candidateUrls.length; i += 70) {
+        const chunk = candidateUrls.slice(i, i + 70);
+        console.log(`Chunk ${i / 70 + 1}:`, chunk);
+    }
+    debugger
 }
 
 export async function second({
@@ -238,7 +246,7 @@ export async function second({
                 const filtered = nextPages
                     .filter(url => !cleanedPatterns.some(pattern => url.includes(pattern)))
                     .map(url => ({ url, label: 'second' }));
-            
+
                 console.log('filtered', filtered);
                 await addRequests(filtered);
 
@@ -253,7 +261,7 @@ export async function second({
                 titleValid: isValidText(item.title),
                 pageTitleValid: isValidText(item.pageTitle),
 
-          
+
             }
         })
 

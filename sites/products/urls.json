@@ -20,8 +20,10 @@
             "**genc-kadin-giyim**",
             "**bebek-anasayfa**",
             "**filterable**",
-            "**indirim**"
+            "**indirim**",
+            "**evcil-hayvan-kiyafetleri**"
         ],
+
         "schedule": "0 0 * * 2",
         "id": "1"
     },
@@ -241,6 +243,11 @@
         "titleSelector": ".product-name",
         "imageSelector": ".product-image",
         "linkSelector": "a.product-name",
+        "funcPageSelector":"((url)=>Array.from({ length: Math.max(...[...document.querySelectorAll('.pagination-item ')].map(m=>m.innerText).filter(f=>Number(f))) - 1 }, (_, i) => i + 2).map(pageNumber=> url+'?page='+pageNumber) )",
+        "excludeUrlPatterns":["**/kvkk/**"],
+        "paginationPostfix":[
+            "?page="
+        ],
         "schedule": "0 0 * * 4",
         "id": "11"
     },
