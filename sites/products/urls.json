@@ -23,7 +23,6 @@
             "**indirim**",
             "**evcil-hayvan-kiyafetleri**"
         ],
-
         "schedule": "0 0 * * 2",
         "id": "1"
     },
@@ -199,6 +198,7 @@
         "urls": [
             "https://biancoenero.com.tr/"
         ],
+        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
         "productListSelector": ".collection__main",
         "productItemSelector": ".product-card",
         "titleSelector": ".product-title",
@@ -219,16 +219,22 @@
         "urls": [
             "https://www.bsl.com.tr/tr/site-haritasi"
         ],
-       "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
         "productListSelector": ".PrdContainer",
         "productItemSelector": ".Prd",
         "titleSelector": ".PName",
         "imageSelector": "source[data-srcset]",
         "imageAttr": "data-srcset",
         "linkSelector": ".PrdImgsBox a",
-        "funcPageSelector":"((url)=>Array.from({ length:(Number(document.querySelector('.TotalProductCount').innerText.replace(/\\D/g, ''))/24)- 1 }, (_, i) => i + 2).map(pageNumber=>url+'?p='+pageNumber))",
-        "excludeUrlPatterns":["**Hakkimizda**"],
-        "paginationPostfix":[
+        "funcPageSelector": "((url)=>Array.from({ length:(Number(document.querySelector('.TotalProductCount').innerText.replace(/\\D/g, ''))/24)- 1 }, (_, i) => i + 2).map(pageNumber=>url+'?p='+pageNumber))",
+        "excludeUrlPatterns": [
+            "**Hakkimizda**",
+            "**Login**",
+            "**UserInfo**",
+            "**whatsapp**",
+            "**youtube**"
+        ],
+        "paginationPostfix": [
             "?p="
         ],
         "schedule": "0 0 * * 4",
@@ -245,9 +251,11 @@
         "titleSelector": ".product-name",
         "imageSelector": ".product-image",
         "linkSelector": "a.product-name",
-        "funcPageSelector":"((url)=>Array.from({ length: Math.max(...[...document.querySelectorAll('.pagination-item ')].map(m=>m.innerText).filter(f=>Number(f))) - 1 }, (_, i) => i + 2).map(pageNumber=> url+'?page='+pageNumber) )",
-        "excludeUrlPatterns":["**/kvkk/**"],
-        "paginationPostfix":[
+        "funcPageSelector": "((url)=>Array.from({ length: Math.max(...[...document.querySelectorAll('.pagination-item ')].map(m=>m.innerText).filter(f=>Number(f))) - 1 }, (_, i) => i + 2).map(pageNumber=> url+'?page='+pageNumber) )",
+        "excludeUrlPatterns": [
+            "**/kvkk/**"
+        ],
+        "paginationPostfix": [
             "?page="
         ],
         "schedule": "0 0 * * 4",
