@@ -12,7 +12,7 @@ dotenv.config({ silent: true });
 
 const site = process.env.site;
 const siteUrls = urls.find(f => f.site === site)
-debugger
+
 
 export default async function first({ page, enqueueLinks, request, log, addRequests, productListSelector, excludeUrlPatterns, pageSelector }) {
 
@@ -35,7 +35,7 @@ export default async function first({ page, enqueueLinks, request, log, addReque
     console.log('📸 Screenshot uploaded:', uploadResult.webViewLink);
 
 
-    debugger
+
     console.log('inside first route')
 
     if (siteUrls.navigationUrls) {
@@ -50,15 +50,15 @@ export default async function first({ page, enqueueLinks, request, log, addReque
             }, siteUrls.navigationUrls);
 
             if (!Array.isArray(result)) {
-                debugger
+
                 result = await eval(siteUrls.navigationUrls)(page);
             }
-            debugger
+
             console.log('navigationUrls', result);
             const mappedUrls = result.filter(url => typeof url === 'string' && /^https?:\/\//.test(url)).map(url => ({ url, label: 'second' }));
-            debugger
+
             await addRequests(mappedUrls);
-            debugger
+
         } catch (error) {
             console.log('Error in navigationUrls:', error);
         }
@@ -66,7 +66,7 @@ export default async function first({ page, enqueueLinks, request, log, addReque
     }
 
 
-    debugger
+
 }
 
 export async function second({
@@ -242,25 +242,44 @@ export async function second({
         if (data.filter(f => f.error).length > 0) {
             console.log(data.filter(f => f.error)[0]);
         }
+
         debugger
+        //next pages
         if (
             siteUrls.funcPageSelector &&
             url.length > 0 &&
             siteUrls.paginationPostfix.every(sub => !url.includes(sub))
         ) {
-            const nextPages = await page.evaluate((funcPageSelector, _url) => {
-                const dynamicFunction = eval(funcPageSelector);
-                return dynamicFunction(_url)
-            }, siteUrls.funcPageSelector, url)
+            const nextPages = await page.evaluate((funcPageSelector, _url, _paginationPostfix,) => {
+                if (funcPageSelector.length === 1) {
+                    const paginationSelector = funcPageSelector[0];
+                    return Array.from({ length: Math.max(...[...document.querySelectorAll(paginationSelector)].map(m => m.innerText).filter(f => Number(f))) - 1 }, (_, i) => i + 2).map(pageNumber => _url + _paginationPostfix[0] + pageNumber)
+                }
+                else if (funcPageSelector.length === 2) {
+                    try {
+                        const pageCounterSelector = funcPageSelector[0];
+                        const itemsPerPage = funcPageSelector[1];
+                        if (Number(document.querySelector(pageCounterSelector).innerText || 0) > itemsPerPage) {
+                            return [...Array(Math.round(Number(document.querySelector(pageCounterSelector).innerText.replace(/\D/g, '') || 0) / itemsPerPage) - 1)].map((_, i) => i + 2).map(pageNumber => _url + _paginationPostfix[0] + pageNumber)
+                        }
 
+                        else { return [] }
+                    } catch (error) {
+                        return []
+                    }
 
-            debugger
+                }
+
+            }, siteUrls.funcPageSelector, url, siteUrls.paginationPostfix)
+
+            debugger;
+
             if (nextPages.length > 0) {
-                debugger
+
                 const cleanedPatterns = siteUrls.excludeUrlPatterns.map(p => p.replace(/\*/g, ''));
                 const filtered = nextPages
                     .filter(url => !cleanedPatterns.some(pattern => url.includes(pattern)))
-                    .map(url => ({ url, label: 'second' }));
+                    .map(url => ({ url: url.replace('??', '?'), label: 'second' }));
 
                 console.log('filtered', filtered);
                 await addRequests(filtered);

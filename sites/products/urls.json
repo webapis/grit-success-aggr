@@ -11,7 +11,9 @@
         "imageSelector": "(document)=>JSON.parse(document.querySelector('.js-insider-product').innerText).product_image_url",
         "imageAttr": "srcset",
         "linkSelector": ".product-link",
-        "funcPageSelector": "((url)=>Array.from({ length: Math.max(...[...document.querySelectorAll('.pz-pagination-link')].map(m=>m.innerText).filter(f=>Number(f))) - 1 }, (_, i) => i + 2).map(pageNumber=> url+'?page='+pageNumber) )",
+        "funcPageSelector": [
+            ".pz-pagination-link"
+        ],
         "paginationPostfix": [
             "?page="
         ],
@@ -38,7 +40,10 @@
         "titleSelector": ".product-card__title a",
         "imageSelector": "(document)=>document.querySelector('[data-srcset]').getAttribute('data-srcset').split(',')[0].split(' ').filter(f=>f)[0]",
         "linkSelector": ".image-box a",
-        "funcPageSelector": "((url)=>{if(Number(document.querySelector('.catalog__meta--product-count span').innerText)>24 ){return [...Array(Math.round(Number(document.querySelector('.catalog__meta--product-count span').innerText)/24) - 1)].map((_, i) => i + 2).map(pageNumber=>url+'?page='+pageNumber)}else{return []}})",
+        "funcPageSelector": [
+            ".catalog__meta--product-count span",
+            24
+        ],
         "paginationPostfix": [
             "?page="
         ],
@@ -67,7 +72,10 @@
         "imageSelector": "(document)=>document.querySelector('.product-item-image').getAttribute('data-src')",
         "imageAttr": "srс",
         "linkSelector": ".product-name a",
-        "funcPageSelector": "(function(url) {if(Number(document.querySelector('.search-total-count').innerText)>72 ) {return [...Array(Math.round(Number(document.querySelector('.search-total-count').innerText)/72) - 1)].map((_, i) => i + 2).map(pageNumber=> url+'?page='+pageNumber)}else{return []}})",
+        "funcPageSelector": [
+            ".search-total-count",
+            72
+        ],
         "excludeUrlPatterns": [
             "**/sosyal-sorumluluk**",
             "**lookbook**"
@@ -90,12 +98,16 @@
         "imageSelector": ".product__previewPicture [data-srcset]",
         "imageAttr": "data-srcset",
         "linkSelector": "a.product__imageWrapper",
-        "funcPageSelector": "(function(url) {const totalCount = Number(document.querySelector('.js-total-products-count')?.innerText || 0);const totalPages = Math.ceil(totalCount / 60);return Array.from({ length: totalPages - 1 }, (_, i) => i + 2).map(pageNumber => url + '?sayfa=' + pageNumber);})",
+        "funcPageSelector": [
+            ".js-total-products-count",
+            60
+        ],
         "excludeUrlPatterns": [
             "**/kadin-kategorisi-13**",
             "**/erkek-koleksiyonu-14**",
             "**/george-hogg-17**",
-            "**-tum-**"
+            "**-tum-**",
+            "**selectcard**"
         ],
         "paginationPostfix": [
             "?sayfa="
@@ -114,7 +126,10 @@
         "titleSelector": ".productName a",
         "imageSelector": ".productSliderImage",
         "isAutoScroll": true,
-        "funcPageSelector": "(function(url) { const countItems = parseInt(document.querySelector('.UrunAdet').innerText.replace(/\\D/g, '')); const countPages = Math.ceil(countItems / 48); const start = 2; const end = countPages; const pages = Array.from({ length: end - start + 1 }, (_, i) => i + start); return pages.map(pageNumber => url + '?page=' + pageNumber) })",
+        "funcPageSelector": [
+            ".UrunAdet",
+            48
+        ],
         "excludeUrlPatterns": [
             "**/tum-urunler**"
         ],
@@ -140,7 +155,9 @@
         "imageSelector": "(document)=>'https:' + document.querySelector('.product-item__bg [srcset]').getAttribute('srcset').split(',')[6].split(' ').filter(f=>f)[0]",
         "linkSelector": "a.product-link",
         "isAutoScroll": true,
-        "funcPageSelector": "(function(url) { return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.pagination-custom__page')).map(a => a.innerText).filter(f => Number(f)))}, (_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('category_ids=') ? url + '&page=' + pageNumber : url + '?page=' + pageNumber; return nextUrl.replace('??','?') }); })",
+        "funcPageSelector": [
+            ".pagination-custom__page"
+        ],
         "excludeUrlPatterns": [
             "**category_ids=**"
         ],
@@ -164,10 +181,13 @@
         "imageSelector": ".d-block source",
         "imageAttr": "srcset",
         "linkSelector": ".product-item__name",
-        "funcPageSelector": "(function(url) { if([...document.querySelectorAll('.pagination__item.js-pagination-item')].length>0 ){return [...Array(Math.max(...[...document.querySelectorAll('.pagination__item.js-pagination-item')].map(m=>m.innerText).filter(f=>Number(f))) - 1)].map((_, i) => i + 2).map(m=> url +(url.includes('category_ids=') ?'&page=' :'?page=')+ m).map(m=>m.replace('??','?')) }else{return []}})",
+        "funcPageSelector": [
+            ".pagination__item.js-pagination-item"
+        ],
         "excludeUrlPatterns": [
             "**/hakkimizda**",
-            "**/basket**"
+            "**/basket**",
+            "**category_ids**"
         ],
         "paginationPostfix": [
             "?page=",
@@ -187,7 +207,7 @@
         "titleSelector": ".showcase-title a",
         "imageSelector": "(document)=>'https:'+ document.querySelector('.showcase-image [data-src]').getAttribute('data-src')",
         "linkSelector": ".showcase-image a",
-        "funcPageSelector": "(function(url) {return Array.from({length: Math.max(...Array.from(document.querySelectorAll('.paginate-content a')).map(a => a.innerText).filter(f => Number(f)))} ,(_, i) => i + 1).filter(f => f !== 1).map(pageNumber => {const nextUrl = url.includes('varyantlar') ? url + '&tp=' + pageNumber : url + '?tp=' + pageNumber; return nextUrl;});})",
+        "funcPageSelector": [".paginate-content a"],
         "excludeUrlPatterns": [
             "**/uye-ol**",
             "**/sifremi-unuttum**",
@@ -212,7 +232,7 @@
         "titleSelector": ".product-title",
         "imageSelector": ".product-card__image",
         "linkSelector": ".product-title",
-        "funcPageSelector": "((url)=>Array.from({ length: Math.max(...[...document.querySelectorAll('.pagination__link')].map(m=>m.innerText).filter(f=>Number(f))) - 1 }, (_, i) => i + 2).map(pageNumber=> url+'?page='+pageNumber) )",
+        "funcPageSelector": [".pagination__link"],
         "excludeUrlPatterns": [
             "**/contact**"
         ],
@@ -234,7 +254,7 @@
         "imageSelector": "source[data-srcset]",
         "imageAttr": "data-srcset",
         "linkSelector": ".PrdImgsBox a",
-        "funcPageSelector": "((url)=>Array.from({ length:(Number(document.querySelector('.TotalProductCount').innerText.replace(/\\D/g, ''))/24)- 1 }, (_, i) => i + 2).map(pageNumber=>url+'?p='+pageNumber))",
+        "funcPageSelector": [".TotalProductCount", 24],
         "excludeUrlPatterns": [
             "**Hakkimizda**",
             "**Login**",
@@ -275,7 +295,7 @@
             "https://clothing.beautyomelette.com/",
             "https://cosmetics.beautyomelette.com/"
         ],
-         "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": ".productItem",
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
