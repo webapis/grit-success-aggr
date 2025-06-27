@@ -80,6 +80,7 @@
         "urls": [
             "https://www.divarese.com.tr/"
         ],
+        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
         "productListSelector": ".products",
         "productItemSelector": ".products__item",
         "titleSelector": ".product__title",
@@ -104,6 +105,7 @@
         "urls": [
             "https://www.elleshoes.com/"
         ],
+        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
         "productListSelector": ".ProductList",
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
@@ -128,6 +130,7 @@
         "urls": [
             "https://tr.manuatelier.com/"
         ],
+        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
         "productListSelector": "#CollectionLoop",
         "productItemSelector": ".product-item",
         "titleSelector": "(document)=>document.querySelector('.product-link[aria-label]').getAttribute('aria-label')",
@@ -151,7 +154,7 @@
         "urls": [
             "https://www.adl.com.tr"
         ],
-         "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
         "productListSelector": ".list__body .products__items .product-item__body",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__name",
@@ -175,7 +178,7 @@
         "urls": [
             "https://www.alfa-beta.com.tr"
         ],
-         "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
+        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
         "productListSelector": "#product-list-container",
         "productItemSelector": ".showcase",
         "titleSelector": ".showcase-title a",
