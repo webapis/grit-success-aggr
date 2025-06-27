@@ -4,6 +4,7 @@
         "urls": [
             "https://www.koton.com/"
         ],
+        "navigationUrls": "(async (page) => { return await page.evaluate(() => [...document.querySelectorAll('a')].map(m => m.href)); })",
         "productListSelector": ".list__products",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__info-name",
