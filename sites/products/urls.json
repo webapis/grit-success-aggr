@@ -254,7 +254,7 @@
         "imageSelector": "source[data-srcset]",
         "imageAttr": "data-srcset",
         "linkSelector": ".PrdImgsBox a",
-        "funcPageSelector": [".TotalProductCount", 24],
+        "funcPageSelector": [".TotalProductCount", "24"],
         "excludeUrlPatterns": [
             "**Hakkimizda**",
             "**Login**",
