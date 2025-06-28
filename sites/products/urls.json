@@ -315,7 +315,7 @@
         "productListSelector": ".ProductList",
         "productItemSelector": ".productItem",
         "titleSelector": ".productName.detailUrl a",
-        "imageSelector": "[data-original]",
+        "imageSelector": "(document)=>document.querySelector('[data-original]')?.getAttribute('data-original') ||document.querySelector('[poster]')?.getAttribute('poster')",
         "imageAttr": "data-original",
         "linkSelector": ".productName.detailUrl a",
         "funcPageSelector":[".pageNumber a"],
