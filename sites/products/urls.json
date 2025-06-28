@@ -360,12 +360,14 @@
         "urls": [
             "https://www.fever.com.tr/"
         ],
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": ".catalogWrapper",
         "productItemSelector": ".productItem",
         "titleSelector": ".productDetails .detailLink",
         "imageSelector": "[itemprop='image'][content]",
         "imageAttr": "content",
         "linkSelector": ".productDetails .detailLink",
+        "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "15"
     },
