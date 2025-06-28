@@ -254,7 +254,7 @@
         "imageSelector": "source[data-srcset]",
         "imageAttr": "data-srcset",
         "linkSelector": ".PrdImgsBox a",
-        "funcPageSelector": [".TotalProductCount", "24"],
+        "funcPageSelector": [".TotalProductCount", 24],
         "excludeUrlPatterns": [
             "**Hakkimizda**",
             "**Login**",
@@ -311,12 +311,16 @@
         "urls": [
             "https://www.birelin.com/"
         ],
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": ".ProductList",
         "productItemSelector": ".productItem",
         "titleSelector": ".productName.detailUrl a",
         "imageSelector": "[data-original]",
         "imageAttr": "data-original",
         "linkSelector": ".productName.detailUrl a",
+        "funcPageSelector":[".pageNumber a"],
+        "excludeUrlPatterns":["**lookbook**"],
+        "paginationPostfix":["?sayfa="],
         "schedule": "0 0 * * 4",
         "id": "13"
     },
