@@ -207,7 +207,9 @@
         "titleSelector": ".showcase-title a",
         "imageSelector": "(document)=>'https:'+ document.querySelector('.showcase-image [data-src]').getAttribute('data-src')",
         "linkSelector": ".showcase-image a",
-        "funcPageSelector": [".paginate-content a"],
+        "funcPageSelector": [
+            ".paginate-content a"
+        ],
         "excludeUrlPatterns": [
             "**/uye-ol**",
             "**/sifremi-unuttum**",
@@ -232,7 +234,9 @@
         "titleSelector": ".product-title",
         "imageSelector": ".product-card__image",
         "linkSelector": ".product-title",
-        "funcPageSelector": [".pagination__link"],
+        "funcPageSelector": [
+            ".pagination__link"
+        ],
         "excludeUrlPatterns": [
             "**/contact**"
         ],
@@ -254,7 +258,10 @@
         "imageSelector": "source[data-srcset]",
         "imageAttr": "data-srcset",
         "linkSelector": ".PrdImgsBox a",
-        "funcPageSelector": [".TotalProductCount", 24],
+        "funcPageSelector": [
+            ".TotalProductCount",
+            24
+        ],
         "excludeUrlPatterns": [
             "**Hakkimizda**",
             "**Login**",
@@ -279,7 +286,9 @@
         "titleSelector": ".product-name",
         "imageSelector": ".product-image",
         "linkSelector": "a.product-name",
-        "funcPageSelector": [".pagination-item"],
+        "funcPageSelector": [
+            ".pagination-item"
+        ],
         "excludeUrlPatterns": [
             "**/kvkk/**"
         ],
@@ -318,9 +327,15 @@
         "imageSelector": "(document)=>document.querySelector('[data-original]')?.getAttribute('data-original') ||document.querySelector('[poster]')?.getAttribute('poster')",
         "imageAttr": "data-original",
         "linkSelector": ".productName.detailUrl a",
-        "funcPageSelector":[".pageNumber a"],
-        "excludeUrlPatterns":["**lookbook**"],
-        "paginationPostfix":["?sayfa="],
+        "funcPageSelector": [
+            ".pageNumber a"
+        ],
+        "excludeUrlPatterns": [
+            "**lookbook**"
+        ],
+        "paginationPostfix": [
+            "?sayfa="
+        ],
         "schedule": "0 0 * * 4",
         "id": "13"
     },
@@ -329,12 +344,14 @@
         "urls": [
             "https://www.ekolonline.com"
         ],
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": ".productList",
         "productItemSelector": ".product-list-item",
         "titleSelector": ".mainTitle",
         "imageSelector": "[data-img]",
         "imageAttr": "data-img",
         "linkSelector": "a.product-figure",
+        "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "14"
     },
