@@ -376,6 +376,7 @@
         "urls": [
             "https://gustoeshop.com/"
         ],
+        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
         "productListSelector": "#catalog-list",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-title a",
@@ -383,6 +384,7 @@
         "imageAttr": "srcset",
         "linkSelector": ".product-title a",
         "schedule": "0 0 * * 4",
+        "isAutoScroll": true,
         "id": "16"
     },
     {
