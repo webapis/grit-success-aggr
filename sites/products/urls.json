@@ -834,6 +834,7 @@
         "imageSelector": "(document)=>document.querySelector('.img-responsive.img-first').srcset.split(' ')[0].trim()",
         "linkSelector": ".caption .name  a",
         "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb a')).map(m=>m.innerText).join(' ')",
+        "isAutoScroll":true,
         "schedule": "0 0 * * 4",
         "id": "44"
     },
