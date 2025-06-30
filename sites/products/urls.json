@@ -717,6 +717,8 @@
         "titleSelector": "h3.text-primary a.inline-block.line-clamp-2",
         "imageSelector": "(document)=>document.querySelector('[srcset]')?.getAttribute('srcset').split(',')[7].trim().split(' ')[0]",
         "linkSelector": "h3.text-primary a.inline-block.line-clamp-2",
+        "funcPageSelector":["span.text-primary",12],
+        "paginationPostfix":["?p="],
         "schedule": "0 0 * * 4",
         "id": "34"
     },
