@@ -703,6 +703,7 @@
         "imageAttr": "data-src",
         "linkSelector": "a",
         "breadcrumb": "document.querySelectorAll('.breadcrumb a') ? Array.from(document.querySelectorAll('.breadcrumb a')).map(m => m.innerText).join(' ') : ' '",
+        "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "33"
     },
