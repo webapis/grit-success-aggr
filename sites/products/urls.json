@@ -750,6 +750,7 @@
         "imageAttr": "data-src",
         "linkSelector": ".product-title a",
         "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb a')).map(m=>m.innerText).join(' ')",
+        "isAutoScroll":true,
         "schedule": "0 0 * * 4",
         "id": "36"
     },
