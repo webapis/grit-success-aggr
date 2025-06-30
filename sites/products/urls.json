@@ -795,6 +795,7 @@
         "imageSelector": "[data-src]",
         "imageAttr": "data-src",
         "linkSelector": "(document)=>document.href",
+        "funcPageSelector":[".plp-info.js-plp-info",42],
         "schedule": "0 0 * * 4",
         "id": "39"
     },
