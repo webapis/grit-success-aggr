@@ -875,6 +875,8 @@
         "imageSelector": "[data-src]",
         "imageAttr": "data-src",
         "linkSelector": ".m-productCard__photo a",
+        "funcPageSelector":[".o-productList__top--breadcrumbCount span"],
+        "paginationPostfix":["?sayfa="],
         "schedule": "0 0 * * 4",
         "id": "43"
     },
