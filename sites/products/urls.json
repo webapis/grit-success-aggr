@@ -780,6 +780,7 @@
         "imageSelector": "[data-src]",
         "imageAttr": "data-src",
         "linkSelector": "a.product-title",
+        "isAutoScroll":true,
         "schedule": "0 0 * * 4",
         "id": "38"
     },
