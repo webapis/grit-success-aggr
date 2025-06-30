@@ -558,6 +558,8 @@
         "imageSelector": "[data-original]",
         "imageAttr": "data-original",
         "linkSelector": ".productName.detailUrl a",
+        "funcPageSelector":[".FiltrelemeUrunAdet span",56],
+        "paginationPostfix":["?sayfa="],
         "schedule": "0 0 * * 4",
         "id": "26"
     },
