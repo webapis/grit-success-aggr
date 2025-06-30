@@ -22,15 +22,13 @@ const dataWithError = data.filter(f => f.error);
 const { oldestTimestamp, newestTimestamp, minutesSpan } = getAggrTimeSpan({ data });
 const totalPages = countUnique({ data, key: 'pageURL' });
 const totalUniqueObjects = countUnique({ data, key: 'link' });
-const validLinks = countByField( data, 'linkValid' );
-const validimgs = countByField( data, 'imgValid' );
-const validTitle = countByField( data, 'titleValid' );
-const validPageTitle = countByField( data, 'pageTitleValid' );
+const validLinks = countByField(data, 'linkValid');
+const validimgs = countByField(data, 'imgValid');
+const validTitle = countByField(data, 'titleValid');
+const validPageTitle = countByField(data, 'pageTitleValid');
 debugger
 const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
 
-
-debugger
 const baseRowData = {
     Site: site,
     'Total Objects': dataWithoutError.length,
@@ -45,7 +43,7 @@ const baseRowData = {
     'Span (min)': minutesSpan,
     'Total Pages': totalPages.count,
     'Unique Page URLs': uniquePageURLs.length,
-
+    'AutoScroll': siteUrls.isAutoScroll ? 'true' : 'false'
 };
 
 
