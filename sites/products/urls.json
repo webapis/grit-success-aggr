@@ -458,12 +458,14 @@
         "urls": [
             "https://www.machka.com.tr/"
         ],
-        "productListSelector": ".ems-prd",
-        "productItemSelector": ".ems-prd",
-        "titleSelector": ".ems-prd-title",
-        "imageSelector": "[data-image-src]",
-        "imageAttr": "data-image-src",
-        "linkSelector": ".item-link",
+         "navigationUrls": "(async (page) => { const collectedUrls = []; const navLinks = await page.$$('.main-menu-top li'); for (const navLink of navLinks) { await navLink.hover(); await page.waitForSelector('a', { timeout: 2000 }).catch(() => {}); const submenuUrls = await page.$$eval('a', links => links.map(link => link.href)); collectedUrls.push(...submenuUrls); await page.waitForTimeout(500); } return collectedUrls; })",
+        "productListSelector": ".prd-list",
+        "productItemSelector": ".product-item",
+        "titleSelector": "(document)=> document.querySelector('a[title]').getAttribute('title')",
+        "imageSelector": "(doculent)=>document.querySelector('[data-large]').getAttribute('data-large')",
+        "linkSelector": "(document)=> document.querySelector('a[title]').href",
+        "funcPageSelector":[".prd-qty",30],
+        "paginationPostfix":["?page="],
         "schedule": "0 0 * * 4",
         "id": "21"
     },
@@ -478,6 +480,8 @@
         "imageSelector": "[data-original]",
         "imageAttr": "data-original",
         "linkSelector": ".detailUrl",
+        "funcPageSelector":[".FiltrelemeUrunAdet span",23],
+        "paginationPostfix":["?sayfa="],
         "schedule": "0 0 * * 4",
         "id": "22"
     },
