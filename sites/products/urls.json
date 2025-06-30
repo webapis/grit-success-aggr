@@ -39,7 +39,6 @@
             ".catalog__meta--product-count span",
             24
         ],
-    
         "excludeUrlPatterns": [
             "**/kadin-giyim**",
             "**/erkek-giyim**",
@@ -72,7 +71,6 @@
             "**/sosyal-sorumluluk**",
             "**lookbook**"
         ],
-   
         "schedule": "0 0 * * 4",
         "id": "3"
     },
@@ -98,7 +96,6 @@
             "**-tum-**",
             "**selectcard**"
         ],
-
         "schedule": "0 0 * * 4",
         "id": "4"
     },
@@ -119,7 +116,6 @@
         "excludeUrlPatterns": [
             "**/tum-urunler**"
         ],
-   
         "imageAttr": "data-src",
         "linkSelector": ".detailLink",
         "schedule": "0 0 * * 4",
@@ -144,7 +140,6 @@
         "excludeUrlPatterns": [
             "**category_ids=**"
         ],
-   
         "schedule": "0 0 * * 4",
         "paused": true,
         "pausedReason": "scrape manually",
@@ -169,7 +164,6 @@
             "**/basket**",
             "**category_ids**"
         ],
-  
         "schedule": "0 0 * * 4",
         "id": "7"
     },
@@ -192,7 +186,6 @@
             "**/uye-girisi**",
             "**/urun/**"
         ],
-   
         "schedule": "0 0 * * 4",
         "id": "8"
     },
@@ -212,7 +205,6 @@
         "excludeUrlPatterns": [
             "**/contact**"
         ],
-   
         "schedule": "0 0 * * 4",
         "id": "9"
     },
@@ -238,7 +230,6 @@
             "**whatsapp**",
             "**youtube**"
         ],
-    
         "schedule": "0 0 * * 4",
         "id": "10"
     },
@@ -259,7 +250,6 @@
         "excludeUrlPatterns": [
             "**/kvkk/**"
         ],
-      
         "schedule": "0 0 * * 4",
         "id": "11"
     },
@@ -296,7 +286,6 @@
         "excludeUrlPatterns": [
             "**lookbook**"
         ],
-    
         "schedule": "0 0 * * 4",
         "id": "13"
     },
@@ -363,7 +352,6 @@
             ".prd-qty",
             30
         ],
-     
         "schedule": "0 0 * * 4",
         "id": "17"
     },
@@ -380,7 +368,6 @@
         "funcPageSelector": [
             ".page a"
         ],
-      
         "schedule": "0 0 * * 4",
         "id": "18"
     },
@@ -397,7 +384,6 @@
         "funcPageSelector": [
             ".pagination-custom__num a"
         ],
-   
         "schedule": "0 0 * * 4",
         "id": "19"
     },
@@ -414,7 +400,6 @@
         "funcPageSelector": [
             ".pagination__number a"
         ],
-   
         "schedule": "0 0 * * 4",
         "id": "20"
     },
@@ -433,7 +418,6 @@
             ".prd-qty",
             30
         ],
-     
         "schedule": "0 0 * * 4",
         "id": "21"
     },
@@ -452,7 +436,6 @@
             ".FiltrelemeUrunAdet span",
             23
         ],
-     
         "schedule": "0 0 * * 4",
         "id": "22"
     },
@@ -472,7 +455,6 @@
             ".js-total-products-count",
             60
         ],
-      
         "schedule": "0 0 * * 4",
         "id": "23"
     },
@@ -524,7 +506,6 @@
             ".FiltrelemeUrunAdet span",
             56
         ],
-      
         "schedule": "0 0 * * 4",
         "id": "26"
     },
@@ -543,7 +524,6 @@
             ".FiltrelemeUrunAdet span",
             40
         ],
-  
         "schedule": "0 0 * * 4",
         "id": "27"
     },
@@ -562,7 +542,6 @@
             ".FiltrelemeUrunAdet span",
             24
         ],
-
         "schedule": "0 0 * * 4",
         "id": "28"
     },
@@ -579,7 +558,6 @@
         "funcPageSelector": [
             ".paginate-content a"
         ],
- 
         "schedule": "0 0 * * 4",
         "id": "29"
     },
@@ -596,7 +574,6 @@
         "funcPageSelector": [
             "a.Pagination__NavItem"
         ],
-  
         "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "30"
@@ -615,7 +592,6 @@
             ".prd-qty span",
             20
         ],
-    
         "schedule": "0 0 * * 4",
         "id": "31"
     },
@@ -632,7 +608,6 @@
         "funcPageSelector": [
             ".page-link"
         ],
-      
         "schedule": "0 0 * * 4",
         "id": "32"
     },
@@ -666,7 +641,6 @@
             "span.text-primary",
             12
         ],
-    
         "schedule": "0 0 * * 4",
         "id": "34"
     },
@@ -685,7 +659,6 @@
             ".product-count-text",
             48
         ],
-    
         "schedule": "0 0 * * 4",
         "id": "35"
     },
@@ -768,7 +741,6 @@
             ".model-showing span",
             48
         ],
-    
         "schedule": "0 0 * * 4",
         "id": "40"
     },
@@ -782,7 +754,9 @@
         "titleSelector": ".productName",
         "imageSelector": "(document)=>'https://www.woody.com.tr'+ document.querySelector('.imgInner.stImage [srcset]').getAttribute('srcset')",
         "linkSelector": ".productName",
-        "funcPageSelector":[".page-link"],
+        "funcPageSelector": [
+            ".page-link"
+        ],
         "schedule": "0 0 * * 4",
         "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb-item')).map(m=>m.innerText).join(' ').toLowerCase()",
         "id": "41"
@@ -798,7 +772,7 @@
         "imageSelector": "(document)=>document.querySelector(\"[class^='ProductImage_productImage'] img\").srcset.split(',')[0]",
         "linkSelector": "[class^='ProductImage_productImage'] a",
         "waitForSeconds": 5000,
-        "isAutoScroll":true,
+        "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "42"
     },
@@ -813,7 +787,9 @@
         "imageSelector": "[data-src]",
         "imageAttr": "data-src",
         "linkSelector": ".m-productCard__photo a",
-        "funcPageSelector":[".o-productList__top--breadcrumbCount span"],
+        "funcPageSelector": [
+            ".o-productList__top--breadcrumbCount span"
+        ],
         "schedule": "0 0 * * 4",
         "id": "43"
     },
@@ -851,6 +827,7 @@
             "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=78_79",
             "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=78_100"
         ],
+
         "productListSelector": ".main-products.product-grid",
         "productItemSelector": ".product-layout",
         "titleSelector": ".caption .name  a",
