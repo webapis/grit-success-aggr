@@ -621,7 +621,7 @@
         "imageSelector": "(document)=>document.querySelector('.ProductItem__Image[srcset]')&&'https:'+document.querySelector('.ProductItem__Image[srcset]')?.getAttribute('srcset').split(',')[1].trim().split(' ')[0]||'https:'+document.querySelector('[data-src]')?.getAttribute('data-src').replace('{width}','400')",
         "linkSelector": "h2.ProductItem__Title.Heading a",
         "funcPageSelector":["a.Pagination__NavItem"],
-        "paginationPostfix":["&page="],
+        "paginationPostfix":["?page="],
         "schedule": "0 0 * * 4",
         "id": "30"
     },
