@@ -590,6 +590,8 @@
         "imageSelector": ".imageItem img",
         "imageAttr": "data-src",
         "linkSelector": ".productName.detailUrl a",
+        "funcPageSelector":[".FiltrelemeUrunAdet span",24],
+        "paginationPostfix":["?sayfa="],
         "schedule": "0 0 * * 4",
         "id": "28"
     },
