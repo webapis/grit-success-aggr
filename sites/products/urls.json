@@ -650,21 +650,10 @@
         "titleSelector": ".product-name",
         "imageSelector": "(document)=>'https:' + document.querySelector('.product-image [data-lazysrc]').getAttribute('data-lazysrc')",
         "linkSelector": ".product-image a",
+        "funcPageSelector":[".page-link"],
+        "paginationPostfix":["?page="],
         "schedule": "0 0 * * 4",
         "id": "32"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
     },
     {
         "site": "yargici",
