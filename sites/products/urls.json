@@ -733,6 +733,8 @@
         "imageSelector": "[data-secondary-image-src]",
         "imageAttr": "data-secondary-image-src",
         "linkSelector": "a.product-name",
+        "funcPageSelector":[".product-count-text",48],
+        "paginationPostfix":["?page="],
         "schedule": "0 0 * * 4",
         "id": "35"
     },
