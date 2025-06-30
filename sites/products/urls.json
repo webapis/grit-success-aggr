@@ -844,6 +844,7 @@
         "imageSelector": "(document)=>'https://www.woody.com.tr'+ document.querySelector('.imgInner.stImage [srcset]').getAttribute('srcset')",
         "linkSelector": ".productName",
         "funcPageSelector":[".page-link"],
+        "paginationPostfix":["?pagenumber="],
         "schedule": "0 0 * * 4",
         "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb-item')).map(m=>m.innerText).join(' ').toLowerCase()",
         "id": "41"
