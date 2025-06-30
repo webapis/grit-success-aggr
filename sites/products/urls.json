@@ -717,8 +717,13 @@
         "titleSelector": "h3.text-primary a.inline-block.line-clamp-2",
         "imageSelector": "(document)=>document.querySelector('[srcset]')?.getAttribute('srcset').split(',')[7].trim().split(' ')[0]",
         "linkSelector": "h3.text-primary a.inline-block.line-clamp-2",
-        "funcPageSelector":["span.text-primary",12],
-        "paginationPostfix":["?p="],
+        "funcPageSelector": [
+            "span.text-primary",
+            12
+        ],
+        "paginationPostfix": [
+            "?p="
+        ],
         "schedule": "0 0 * * 4",
         "id": "34"
     },
@@ -733,8 +738,13 @@
         "imageSelector": "[data-secondary-image-src]",
         "imageAttr": "data-secondary-image-src",
         "linkSelector": "a.product-name",
-        "funcPageSelector":[".product-count-text",48],
-        "paginationPostfix":["?page="],
+        "funcPageSelector": [
+            ".product-count-text",
+            48
+        ],
+        "paginationPostfix": [
+            "?page="
+        ],
         "schedule": "0 0 * * 4",
         "id": "35"
     },
@@ -750,7 +760,7 @@
         "imageAttr": "data-src",
         "linkSelector": ".product-title a",
         "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb a')).map(m=>m.innerText).join(' ')",
-        "isAutoScroll":true,
+        "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "36"
     },
@@ -765,7 +775,7 @@
         "imageSelector": "[data-original]",
         "imageAttr": "data-original",
         "linkSelector": ".productName a",
-        "isAutoScroll":true,
+        "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "37"
     },
@@ -780,7 +790,7 @@
         "imageSelector": "[data-src]",
         "imageAttr": "data-src",
         "linkSelector": "a.product-title",
-        "isAutoScroll":true,
+        "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "38"
     },
@@ -795,7 +805,10 @@
         "imageSelector": "[data-src]",
         "imageAttr": "data-src",
         "linkSelector": "(document)=>document.href",
-        "funcPageSelector":[".plp-info.js-plp-info",42],
+        "funcPageSelector": [
+            ".plp-info.js-plp-info",
+            42
+        ],
         "schedule": "0 0 * * 4",
         "id": "39"
     },
@@ -810,6 +823,13 @@
         "imageSelector": "swiper-slide img",
         "linkSelector": "(document)=>Array.from(document.querySelectorAll('a'))?.map(m=>m.href).reverse()[0]",
         "waitForSeconds": 5000,
+        "funcPageSelector": [
+            ".model-showing span",
+            48
+        ],
+        "paginationPostfix": [
+            "?currentPage="
+        ],
         "schedule": "0 0 * * 4",
         "id": "40"
     },
