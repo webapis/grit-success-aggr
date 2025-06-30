@@ -4,7 +4,6 @@
         "urls": [
             "https://www.koton.com/"
         ],
-
         "productListSelector": ".list__products",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__info-name",
@@ -34,7 +33,6 @@
         "urls": [
             "https://www.defacto.com.tr/statik/sitemap"
         ],
-
         "productListSelector": "#product-container",
         "productItemSelector": "[data-documents]",
         "titleSelector": ".product-card__title a",
@@ -65,7 +63,6 @@
         "urls": [
             "https://www.desa.com.tr/"
         ],
-
         "productListSelector": ".js-list-content-item-wrapper",
         "productItemSelector": ".product-item-box",
         "titleSelector": ".product-name a",
@@ -91,7 +88,6 @@
         "urls": [
             "https://www.divarese.com.tr/"
         ],
-
         "productListSelector": ".products",
         "productItemSelector": ".products__item",
         "titleSelector": ".product__title",
@@ -120,7 +116,6 @@
         "urls": [
             "https://www.elleshoes.com/"
         ],
-
         "productListSelector": ".ProductList",
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
@@ -148,7 +143,6 @@
         "urls": [
             "https://tr.manuatelier.com/"
         ],
-
         "productListSelector": "#CollectionLoop",
         "productItemSelector": ".product-item",
         "titleSelector": "(document)=>document.querySelector('.product-link[aria-label]').getAttribute('aria-label')",
@@ -174,7 +168,6 @@
         "urls": [
             "https://www.adl.com.tr"
         ],
-
         "productListSelector": ".list__body .products__items .product-item__body",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__name",
@@ -201,7 +194,6 @@
         "urls": [
             "https://www.alfa-beta.com.tr"
         ],
-
         "productListSelector": "#product-list-container",
         "productItemSelector": ".showcase",
         "titleSelector": ".showcase-title a",
@@ -228,7 +220,6 @@
         "urls": [
             "https://biancoenero.com.tr/"
         ],
-
         "productListSelector": ".collection__main",
         "productItemSelector": ".product-card",
         "titleSelector": ".product-title",
@@ -251,7 +242,6 @@
         "urls": [
             "https://www.bsl.com.tr/tr/site-haritasi"
         ],
-
         "productListSelector": ".PrdContainer",
         "productItemSelector": ".Prd",
         "titleSelector": ".PName",
@@ -304,7 +294,6 @@
             "https://clothing.beautyomelette.com/",
             "https://cosmetics.beautyomelette.com/"
         ],
-
         "productListSelector": ".productItem",
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
@@ -320,7 +309,6 @@
         "urls": [
             "https://www.birelin.com/"
         ],
-
         "productListSelector": ".ProductList",
         "productItemSelector": ".productItem",
         "titleSelector": ".productName.detailUrl a",
@@ -344,7 +332,6 @@
         "urls": [
             "https://www.ekolonline.com"
         ],
-
         "productListSelector": ".productList",
         "productItemSelector": ".product-list-item",
         "titleSelector": ".mainTitle",
@@ -360,7 +347,6 @@
         "urls": [
             "https://www.fever.com.tr/"
         ],
-
         "productListSelector": ".catalogWrapper",
         "productItemSelector": ".productItem",
         "titleSelector": ".productDetails .detailLink",
@@ -376,7 +362,6 @@
         "urls": [
             "https://gustoeshop.com/"
         ],
-
         "productListSelector": "#catalog-list",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-title a",
@@ -392,16 +377,18 @@
         "urls": [
             "https://www.ipekyol.com.tr/"
         ],
-
         "productListSelector": ".prd-list",
         "productItemSelector": ".product-item",
         "titleSelector": ".name",
         "imageSelector": "[data-image-src]",
         "imageAttr": "data-image-src",
         "linkSelector": ".prd-lnk",
-        "excludeUrlPatterns":["**giyim-modelleri**"],
+        "excludeUrlPatterns": [
+            "**giyim-modelleri**"
+        ],
         "funcPageSelector": [
-            ".prd-qty",30
+            ".prd-qty",
+            30
         ],
         "paginationPostfix": [
             "?page="
@@ -419,8 +406,12 @@
         "titleSelector": ".product-card-title",
         "imageSelector": "(document)=> 'https:'  + document.querySelector('[data-srcset]').getAttribute('data-srcset').split(',').filter(f=>f)[0].split(' ').filter(f=>f)[0] ",
         "linkSelector": ".product-card-title",
-        "funcPageSelector":[".page a"],
-        "paginationPostfix":["?page="],
+        "funcPageSelector": [
+            ".page a"
+        ],
+        "paginationPostfix": [
+            "?page="
+        ],
         "schedule": "0 0 * * 4",
         "id": "18"
     },
@@ -434,8 +425,12 @@
         "titleSelector": ".product__grid__title",
         "imageSelector": "(document)=>'https:' + document.querySelector('[data-bgset]').getAttribute('data-bgset').trim().split(',')[2].trim().split(' ')",
         "linkSelector": ".product__grid__info a",
-        "funcPageSelector":[".pagination-custom__num a"],
-        "paginationPostfix":["?page="],
+        "funcPageSelector": [
+            ".pagination-custom__num a"
+        ],
+        "paginationPostfix": [
+            "?page="
+        ],
         "schedule": "0 0 * * 4",
         "id": "19"
     },
@@ -449,6 +444,12 @@
         "titleSelector": ".product-block__title",
         "imageSelector": "(document)=>'https:' + document.querySelector('[data-lazy-bgset-src]').getAttribute('data-lazy-bgset-src')",
         "linkSelector": ".product-link",
+        "funcPageSelector": [
+            ".pagination__number a"
+        ],
+        "paginationPostfix": [
+            "?page=2"
+        ],
         "schedule": "0 0 * * 4",
         "id": "20"
     },
@@ -1992,6 +1993,4 @@
         "linkSelector": "",
         "schedule": "0 0 * * 4"
     }
-    
-  
 ]
