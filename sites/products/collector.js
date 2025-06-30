@@ -6,6 +6,7 @@ import isValidImageURL from "../../src/scrap/isValidImageURL.js";
 import isValidURL from "../../src/scrap/isValidURL.js";
 import isValidText from "../../src/scrap/isValidText.js";
 import urls from './urls.json' assert { type: 'json' };
+import commonExcludedPatterns from "./helpers/commonExcludedPatterns.js";
 import { uploadToGoogleDrive } from './uploadToGoogleDrive.js';
 
 dotenv.config({ silent: true });
@@ -61,6 +62,17 @@ export default async function first({ page, enqueueLinks, request, log, addReque
 
         } catch (error) {
             console.log('Error in navigationUrls:', error);
+        }
+
+    } else {
+
+        try {
+            const result = await enqueueLinks({ selector: 'a', exclude: siteUrls && siteUrls.excludeUrlPatterns, label: 'second' })
+
+            console.log('enqueueLinks', result);
+            debugger;
+        } catch (error) {
+            debugger;
         }
 
     }
@@ -264,7 +276,6 @@ export async function second({
                     return nxtUrls
                 }
                 else if (funcPageSelector.length === 2) {
-
                     try {
                         const pageCounterSelector = funcPageSelector[0];
                         const itemsPerPage = funcPageSelector[1];
@@ -288,9 +299,9 @@ export async function second({
 
             if (nextPages.length > 0) {
 
-                const cleanedPatterns = siteUrls.excludeUrlPatterns.map(p => p.replace(/\*/g, ''));
+                const cleanedPatterns =siteUrls.excludeUrlPatterns? [...commonExcludedPatterns, ...siteUrls.excludeUrlPatterns.map(p => p.replace(/\*/g, ''))  ]:commonExcludedPatterns
                 const filtered = nextPages
-                    .filter(url => !cleanedPatterns.some(pattern => url.includes(pattern)))
+                    .filter(url => !cleanedPatterns.some(pattern => url.toLowerCase().includes(pattern)))
                     .map(url => ({ url: url.replace('??', '?'), label: 'second' }));
 
                 console.log('filtered', filtered);

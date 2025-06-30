@@ -1,0 +1,1 @@
+export default ["login","user","auth","basket","facebook","twitter","instagram","anasayfa"]

@@ -4,7 +4,7 @@
         "urls": [
             "https://www.koton.com/"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": ".list__products",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__info-name",
@@ -34,7 +34,7 @@
         "urls": [
             "https://www.defacto.com.tr/statik/sitemap"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": "#product-container",
         "productItemSelector": "[data-documents]",
         "titleSelector": ".product-card__title a",
@@ -65,7 +65,7 @@
         "urls": [
             "https://www.desa.com.tr/"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": ".js-list-content-item-wrapper",
         "productItemSelector": ".product-item-box",
         "titleSelector": ".product-name a",
@@ -91,7 +91,7 @@
         "urls": [
             "https://www.divarese.com.tr/"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": ".products",
         "productItemSelector": ".products__item",
         "titleSelector": ".product__title",
@@ -120,7 +120,7 @@
         "urls": [
             "https://www.elleshoes.com/"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": ".ProductList",
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
@@ -148,7 +148,7 @@
         "urls": [
             "https://tr.manuatelier.com/"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": "#CollectionLoop",
         "productItemSelector": ".product-item",
         "titleSelector": "(document)=>document.querySelector('.product-link[aria-label]').getAttribute('aria-label')",
@@ -174,7 +174,7 @@
         "urls": [
             "https://www.adl.com.tr"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": ".list__body .products__items .product-item__body",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__name",
@@ -201,7 +201,7 @@
         "urls": [
             "https://www.alfa-beta.com.tr"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": "#product-list-container",
         "productItemSelector": ".showcase",
         "titleSelector": ".showcase-title a",
@@ -228,7 +228,7 @@
         "urls": [
             "https://biancoenero.com.tr/"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": ".collection__main",
         "productItemSelector": ".product-card",
         "titleSelector": ".product-title",
@@ -251,7 +251,7 @@
         "urls": [
             "https://www.bsl.com.tr/tr/site-haritasi"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": ".PrdContainer",
         "productItemSelector": ".Prd",
         "titleSelector": ".PName",
@@ -304,7 +304,7 @@
             "https://clothing.beautyomelette.com/",
             "https://cosmetics.beautyomelette.com/"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": ".productItem",
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
@@ -320,7 +320,7 @@
         "urls": [
             "https://www.birelin.com/"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": ".ProductList",
         "productItemSelector": ".productItem",
         "titleSelector": ".productName.detailUrl a",
@@ -344,7 +344,7 @@
         "urls": [
             "https://www.ekolonline.com"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": ".productList",
         "productItemSelector": ".product-list-item",
         "titleSelector": ".mainTitle",
@@ -360,7 +360,7 @@
         "urls": [
             "https://www.fever.com.tr/"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": ".catalogWrapper",
         "productItemSelector": ".productItem",
         "titleSelector": ".productDetails .detailLink",
@@ -376,7 +376,7 @@
         "urls": [
             "https://gustoeshop.com/"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": "#catalog-list",
         "productItemSelector": ".product-item",
         "titleSelector": ".product-title a",
@@ -392,7 +392,7 @@
         "urls": [
             "https://www.ipekyol.com.tr/"
         ],
-        "navigationUrls": "[...document.querySelectorAll('a')].map(m => m.href)",
+
         "productListSelector": ".prd-list",
         "productItemSelector": ".product-item",
         "titleSelector": ".name",
@@ -414,11 +414,13 @@
         "urls": [
             "https://joinus.com.tr"
         ],
-        "productListSelector": ".product-collection",
-        "productItemSelector": ".product-item",
-        "titleSelector": ".product-title",
-        "imageSelector": "(document)=> 'https:'  + document.querySelector('[data-srcset]').getAttribute('data-srcset')",
-        "linkSelector": ".product-title",
+        "productListSelector": ".products",
+        "productItemSelector": ".product-card",
+        "titleSelector": ".product-card-title",
+        "imageSelector": "(document)=> 'https:'  + document.querySelector('[data-srcset]').getAttribute('data-srcset').split(',').filter(f=>f)[0].split(' ').filter(f=>f)[0] ",
+        "linkSelector": ".product-card-title",
+        "funcPageSelector":[".page a"],
+        "paginationPostfix":["?page="],
         "schedule": "0 0 * * 4",
         "id": "18"
     },
@@ -1987,213 +1989,7 @@
         "imageAttr": "srс",
         "linkSelector": "",
         "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
-    },
-    {
-        "site": "",
-        "urls": [
-            ""
-        ],
-        "productListSelector": "",
-        "productItemSelector": "",
-        "titleSelector": "",
-        "imageSelector": "",
-        "imageAttr": "srс",
-        "linkSelector": "",
-        "schedule": "0 0 * * 4"
     }
+    
+  
 ]
