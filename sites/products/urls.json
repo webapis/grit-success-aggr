@@ -528,7 +528,7 @@
         "imageSelector": "[data-original]",
         "imageAttr": "data-original",
         "linkSelector": ".product-image a",
-        "isAutoScroll":true,
+        "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "24"
     },
@@ -542,8 +542,11 @@
         "titleSelector": ".PName",
         "imageSelector": "(document)=>document.querySelector('.img1.PImage[data-src]')?  document.querySelector('.img1.PImage[data-src]').getAttribute('data-src'):document.queryselector('.img1.PImage').src",
         "linkSelector": "a[data-product]",
-        "isAutoScroll":true,
-        "excludeUrlPatterns":["/giyim/","/pantolonlar/"],
+        "isAutoScroll": true,
+        "excludeUrlPatterns": [
+            "/giyim/",
+            "/pantolonlar/"
+        ],
         "schedule": "0 0 * * 4",
         "id": "25"
     },
@@ -558,8 +561,13 @@
         "imageSelector": "[data-original]",
         "imageAttr": "data-original",
         "linkSelector": ".productName.detailUrl a",
-        "funcPageSelector":[".FiltrelemeUrunAdet span",56],
-        "paginationPostfix":["?sayfa="],
+        "funcPageSelector": [
+            ".FiltrelemeUrunAdet span",
+            56
+        ],
+        "paginationPostfix": [
+            "?sayfa="
+        ],
         "schedule": "0 0 * * 4",
         "id": "26"
     },
@@ -574,8 +582,13 @@
         "imageSelector": ".productImage [data-original]",
         "imageAttr": "data-original",
         "linkSelector": ".productName.detailUrl a",
-        "funcPageSelector":[".FiltrelemeUrunAdet span",40],
-        "paginationPostfix":["?sayfa="],
+        "funcPageSelector": [
+            ".FiltrelemeUrunAdet span",
+            40
+        ],
+        "paginationPostfix": [
+            "?sayfa="
+        ],
         "schedule": "0 0 * * 4",
         "id": "27"
     },
@@ -590,8 +603,13 @@
         "imageSelector": ".imageItem img",
         "imageAttr": "data-src",
         "linkSelector": ".productName.detailUrl a",
-        "funcPageSelector":[".FiltrelemeUrunAdet span",24],
-        "paginationPostfix":["?sayfa="],
+        "funcPageSelector": [
+            ".FiltrelemeUrunAdet span",
+            24
+        ],
+        "paginationPostfix": [
+            "?sayfa="
+        ],
         "schedule": "0 0 * * 4",
         "id": "28"
     },
@@ -605,8 +623,12 @@
         "titleSelector": ".showcase-title a",
         "imageSelector": "(document)=>'https:'+ document.querySelector('.showcase-image [data-src]').getAttribute('data-src')",
         "linkSelector": ".showcase-image a",
-        "funcPageSelector":[".paginate-content a"],
-        "paginationPostfix":["?tp="],
+        "funcPageSelector": [
+            ".paginate-content a"
+        ],
+        "paginationPostfix": [
+            "?tp="
+        ],
         "schedule": "0 0 * * 4",
         "id": "29"
     },
@@ -620,8 +642,13 @@
         "titleSelector": ".ProductItem__Title a",
         "imageSelector": "(document)=>document.querySelector('.ProductItem__Image[srcset]')&&'https:'+document.querySelector('.ProductItem__Image[srcset]')?.getAttribute('srcset').split(',')[1].trim().split(' ')[0]||'https:'+document.querySelector('[data-src]')?.getAttribute('data-src').replace('{width}','400')",
         "linkSelector": "h2.ProductItem__Title.Heading a",
-        "funcPageSelector":["a.Pagination__NavItem"],
-        "paginationPostfix":["?page="],
+        "funcPageSelector": [
+            "a.Pagination__NavItem"
+        ],
+        "paginationPostfix": [
+            "?page="
+        ],
+        "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "30"
     },
@@ -635,8 +662,13 @@
         "titleSelector": ".prd-name",
         "imageSelector": "(document)=>document.querySelector('[data-large]')?.getAttribute('data-large')|| document.querySelector('[data-background]')?.getAttribute('data-background')",
         "linkSelector": ".prd-lnk",
-        "funcPageSelector":[".prd-qty span",20],
-        "paginationPostfix":["?page="],
+        "funcPageSelector": [
+            ".prd-qty span",
+            20
+        ],
+        "paginationPostfix": [
+            "?page="
+        ],
         "schedule": "0 0 * * 4",
         "id": "31"
     },
@@ -650,8 +682,12 @@
         "titleSelector": ".product-name",
         "imageSelector": "(document)=>'https:' + document.querySelector('.product-image [data-lazysrc]').getAttribute('data-lazysrc')",
         "linkSelector": ".product-image a",
-        "funcPageSelector":[".page-link"],
-        "paginationPostfix":["?page="],
+        "funcPageSelector": [
+            ".page-link"
+        ],
+        "paginationPostfix": [
+            "?page="
+        ],
         "schedule": "0 0 * * 4",
         "id": "32"
     },
