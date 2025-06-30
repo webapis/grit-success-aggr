@@ -1,1 +1,1 @@
-export default ["login","user","auth","basket","facebook","twitter","instagram","anasayfa"]
+export default ["login","user","auth","basket","facebook","twitter","instagram","anasayfa","checkout","magazalar","teslimat"]
