@@ -434,6 +434,8 @@
         "titleSelector": ".product__grid__title",
         "imageSelector": "(document)=>'https:' + document.querySelector('[data-bgset]').getAttribute('data-bgset').trim().split(',')[2].trim().split(' ')",
         "linkSelector": ".product__grid__info a",
+        "funcPageSelector":[".pagination-custom__num a"],
+        "paginationPostfix":["?page="],
         "schedule": "0 0 * * 4",
         "id": "19"
     },
