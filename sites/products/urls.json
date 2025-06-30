@@ -635,6 +635,8 @@
         "titleSelector": ".prd-name",
         "imageSelector": "(document)=>document.querySelector('[data-large]')?.getAttribute('data-large')|| document.querySelector('[data-background]')?.getAttribute('data-background')",
         "linkSelector": ".prd-lnk",
+        "funcPageSelector":[".prd-qty span",20],
+        "paginationPostfix":["?page="],
         "schedule": "0 0 * * 4",
         "id": "31"
     },
