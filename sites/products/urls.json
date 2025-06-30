@@ -859,6 +859,7 @@
         "imageSelector": "(document)=>document.querySelector(\"[class^='ProductImage_productImage'] img\").srcset.split(',')[0]",
         "linkSelector": "[class^='ProductImage_productImage'] a",
         "waitForSeconds": 5000,
+        "isAutoScroll":true,
         "schedule": "0 0 * * 4",
         "id": "42"
     },
