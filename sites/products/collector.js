@@ -110,7 +110,7 @@ export async function second({
     }
     console.log('product-list-container', productListSelector)
     // Check if there are any product items on the page
-    const productItemsCount = await page.$$eval(productListSelector, elements => elements.length);
+    const productItemsCount = await page.$$eval(productItemSelector, elements => elements.length);
 
     if (productItemsCount > 0) {
 

@@ -4,7 +4,7 @@
         "urls": [
             "https://www.koton.com/"
         ],
-        "productListSelector": ".list__products",
+
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__info-name",
         "imageSelector": "(document)=>JSON.parse(document.querySelector('.js-insider-product').innerText).product_image_url",
@@ -30,7 +30,7 @@
         "urls": [
             "https://www.defacto.com.tr/statik/sitemap"
         ],
-        "productListSelector": "#product-container",
+
         "productItemSelector": "[data-documents]",
         "titleSelector": ".product-card__title a",
         "imageSelector": "(document)=>document.querySelector('[data-srcset]').getAttribute('data-srcset').split(',')[0].split(' ').filter(f=>f)[0]",
@@ -57,7 +57,7 @@
         "urls": [
             "https://www.desa.com.tr/"
         ],
-        "productListSelector": ".js-list-content-item-wrapper",
+
         "productItemSelector": ".product-item-box",
         "titleSelector": ".product-name a",
         "imageSelector": "(document)=>document.querySelector('.product-item-image').getAttribute('data-src')",
@@ -79,7 +79,7 @@
         "urls": [
             "https://www.divarese.com.tr/"
         ],
-        "productListSelector": ".products",
+
         "productItemSelector": ".products__item",
         "titleSelector": ".product__title",
         "imageSelector": ".product__previewPicture [data-srcset]",
@@ -104,7 +104,7 @@
         "urls": [
             "https://www.elleshoes.com/"
         ],
-        "productListSelector": ".ProductList",
+
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
         "imageSelector": ".productSliderImage",
@@ -128,7 +128,7 @@
         "urls": [
             "https://tr.manuatelier.com/"
         ],
-        "productListSelector": "#CollectionLoop",
+
         "productItemSelector": ".product-item",
         "titleSelector": "(document)=>document.querySelector('.product-link[aria-label]').getAttribute('aria-label')",
         "imageSelector": "(document)=>'https:' + document.querySelector('.product-item__bg [srcset]').getAttribute('srcset').split(',')[6].split(' ').filter(f=>f)[0]",
@@ -150,7 +150,7 @@
         "urls": [
             "https://www.adl.com.tr"
         ],
-        "productListSelector": ".list__body .products__items .product-item__body",
+
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__name",
         "imageSelector": ".d-block source",
@@ -172,7 +172,7 @@
         "urls": [
             "https://www.alfa-beta.com.tr"
         ],
-        "productListSelector": "#product-list-container",
+
         "productItemSelector": ".showcase",
         "titleSelector": ".showcase-title a",
         "imageSelector": "(document)=>'https:'+ document.querySelector('.showcase-image [data-src]').getAttribute('data-src')",
@@ -194,7 +194,7 @@
         "urls": [
             "https://biancoenero.com.tr/"
         ],
-        "productListSelector": ".collection__main",
+
         "productItemSelector": ".product-card",
         "titleSelector": ".product-title",
         "imageSelector": ".product-card__image",
@@ -213,7 +213,7 @@
         "urls": [
             "https://www.bsl.com.tr/tr/site-haritasi"
         ],
-        "productListSelector": ".PrdContainer",
+
         "productItemSelector": ".Prd",
         "titleSelector": ".PName",
         "imageSelector": "source[data-srcset]",
@@ -239,7 +239,7 @@
             "https://www.lovemybody.com.tr/kadin-elbise/"
         ],
         "navigationUrls": "(async (page) => { const collectedUrls = []; const navLinks = await page.$$('.navigation__link.has-submenu-navigation-link.js-next-menu.js-nav-link'); for (const navLink of navLinks) { await navLink.hover(); await page.waitForSelector('.navigation__submenu__item__link', { timeout: 2000 }).catch(() => {}); const submenuUrls = await page.$$eval('.navigation__submenu__item__link', links => links.map(link => link.href)); collectedUrls.push(...submenuUrls); await page.waitForTimeout(500); } return collectedUrls; })",
-        "productListSelector": ".product-item-box",
+
         "productItemSelector": ".product-item-box",
         "titleSelector": ".product-name",
         "imageSelector": ".product-image",
@@ -259,7 +259,7 @@
             "https://clothing.beautyomelette.com/",
             "https://cosmetics.beautyomelette.com/"
         ],
-        "productListSelector": ".productItem",
+
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
         "imageSelector": "[data-original]",
@@ -274,7 +274,7 @@
         "urls": [
             "https://www.birelin.com/"
         ],
-        "productListSelector": ".ProductList",
+
         "productItemSelector": ".productItem",
         "titleSelector": ".productName.detailUrl a",
         "imageSelector": "(document)=>document.querySelector('[data-original]')?.getAttribute('data-original') ||document.querySelector('[poster]')?.getAttribute('poster')",
@@ -294,7 +294,7 @@
         "urls": [
             "https://www.ekolonline.com"
         ],
-        "productListSelector": ".productList",
+
         "productItemSelector": ".product-list-item",
         "titleSelector": ".mainTitle",
         "imageSelector": "[data-img]",
@@ -309,7 +309,7 @@
         "urls": [
             "https://www.fever.com.tr/"
         ],
-        "productListSelector": ".catalogWrapper",
+
         "productItemSelector": ".productItem",
         "titleSelector": ".productDetails .detailLink",
         "imageSelector": "[itemprop='image'][content]",
@@ -324,7 +324,7 @@
         "urls": [
             "https://gustoeshop.com/"
         ],
-        "productListSelector": "#catalog-list",
+
         "productItemSelector": ".product-item",
         "titleSelector": ".product-title a",
         "imageSelector": ".image-inner source",
@@ -339,7 +339,7 @@
         "urls": [
             "https://www.ipekyol.com.tr/"
         ],
-        "productListSelector": ".prd-list",
+
         "productItemSelector": ".product-item",
         "titleSelector": ".name",
         "imageSelector": "[data-image-src]",
@@ -360,7 +360,7 @@
         "urls": [
             "https://joinus.com.tr"
         ],
-        "productListSelector": ".products",
+
         "productItemSelector": ".product-card",
         "titleSelector": ".product-card-title",
         "imageSelector": "(document)=> 'https:'  + document.querySelector('[data-srcset]').getAttribute('data-srcset').split(',').filter(f=>f)[0].split(' ').filter(f=>f)[0] ",
@@ -376,7 +376,7 @@
         "urls": [
             "https://jusdepommes.com/"
         ],
-        "productListSelector": ".collection__products",
+
         "productItemSelector": ".product-grid-item",
         "titleSelector": ".product__grid__title",
         "imageSelector": "(document)=>'https:' + document.querySelector('[data-bgset]').getAttribute('data-bgset').trim().split(',')[2].trim().split(' ')",
@@ -392,7 +392,7 @@
         "urls": [
             "https://lovemetoo.com.tr/"
         ],
-        "productListSelector": ".product-block",
+
         "productItemSelector": ".product-block",
         "titleSelector": ".product-block__title",
         "imageSelector": "(document)=>'https:' + document.querySelector('[data-lazy-bgset-src]').getAttribute('data-lazy-bgset-src')",
@@ -409,7 +409,7 @@
             "https://www.machka.com.tr/"
         ],
         "navigationUrls": "(async (page) => { const collectedUrls = []; const navLinks = await page.$$('.main-menu-top li'); for (const navLink of navLinks) { await navLink.hover(); await page.waitForSelector('a', { timeout: 2000 }).catch(() => {}); const submenuUrls = await page.$$eval('a', links => links.map(link => link.href)); collectedUrls.push(...submenuUrls); await page.waitForTimeout(500); } return collectedUrls; })",
-        "productListSelector": ".prd-list",
+
         "productItemSelector": ".product-item",
         "titleSelector": "(document)=> document.querySelector('a[title]').getAttribute('title')",
         "imageSelector": "(doculent)=>document.querySelector('[data-large]').getAttribute('data-large')",
@@ -426,7 +426,7 @@
         "urls": [
             "https://www.modalogy.com.tr/"
         ],
-        "productListSelector": ".ProductListContent",
+
         "productItemSelector": ".productItem",
         "titleSelector": ".productName",
         "imageSelector": "[data-original]",
@@ -444,7 +444,7 @@
         "urls": [
             "https://www.network.com.tr"
         ],
-        "productListSelector": ".products",
+
         "productItemSelector": ".products__item",
         "titleSelector": ".product__title",
         "imageSelector": "[data-srcset]",
@@ -463,7 +463,7 @@
         "urls": [
             "https://www.nocturne.com.tr/"
         ],
-        "productListSelector": ".product-list",
+
         "productItemSelector": ".pitem",
         "titleSelector": ".product-name",
         "imageSelector": "[data-original]",
@@ -478,7 +478,7 @@
         "urls": [
             "https://www.oxxo.com.tr/"
         ],
-        "productListSelector": ".Products",
+
         "productItemSelector": ".Prd",
         "titleSelector": ".PName",
         "imageSelector": "(document)=>document.querySelector('.img1.PImage[data-src]')?  document.querySelector('.img1.PImage[data-src]').getAttribute('data-src'):document.queryselector('.img1.PImage').src",
@@ -496,7 +496,7 @@
         "urls": [
             "https://www.rueonline.com/"
         ],
-        "productListSelector": ".ProductList",
+
         "productItemSelector": ".productItem",
         "titleSelector": ".productName.detailUrl a",
         "imageSelector": "[data-original]",
@@ -514,7 +514,7 @@
         "urls": [
             "https://www.setre.com"
         ],
-        "productListSelector": ".ProductListContent",
+
         "productItemSelector": ".productItem",
         "titleSelector": ".productName.detailUrl",
         "imageSelector": ".productImage [data-original]",
@@ -532,7 +532,7 @@
         "urls": [
             "https://www.sherin.com.tr/"
         ],
-        "productListSelector": ".ProductList",
+
         "productItemSelector": ".productItem",
         "titleSelector": ".productName.detailUrl a",
         "imageSelector": ".imageItem img",
@@ -550,7 +550,7 @@
         "urls": [
             "https://www.themolc.com/"
         ],
-        "productListSelector": "#product-list-container",
+
         "productItemSelector": ".showcase",
         "titleSelector": ".showcase-title a",
         "imageSelector": "(document)=>'https:'+ document.querySelector('.showcase-image [data-src]').getAttribute('data-src')",
@@ -566,7 +566,7 @@
         "urls": [
             "https://tuvanam.com/"
         ],
-        "productListSelector": ".ProductListWrapper",
+
         "productItemSelector": ".ProductItem__Wrapper",
         "titleSelector": ".ProductItem__Title a",
         "imageSelector": "(document)=>document.querySelector('.ProductItem__Image[srcset]')&&'https:'+document.querySelector('.ProductItem__Image[srcset]')?.getAttribute('srcset').split(',')[1].trim().split(' ')[0]||'https:'+document.querySelector('[data-src]')?.getAttribute('data-src').replace('{width}','400')",
@@ -583,7 +583,7 @@
         "urls": [
             "https://www.twist.com.tr/"
         ],
-        "productListSelector": ".prd-list",
+
         "productItemSelector": ".prd",
         "titleSelector": ".prd-name",
         "imageSelector": "(document)=>document.querySelector('[data-large]')?.getAttribute('data-large')|| document.querySelector('[data-background]')?.getAttribute('data-background')",
@@ -600,7 +600,7 @@
         "urls": [
             "https://www.wheneverco.com/"
         ],
-        "productListSelector": ".product-list",
+
         "productItemSelector": ".product-list-item",
         "titleSelector": ".product-name",
         "imageSelector": "(document)=>'https:' + document.querySelector('.product-image [data-lazysrc]').getAttribute('data-lazysrc')",
@@ -616,7 +616,7 @@
         "urls": [
             "https://www.yargici.com"
         ],
-        "productListSelector": ".product-list-container",
+
         "productItemSelector": ".prod-card",
         "titleSelector": ".productbox-name",
         "imageSelector": "[data-src]",
@@ -632,7 +632,7 @@
         "urls": [
             "https://www.brooksbrothers.com.tr/"
         ],
-        "productListSelector": ".max-w-xl.fade-in",
+
         "productItemSelector": ".max-w-xl.fade-in",
         "titleSelector": "h3.text-primary a.inline-block.line-clamp-2",
         "imageSelector": "(document)=>document.querySelector('[srcset]')?.getAttribute('srcset').split(',')[7].trim().split(' ')[0]",
@@ -649,7 +649,7 @@
         "urls": [
             "https://www.colins.com.tr/"
         ],
-        "productListSelector": ".catalog-category",
+
         "productItemSelector": ".productCartMain",
         "titleSelector": ".product-name h3",
         "imageSelector": "[data-secondary-image-src]",
@@ -667,7 +667,7 @@
         "urls": [
             "https://www.dahliabianca.com/"
         ],
-        "productListSelector": ".product-grid",
+
         "productItemSelector": ".product-item",
         "titleSelector": ".product-title",
         "imageSelector": "[data-src]",
@@ -683,7 +683,7 @@
         "urls": [
             "https://www.ilvi.com/"
         ],
-        "productListSelector": ".ProductList",
+
         "productItemSelector": ".productItem",
         "titleSelector": ".productName a",
         "imageSelector": "[data-original]",
@@ -698,7 +698,7 @@
         "urls": [
             "https://www.lufian.com/"
         ],
-        "productListSelector": "#product-list-panel",
+
         "productItemSelector": ".product-item",
         "titleSelector": ".product-title",
         "imageSelector": "[data-src]",
@@ -713,7 +713,7 @@
         "urls": [
             "https://www.penti.com/"
         ],
-        "productListSelector": ".prd-link",
+
         "productItemSelector": ".prd-link",
         "titleSelector": "(document)=> document.querySelector('.prd-title h2')?.innerText||JSON.parse(document.querySelector('[data-gtm-product]').getAttribute('data-gtm-product')).name",
         "imageSelector": "[data-src]",
@@ -731,7 +731,7 @@
         "urls": [
             "https://www.wcollection.com.tr/site-haritasi"
         ],
-        "productListSelector": ".product-item",
+
         "productItemSelector": ".product-item",
         "titleSelector": ".product-title .title h3",
         "imageSelector": "swiper-slide img",
@@ -749,7 +749,7 @@
         "urls": [
             "https://www.woody.com.tr/"
         ],
-        "productListSelector": ".product-grid",
+
         "productItemSelector": ".productItem",
         "titleSelector": ".productName",
         "imageSelector": "(document)=>'https://www.woody.com.tr'+ document.querySelector('.imgInner.stImage [srcset]').getAttribute('srcset')",
@@ -766,7 +766,7 @@
         "urls": [
             "https://shop.mango.com/tr/sitemap"
         ],
-        "productListSelector": "[class^='Grid_grid']",
+
         "productItemSelector": "[class^='ProductCard_productCard']",
         "titleSelector": "(document)=> document.querySelector('div[class^=\"ProductDetails_productInfo\"] meta[content]').getAttribute('content')",
         "imageSelector": "(document)=>document.querySelector(\"[class^='ProductImage_productImage'] img\").srcset.split(',')[0]",
@@ -781,7 +781,7 @@
         "urls": [
             "https://www.beymen.com/tr"
         ],
-        "productListSelector": ".o-productList",
+
         "productItemSelector": ".o-productList__itemWrapper",
         "titleSelector": ".m-productCard__desc",
         "imageSelector": "[data-src]",
@@ -828,7 +828,6 @@
             "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=78_100"
         ],
 
-        "productListSelector": ".main-products.product-grid",
         "productItemSelector": ".product-layout",
         "titleSelector": ".caption .name  a",
         "imageSelector": "(document)=>document.querySelector('.img-responsive.img-first').srcset.split(' ')[0].trim()",
@@ -858,7 +857,7 @@
             "https://www.matras.com/aksesuar",
             "https://www.matras.com/seyahat"
         ],
-        "productListSelector": ".col-md-3.col-sm-3.col-xs-6.wow",
+
         "productItemSelector": ".col-md-3.col-sm-3.col-xs-6.wow",
         "titleSelector": "(document)=>document.querySelector('.product_name').innerText.trim()",
         "imageSelector": ".product_image img",
@@ -871,7 +870,7 @@
         "urls": [
             "https://www.ateliergalin.com/collections/all"
         ],
-        "productListSelector": "#product-grid",
+
         "productItemSelector": ".product-grid-container .grid__item",
         "titleSelector": "(document)=> document.querySelector('.full-unstyled-link')?.innerText.trim()",
         "imageSelector": "(document)=>'https:'+ document.querySelector('.card__media img')?.srcset.split(',')[4].split(' ')[0]",
@@ -885,7 +884,7 @@
         "urls": [
             "https://global.diesel.com/man/"
         ],
-        "productListSelector": ".product-grid-item",
+
         "productItemSelector": ".product-grid-item",
         "titleSelector": ".product-tile-body__link",
         "imageSelector": "(document)=>document.querySelector('.product-tile-image__picture  img.lazyloaded')?.scr ||document.querySelector('.product-tile-image__picture  img.swiper-lazy')?.dataset.src",
@@ -898,7 +897,7 @@
         "urls": [
             "https://tr.uspoloassn.com/"
         ],
-        "productListSelector": ".js-product-list-item",
+
         "productItemSelector": ".js-product-list-item",
         "titleSelector": ".product__name a",
         "imageSelector": ".swiper-wrapper img",
@@ -912,7 +911,7 @@
         "urls": [
             "https://gap.com.tr/"
         ],
-        "productListSelector": ".product-item",
+
         "productItemSelector": ".product-item",
         "titleSelector": ".product-item__info-product-name",
         "imageSelector": "(document)=>document.querySelector('picture source')?.srcset ||document.querySelector('picture source')?.getAttribute('data-srcset')",
@@ -925,7 +924,7 @@
         "urls": [
             "https://tr.burberry.com/"
         ],
-        "productListSelector": ".product-listing-shelf__product-card",
+
         "productItemSelector": ".product-listing-shelf__product-card",
         "titleSelector": ".product-card-v2-title",
         "imageSelector": ".media-carousel-container__media.product-card-v2-carousel-container__media__source",
@@ -938,7 +937,7 @@
         "urls": [
             "https://www.buenoshoes.com.tr/"
         ],
-        "productListSelector": ".divUrun",
+
         "productItemSelector": ".divUrun",
         "titleSelector": ".divUAd a",
         "imageSelector": "(document)=>'https://www.buenoshoes.com.tr/' + document.querySelector('[data-src]').getAttribute('data-src')",
@@ -951,7 +950,7 @@
         "urls": [
             "https://www.camper.com/tr_TR"
         ],
-        "productListSelector": ".grid-item",
+
         "productItemSelector": ".grid-item",
         "titleSelector": "p.name",
         "imageSelector": "[srcset]",
@@ -965,7 +964,7 @@
         "urls": [
             "https://www.converse.com.tr/"
         ],
-        "productListSelector": ".products__items",
+
         "productItemSelector": ".js-product-wrapper.product-item",
         "titleSelector": ".product-item__name",
         "imageSelector": "[data-src]",
@@ -981,7 +980,7 @@
             "https://eclecticconceptstore.com.tr/product-category/women/",
             "https://eclecticconceptstore.com.tr/"
         ],
-        "productListSelector": ".c-product-grid",
+
         "productItemSelector": ".c-product-grid__item",
         "titleSelector": ".c-product-grid__title",
         "imageSelector": ".woocommerce-loop-product__link [data-src]",
