@@ -765,6 +765,7 @@
         "imageSelector": "[data-original]",
         "imageAttr": "data-original",
         "linkSelector": ".productName a",
+        "isAutoScroll":true,
         "schedule": "0 0 * * 4",
         "id": "37"
     },
