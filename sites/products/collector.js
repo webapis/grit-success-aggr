@@ -9,8 +9,9 @@ import urls from './urls.json' assert { type: 'json' };
 import commonExcludedPatterns from "./helpers/commonExcludedPatterns.js";
 import { uploadToGoogleDrive } from './uploadToGoogleDrive.js';
 import paginationPostfix from "./helpers/paginationPostfix.js";
+import productItemSelector from './helpers/productItemSelector.js'
 dotenv.config({ silent: true });
-
+debugger
 const site = process.env.site;
 const siteUrls = urls.find(f => f.site === site)
 
@@ -83,8 +84,8 @@ export default async function first({ page, enqueueLinks, request, log, addReque
 
 export async function second({
     page,
-    productListSelector,
-    productItemSelector,
+
+
     titleSelector,
     titleAttr = "innerText",
     imageSelector,
@@ -108,10 +109,10 @@ export async function second({
             await new Promise(resolve => setTimeout(resolve, seconds * 1)); // Wait for specified seconds
         }, waitForSeconds);
     }
-    console.log('product-list-container', productListSelector)
-    // Check if there are any product items on the page
-    const productItemsCount = await page.$$eval(productItemSelector, elements => elements.length);
 
+    // Check if there are any product items on the page
+    const productItemsCount = await page.$$eval(productItemSelector.join(', '), elements => elements.length);
+    debugger
     if (productItemsCount > 0) {
 
         if (isAutoScroll) {
@@ -240,8 +241,8 @@ export async function second({
 
         }, {
 
-            productListSelector,
-            productItemSelector,
+
+            productItemSelector: productItemSelector.join(', '),
             titleSelector,
             titleAttr,
             imageSelector,
@@ -297,7 +298,7 @@ export async function second({
 
             if (nextPages.length > 0) {
 
-                const cleanedPatterns =siteUrls.excludeUrlPatterns? [...commonExcludedPatterns, ...siteUrls.excludeUrlPatterns.map(p => p.replace(/\*/g, ''))  ]:commonExcludedPatterns
+                const cleanedPatterns = siteUrls.excludeUrlPatterns ? [...commonExcludedPatterns, ...siteUrls.excludeUrlPatterns.map(p => p.replace(/\*/g, ''))] : commonExcludedPatterns
                 const filtered = nextPages
                     .filter(url => !cleanedPatterns.some(pattern => url.toLowerCase().includes(pattern)))
                     .map(url => ({ url: url.replace('??', '?'), label: 'second' }));
