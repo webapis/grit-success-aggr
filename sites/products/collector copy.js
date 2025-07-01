@@ -10,7 +10,7 @@ import commonExcludedPatterns from "./helpers/commonExcludedPatterns.js";
 import { uploadToGoogleDrive } from './uploadToGoogleDrive.js';
 import paginationPostfix from "./helpers/paginationPostfix.js";
 import productItemSelector from './helpers/productItemSelector.js'
-import titleSelectors from "./helpers/titleSelector.js";
+import titleSelector from "./helpers/titleSelector.js";
 dotenv.config({ silent: true });
 debugger
 const site = process.env.site;
@@ -244,7 +244,7 @@ export async function second({
 
 
             productItemSelector: productItemSelector.join(', '),
-            titleSelector:titleSelectors.join(', '),
+            titleSelector:titleSelector.join(', '),
             titleAttr,
             imageSelector,
             imageAttr,
