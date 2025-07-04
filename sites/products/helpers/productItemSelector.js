@@ -1,17 +1,15 @@
 export default [
+    ".product-list .pitem",
     ".product-item",
-    "[data-documents]",
     ".product-item-box",
     ".products__item",
     ".productItem",
     ".showcase",
-    ".product-card",
     ".Prd",
     ".product-list-item",
     ".product-card",
     ".product-grid-item",
     ".product-block",
-    ".pitem",
     ".Prd",
     ".ProductItem__Wrapper",
     ".prd",
@@ -40,15 +38,14 @@ export default [
     ".scroll-product-item",
     "ac-product-card",
     ".products-list__item",
-    ".item",
+    //".item",
     ".js-list-content-product-item",
     ".product_item",
     ".relative.flex.h-full.w-full.grow.flex-col",
     ".grid__item",
     ".card-product",
-    "div[data-id]",
-    "[data-id]",
+    //"div[data-id]",
+    // "[data-id]",
     ".product-list__item",
-    
-
+    ".MuiGrid-root.MuiGrid-item"
 ]

@@ -10,7 +10,11 @@ import commonExcludedPatterns from "./helpers/commonExcludedPatterns.js";
 import { uploadToGoogleDrive } from './uploadToGoogleDrive.js';
 import paginationPostfix from "./helpers/paginationPostfix.js";
 import productItemSelector from './helpers/productItemSelector.js'
-import titleSelectors from "./helpers/titleSelector.js";
+import titleSelector from "./helpers/titleSelector.js";
+import imageSelectors from "./helpers/imageSelector.js";
+import linkSelectors from "./helpers/linkSelector.js";
+import imageAttributes from "./helpers/imageAttributes.js";
+import titleAttribute from "./helpers/titleAttribute.js";
 dotenv.config({ silent: true });
 debugger
 const site = process.env.site;
@@ -21,8 +25,6 @@ export default async function first({ page, enqueueLinks, request, log, addReque
 
     await page.evaluate(() => {
         return new Promise(resolve => setTimeout(resolve, 10000));
-
-
     });
 
     // take screenshot and upload to google drive
@@ -69,9 +71,47 @@ export default async function first({ page, enqueueLinks, request, log, addReque
     } else {
 
         try {
-            const result = await enqueueLinks({ selector: 'a', exclude: siteUrls && siteUrls.excludeUrlPatterns, label: 'second' })
+            const result = await page.evaluate((excluded) => {
+                const seen = new Set();
+                const filtered = [];
 
+                Array.from(document.querySelectorAll('a'))
+                    .map(a => a.href)
+                    .forEach(href => {
+                        try {
+                            if (
+                                typeof href === 'string' &&
+                                /^https?:\/\//.test(href)
+                            ) {
+                                const url = new URL(href);
+
+                                // 1. Skip if root path only
+                                const isRoot = url.pathname === '/' || url.pathname === '';
+
+                                // 2. Skip if matches excluded pattern
+                                const isExcluded = excluded.some(pattern =>
+                                    href.toLowerCase().includes(pattern)
+                                );
+
+                                const normalized = href.toLowerCase();
+
+                                if (!isRoot && !isExcluded && !seen.has(normalized)) {
+                                    seen.add(normalized);
+                                    filtered.push(href);
+                                }
+                            }
+                        } catch (e) {
+                            // skip invalid URLs
+                        }
+                    });
+
+                return filtered;
+            }, (siteUrls?.excludeUrlPatterns ? [...siteUrls?.excludeUrlPatterns, ...commonExcludedPatterns] : commonExcludedPatterns));
+
+            //   const result = await enqueueLinks({ selector: 'a', exclude: siteUrls ? [...siteUrls.excludeUrlPatterns, ...commonExcludedPatterns] : commonExcludedPatterns, label: 'second' })
+            debugger
             console.log('enqueueLinks', result);
+            await addRequests(result.map(url => ({ url, label: 'second' })))
             debugger;
         } catch (error) {
             debugger;
@@ -87,7 +127,7 @@ export async function second({
     page,
 
 
-   
+
     titleAttr = "innerText",
     imageSelector,
     imageAttr = 'src',
@@ -112,7 +152,7 @@ export async function second({
     }
 
     // Check if there are any product items on the page
-    const productItemsCount = await page.$$eval(productItemSelector.join(', '), elements => elements.length);
+    const productItemsCount = await page.$$eval(siteUrls.productPageSelector || productItemSelector.join(', '), elements => elements.length);
     debugger
     if (productItemsCount > 0) {
 
@@ -126,103 +166,31 @@ export async function second({
 
         const data = await page.evaluate((params) => {
 
-            function isFunctionString(str) {
-                // If it's not a string, return false
-                if (typeof str !== 'string') return false;
 
-                // Trim whitespace
-                str = str.trim();
 
-                try {
-                    // Test for arrow function pattern
-                    const arrowFnPattern = /^\([^)]*\)\s*=>\s*.+/;
-                    if (arrowFnPattern.test(str)) {
-                        // Try to evaluate the arrow function
-                        const fn = new Function(`return ${str}`)();
-                        return typeof fn === 'function';
-                    }
-
-                    // Test for regular function pattern
-                    const regularFnPattern = /^function\s*\([^)]*\)\s*{[\s\S]*}$/;
-                    if (regularFnPattern.test(str)) {
-                        // Try to evaluate the regular function
-                        const fn = new Function(`return ${str}`)();
-                        return typeof fn === 'function';
-                    }
-
-                    return false;
-                } catch (e) {
-                    return false;
-                }
-            }
-            function parseFunctionString2(functionString) {
-                // Remove the arrow function syntax if present
-                const arrowFunctionMatch = functionString.match(/^\((.*?)\)\s*=>\s*(.*)$/);
-
-                if (arrowFunctionMatch) {
-                    const [, params, body] = arrowFunctionMatch;
-                    return new Function(params, `return ${body}`);
-                }
-
-                // For regular functions
-                return new Function('return ' + functionString)();
-            }
-
-            const breadcrumbFunc = isFunctionString(params.breadcrumb) ? parseFunctionString2(params.breadcrumb)(document) : ''
-            const pageTitle = document.title + ' ' + breadcrumbFunc;
+            const pageTitle = document.title
             const pageURL = document.URL;
 
 
 
             return Array.from(document.querySelectorAll(params.productItemSelector)).map(m => {
+
+                const titleElement = m?.querySelector(params.titleSelector)
+                const imgElement = m?.querySelector(params.imageSelector)
+                const linkElement = m?.querySelector(params.linkSelector)
+                console.log('titleElement', titleElement)
+                const title = titleElement && params.titleAttribute.split(',').map((attr, i) => titleElement[attr?.replaceAll(" ", "")]).find(Boolean)
+                const img = params.imageAttributes.split(',').map((attr, i) => imgElement?.getAttribute(attr?.replaceAll(" ", ""))).find(Boolean)
+                const link = titleElement?.href || linkElement?.href
+                const matchedSelector = params.productItemSelector
+                    .split(',')
+                    .map(s => s.trim())
+                    .find(selector => m.matches(selector));
+                console.log('matchedSelector', matchedSelector)
                 try {
-                    // TITLE
-                    let title = '';
-                    if (isFunctionString(params.titleSelector)) {
-                        title = parseFunctionString2(params.titleSelector)(m);
-                    } else {
-                        const el = m.querySelector(params.titleSelector);
-                        title = el?.innerText?.trim();
-                        if (!title) {
-                            throw new Error(`Empty or missing innerText for selector: ${params.titleSelector}`);
-                        }
-                    }
-
-                    // IMAGE
-
-                    let img = '';
-                    if (isFunctionString(params.imageSelector)) {
-                        img = parseFunctionString2(params.imageSelector)(m);
-                    } else {
-                        const el = m.querySelector(params.imageSelector);
-                        if (!el) {
-                            throw new Error(`Image element not found for selector: ${params.imageSelector}`);
-                        }
-                        img = params.imageAttr === 'src' ? el.src : el.getAttribute(params.imageAttr);
-                        if (!img || img.trim() === '') {
-                            throw new Error(`Empty image attribute (${params.imageAttr}) for selector: ${params.imageSelector}`);
-                        }
-                    }
-
-
-                    // LINK
-                    let link = '';
-                    if (isFunctionString(params.linkSelector)) {
-                        link = parseFunctionString2(params.linkSelector)(m);
-                    } else {
-                        const el = m.querySelector(params.linkSelector);
-                        if (!el) {
-                            throw new Error(`Link element not found for selector: ${params.linkSelector}`);
-                        }
-                        link = el.href;
-                        if (!link || link.trim() === '') {
-                            throw new Error(`Empty href attribute for selector: ${params.linkSelector}`);
-                        }
-                    }
-
                     return {
                         title,
-                        price: 0,
+                        // price: 0,
                         img,
                         link,
                         pageTitle,
@@ -244,12 +212,14 @@ export async function second({
 
 
             productItemSelector: productItemSelector.join(', '),
-            titleSelector:titleSelectors.join(', '),
+            titleSelector: titleSelector.join(', '),
+            titleAttribute: titleAttribute.join(', '),
             titleAttr,
-            imageSelector,
+            imageSelector: imageSelectors.join(', '),
+            imageAttributes: imageAttributes.join(', '),
             imageAttr,
             imagePrefix,
-            linkSelector,
+            linkSelector: linkSelectors.join(', '),
             autoScroll,
             breadcrumb
         });
