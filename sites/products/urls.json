@@ -365,7 +365,6 @@
         "urls": [
             "https://www.rueonline.com/"
         ],
-
         "funcPageSelector": [
             ".FiltrelemeUrunAdet span",
             56
@@ -378,7 +377,6 @@
         "urls": [
             "https://www.setre.com"
         ],
-
         "funcPageSelector": [
             ".FiltrelemeUrunAdet span",
             40
@@ -391,7 +389,6 @@
         "urls": [
             "https://www.sherin.com.tr/"
         ],
-
         "funcPageSelector": [
             ".FiltrelemeUrunAdet span",
             24
@@ -404,7 +401,6 @@
         "urls": [
             "https://www.themolc.com/"
         ],
-
         "funcPageSelector": [
             ".paginate-content a"
         ],
@@ -416,7 +412,6 @@
         "urls": [
             "https://tuvanam.com/"
         ],
-
         "funcPageSelector": [
             "a.Pagination__NavItem"
         ],
@@ -429,7 +424,6 @@
         "urls": [
             "https://www.twist.com.tr/"
         ],
-
         "funcPageSelector": [
             ".prd-qty span",
             20
@@ -442,7 +436,6 @@
         "urls": [
             "https://www.wheneverco.com/"
         ],
-
         "funcPageSelector": [
             ".page-link"
         ],
@@ -461,6 +454,8 @@
         "breadcrumb": "document.querySelectorAll('.breadcrumb a') ? Array.from(document.querySelectorAll('.breadcrumb a')).map(m => m.innerText).join(' ') : ' '",
         "isAutoScroll": true,
         "schedule": "0 0 * * 4",
+        "paused": true,
+        "pausedReason": "unmanageable css classNames",
         "id": "33"
     },
     {

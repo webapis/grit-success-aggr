@@ -1,4 +1,5 @@
 export default [
+    ".MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-6.MuiGrid-grid-sm-6.MuiGrid-grid-md-4.MuiGrid-grid-lg-4", //yargıcı
     ".product-list .pitem",
     ".product-item",
     ".product-item-box",
@@ -47,5 +48,5 @@ export default [
     //"div[data-id]",
     // "[data-id]",
     ".product-list__item",
-    ".MuiGrid-root.MuiGrid-item"
+
 ]
