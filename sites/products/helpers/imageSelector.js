@@ -1,4 +1,5 @@
 export default [
+    ".picture a img",
     "[poster]",
     "[first-poster]",
     ".div.picture a img",
@@ -22,6 +23,6 @@ export default [
     ".product-image-item",
     "[data-lazysrc]",
     "span.lazy-load-image-background [srcset]"
-   
+
 
 ]
