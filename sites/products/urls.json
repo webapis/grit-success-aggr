@@ -262,6 +262,7 @@
         "urls": [
             "https://jusdepommes.com/"
         ],
+        "productPageSelector": ".collection__products",
         "funcPageSelector": [
             ".pagination-custom__num a"
         ],
@@ -451,7 +452,6 @@
         "urls": [
             "https://www.brooksbrothers.com.tr/"
         ],
-
         "funcPageSelector": [
             "span.text-primary",
             12

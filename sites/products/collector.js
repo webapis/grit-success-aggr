@@ -165,16 +165,16 @@ export async function second({
         }
 
 
+        const itemSelector = siteUrls.productPageSelector ? siteUrls.productPageSelector + ' ' + productItemSelector.join(', ') : productItemSelector.join(', ')
         const data = await page.evaluate((params) => {
 
 
 
             const pageTitle = document.title
             const pageURL = document.URL;
-
-
-
-            return Array.from(document.querySelectorAll(params.productItemSelector)).map(m => {
+            const selectedDocument = params.productPageSelector ? document.querySelector(params.productPageSelector) : document
+            debugger;
+            return Array.from(selectedDocument.querySelectorAll(params.productItemSelector)).map(m => {
                 const titleSelectors = params.titleSelector.split(',').map(s => s.trim());
                 const imageSelectors = params.imageSelector.split(',').map(s => s.trim());
                 const linkSelectors = params.linkSelector.split(',').map(s => s.trim());
@@ -250,7 +250,7 @@ export async function second({
 
         }, {
 
-
+            productPageSelector: siteUrls.productPageSelector || null,
             productItemSelector: productItemSelector.join(', '),
             titleSelector: titleSelector.join(', '),
             titleAttribute: titleAttribute.join(', '),
