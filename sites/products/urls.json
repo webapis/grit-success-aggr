@@ -569,7 +569,6 @@
         "urls": [
             "https://www.beymen.com/tr"
         ],
-
         "schedule": "0 0 * * 4",
         "id": "43"
     },
@@ -635,9 +634,9 @@
             "https://www.matras.com/aksesuar",
             "https://www.matras.com/seyahat"
         ],
-        "titleSelector": "(document)=>document.querySelector('.product_name').innerText.trim()",
-        "imageSelector": ".product_image img",
-        "linkSelector": ".product_name",
+        "funcPageSelector": [
+            ".page_numbers span"
+        ],
         "schedule": "0 0 * * 4",
         "id": "45"
     },
