@@ -209,7 +209,7 @@
         "urls": [
             "https://www.ekolonline.com"
         ],
-        "isAutoScroll": true,
+        "isAutoScroll": false,
         "schedule": "0 0 * * 4",
         "id": "14"
     },

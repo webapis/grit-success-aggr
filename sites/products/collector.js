@@ -175,25 +175,64 @@ export async function second({
 
 
             return Array.from(document.querySelectorAll(params.productItemSelector)).map(m => {
+                const titleSelectors = params.titleSelector.split(',').map(s => s.trim());
+                const imageSelectors = params.imageSelector.split(',').map(s => s.trim());
+                const linkSelectors = params.linkSelector.split(',').map(s => s.trim());
 
-                const titleElement = m?.querySelector(params.titleSelector)
-                const imgElement = m?.querySelector(params.imageSelector)
-                const linkElement = m?.querySelector(params.linkSelector)
-                console.log('titleElement', titleElement)
-                const title = titleElement && params.titleAttribute.split(',').map((attr, i) => titleElement[attr?.replaceAll(" ", "")]).find(Boolean)
-                const img = params.imageAttributes.split(',').map((attr, i) => imgElement?.getAttribute(attr?.replaceAll(" ", ""))).find(Boolean)
-                const link = titleElement?.href || linkElement?.href || m?.href
+                const titleElement = titleSelectors.map(sel => m.querySelector(sel)).find(Boolean);
+                const imgElement = imageSelectors.map(sel => m.querySelector(sel)).find(Boolean);
+                const linkElement = linkSelectors.map(sel => m.querySelector(sel)).find(Boolean);
+
+                const titleSelectorMatched = titleElement
+                    ? titleSelectors.find(sel => titleElement.matches(sel))
+                    : null;
+
+                const imgSelectorMatched = imgElement
+                    ? imageSelectors.find(sel => imgElement.matches(sel))
+                    : null;
+
+                const title = titleElement &&
+                    params.titleAttribute
+                        .split(',')
+                        .map(attr => titleElement[attr?.replaceAll(" ", "")])
+                        .find(Boolean);
+
+                const img = params.imageAttributes
+                    .split(',')
+                    .map(attr => imgElement?.getAttribute(attr?.replaceAll(" ", "")))
+                    .find(Boolean);
+
+                let link = null;
+                let linkSource = null;
+
+                if (titleElement?.href) {
+                    link = titleElement.href;
+                    linkSource = `titleElement (matched: ${titleSelectorMatched})`;
+                } else if (linkElement?.href) {
+                    const linkSelectorMatched = linkElement && linkSelectors.find(sel => linkElement.matches(sel));
+                    link = linkElement.href;
+                    linkSource = `linkElement (matched: ${linkSelectorMatched})`;
+                } else if (m?.href) {
+                    link = m.href;
+                    linkSource = 'containerElement (m)';
+                }
+
                 const matchedSelector = params.productItemSelector
                     .split(',')
                     .map(s => s.trim())
                     .find(selector => m.matches(selector));
-                console.log('matchedSelector', matchedSelector)
+
                 try {
                     return {
                         title,
-                        // price: 0,
                         img,
                         link,
+                        matchedInfo: {
+                            linkSource,
+                            matchedSelector,
+                            titleSelectorMatched,
+                            imgSelectorMatched
+                        },
                         pageTitle,
                         pageURL,
                         timestamp: new Date().toISOString(),
@@ -202,7 +241,7 @@ export async function second({
                     return {
                         error: true,
                         message: error.message,
-                        content: m.outerHTML, // better than innerHTML for debugging
+                        content: m.outerHTML,
                         url: document.URL,
                         pageTitle,
                     };

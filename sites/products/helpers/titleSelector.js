@@ -1,4 +1,5 @@
 export default [
+    "div.mainTitle",
     "h2 .js-product-link.product-link",
     "h3.text-primary a.inline-block.line-clamp-2",
     ".product-name a",
@@ -26,6 +27,6 @@ export default [
     // ".product-title",
     // ".PName",
     // ".product-name"
-   "a[title]:not([href='javascript:void(0);']"
+    "a[title]:not([href='javascript:void(0);'] :not([href='#']):not([href=''])"
 
 ]

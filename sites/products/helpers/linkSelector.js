@@ -1,4 +1,6 @@
 export default [
+    ".product-figure-wrap a",
+    "a.product-figure",
     "a.prd-link",
     "a.item-main-photo",
     "a[data-product]",
