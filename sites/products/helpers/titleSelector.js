@@ -1,4 +1,5 @@
 export default [
+    ".product_image img",
     ".m-productCard__desc",
     "div.mainTitle",
     "h2 .js-product-link.product-link",

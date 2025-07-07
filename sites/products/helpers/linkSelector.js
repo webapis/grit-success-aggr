@@ -17,6 +17,7 @@ export default [
     "a.product-name",
     "product__grid__info a",
     "div.product-info a",
-    "a.detailLink.detailUrl"
+    "a.detailLink.detailUrl",
+    ".product_image a"
 
 ]

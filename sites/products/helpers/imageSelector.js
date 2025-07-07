@@ -1,4 +1,5 @@
 export default [
+    ".product_image img",
     '.swiper-slide img',
     ".ndImage source[srcset]",
     ".picture a img",

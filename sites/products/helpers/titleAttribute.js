@@ -1,1 +1,1 @@
-export default ["title", "innerText"]
+export default ["title", "innerText", "alt"]
