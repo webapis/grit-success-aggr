@@ -1,4 +1,5 @@
 export default [
+    ".ndImage source[srcset]",
     ".picture a img",
     "[poster]",
     "[first-poster]",

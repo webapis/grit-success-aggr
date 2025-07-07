@@ -323,8 +323,8 @@ export async function second({
         const validData = data.map(item => {
             return {
                 ...item,
-                img: getMiddleImageUrl(item.img),
-                imgValid: isValidImageURL(getMiddleImageUrl(item.img)),
+                img: getMiddleImageUrl(item.img, siteUrls.urls[0]),
+                imgValid: isValidImageURL(getMiddleImageUrl(item.img, siteUrls.urls[0])),
                 linkValid: isValidURL(item.link),
                 titleValid: isValidText(item.title),
                 pageTitleValid: isValidText(item.pageTitle),

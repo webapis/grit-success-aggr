@@ -1,11 +1,25 @@
-export default function getMiddleImageUrl(srcset) {
+export default function getMiddleImageUrl(srcset, baseUrl = '') {
   try {
-    const normalizeUrl = (url) =>
-      url.startsWith('//') ? 'https:' + url : url;
+    const normalizeUrl = (url) => {
+      url = url.trim();
 
-    // Return early if it's a single URL
+      // Case 1: Protocol-relative → add https:
+      if (url.startsWith('//')) {
+        return 'https:' + url;
+      }
+
+      // Case 2: Relative path → add base URL
+      if (url.startsWith('/')) {
+        return baseUrl.replace(/\/$/, '') + url;
+      }
+
+      // Case 3: Already absolute
+      return url;
+    };
+
+    // Return early if it's a single URL with no size descriptors
     if (!srcset.includes(',') && !srcset.includes(' ')) {
-      return normalizeUrl(srcset.trim());
+      return normalizeUrl(srcset);
     }
 
     const images = srcset
@@ -17,6 +31,7 @@ export default function getMiddleImageUrl(srcset) {
           width: parseInt(width.replace('w', ''), 10)
         };
       })
+      .filter(img => !isNaN(img.width))
       .sort((a, b) => a.width - b.width);
 
     const middleIndex = Math.floor(images.length / 2);
@@ -24,6 +39,6 @@ export default function getMiddleImageUrl(srcset) {
 
   } catch (error) {
     console.warn('Error in getMiddleImageUrl:', error);
-    return srcset; // Return original value unmodified
+    return srcset;
   }
 }

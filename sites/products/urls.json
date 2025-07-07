@@ -491,10 +491,6 @@
         "urls": [
             "https://www.ilvi.com/"
         ],
-        "titleSelector": ".productName a",
-        "imageSelector": "[data-original]",
-        "imageAttr": "data-original",
-        "linkSelector": ".productName a",
         "isAutoScroll": false,
         "schedule": "0 0 * * 4",
         "id": "37"
