@@ -1,5 +1,6 @@
 export default [
     "h2 .js-product-link.product-link",
+    "h3.text-primary a.inline-block.line-clamp-2",
     ".product-name a",
     "a.product-item__name",
     "a.product-title",
@@ -11,6 +12,9 @@ export default [
     ".product-block__title",
     ".ProductItem__Title.Heading a",
     "div.product-name",
+    ".productName a",
+    ".prd-title h2",
+    ".product-title .title h3",
     // ".product-image-desktop",
 
     // ".mainTitle",

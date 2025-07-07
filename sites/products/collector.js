@@ -15,6 +15,7 @@ import imageSelectors from "./helpers/imageSelector.js";
 import linkSelectors from "./helpers/linkSelector.js";
 import imageAttributes from "./helpers/imageAttributes.js";
 import titleAttribute from "./helpers/titleAttribute.js";
+import getMiddleImageUrl from "../../src/scrap/getMiddleImageUrl.js";
 dotenv.config({ silent: true });
 debugger
 const site = process.env.site;
@@ -181,7 +182,7 @@ export async function second({
                 console.log('titleElement', titleElement)
                 const title = titleElement && params.titleAttribute.split(',').map((attr, i) => titleElement[attr?.replaceAll(" ", "")]).find(Boolean)
                 const img = params.imageAttributes.split(',').map((attr, i) => imgElement?.getAttribute(attr?.replaceAll(" ", ""))).find(Boolean)
-                const link = titleElement?.href || linkElement?.href
+                const link = titleElement?.href || linkElement?.href || m?.href
                 const matchedSelector = params.productItemSelector
                     .split(',')
                     .map(s => s.trim())
@@ -283,7 +284,8 @@ export async function second({
         const validData = data.map(item => {
             return {
                 ...item,
-                imgValid: isValidImageURL(item.img),
+                img: getMiddleImageUrl(item.img),
+                imgValid: isValidImageURL(getMiddleImageUrl(item.img)),
                 linkValid: isValidURL(item.link),
                 titleValid: isValidText(item.title),
                 pageTitleValid: isValidText(item.pageTitle),

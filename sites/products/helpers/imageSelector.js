@@ -1,4 +1,6 @@
 export default [
+    ".div.picture a img",
+    "[data-secondary-image-src]",
     ".image-box [data-srcset]",
     ".pz-image-placeholder source[data-srcset]",
     "[data-lazy-bgset-src]",
@@ -16,7 +18,8 @@ export default [
     "[srcset]",
     "[data-original]",
     ".product-image-item",
-    "[data-lazysrc]"
+    "[data-lazysrc]",
+    "span.lazy-load-image-background [srcset]"
    
 
 ]

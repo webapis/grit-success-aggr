@@ -13,5 +13,14 @@ export default [
     "hakkimizda",
     "mesafeli-satis-sozlesmesi",
     "gizlilik",
-    "tum-urunler"
+    "tum-urunler",
+    "erkek-giyim",
+    "kadin-giyim",
+    "genc-kadin-giyim",
+    "bebek-anasayfa",
+    "evcil-hayvan-kiyafetleri",
+    "cocuk-tumu",
+    "sosyal-sorumluluk",
+    "lookbook"
+
 ]

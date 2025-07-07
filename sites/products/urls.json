@@ -8,13 +8,8 @@
             ".pz-pagination-link"
         ],
         "excludeUrlPatterns": [
-            "**erkek-giyim**",
-            "**kadin-giyim**",
-            "**genc-kadin-giyim**",
-            "**bebek-anasayfa**",
             "**filterable**",
-            "**indirim**",
-            "**evcil-hayvan-kiyafetleri**"
+            "**indirim**"
         ],
         "schedule": "0 0 * * 2",
         "id": "1"
@@ -29,9 +24,6 @@
             24
         ],
         "excludeUrlPatterns": [
-            "**/kadin-giyim**",
-            "**/erkek-giyim**",
-            "**/cocuk-tumu**",
             "**/firsati-yakala**",
             "**filtre=kategori**",
             "**/saatlik-kampanyalar**",
@@ -49,10 +41,6 @@
         "funcPageSelector": [
             ".search-total-count",
             72
-        ],
-        "excludeUrlPatterns": [
-            "**/sosyal-sorumluluk**",
-            "**lookbook**"
         ],
         "schedule": "0 0 * * 4",
         "id": "3"
@@ -463,9 +451,7 @@
         "urls": [
             "https://www.brooksbrothers.com.tr/"
         ],
-        "titleSelector": "h3.text-primary a.inline-block.line-clamp-2",
-        "imageSelector": "(document)=>document.querySelector('[srcset]')?.getAttribute('srcset').split(',')[7].trim().split(' ')[0]",
-        "linkSelector": "h3.text-primary a.inline-block.line-clamp-2",
+
         "funcPageSelector": [
             "span.text-primary",
             12
@@ -478,10 +464,6 @@
         "urls": [
             "https://www.colins.com.tr/"
         ],
-        "titleSelector": ".product-name h3",
-        "imageSelector": "[data-secondary-image-src]",
-        "imageAttr": "data-secondary-image-src",
-        "linkSelector": "a.product-name",
         "funcPageSelector": [
             ".product-count-text",
             48
@@ -512,7 +494,7 @@
         "imageSelector": "[data-original]",
         "imageAttr": "data-original",
         "linkSelector": ".productName a",
-        "isAutoScroll": true,
+        "isAutoScroll": false,
         "schedule": "0 0 * * 4",
         "id": "37"
     },
@@ -521,10 +503,6 @@
         "urls": [
             "https://www.lufian.com/"
         ],
-        "titleSelector": ".product-title",
-        "imageSelector": "[data-src]",
-        "imageAttr": "data-src",
-        "linkSelector": "a.product-title",
         "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "38"
@@ -534,10 +512,6 @@
         "urls": [
             "https://www.penti.com/"
         ],
-        "titleSelector": "(document)=> document.querySelector('.prd-title h2')?.innerText||JSON.parse(document.querySelector('[data-gtm-product]').getAttribute('data-gtm-product')).name",
-        "imageSelector": "[data-src]",
-        "imageAttr": "data-src",
-        "linkSelector": "(document)=>document.href",
         "funcPageSelector": [
             ".plp-info.js-plp-info",
             42

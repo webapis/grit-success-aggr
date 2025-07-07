@@ -1,4 +1,5 @@
 export default [
+    "a.prd-link",
     "a.item-main-photo",
     "a[data-product]",
     ".product-image a",
@@ -12,6 +13,7 @@ export default [
     "div.carousel-item a",
     "a.product-name",
     "product__grid__info a",
-    "div.product-info a"
+    "div.product-info a",
+    "a.detailLink.detailUrl"
 
 ]

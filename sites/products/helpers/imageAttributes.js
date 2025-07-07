@@ -1,4 +1,5 @@
 export default [
+    'data-secondary-image-src',
     'data-lazy-bgset-src',
     'data-bgset',
     'data-lazysrc',
