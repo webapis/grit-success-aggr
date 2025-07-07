@@ -1,4 +1,5 @@
 export default [
+    ".m-productCard__detail h3 > :nth-child(2)",
     ".product-figure-wrap a",
     "a.product-figure",
     "a.prd-link",

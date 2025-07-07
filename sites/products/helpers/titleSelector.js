@@ -1,4 +1,5 @@
 export default [
+    ".m-productCard__desc",
     "div.mainTitle",
     "h2 .js-product-link.product-link",
     "h3.text-primary a.inline-block.line-clamp-2",

@@ -1,4 +1,5 @@
 export default [
+    '.swiper-slide img',
     ".ndImage source[srcset]",
     ".picture a img",
     "[poster]",

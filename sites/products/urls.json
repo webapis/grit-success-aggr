@@ -529,6 +529,8 @@
             ".model-showing span",
             48
         ],
+        "paused": true,
+        "pausedReason": "unmanagable classNames",
         "schedule": "0 0 * * 4",
         "id": "40"
     },
@@ -557,6 +559,8 @@
         "linkSelector": "[class^='ProductImage_productImage'] a",
         "waitForSeconds": 5000,
         "isAutoScroll": true,
+        "paused": true,
+        "pausedReason": "unhandlesImage tag",
         "schedule": "0 0 * * 4",
         "id": "42"
     },
@@ -565,10 +569,7 @@
         "urls": [
             "https://www.beymen.com/tr"
         ],
-        "titleSelector": ".m-productCard__desc",
-        "imageSelector": "[data-src]",
-        "imageAttr": "data-src",
-        "linkSelector": ".m-productCard__photo a",
+
         "schedule": "0 0 * * 4",
         "id": "43"
     },
