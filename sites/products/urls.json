@@ -413,6 +413,7 @@
         "urls": [
             "https://www.twist.com.tr/"
         ],
+        "productPageSelector": ".prd-list",
         "funcPageSelector": [
             ".prd-qty span",
             20
