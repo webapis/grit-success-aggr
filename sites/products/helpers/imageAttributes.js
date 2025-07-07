@@ -1,4 +1,6 @@
 export default [
+    "poster",
+    "first-poster",
     'data-secondary-image-src',
     'data-lazy-bgset-src',
     'data-bgset',

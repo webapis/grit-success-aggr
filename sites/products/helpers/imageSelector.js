@@ -1,4 +1,6 @@
 export default [
+    "[poster]",
+    "[first-poster]",
     ".div.picture a img",
     "[data-secondary-image-src]",
     ".image-box [data-srcset]",
