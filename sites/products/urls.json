@@ -1100,10 +1100,7 @@
         "urls": [
             "https://www.pembecida.com/"
         ],
-        "titleSelector": ".product-title",
-        "imageSelector": "[data-src]",
-        "imageAttr": "data-src",
-        "linkSelector": ".product-title",
+
         "schedule": "0 0 * * 4",
         "id": "72"
     },
@@ -1111,9 +1108,7 @@
         "urls": [
             "https://www.milkywilky.com.tr/"
         ],
-        "titleSelector": ".woocommerce-loop-product__title",
-        "imageSelector": ".attachment-woocommerce_thumbnail",
-        "linkSelector": ".woocommerce-LoopProduct-link",
+
         "schedule": "0 0 * * 4",
         "id": "73"
     },
@@ -1121,9 +1116,8 @@
         "urls": [
             "https://jackjones.com.tr/"
         ],
-        "titleSelector": ".card-title",
-        "imageSelector": ".card-product img",
-        "linkSelector": ".card-product a[data-href]",
+        "paused": true,
+        "pausedReason": "site is paused for srawlling problem",
         "schedule": "0 0 * * 4",
         "id": "74"
     },
@@ -1131,9 +1125,6 @@
         "urls": [
             "https://smile.com.tr/"
         ],
-        "titleSelector": ".list-pro-title.detailLink",
-        "imageSelector": ".ndImage",
-        "linkSelector": ".detailLink",
         "schedule": "0 0 * * 4",
         "id": "75"
     },
@@ -1141,9 +1132,6 @@
         "urls": [
             "https://victorbaron.com.tr/"
         ],
-        "titleSelector": ".description",
-        "imageSelector": ".product-img img",
-        "linkSelector": ".product-img",
         "schedule": "0 0 * * 4",
         "id": "76"
     },
@@ -1151,9 +1139,6 @@
         "urls": [
             "https://www.altinyildizclassics.com/"
         ],
-        "titleSelector": ".ac-pc__name",
-        "imageSelector": "img",
-        "linkSelector": "a",
         "schedule": "0 0 * * 4",
         "id": "77"
     },
@@ -1161,9 +1146,6 @@
         "urls": [
             "https://www.bisse.com/"
         ],
-        "titleSelector": ".product-title",
-        "imageSelector": ".image-nd",
-        "linkSelector": ".product-title",
         "schedule": "0 0 * * 4",
         "id": "78"
     },
@@ -1171,10 +1153,6 @@
         "urls": [
             "https://www.brango.com.tr/"
         ],
-        "titleSelector": ".product-info-detail",
-        "imageSelector": "[data-src]",
-        "imageAttr": "data-src",
-        "linkSelector": ".product-info-detail",
         "schedule": "0 0 * * 4",
         "id": "79"
     },
@@ -1182,9 +1160,6 @@
         "urls": [
             "https://www.damattween.com/"
         ],
-        "titleSelector": ".product-item__name",
-        "imageSelector": ".product-item__img",
-        "linkSelector": "a",
         "schedule": "0 0 * * 4",
         "id": "80"
     },
@@ -1192,10 +1167,8 @@
         "urls": [
             "https://www.centone.com.tr/"
         ],
-        "titleSelector": ".name",
-        "imageSelector": "(document)=>document.querySelector('.b-lazy[data-src]')?.getAttribute('data-src')||document.querySelector('.b-lazy').src",
-        "imageAttr": "srс",
-        "linkSelector": ".name",
+        "paused": true,
+        "pausedReason": "website is down",
         "schedule": "0 0 * * 4",
         "id": "81"
     },
@@ -1203,9 +1176,6 @@
         "urls": [
             "https://www.dsdamat.com/"
         ],
-        "titleSelector": ".product-item__name",
-        "imageSelector": ".product-item__img.js-img-firstly",
-        "linkSelector": "a",
         "schedule": "0 0 * * 4",
         "id": "82"
     },
@@ -1213,9 +1183,6 @@
         "urls": [
             "https://www.duk.com.tr/"
         ],
-        "titleSelector": ".p-name",
-        "imageSelector": ".image img",
-        "linkSelector": ".image",
         "schedule": "0 0 * * 4",
         "id": "83"
     },
@@ -1223,10 +1190,6 @@
         "urls": [
             "https://www.kigili.com/"
         ],
-        "titleSelector": ".product-name a",
-        "imageSelector": ".product-item-image",
-        "imageAttr": "data-default-img",
-        "linkSelector": ".product-name a",
         "schedule": "0 0 * * 4",
         "id": "84"
     },
@@ -1234,10 +1197,6 @@
         "urls": [
             "https://www.maleindustry.com.tr/erkek-sneaker-modelleri"
         ],
-        "titleSelector": ".divUAd a",
-        "titleAttr": "title",
-        "imageSelector": "(document)=>'https://www.maleindustry.com.tr/'+ document.querySelector('[data-src]').getAttribute('data-src')",
-        "linkSelector": ".divUAd a",
         "schedule": "0 0 * * 4",
         "id": "85"
     },
@@ -1245,9 +1204,6 @@
         "urls": [
             "https://www.wemsey.com.tr/"
         ],
-        "titleSelector": "(document)=> document.querySelector('.pro_detail').querySelectorAll('.pro_name')[1].innerText",
-        "imageSelector": ".img_box img",
-        "linkSelector": ".pro_name a",
         "schedule": "0 0 * * 4",
         "id": "86"
     },
@@ -1255,9 +1211,6 @@
         "urls": [
             "https://tubabutik.com/kadin-ceket-modelleri"
         ],
-        "titleSelector": "a.flex.grow.flex-col div",
-        "imageSelector": "(document)=>document.querySelector('a img[srcset]').getAttribute('srcset').split(',')[4].trim().split(' ')[0]",
-        "linkSelector": "a.flex.grow.flex-col",
         "schedule": "0 0 * * 4",
         "id": "87"
     },
@@ -1265,9 +1218,6 @@
         "urls": [
             "https://www.tarikediz.com/"
         ],
-        "titleSelector": ".productName a",
-        "imageSelector": "(document)=>document.querySelector('.detailLink.detailUrl [data-src]').getAttribute('data-src')",
-        "linkSelector": ".productName a",
         "schedule": "0 0 * * 4",
         "id": "88"
     },
@@ -1275,11 +1225,6 @@
         "urls": [
             "https://www.hollylolly.net/"
         ],
-        "titleSelector": ".productName.detailUrl a",
-        "titleAttr": "title",
-        "imageSelector": "[data-original]",
-        "imageAttr": "data-original",
-        "linkSelector": ".productName.detailUrl a",
         "schedule": "0 0 * * 4",
         "id": "89"
     },
@@ -1287,9 +1232,6 @@
         "urls": [
             "https://perspectivewoman.com/"
         ],
-        "titleSelector": ".grid-product__title",
-        "imageSelector": "(document)=>'https:'+document.querySelector('.grid-product__image').getAttribute('srcset').split(',')[1].trim().split(' ')[0]",
-        "linkSelector": ".grid-product__link",
         "schedule": "0 0 * * 4",
         "id": "90"
     },
@@ -1297,11 +1239,6 @@
         "urls": [
             "https://rivus.com.tr/"
         ],
-        "titleSelector": ".productName.detailUrl a",
-        "titleAttr": "title",
-        "imageSelector": "[src-last]",
-        "imageAttr": "src-last",
-        "linkSelector": ".productName.detailUrl a",
         "schedule": "0 0 * * 4",
         "id": "91"
     },
@@ -1309,9 +1246,6 @@
         "urls": [
             "https://arzukaprol.com/"
         ],
-        "titleSelector": "(document)=>document.querySelector('.card__heading a').innerText.trim()",
-        "imageSelector": "(document)=>'https:'+ document.querySelector('.card__media img').getAttribute('srcset').split(',')[2].trim().split(' ')[0]",
-        "linkSelector": ".card__heading a",
         "schedule": "0 0 * * 4",
         "id": "92"
     },
@@ -1319,11 +1253,6 @@
         "urls": [
             "https://www.sorbe.co/"
         ],
-        "titleSelector": ".productName.detailUrl a",
-        "titleAttr": "title",
-        "imageSelector": "[data-original]",
-        "imageAttr": "data-original",
-        "linkSelector": ".productName.detailUrl a",
         "schedule": "0 0 * * 4",
         "id": "93"
     },
@@ -1331,9 +1260,6 @@
         "urls": [
             "https://www.victoriassecret.com.tr/"
         ],
-        "titleSelector": ".productName.detailUrl a",
-        "imageSelector": ".productSliderImage",
-        "linkSelector": ".productName.detailUrl a",
         "schedule": "0 0 * * 4",
         "id": "94"
     },
@@ -1341,9 +1267,6 @@
         "urls": [
             "https://www.maisonju.com/"
         ],
-        "titleSelector": ".grid-product__title",
-        "imageSelector": "(document)=> 'https:'  + document.querySelector('[srcset]').getAttribute('srcset').split(',')[1].trim().split(' ')[0]",
-        "linkSelector": ".grid-product__link",
         "schedule": "0 0 * * 4",
         "id": "95"
     },
@@ -1383,7 +1306,6 @@
         "urls": [
             "https://dressweden.com/"
         ],
-
         "schedule": "0 0 * * 4",
         "id": "100"
     },
@@ -1391,7 +1313,6 @@
         "urls": [
             "https://www.niqozza.com"
         ],
-
         "schedule": "0 0 * * 4",
         "id": "101"
     },
@@ -1399,7 +1320,6 @@
         "urls": [
             "https://olegcassini.com.tr/"
         ],
-
         "schedule": "0 0 * * 4",
         "id": "102"
     },

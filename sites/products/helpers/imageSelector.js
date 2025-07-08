@@ -1,4 +1,8 @@
 export default [
+  '.product-image__img',
+  '.product__image-link span img',
+  'img.product-item__img',
+  '.img_box img',
   '.grid-product__image',
   '.category-products-image',
   '.category-products-image[style*="background-image"]',

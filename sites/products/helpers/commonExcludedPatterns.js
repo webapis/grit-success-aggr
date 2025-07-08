@@ -22,6 +22,8 @@ export default [
     "cocuk-tumu",
     "sosyal-sorumluluk",
     "lookbook",
-    "https://www.gigiis.com/collections"
+    "https://www.gigiis.com/collections",
+    "https://victorbaron.com.tr/index.php?route=common/home",
+    "https://victorbaron.com.tr/victorbaron-shirt"
 
 ]

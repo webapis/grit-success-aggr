@@ -1,4 +1,7 @@
 export default [
+    '.js-product-wrapper a',
+    'a.image',
+    'name a',
     ".grid-product__link",
     "a[data-cc-animate-click]",
     ".product-image-wrapper a",
