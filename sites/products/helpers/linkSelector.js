@@ -1,4 +1,5 @@
 export default [
+    ".grid-product__link",
     "a[data-cc-animate-click]",
     ".product-image-wrapper a",
     ".m-productCard__detail h3 > :nth-child(2)",

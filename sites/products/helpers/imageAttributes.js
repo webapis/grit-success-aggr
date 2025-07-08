@@ -1,4 +1,5 @@
 export default [
+    "style.backgroundImage",
     "poster",
     "first-poster",
     'data-secondary-image-src',

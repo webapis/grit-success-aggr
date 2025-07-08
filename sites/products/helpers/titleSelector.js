@@ -1,4 +1,5 @@
 export default [
+    ".grid-product__title",
     "h2.product-name",
     ".product-item__product-title a",
     "a.custom-card-title",

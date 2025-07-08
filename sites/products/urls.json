@@ -1362,9 +1362,6 @@
         "urls": [
             "https://www.nevermore.com.tr/"
         ],
-        "titleSelector": ".title-special",
-        "imageSelector": ".image img",
-        "linkSelector": ".c-p-i-link",
         "schedule": "0 0 * * 4",
         "id": "97"
     },
@@ -1372,9 +1369,6 @@
         "urls": [
             "https://www.dilekhanif.com/"
         ],
-        "titleSelector": ".grid-product__title",
-        "imageSelector": "(document)=> 'https:'  + document.querySelector('[srcset]').getAttribute('srcset').split(',')[1].trim().split(' ')[0]",
-        "linkSelector": ".grid-product__link",
         "schedule": "0 0 * * 4",
         "id": "98"
     },
@@ -1382,10 +1376,6 @@
         "urls": [
             "https://www.bizeonline.com"
         ],
-        "titleSelector": ".product-title",
-        "imageSelector": "[data-src]",
-        "imageAttr": "data-src",
-        "linkSelector": "a.image-wrapper",
         "schedule": "0 0 * * 4",
         "id": "99"
     },
@@ -1393,9 +1383,7 @@
         "urls": [
             "https://dressweden.com/"
         ],
-        "titleSelector": ".product-name",
-        "imageSelector": "(document)=> document.querySelector('[srcset]').getAttribute('srcset').split(',')[9].trim().split(' ')[0]",
-        "linkSelector": "a",
+
         "schedule": "0 0 * * 4",
         "id": "100"
     },
