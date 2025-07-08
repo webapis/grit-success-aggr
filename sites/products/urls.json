@@ -1100,7 +1100,6 @@
         "urls": [
             "https://www.pembecida.com/"
         ],
-
         "schedule": "0 0 * * 4",
         "id": "72"
     },
@@ -1108,7 +1107,6 @@
         "urls": [
             "https://www.milkywilky.com.tr/"
         ],
-
         "schedule": "0 0 * * 4",
         "id": "73"
     },
