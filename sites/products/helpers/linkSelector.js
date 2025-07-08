@@ -1,4 +1,6 @@
 export default [
+    "a[data-cc-animate-click]",
+    ".product-image-wrapper a",
     ".m-productCard__detail h3 > :nth-child(2)",
     ".product-figure-wrap a",
     "a.product-figure",

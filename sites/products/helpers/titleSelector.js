@@ -1,4 +1,10 @@
 export default [
+    "h2.product-name",
+    ".product-item__product-title a",
+    "a.custom-card-title",
+    "a span.title",
+    "h3.product-name",
+    '.mfn-woo-product-title a',
     ".product_image img",
     ".m-productCard__desc",
     "div.mainTitle",

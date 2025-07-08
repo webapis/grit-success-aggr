@@ -1,4 +1,6 @@
 export default [
+    ".category__list__main div.grid a",
+    "li.product",
     ".product_box",
     ".MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-6.MuiGrid-grid-sm-6.MuiGrid-grid-md-4.MuiGrid-grid-lg-4", //yargıcı
     ".product-list .pitem",
@@ -33,7 +35,7 @@ export default [
     "legacy-product",
     "article[data-category]",
     ".productItemLayout.ViewProduct",
-    ".grid [data-id]",
+    // ".grid [data-id]",
     ".js-product-item",
     ".product",
     "[data-testid='product-box']",

@@ -1,6 +1,5 @@
 [
     {
-        "site": "koton",
         "urls": [
             "https://www.koton.com/"
         ],
@@ -15,7 +14,6 @@
         "id": "1"
     },
     {
-        "site": "defacto",
         "urls": [
             "https://www.defacto.com.tr/statik/sitemap"
         ],
@@ -34,7 +32,6 @@
         "id": "2"
     },
     {
-        "site": "desa",
         "urls": [
             "https://www.desa.com.tr/"
         ],
@@ -46,7 +43,6 @@
         "id": "3"
     },
     {
-        "site": "divarese",
         "urls": [
             "https://www.divarese.com.tr/"
         ],
@@ -65,7 +61,6 @@
         "id": "4"
     },
     {
-        "site": "elleshoes",
         "urls": [
             "https://www.elleshoes.com/"
         ],
@@ -83,7 +78,6 @@
         "pausedReason": "site is paused for srawlling problem"
     },
     {
-        "site": "manuatelier",
         "urls": [
             "https://tr.manuatelier.com/"
         ],
@@ -100,7 +94,6 @@
         "id": "6"
     },
     {
-        "site": "adl",
         "urls": [
             "https://www.adl.com.tr"
         ],
@@ -116,7 +109,6 @@
         "id": "7"
     },
     {
-        "site": "alfa-beta",
         "urls": [
             "https://www.alfa-beta.com.tr"
         ],
@@ -133,7 +125,6 @@
         "id": "8"
     },
     {
-        "site": "biancoenero",
         "urls": [
             "https://biancoenero.com.tr/"
         ],
@@ -147,7 +138,6 @@
         "id": "9"
     },
     {
-        "site": "bsl",
         "urls": [
             "https://www.bsl.com.tr/tr/site-haritasi"
         ],
@@ -166,7 +156,6 @@
         "id": "10"
     },
     {
-        "site": "lovemybody",
         "urls": [
             "https://www.lovemybody.com.tr/kadin-elbise/"
         ],
@@ -191,7 +180,6 @@
         "id": "12"
     },
     {
-        "site": "birelin",
         "urls": [
             "https://www.birelin.com/"
         ],
@@ -205,7 +193,6 @@
         "id": "13"
     },
     {
-        "site": "ekolonline",
         "urls": [
             "https://www.ekolonline.com"
         ],
@@ -214,7 +201,6 @@
         "id": "14"
     },
     {
-        "site": "fever",
         "urls": [
             "https://www.fever.com.tr/"
         ],
@@ -223,7 +209,6 @@
         "id": "15"
     },
     {
-        "site": "gustoeshop",
         "urls": [
             "https://gustoeshop.com/"
         ],
@@ -232,7 +217,6 @@
         "id": "16"
     },
     {
-        "site": "ipekyol",
         "urls": [
             "https://www.ipekyol.com.tr/"
         ],
@@ -247,7 +231,6 @@
         "id": "17"
     },
     {
-        "site": "joinus",
         "urls": [
             "https://joinus.com.tr"
         ],
@@ -258,7 +241,6 @@
         "id": "18"
     },
     {
-        "site": "jusdepommes",
         "urls": [
             "https://jusdepommes.com/"
         ],
@@ -270,7 +252,6 @@
         "id": "19"
     },
     {
-        "site": "lovemetoo",
         "urls": [
             "https://lovemetoo.com.tr/"
         ],
@@ -281,7 +262,6 @@
         "id": "20"
     },
     {
-        "site": "machka",
         "urls": [
             "https://www.machka.com.tr/"
         ],
@@ -294,7 +274,6 @@
         "id": "21"
     },
     {
-        "site": "modalogy",
         "urls": [
             "https://www.modalogy.com.tr/"
         ],
@@ -306,7 +285,6 @@
         "id": "22"
     },
     {
-        "site": "network",
         "urls": [
             "https://www.network.com.tr"
         ],
@@ -319,7 +297,6 @@
         "id": "23"
     },
     {
-        "site": "nocturne",
         "urls": [
             "https://www.nocturne.com.tr/"
         ],
@@ -333,7 +310,6 @@
         "id": "24"
     },
     {
-        "site": "oxxo",
         "urls": [
             "https://www.oxxo.com.tr/"
         ],
@@ -350,7 +326,6 @@
         "id": "25"
     },
     {
-        "site": "rueonline",
         "urls": [
             "https://www.rueonline.com/"
         ],
@@ -362,7 +337,6 @@
         "id": "26"
     },
     {
-        "site": "setre",
         "urls": [
             "https://www.setre.com"
         ],
@@ -374,7 +348,6 @@
         "id": "27"
     },
     {
-        "site": "sherin",
         "urls": [
             "https://www.sherin.com.tr/"
         ],
@@ -386,7 +359,6 @@
         "id": "28"
     },
     {
-        "site": "themolc",
         "urls": [
             "https://www.themolc.com/"
         ],
@@ -397,7 +369,6 @@
         "id": "29"
     },
     {
-        "site": "tuvanam",
         "urls": [
             "https://tuvanam.com/"
         ],
@@ -409,7 +380,6 @@
         "id": "30"
     },
     {
-        "site": "twist",
         "urls": [
             "https://www.twist.com.tr/"
         ],
@@ -422,7 +392,6 @@
         "id": "31"
     },
     {
-        "site": "wheneverco",
         "urls": [
             "https://www.wheneverco.com/"
         ],
@@ -433,7 +402,6 @@
         "id": "32"
     },
     {
-        "site": "yargici",
         "urls": [
             "https://www.yargici.com"
         ],
@@ -449,7 +417,6 @@
         "id": "33"
     },
     {
-        "site": "brooksbrothers",
         "urls": [
             "https://www.brooksbrothers.com.tr/"
         ],
@@ -461,7 +428,6 @@
         "id": "34"
     },
     {
-        "site": "colins",
         "urls": [
             "https://www.colins.com.tr/"
         ],
@@ -473,7 +439,6 @@
         "id": "35"
     },
     {
-        "site": "dahliabianca",
         "urls": [
             "https://www.dahliabianca.com/"
         ],
@@ -487,7 +452,6 @@
         "id": "36"
     },
     {
-        "site": "ilvi",
         "urls": [
             "https://www.ilvi.com/"
         ],
@@ -496,7 +460,6 @@
         "id": "37"
     },
     {
-        "site": "lufian",
         "urls": [
             "https://www.lufian.com/"
         ],
@@ -505,7 +468,6 @@
         "id": "38"
     },
     {
-        "site": "penti",
         "urls": [
             "https://www.penti.com/"
         ],
@@ -517,7 +479,6 @@
         "id": "39"
     },
     {
-        "site": "wcollection",
         "urls": [
             "https://www.wcollection.com.tr/site-haritasi"
         ],
@@ -535,7 +496,6 @@
         "id": "40"
     },
     {
-        "site": "woody",
         "urls": [
             "https://www.woody.com.tr/"
         ],
@@ -550,7 +510,6 @@
         "id": "41"
     },
     {
-        "site": "mango",
         "urls": [
             "https://shop.mango.com/tr/sitemap"
         ],
@@ -565,7 +524,6 @@
         "id": "42"
     },
     {
-        "site": "beymen",
         "urls": [
             "https://www.beymen.com/tr"
         ],
@@ -573,7 +531,6 @@
         "id": "43"
     },
     {
-        "site": "hmdtekstil",
         "urls": [
             "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_61",
             "https://www.hmdtekstil.com.tr/index.php?route=product/category&path=59_68",
@@ -615,7 +572,6 @@
         "id": "44"
     },
     {
-        "site": "matras",
         "urls": [
             "https://www.matras.com/yeni-urun",
             "https://www.matras.com/canta-modelleri",
@@ -641,13 +597,13 @@
         "id": "45"
     },
     {
-        "site": "ateliergalin",
         "urls": [
-            "https://www.ateliergalin.com/collections/all"
+            "https://www.ateliergalin.com/"
         ],
         "titleSelector": "(document)=> document.querySelector('.full-unstyled-link')?.innerText.trim()",
         "imageSelector": "(document)=>'https:'+ document.querySelector('.card__media img')?.srcset.split(',')[4].split(' ')[0]",
         "linkSelector": "(document)=> document.querySelector('.full-unstyled-link')?.href",
+        "productPageSelector": "product-grid-container",
         "funcPageSelector": [
             "a.pagination__item"
         ],
@@ -655,7 +611,6 @@
         "id": "46"
     },
     {
-        "site": "diesel",
         "urls": [
             "https://global.diesel.com/man/"
         ],
@@ -666,7 +621,6 @@
         "id": "47"
     },
     {
-        "site": "uspoloassn",
         "urls": [
             "https://tr.uspoloassn.com/"
         ],
@@ -678,7 +632,6 @@
         "id": "48"
     },
     {
-        "site": "gap",
         "urls": [
             "https://gap.com.tr/"
         ],
@@ -689,7 +642,6 @@
         "id": "49"
     },
     {
-        "site": "burberry",
         "urls": [
             "https://tr.burberry.com/"
         ],
@@ -700,7 +652,6 @@
         "id": "50"
     },
     {
-        "site": "buenoshoes",
         "urls": [
             "https://www.buenoshoes.com.tr/"
         ],
@@ -711,7 +662,6 @@
         "id": "51"
     },
     {
-        "site": "camper",
         "urls": [
             "https://www.camper.com/tr_TR"
         ],
@@ -723,7 +673,6 @@
         "id": "52"
     },
     {
-        "site": "converse",
         "urls": [
             "https://www.converse.com.tr/"
         ],
@@ -735,7 +684,6 @@
         "id": "53"
     },
     {
-        "site": "eclecticconceptstore",
         "urls": [
             "https://eclecticconceptstore.com.tr/product-category/men/",
             "https://eclecticconceptstore.com.tr/product-category/women/",
@@ -749,7 +697,6 @@
         "id": "54"
     },
     {
-        "site": "edwards",
         "urls": [
             "https://www.edwards.com.tr/kadin/",
             "https://www.edwards.com.tr/erkek/"
@@ -761,7 +708,6 @@
         "id": "55"
     },
     {
-        "site": "gant",
         "urls": [
             "https://www.gant.com.tr/"
         ],
@@ -772,7 +718,6 @@
         "id": "56"
     },
     {
-        "site": "lacoste",
         "urls": [
             "https://www.lacoste.com.tr/"
         ],
@@ -783,7 +728,6 @@
         "id": "57"
     },
     {
-        "site": "pierrecardin",
         "urls": [
             "https://www.pierrecardin.com.tr/"
         ],
@@ -794,7 +738,6 @@
         "id": "58"
     },
     {
-        "site": "pullandbear",
         "urls": [
             "https://www.pullandbear.com/tr/erkek-n6228",
             "https://www.pullandbear.com/tr/kadin-n6417"
@@ -806,7 +749,6 @@
         "id": "59"
     },
     {
-        "site": "marksandspencer",
         "urls": [
             "https://www.marksandspencer.com.tr/"
         ],
@@ -818,7 +760,6 @@
         "id": "60"
     },
     {
-        "site": "hm",
         "urls": [
             "https://www2.hm.com/tr_tr/index.html"
         ],
@@ -830,7 +771,6 @@
         "id": "61"
     },
     {
-        "site": "paulmark",
         "urls": [
             "https://www.paulmark.com.tr/"
         ],
@@ -843,7 +783,6 @@
         "id": "62"
     },
     {
-        "site": "morrez",
         "urls": [
             "https://morrez.com/"
         ],
@@ -854,7 +793,6 @@
         "id": "63"
     },
     {
-        "site": "yaygan",
         "urls": [
             "https://www.yaygan.com/"
         ],
@@ -865,7 +803,6 @@
         "id": "64"
     },
     {
-        "site": "ltbjeans",
         "urls": [
             "https://www.ltbjeans.com/tr-TR"
         ],
@@ -876,7 +813,6 @@
         "id": "65"
     },
     {
-        "site": "efor",
         "urls": [
             "https://www.efor.com.tr/"
         ],
@@ -888,7 +824,6 @@
         "id": "66"
     },
     {
-        "site": "edliskids",
         "urls": [
             "https://www.edliskids.com/urun-kategori/kiz-bebek/",
             "https://www.edliskids.com/urun-kategori/kiz-bebek/dis-giyim/",
@@ -1121,7 +1056,6 @@
         "id": "67"
     },
     {
-        "site": "breeze",
         "urls": [
             "https://www.breeze.com.tr/"
         ],
@@ -1133,7 +1067,6 @@
         "id": "68"
     },
     {
-        "site": "cartersoshkosh",
         "urls": [
             "https://www.cartersoshkosh.com.tr/"
         ],
@@ -1144,7 +1077,6 @@
         "id": "69"
     },
     {
-        "site": "sagaza",
         "urls": [
             "https://sagaza.com/"
         ],
@@ -1155,7 +1087,6 @@
         "id": "70"
     },
     {
-        "site": "panco",
         "urls": [
             "https://www.panco.com.tr/"
         ],
@@ -1166,7 +1097,6 @@
         "id": "71"
     },
     {
-        "site": "pembecida",
         "urls": [
             "https://www.pembecida.com/"
         ],
@@ -1178,7 +1108,6 @@
         "id": "72"
     },
     {
-        "site": "milkywilky",
         "urls": [
             "https://www.milkywilky.com.tr/"
         ],
@@ -1189,7 +1118,6 @@
         "id": "73"
     },
     {
-        "site": "jackjones",
         "urls": [
             "https://jackjones.com.tr/"
         ],
@@ -1200,7 +1128,6 @@
         "id": "74"
     },
     {
-        "site": "smile",
         "urls": [
             "https://smile.com.tr/"
         ],
@@ -1211,7 +1138,6 @@
         "id": "75"
     },
     {
-        "site": "victorbaron",
         "urls": [
             "https://victorbaron.com.tr/"
         ],
@@ -1222,7 +1148,6 @@
         "id": "76"
     },
     {
-        "site": "altinyildizclassics",
         "urls": [
             "https://www.altinyildizclassics.com/"
         ],
@@ -1233,7 +1158,6 @@
         "id": "77"
     },
     {
-        "site": "bisse",
         "urls": [
             "https://www.bisse.com/"
         ],
@@ -1244,7 +1168,6 @@
         "id": "78"
     },
     {
-        "site": "brango",
         "urls": [
             "https://www.brango.com.tr/"
         ],
@@ -1256,7 +1179,6 @@
         "id": "79"
     },
     {
-        "site": "damattween",
         "urls": [
             "https://www.damattween.com/"
         ],
@@ -1267,7 +1189,6 @@
         "id": "80"
     },
     {
-        "site": "centone",
         "urls": [
             "https://www.centone.com.tr/"
         ],
@@ -1279,7 +1200,6 @@
         "id": "81"
     },
     {
-        "site": "dsdamat",
         "urls": [
             "https://www.dsdamat.com/"
         ],
@@ -1290,7 +1210,6 @@
         "id": "82"
     },
     {
-        "site": "duk",
         "urls": [
             "https://www.duk.com.tr/"
         ],
@@ -1301,7 +1220,6 @@
         "id": "83"
     },
     {
-        "site": "kigili",
         "urls": [
             "https://www.kigili.com/"
         ],
@@ -1313,7 +1231,6 @@
         "id": "84"
     },
     {
-        "site": "maleindustry",
         "urls": [
             "https://www.maleindustry.com.tr/erkek-sneaker-modelleri"
         ],
@@ -1325,7 +1242,6 @@
         "id": "85"
     },
     {
-        "site": "wemsey",
         "urls": [
             "https://www.wemsey.com.tr/"
         ],
@@ -1336,7 +1252,6 @@
         "id": "86"
     },
     {
-        "site": "tubabutik",
         "urls": [
             "https://tubabutik.com/kadin-ceket-modelleri"
         ],
@@ -1347,7 +1262,6 @@
         "id": "87"
     },
     {
-        "site": "tarikediz",
         "urls": [
             "https://www.tarikediz.com/"
         ],
@@ -1358,7 +1272,6 @@
         "id": "88"
     },
     {
-        "site": "hollylolly",
         "urls": [
             "https://www.hollylolly.net/"
         ],
@@ -1371,7 +1284,6 @@
         "id": "89"
     },
     {
-        "site": "perspectivewoman",
         "urls": [
             "https://perspectivewoman.com/"
         ],
@@ -1382,7 +1294,6 @@
         "id": "90"
     },
     {
-        "site": "rivus",
         "urls": [
             "https://rivus.com.tr/"
         ],
@@ -1395,7 +1306,6 @@
         "id": "91"
     },
     {
-        "site": "arzukaprol",
         "urls": [
             "https://arzukaprol.com/"
         ],
@@ -1406,7 +1316,6 @@
         "id": "92"
     },
     {
-        "site": "sorbe",
         "urls": [
             "https://www.sorbe.co/"
         ],
@@ -1419,7 +1328,6 @@
         "id": "93"
     },
     {
-        "site": "victoriassecret",
         "urls": [
             "https://www.victoriassecret.com.tr/"
         ],
@@ -1430,7 +1338,6 @@
         "id": "94"
     },
     {
-        "site": "maisonju",
         "urls": [
             "https://www.maisonju.com/"
         ],
@@ -1441,7 +1348,6 @@
         "id": "95"
     },
     {
-        "site": "berr-in",
         "urls": [
             "https://berr-in.com/kadin-elbise-modelleri"
         ],
@@ -1453,7 +1359,6 @@
         "id": "96"
     },
     {
-        "site": "nevermore",
         "urls": [
             "https://www.nevermore.com.tr/"
         ],
@@ -1464,7 +1369,6 @@
         "id": "97"
     },
     {
-        "site": "dilekhanif",
         "urls": [
             "https://www.dilekhanif.com/"
         ],
@@ -1475,7 +1379,6 @@
         "id": "98"
     },
     {
-        "site": "bizeonline",
         "urls": [
             "https://www.bizeonline.com"
         ],
@@ -1487,7 +1390,6 @@
         "id": "99"
     },
     {
-        "site": "dressweden",
         "urls": [
             "https://dressweden.com/"
         ],
@@ -1498,138 +1400,92 @@
         "id": "100"
     },
     {
-        "site": "niqozza",
         "urls": [
             "https://www.niqozza.com"
         ],
-        "titleSelector": ".productName.detailUrl a",
-        "imageSelector": "[data-original]",
-        "imageAttr": "data-original",
-        "linkSelector": ".productName.detailUrl a",
+
         "schedule": "0 0 * * 4",
         "id": "101"
     },
     {
-        "site": "olegcassini",
         "urls": [
             "https://olegcassini.com.tr/"
         ],
-        "titleSelector": ".product-name",
-        "imageSelector": "(document)=> document.querySelector('.category-products-image[srcset]').getAttribute('srcset').split(',')[10].trim().split(' ')[0]",
-        "linkSelector": "a",
+
         "schedule": "0 0 * * 4",
         "id": "102"
     },
     {
-        "site": "pinkoturkey",
         "urls": [
             "https://www.pinkoturkey.com/"
         ],
-        "titleSelector": ".showcase-title",
-        "imageSelector": "(document)=> 'https:'  + document.querySelector('[data-src]').getAttribute('data-src')",
-        "imageAttr": "srс",
-        "linkSelector": ".showcase-title a",
+        "paused": true,
+        "pausedReason": "unreachable website",
         "schedule": "0 0 * * 4",
         "id": "103"
     },
     {
-        "site": "silkandcashmere",
         "urls": [
             "https://silkandcashmere.com/"
         ],
-        "titleSelector": ".product-item__product-title a",
-        "imageSelector": ".image__img",
-        "linkSelector": ".product-item__product-title a",
         "schedule": "0 0 * * 4",
         "id": "104"
     },
     {
-        "site": "aldoshoes",
         "urls": [
             "https://www.aldoshoes.com.tr/"
         ],
-        "titleSelector": ".product-name span",
-        "imageSelector": "[data-src]",
-        "imageAttr": "data-src",
-        "linkSelector": ".product-image",
         "schedule": "0 0 * * 4",
         "id": "105"
     },
     {
-        "site": "gigiis",
         "urls": [
             "https://www.gigiis.com/"
         ],
-        "titleSelector": "span.title",
-        "imageSelector": "(document)=> 'https:'  + document.querySelector('[data-srcset]').getAttribute('data-srcset').split(',')[2].trim().split(' ')[0]",
-        "linkSelector": ".product-block__inner a",
         "schedule": "0 0 * * 4",
         "id": "106"
     },
     {
-        "site": "ninewest",
         "urls": [
             "https://www.ninewest.com.tr/"
         ],
-        "titleSelector": ".product-name",
-        "imageSelector": "[data-src]",
-        "imageAttr": "data-src",
-        "linkSelector": "a[data-product-id]",
         "schedule": "0 0 * * 4",
         "id": "107"
     },
     {
-        "site": "shopseizetheday",
         "urls": [
             "https://www.shopseizetheday.com/"
         ],
-        "titleSelector": ".mfn-woo-product-title a",
-        "imageSelector": "(document)=> document.querySelector('.attachment-woocommerce_thumbnail').srcset.split(',')[0].trim().split(' ')[0]",
-        "linkSelector": ".mfn-woo-product-title a",
         "schedule": "0 0 * * 4",
         "id": "108"
     },
     {
-        "site": "serpil",
         "urls": [
             "https://serpil.com.tr/"
         ],
-        "titleSelector": ".product-title",
-        "imageSelector": "(doculent)=>'https://serpil.com.tr'+ document.querySelector('[data-src]').getAttribute('data-src')",
-        "linkSelector": ".product-title",
+        "paused": true,
+        "pausedReason": "site is unreachable",
         "schedule": "0 0 * * 4",
         "id": "109"
     },
     {
-        "site": "bejfinefactory",
         "urls": [
             "https://www.bejfinefactory.com/"
         ],
-        "titleSelector": ".c-p-i-link .title",
-        "imageSelector": ".img-auto",
-        "linkSelector": ".c-p-i-link",
         "schedule": "0 0 * * 4",
         "id": "110"
     },
     {
-        "site": "dilvin",
         "urls": [
             "https://www.dilvin.com.tr/"
         ],
-        "titleSelector": ".item-name a",
-        "imageSelector": ".img-responsive",
-        "linkSelector": "a",
         "schedule": "0 0 * * 4",
         "id": "111"
     },
     {
-        "site": "ihandmore",
         "urls": [
             "https://ihandmore.com/"
         ],
-        "titleSelector": "(document)=>document.querySelector('.entry-title.qode-pli-title a')?.innerText || document.querySelector('[itemprop=\"name\"]').innerText",
-        "imageSelector": "(document)=>document.querySelector('[srcset]').getAttribute('srcset').split(',')[2].trim().split(' ')[0]",
-        "linkSelector": "(document)=> document.querySelector('.entry-title.qode-pli-title a')?.href || document.querySelector(' [itemprop=\"url\"]').href",
         "schedule": "0 0 * * 4",
         "id": "112"
     },

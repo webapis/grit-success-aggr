@@ -6,6 +6,7 @@ import getAggrTimeSpan from "./sheet/getAggrTimeSpan.js";
 import countUnique from "./sheet/countUnique.js";
 import countByField from "./scrap/countByField.js";
 import getUniquePageURLs from "./sheet/getUniquePageURLs.js";
+import getMainDomainPart from "./scrap/getMainDomainPart.js";
 import { emitAsync } from "./events.js";
 import './listeners.js'; // ← This registers event handlers
 import urls from '../sites/products/urls.json' assert { type: 'json' };
@@ -13,7 +14,7 @@ dotenv.config({ silent: true });
 
 const URL_CATEGORIES = process.env.URL_CATEGORIES;
 const site = process.env.site;
-const siteUrls = urls.find(f => f.site === site)
+const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
 const dataset = await Dataset.open(site);
 const { items: data } = await dataset.getData();
 

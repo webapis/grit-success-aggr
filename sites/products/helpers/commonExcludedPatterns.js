@@ -1,6 +1,6 @@
 export default [
-    "**login**",
-    "**user**","auth",
+    "login",
+    "user", "auth",
     "basket",
     "facebook",
     "twitter",
@@ -21,6 +21,7 @@ export default [
     "evcil-hayvan-kiyafetleri",
     "cocuk-tumu",
     "sosyal-sorumluluk",
-    "lookbook"
+    "lookbook",
+    "https://www.gigiis.com/collections"
 
 ]

@@ -5,7 +5,7 @@ import { PuppeteerCrawler } from "crawlee";
 import { router } from "./prodRoutesPuppeteer.js";
 import preNavigationHooks from "./crawler-helper/preNavigationHooksProd2.js";
 import puppeteer from './crawler-helper/puppeteer-stealth.js';
-
+import getMainDomainPart from './src/scrap/getMainDomainPart.js';
 import urls from './sites/products/urls.json' assert { type: 'json' };
 
 const site = process.env.site;
@@ -13,21 +13,21 @@ const local = process.env.local;
 
 const HEADLESS = process.env.HEADLESS;
 
-const siteUrls = urls.find(f => f.site === site)
+const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
 
 if (siteUrls.paused) {
 
- await emitAsync('log-to-sheet', {
-  sheetTitle: 'paused-sites', 
-  message:  console.log(`Site ${site} is paused from aggregating. Exiting...`),
-  rowData: {
-    site,
-    status: 'Paused',
-    pausedReason: siteUrls.pausedReason || 'No reason provided', 
-    timestamp: new Date().toISOString(),
-  } 
-});
-process.exit(0);
+  await emitAsync('log-to-sheet', {
+    sheetTitle: 'paused-sites',
+    message: console.log(`Site ${site} is paused from aggregating. Exiting...`),
+    rowData: {
+      site,
+      status: 'Paused',
+      pausedReason: siteUrls.pausedReason || 'No reason provided',
+      timestamp: new Date().toISOString(),
+    }
+  });
+  process.exit(0);
 } else {
   const crawler = new PuppeteerCrawler({
     launchContext: {
@@ -49,7 +49,7 @@ process.exit(0);
     navigationTimeoutSecs: 120,
     headless: HEADLESS === "false" ? false : true,
     requestHandlerTimeoutSecs: 600000,
-     maxRequestsPerCrawl: 50
+    maxRequestsPerCrawl: 50
   });
 
   crawler.run(siteUrls.urls);

@@ -1,4 +1,7 @@
 export default [
+    '.category-products-image',
+    '.image img',
+    'img.img-responsive',
     ".product_image img",
     '.swiper-slide img',
     ".ndImage source[srcset]",
