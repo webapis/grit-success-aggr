@@ -1,4 +1,7 @@
 export default [
+  'img.category-products-image',
+  '.image-inner img',
+  '.ltb__product--image',
   '.product-image__img',
   '.product__image-link span img',
   'img.product-item__img',

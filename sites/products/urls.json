@@ -786,9 +786,6 @@
         "urls": [
             "https://morrez.com/"
         ],
-        "titleSelector": ".product-name",
-        "imageSelector": "(document)=>document.querySelector('.product-slider-image-container img').srcset.split(',')[10].trim().split(' ')[0]",
-        "linkSelector": "a",
         "schedule": "0 0 * * 4",
         "id": "63"
     },
@@ -796,9 +793,6 @@
         "urls": [
             "https://www.yaygan.com/"
         ],
-        "titleSelector": ".product-title",
-        "imageSelector": "a.image-wrapper img",
-        "linkSelector": ".image-wrapper",
         "schedule": "0 0 * * 4",
         "id": "64"
     },
@@ -806,9 +800,6 @@
         "urls": [
             "https://www.ltbjeans.com/tr-TR"
         ],
-        "titleSelector": ".product-tile-body__link",
-        "imageSelector": "(document)=> document.querySelector('.product-tile-image__picture  img.lazyloaded')?.scr ||document.querySelector('.product-tile-image__picture  img.swiper-lazy')?.dataset.src",
-        "linkSelector": ".product-tile-body__link",
         "schedule": "0 0 * * 4",
         "id": "65"
     },
@@ -816,10 +807,6 @@
         "urls": [
             "https://www.efor.com.tr/"
         ],
-        "titleSelector": ".product-details  [itemprop='name']",
-        "imageSelector": "[data-original]",
-        "imageAttr": "data-original",
-        "linkSelector": ".innerwrap.product.ecommerceClick",
         "schedule": "0 0 * * 4",
         "id": "66"
     },
@@ -1059,10 +1046,6 @@
         "urls": [
             "https://www.breeze.com.tr/"
         ],
-        "titleSelector": ".productName a",
-        "imageSelector": "[data-original]",
-        "imageAttr": "data-original",
-        "linkSelector": "a.detailLink",
         "schedule": "0 0 * * 4",
         "id": "68"
     },
@@ -1080,9 +1063,6 @@
         "urls": [
             "https://sagaza.com/"
         ],
-        "titleSelector": ".product__grid__title",
-        "imageSelector": "(document)=> 'https:'  + document.querySelector('[srcset]').getAttribute('srcset').trim().split(' ')[0]",
-        "linkSelector": "a",
         "schedule": "0 0 * * 4",
         "id": "70"
     },
