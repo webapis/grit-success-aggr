@@ -1,1 +1,1 @@
-export default [".product-list", "ul.products","#product-grid",".category__list__main"]
+export default [".product-list", "ul.products", "#product-grid", ".category__list__main", ".main-products.product-grid"]

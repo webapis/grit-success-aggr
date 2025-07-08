@@ -1,4 +1,5 @@
 export default [
+    'div.caption div.name a',
     ".grid-product__title",
     "h2.product-name",
     ".product-item__product-title a",

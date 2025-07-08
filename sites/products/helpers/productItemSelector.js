@@ -1,4 +1,5 @@
 export default [
+
     ".category__list__main div.grid a",
     "li.product",
     ".product_box",
