@@ -1,4 +1,5 @@
 export default [
+    '[class^="style_productCard"] a.block',
     '.react-multi-carousel-item a',
     '.js-product-images-wrapper',
     'a.fast-filters-image-link',

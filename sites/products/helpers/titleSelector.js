@@ -1,4 +1,6 @@
 export default [
+    '[class^="style_productCard"] p.name',
+    'h2.product-item__name',
     'a .relative.inline-block.w-full img',
     'h2[class^="product_card_product_title"] a',
     '.product__listing--content h3 a',
