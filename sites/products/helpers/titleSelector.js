@@ -1,4 +1,7 @@
 export default [
+    'a .relative.inline-block.w-full img',
+    'h2[class^="product_card_product_title"] a',
+    '.product__listing--content h3 a',
     '.fast-filters-image-title',
     '.cta-link-primary.product-card-v2-anchor',
     'h2.product-card-v2-title',

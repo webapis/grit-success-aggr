@@ -74,7 +74,6 @@
         ],
         "schedule": "0 0 * * 4",
         "id": "5"
-
     },
     {
         "urls": [
@@ -299,7 +298,6 @@
         "urls": [
             "https://www.nocturne.com.tr/"
         ],
-
         "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "24"
@@ -308,7 +306,6 @@
         "urls": [
             "https://www.oxxo.com.tr/"
         ],
- 
         "isAutoScroll": true,
         "excludeUrlPatterns": [
             "/giyim/",
@@ -596,9 +593,8 @@
         "urls": [
             "https://global.diesel.com/man/"
         ],
-        "titleSelector": ".product-tile-body__link",
-        "imageSelector": "(document)=>document.querySelector('.product-tile-image__picture  img.lazyloaded')?.scr ||document.querySelector('.product-tile-image__picture  img.swiper-lazy')?.dataset.src",
-        "linkSelector": ".product-tile-body__link",
+        "paused": true,
+        "pausedReason": "unmanagable classNames",
         "schedule": "0 0 * * 4",
         "id": "47"
     },
@@ -620,7 +616,6 @@
         "urls": [
             "https://tr.burberry.com/"
         ],
- 
         "schedule": "0 0 * * 4",
         "id": "50"
     },
@@ -674,7 +669,6 @@
         "urls": [
             "https://www.gant.com.tr/"
         ],
-
         "schedule": "0 0 * * 4",
         "id": "56"
     },
@@ -685,6 +679,8 @@
         "titleSelector": ".product-info--name",
         "imageSelector": ".js-product-item-image",
         "linkSelector": ".product-info--name a",
+        "paused": true,
+        "pausedReason": "unmanagable classNames",
         "schedule": "0 0 * * 4",
         "id": "57"
     },
@@ -692,9 +688,6 @@
         "urls": [
             "https://www.pierrecardin.com.tr/"
         ],
-        "titleSelector": ".product__listing--content h3",
-        "imageSelector": "(document)=> document.querySelectorAll('[data-src]')[1].getAttribute('data-src')",
-        "linkSelector": ".product__listing--content h3 a",
         "schedule": "0 0 * * 4",
         "id": "58"
     },

@@ -1,4 +1,5 @@
 export default [
+    '[data-testid="product-box"]',
     '.js-product-list-item',
     '.list-content-product-item',
     '.ant-col.grid-item',

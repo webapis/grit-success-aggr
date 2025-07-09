@@ -1,4 +1,6 @@
 export default [
+    '.react-multi-carousel-item a',
+    '.js-product-images-wrapper',
     'a.fast-filters-image-link',
     'a.product-item__info-name',
     '.product-tile-body__link',
