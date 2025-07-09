@@ -1,4 +1,6 @@
 export default [
+  'img.swiper-slide',
+  '.media-carousel-container__media.product-card-v2-carousel-container__media__source',
   '.product-tile-image__picture source',
   '.lazy-load-image-background img.w-full',
   'img.category-products-image',

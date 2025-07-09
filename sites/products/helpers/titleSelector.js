@@ -1,4 +1,7 @@
 export default [
+    '.fast-filters-image-title',
+    '.cta-link-primary.product-card-v2-anchor',
+    'h2.product-card-v2-title',
     '.product-item__info-product-name',
     'h3.product__name a',
     '.product-tile-body__link',

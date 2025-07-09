@@ -1,4 +1,5 @@
 export default [
+    'a.fast-filters-image-link',
     'a.product-item__info-name',
     '.product-tile-body__link',
     'a.item-img.swiper-slide',

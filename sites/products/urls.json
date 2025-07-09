@@ -620,9 +620,7 @@
         "urls": [
             "https://tr.burberry.com/"
         ],
-        "titleSelector": ".product-card-v2-title",
-        "imageSelector": ".media-carousel-container__media.product-card-v2-carousel-container__media__source",
-        "linkSelector": "a",
+ 
         "schedule": "0 0 * * 4",
         "id": "50"
     },
@@ -630,9 +628,6 @@
         "urls": [
             "https://www.buenoshoes.com.tr/"
         ],
-        "titleSelector": ".divUAd a",
-        "imageSelector": "(document)=>'https://www.buenoshoes.com.tr/' + document.querySelector('[data-src]').getAttribute('data-src')",
-        "linkSelector": ".divUAd a",
         "schedule": "0 0 * * 4",
         "id": "51"
     },
@@ -651,10 +646,6 @@
         "urls": [
             "https://www.converse.com.tr/"
         ],
-        "titleSelector": ".product-item__name",
-        "imageSelector": "[data-src]",
-        "imageAttr": "data-src",
-        "linkSelector": ".js-product-anchor",
         "schedule": "0 0 * * 4",
         "id": "53"
     },
@@ -676,9 +667,6 @@
             "https://www.edwards.com.tr/kadin/",
             "https://www.edwards.com.tr/erkek/"
         ],
-        "titleSelector": ".product-tile-body__link",
-        "imageSelector": "(document)=> document.querySelector('.product-tile-image__picture  img.lazyloaded')?.scr ||document.querySelector('.product-tile-image__picture  img.swiper-lazy')?.dataset.src",
-        "linkSelector": ".product-tile-body__link",
         "schedule": "0 0 * * 4",
         "id": "55"
     },
@@ -686,9 +674,7 @@
         "urls": [
             "https://www.gant.com.tr/"
         ],
-        "titleSelector": ".product-name__link",
-        "imageSelector": ".product-item-image",
-        "linkSelector": ".product-name__link",
+
         "schedule": "0 0 * * 4",
         "id": "56"
     },

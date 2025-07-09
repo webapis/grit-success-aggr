@@ -1,4 +1,7 @@
 export default [
+    '.js-product-list-item',
+    '.list-content-product-item',
+    '.ant-col.grid-item',
     '.item-box .product-item',
     '.productItemLayout',
     '.react-multi-carousel-item',

@@ -30,6 +30,10 @@ export default [
     '.product-grid.border-red-plp',//diesel
     '.list__products--iterative .product__listing',//uspoloassn
     '.product-listing-shelf__product-card-container',//burberry
+    '.divUUrunler.divUUrunlerG4',//buenoshoes
+    '.list-container__products .list-row',//edwards
+    '.product-container.js-product-container',//gant
+
     'section.plp-products',
     ".main-products-wrapper",
     ".js-product-list",
