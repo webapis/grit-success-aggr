@@ -1,4 +1,5 @@
 export default [
+    'h3.product-name',
     '.product-name a',
     '.ltb__product--info-area > a:nth-child(2) h5',
     'h2[class^="productcard_type1_product_card1_title"]',

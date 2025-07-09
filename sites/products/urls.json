@@ -774,11 +774,8 @@
         "urls": [
             "https://www.paulmark.com.tr/"
         ],
-        "titleSelector": "img",
-        "titleAttr": "alt",
-        "imageSelector": "[data-src]",
-        "imageAttr": "data-src",
-        "linkSelector": "a.item-img",
+        "paused": true,
+        "pausedReason": "unmanagable classNames",
         "schedule": "0 0 * * 4",
         "id": "62"
     },
