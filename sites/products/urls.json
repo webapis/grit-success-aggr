@@ -64,7 +64,7 @@
         "urls": [
             "https://www.elleshoes.com/"
         ],
-        "isAutoScroll": true,
+        "isAutoScroll": false,
         "funcPageSelector": [
             ".UrunAdet",
             48
@@ -73,9 +73,8 @@
             "**/tum-urunler**"
         ],
         "schedule": "0 0 * * 4",
-        "id": "5",
-        "paused": true,
-        "pausedReason": "site is paused for srawlling problem"
+        "id": "5"
+
     },
     {
         "urls": [
@@ -300,11 +299,7 @@
         "urls": [
             "https://www.nocturne.com.tr/"
         ],
-        "productPageSelector": ".product-list",
-        "titleSelector": ".product-name",
-        "imageSelector": "[data-original]",
-        "imageAttr": "data-original",
-        "linkSelector": ".product-image a",
+
         "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "24"
@@ -313,10 +308,7 @@
         "urls": [
             "https://www.oxxo.com.tr/"
         ],
-        "productPageSelector": ".ProductList",
-        "titleSelector": ".PName",
-        "imageSelector": "(document)=>document.querySelector('.img1.PImage[data-src]')?  document.querySelector('.img1.PImage[data-src]').getAttribute('data-src'):document.queryselector('.img1.PImage').src",
-        "linkSelector": "a[data-product]",
+ 
         "isAutoScroll": true,
         "excludeUrlPatterns": [
             "/giyim/",
@@ -383,7 +375,6 @@
         "urls": [
             "https://www.twist.com.tr/"
         ],
-        "productPageSelector": ".prd-list",
         "funcPageSelector": [
             ".prd-qty span",
             20
@@ -442,11 +433,6 @@
         "urls": [
             "https://www.dahliabianca.com/"
         ],
-        "titleSelector": ".product-title",
-        "imageSelector": "[data-src]",
-        "imageAttr": "data-src",
-        "linkSelector": ".product-title a",
-        "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb a')).map(m=>m.innerText).join(' ')",
         "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "36"
@@ -499,14 +485,10 @@
         "urls": [
             "https://www.woody.com.tr/"
         ],
-        "titleSelector": ".productName",
-        "imageSelector": "(document)=>'https://www.woody.com.tr'+ document.querySelector('.imgInner.stImage [srcset]').getAttribute('srcset')",
-        "linkSelector": ".productName",
         "funcPageSelector": [
             ".page-link"
         ],
         "schedule": "0 0 * * 4",
-        "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb-item')).map(m=>m.innerText).join(' ').toLowerCase()",
         "id": "41"
     },
     {
@@ -624,10 +606,6 @@
         "urls": [
             "https://tr.uspoloassn.com/"
         ],
-        "titleSelector": ".product__name a",
-        "imageSelector": ".swiper-wrapper img",
-        "imageAttr": "data-src",
-        "linkSelector": ".product__name a",
         "schedule": "0 0 * * 4",
         "id": "48"
     },
@@ -635,9 +613,6 @@
         "urls": [
             "https://gap.com.tr/"
         ],
-        "titleSelector": ".product-item__info-product-name",
-        "imageSelector": "(document)=>document.querySelector('picture source')?.srcset ||document.querySelector('picture source')?.getAttribute('data-srcset')",
-        "linkSelector": ".product-item__body a",
         "schedule": "0 0 * * 4",
         "id": "49"
     },

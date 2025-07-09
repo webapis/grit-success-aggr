@@ -1,4 +1,6 @@
 export default [
+    'a.product-item__info-name',
+    '.product-tile-body__link',
     'a.item-img.swiper-slide',
     '.ltb__product--info-area > a:nth-child(1)',
     '.js-product-wrapper a',

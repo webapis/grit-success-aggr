@@ -1,4 +1,7 @@
 export default [
+    '.product-item__info-product-name',
+    'h3.product__name a',
+    '.product-tile-body__link',
     'h3.product-name',
     '.product-name a',
     '.ltb__product--info-area > a:nth-child(2) h5',

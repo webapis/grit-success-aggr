@@ -1,4 +1,6 @@
 export default [
+  '.product-tile-image__picture source',
+  '.lazy-load-image-background img.w-full',
   'img.category-products-image',
   '.image-inner img',
   '.ltb__product--image',
