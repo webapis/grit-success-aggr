@@ -1,4 +1,6 @@
 export default [
+  'picture.media-carousel-container__media source',
+  'img.media-carousel-container__media',
   'img.swiper-slide',
   '.media-carousel-container__media.product-card-v2-carousel-container__media__source',
   '.product-tile-image__picture source',
