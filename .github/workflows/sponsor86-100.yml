@@ -1,14 +1,15 @@
 name: sponsor86-100
 on:
-   workflow_dispatch:  # Allows manual triggering
-   schedule:
-     - cron: '0 5 * * 7'  # Runs at 5:00 AM UTC on Saturday   
-    #  - cron: '0 14 * * *'  # Runs at 2:00 PM UTC daily
+  workflow_dispatch:  # Allows manual triggering
+  schedule:
+    - cron: '0 5 * * 7'  # Runs at 5:00 AM UTC on Saturday
+    # - cron: '0 14 * * *'  # Runs at 2:00 PM UTC daily
 env:
-  MONGODB_URL: ${{secrets.MONGODB_URL}}
-  GH_TOKEN: ${{secrets.GH_TOKEN}}
-  GOOGLE_SERVICE_ACCOUNT_CREDENTIALS: ${{secrets.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS}}
-  GOOGLE_SHEET_ID: ${{secrets.GOOGLE_SHEET_ID}}
+  MONGODB_URL: ${{ secrets.MONGODB_URL }}
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  GOOGLE_SERVICE_ACCOUNT_CREDENTIALS: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS }}
+  GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+
 jobs:
   prepare_matrix:
     runs-on: ubuntu-latest
@@ -23,7 +24,6 @@ jobs:
   dizitv_job:
     needs: prepare_matrix
     strategy:
-      # Ensure other jobs continue even if one fails
       fail-fast: false
       matrix:
         site: ${{ fromJSON(needs.prepare_matrix.outputs.sites) }}
