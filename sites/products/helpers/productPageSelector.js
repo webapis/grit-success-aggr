@@ -40,6 +40,15 @@ export default [
     '#product-grid',//ateliergalin
     '#ProductGridContainer',//ateliergalin
     '#products-listing-section',//hm
+    '.collection__products.collection__infinite-container',//arzukaprol
+    '.products-view__list .products-list__body',
+    '.p-g-mod.p-g-mod-t-20.p-g-mod-pagination .row',
+    '.product_list_grid .product_list',
+    '.product-list-container .product-list',
+    '.category-product .listitempage',
+    '.product-list.product-grid.product-lists',
+    '#productList.grid',
+    '.collection-grid__wrapper .grid.grid--uniform',
     '.list-content .list-row',
     ".kategoriUrunler.productList",
     "[class^='ant-row ProductList_']",
@@ -47,7 +56,7 @@ export default [
     'section.plp-products',
     ".main-products-wrapper",
     ".js-product-list",
-   // ".product-list",
+    // ".product-list",
     "ul.products",
     "#product-grid",
     ".category__list__main",
