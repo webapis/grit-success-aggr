@@ -60,7 +60,8 @@ export default [
     ".js-list-content-product-item",
     ".product_item",
     ".relative.flex.h-full.w-full.grow.flex-col",
-    //".grid__item",
+    "li.grid__item",
+
     ".card-product",
     //"div[data-id]",
     // "[data-id]",
