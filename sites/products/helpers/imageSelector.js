@@ -1,4 +1,5 @@
 export default [
+  'img.image-responsive',
   'picture.media-carousel-container__media source',
   'img.media-carousel-container__media',
   'img.swiper-slide',

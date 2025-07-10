@@ -1,4 +1,5 @@
 export default [
+    '.c-tiles-column',
     '[data-testid="product-box"]',
     '.js-product-list-item',
     '.list-content-product-item',

@@ -1,4 +1,5 @@
 export default [
+    'span.product-name',
     '.product-card-v2-title',
     '[class^="style_productCard"] p.name',
     'h2.product-item__name',

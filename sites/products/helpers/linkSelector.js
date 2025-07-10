@@ -1,4 +1,5 @@
 export default [
+    'a.carousel-item-container',
     '.cta-link-primary.product-card-v2-anchor',
     '[class^="style_productCard"] a.block',
     '.react-multi-carousel-item a',

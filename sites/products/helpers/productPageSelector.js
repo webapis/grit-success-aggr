@@ -35,6 +35,7 @@ export default [
     '.product-container.js-product-container',//gant
     '#CollectionAjaxResult #CollectionAjaxContent',//maisonju
     '[class^="listing_page_list_page_right_container"]',//panco
+    '#ProductsByCategory',//pullandbear
     'section.plp-products',
     ".main-products-wrapper",
     ".js-product-list",

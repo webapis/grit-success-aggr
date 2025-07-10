@@ -1014,6 +1014,8 @@
         "urls": [
             "https://sagaza.com/"
         ],
+        "paused":true,
+        "pausedReason":"page does not scrape on github actions",
         "schedule": "0 0 * * 4",
         "id": "70"
     },
