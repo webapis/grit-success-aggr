@@ -49,6 +49,7 @@ export default [
     '.product-list.product-grid.product-lists',
     '#productList.grid',
     '.collection-grid__wrapper .grid.grid--uniform',
+    '.divUOrta .divUUrunler',
     '.list-content .list-row',
     ".kategoriUrunler.productList",
     "[class^='ant-row ProductList_']",
