@@ -716,10 +716,8 @@
         "urls": [
             "https://www2.hm.com/tr_tr/index.html"
         ],
-        "titleSelector": "a",
-        "titleAttr": "title",
-        "imageSelector": "(document)=>m.querySelector('[imagetype='PRODUCT_IMAGE']').srcset.split(',')[8].trim().split(' ')[0]",
-        "linkSelector": "a",
+        "imageCDN": "https://image.hm.com/",
+
         "schedule": "0 0 * * 4",
         "id": "61"
     },

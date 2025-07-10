@@ -39,6 +39,7 @@ export default [
     '.folder-product-list',//pembecida
     '#product-grid',//ateliergalin
     '#ProductGridContainer',//ateliergalin
+    '#products-listing-section',//hm
     'section.plp-products',
     ".main-products-wrapper",
     ".js-product-list",

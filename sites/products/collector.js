@@ -156,7 +156,7 @@ export async function second({
     }
 
     // Check if there are any product items on the page
-    const productItemsCount = await page.$$eval(siteUrls.productPageSelector || productItemSelector.join(', '), elements => elements.length);
+    const productItemsCount = await page.$$eval(productPageSelector.join(', '), elements => elements.length);
     debugger
     if (productItemsCount > 0) {
 
@@ -367,7 +367,7 @@ export async function second({
 
         const validData = data.map(item => {
             const processedImgs = (item.img || [])
-                .map(m => getMiddleImageUrl(m, siteUrls.urls[0]))
+                .map(m => getMiddleImageUrl(m, siteUrls.imageCDN || siteUrls.urls[0]))
                 .filter(Boolean); // remove any empty strings or nulls
 
             const imgValid = processedImgs.some(isValidImageURL); // true if at least one is valid

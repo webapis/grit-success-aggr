@@ -1,4 +1,5 @@
 export default [
+  '[imagetype="PRODUCT_IMAGE"]',
   'img.image-responsive',
   'picture.media-carousel-container__media source',
   'img.media-carousel-container__media',
