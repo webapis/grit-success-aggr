@@ -171,13 +171,10 @@ export async function second({
         const data = await page.evaluate((params) => {
             function getBackgroundImageUrl(el) {
                 const bgImage = el?.style.backgroundImage;
-
-                // Extract just the URL from: url("...") or url(...)
                 const urlMatch = bgImage?.match(/url\(["']?(.*?)["']?\)/);
-                const backgroundImageUrl = urlMatch ? urlMatch[1] : null;
-
-                return backgroundImageUrl
+                return urlMatch ? urlMatch[1] : null;
             }
+
             const pageTitle = document.title;
             const pageURL = document.URL;
 
@@ -190,7 +187,7 @@ export async function second({
                 if (el) {
                     matchedDocument = el;
                     matchedPageSelector = sel;
-                    console.log('---matchedPageSelector', matchedPageSelector, el)
+                    console.log('---matchedPageSelector', matchedPageSelector, el);
                     break;
                 }
             }
@@ -206,15 +203,35 @@ export async function second({
                 const linkSelectors = params.linkSelector.split(',').map(s => s.trim());
 
                 const titleElement = titleSelectors.map(sel => m.querySelector(sel)).find(Boolean);
-                const imgElement = imageSelectors.map(sel => m.querySelector(sel)).find(Boolean);
                 const linkElement = linkSelectors.map(sel => m.querySelector(sel)).find(Boolean);
+
+                // Get all image elements per product
+                const imgElements = imageSelectors.flatMap(sel => Array.from(m.querySelectorAll(sel)));
+
+                // Extract image URLs from attributes
+                const imgUrls = imgElements.flatMap(el =>
+                    params.imageAttributes
+                        .split(',')
+                        .map(attr => el?.getAttribute(attr?.replaceAll(" ", "")))
+                        .filter(Boolean)
+                );
+
+                // Extract image URLs from background-image
+                const bgImgs = imgElements
+                    .map(el => getBackgroundImageUrl(el))
+                    .filter(Boolean);
+
+                // Combine and remove duplicates
+                const allImgs = [...new Set([...imgUrls, ...bgImgs])];
+                const primaryImg = allImgs[0] || null;
 
                 const titleSelectorMatched = titleElement
                     ? titleSelectors.find(sel => titleElement.matches(sel))
                     : null;
 
-                const imgSelectorMatched = imgElement
-                    ? imageSelectors.find(sel => imgElement.matches(sel))
+                const firstImgElement = imgElements[0];
+                const imgSelectorMatched = firstImgElement
+                    ? imageSelectors.find(sel => firstImgElement.matches(sel))
                     : null;
 
                 const title = titleElement &&
@@ -223,11 +240,6 @@ export async function second({
                         .map(attr => titleElement[attr?.replaceAll(" ", "")])
                         .find(Boolean);
 
-                const img = params.imageAttributes
-                    .split(',')
-                    .map(attr => imgElement?.getAttribute(attr?.replaceAll(" ", "")))
-                    .find(Boolean);
-
                 let link = null;
                 let linkSource = null;
 
@@ -235,7 +247,7 @@ export async function second({
                     link = titleElement.href;
                     linkSource = `titleElement (matched: ${titleSelectorMatched})`;
                 } else if (linkElement?.href) {
-                    const linkSelectorMatched = linkElement && linkSelectors.find(sel => linkElement.matches(sel));
+                    const linkSelectorMatched = linkSelectors.find(sel => linkElement.matches(sel));
                     link = linkElement.href;
                     linkSource = `linkElement (matched: ${linkSelectorMatched})`;
                 } else if (m?.href) {
@@ -251,7 +263,8 @@ export async function second({
                 try {
                     return {
                         title,
-                        img: getBackgroundImageUrl(imgElement) || img,
+                        img: allImgs,
+                        primaryImg,
                         link,
                         matchedInfo: {
                             linkSource,
@@ -259,7 +272,7 @@ export async function second({
                             titleSelectorMatched,
                             imgSelectorMatched,
                             usedFallbackDocument,
-                            matchedPageSelector  // <=== added here
+                            matchedPageSelector
                         },
                         pageTitle,
                         pageURL,
@@ -281,7 +294,6 @@ export async function second({
             });
 
         }, {
-
             productPageSelector: productPageSelector.join(', '),
             productItemSelector: productItemSelector.join(', '),
             titleSelector: titleSelector.join(', '),
@@ -354,13 +366,18 @@ export async function second({
         }
 
         const validData = data.map(item => {
+            const processedImgs = (item.img || [])
+                .map(m => getMiddleImageUrl(m, siteUrls.urls[0]))
+                .filter(Boolean); // remove any empty strings or nulls
+
+            const imgValid = processedImgs.some(isValidImageURL); // true if at least one is valid
             return {
                 ...item,
-                img: getMiddleImageUrl(item.img, siteUrls.urls[0]),
-                imgValid: isValidImageURL(getMiddleImageUrl(item.img, siteUrls.urls[0])),
+                img: processedImgs,
+                imgValid,
                 linkValid: isValidURL(item.link),
                 titleValid: isValidText(item.title),
-                pageTitleValid: isValidText(item.pageTitle),
+                pageTitleValid: isValidText(item.pageTitle)
 
 
             }
