@@ -751,6 +751,8 @@
         "urls": [
             "https://www.ltbjeans.com/tr-TR"
         ],
+        "paused":true,
+        "pausedReason":"website is very slow",
         "schedule": "0 0 * * 4",
         "id": "65"
     },
@@ -1004,9 +1006,7 @@
         "urls": [
             "https://www.cartersoshkosh.com.tr/"
         ],
-        "titleSelector": ".product-name",
-        "imageSelector": ".d-block img",
-        "linkSelector": ".d-block",
+
         "schedule": "0 0 * * 4",
         "id": "69"
     },

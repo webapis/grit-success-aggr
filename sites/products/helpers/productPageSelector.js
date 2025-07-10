@@ -36,6 +36,7 @@ export default [
     '#CollectionAjaxResult #CollectionAjaxContent',//maisonju
     '[class^="listing_page_list_page_right_container"]',//panco
     '#ProductsByCategory',//pullandbear
+    '.folder-product-list',//pembecida
     'section.plp-products',
     ".main-products-wrapper",
     ".js-product-list",
