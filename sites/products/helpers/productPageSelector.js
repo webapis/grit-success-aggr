@@ -40,8 +40,10 @@ export default [
     '#product-grid',//ateliergalin
     '#ProductGridContainer',//ateliergalin
     '#products-listing-section',//hm
+    '.list-content .list-row',
     ".kategoriUrunler.productList",
     "[class^='ant-row ProductList_']",
+    '.productList .product-list',
     'section.plp-products',
     ".main-products-wrapper",
     ".js-product-list",
