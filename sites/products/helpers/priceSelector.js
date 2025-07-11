@@ -13,5 +13,8 @@ export default [
     '.showcase-price-old',
     '.price-list .h6.text-on-sale',
     '.PriceArea .PPrice',
-    '.price-list .h6.text-subdued'
+    '.price-list .h6.text-subdued',
+    '.info .product-discounted-price',
+    '.price__previous_mobile.product-list-price',
+    '.prices_mobile_custom .product-sale-price'
 ]
