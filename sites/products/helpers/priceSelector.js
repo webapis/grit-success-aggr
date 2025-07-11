@@ -86,7 +86,8 @@ export default [
     '.product-discounted-price',
     '.product-card__prices',
     '.product-item__basket-offers-price',
-    '.color-primary font-financier-bold'
+    '.color-primary font-financier-bold',
+    '.product-item__price'
   
 
 
