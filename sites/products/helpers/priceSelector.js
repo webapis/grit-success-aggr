@@ -111,7 +111,8 @@ export default [
      '.product-pricing-two span',
      '.woocommerce-Price-amount.amount',
      '.sale-price-basket .sale-price',
-     '.price.price-box .price-sales'
+     '.price.price-box .price-sales',
+     '.woocommerce-Price-amount.amount bdi'
 
 
 ]
