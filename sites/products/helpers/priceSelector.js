@@ -98,8 +98,8 @@ export default [
      '.prices  .sale-price.line',
      '.grid-product__price span',
      '.product-price-wrapper .current-price',
-     '.product-discounted-price'
-  
+     '.product-discounted-price',
+     '.current-price .product-price'
 
 
 ]
