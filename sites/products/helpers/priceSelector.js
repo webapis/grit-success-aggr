@@ -53,5 +53,6 @@ export default [
     '.productPrice .newPrice',
     '.productPrice .oldPrice',
     '.m-productCard__newPrice',
-    '.m-productCard__oldPrice'
+    '.m-productCard__oldPrice',
+    '.money.buckscc-money',
 ]
