@@ -8,5 +8,7 @@ export default [
     '.discountPrice .discountPriceSpan',
     '.regularPrice .regularPriceSpan',
     '.price .price__new',
-    '.price.price--discounted .price__old'
+    '.price.price--discounted .price__old',
+    '.showcase-price-new',
+    '.showcase-price-old'
 ]
