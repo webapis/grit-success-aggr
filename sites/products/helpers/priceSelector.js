@@ -10,5 +10,6 @@ export default [
     '.price .price__new',
     '.price.price--discounted .price__old',
     '.showcase-price-new',
-    '.showcase-price-old'
+    '.showcase-price-old',
+    '.price-list .h6.text-on-sale'
 ]
