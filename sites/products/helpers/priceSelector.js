@@ -25,5 +25,6 @@ export default [
     '.product-discounted-price.text-black.fw-regular',
     '.price .salesprice',
     '.price .old',
-    '.price .amount'
+    '.price .amount',
+    '.product__grid__price  .price'
 ]
