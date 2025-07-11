@@ -106,7 +106,9 @@ export default [
      '.t-subdued .money',
      '.price-item.price-item--sale.price-item--last',
      '.price-item.price-item--regular',
-     '.price .theme-money'
+     '.price .theme-money',
+     '.product-pricing-one__price',
+     '.product-pricing-two span'
 
 
 ]
