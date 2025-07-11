@@ -58,5 +58,6 @@ export default [
     '.product__listing--basket-price',
     '.lone-price',
     '.product__listing--price del',
-    'pz-price'
+    'pz-price',
+    '.product-card-v2-price__current'
 ]
