@@ -37,5 +37,6 @@ export default [
     '.product-price .newprice.red',
     '.product-price .oldprice',
     '.productPrice  .lastprice',
-    '.ProductItem__Price.Price.Text--subdued'
+    '.ProductItem__Price.Price.Text--subdued',
+    '.urunListe_satisFiyat'
 ]
