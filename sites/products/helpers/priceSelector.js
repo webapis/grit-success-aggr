@@ -72,7 +72,8 @@ export default [
     '.product-item__price pz-price',
     '.second-price',
     '.first-price',
-    '.sell-price'
+    '.sell-price',
+    '.current-price'
 
 
 ]
