@@ -36,5 +36,6 @@ export default [
     '.product-price .oneprice',
     '.product-price .newprice.red',
     '.product-price .oldprice',
-    '.productPrice  .lastprice'
+    '.productPrice  .lastprice',
+    '.ProductItem__Price.Price.Text--subdued'
 ]
