@@ -17,4 +17,6 @@ export default [
     '.info .product-discounted-price',
     '.price__previous_mobile.product-list-price',
     '.prices_mobile_custom .product-sale-price',
+    '.mainFiyat span',
+    '.mainFiyat .fiyat'
 ]
