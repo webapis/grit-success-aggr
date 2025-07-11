@@ -672,9 +672,6 @@
         "urls": [
             "https://www.lacoste.com.tr/"
         ],
-        "titleSelector": ".product-info--name",
-        "imageSelector": ".js-product-item-image",
-        "linkSelector": ".product-info--name a",
         "paused": true,
         "pausedReason": "unmanagable classNames",
         "schedule": "0 0 * * 4",
