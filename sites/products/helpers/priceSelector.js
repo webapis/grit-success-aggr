@@ -73,7 +73,9 @@ export default [
     '.second-price',
     '.first-price',
     '.sell-price',
-    '.current-price'
+    '.current-price',
+    '.KatSepetFiyat span',
+  
 
 
 ]
