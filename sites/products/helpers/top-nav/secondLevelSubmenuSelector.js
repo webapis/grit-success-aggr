@@ -1,0 +1,1 @@
+export default ['.twig .twig__item']
