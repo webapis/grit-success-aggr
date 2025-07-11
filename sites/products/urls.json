@@ -689,9 +689,8 @@
             "https://www.pullandbear.com/tr/erkek-n6228",
             "https://www.pullandbear.com/tr/kadin-n6417"
         ],
-        "titleSelector": ".name span",
-        "imageSelector": "(document)=>document.querySelector('.image-responsive')?.src || document.querySelector('.image-responsive')?.getAttribute('data-src')",
-        "linkSelector": ".carousel-item-container",
+        "paused": true,
+        "pausedReason": "document.querySelector('price-element')?.shadowRoot?.querySelector('p.price').innerText",
         "schedule": "0 0 * * 4",
         "id": "59"
     },
@@ -699,9 +698,7 @@
         "urls": [
             "https://www.marksandspencer.com.tr/"
         ],
-        "titleSelector": ".product-item__name",
-        "imageSelector": "(document)=> document.querySelector('.pz-image-placeholder source ')?.srcset || document.querySelector('.pz-image-placeholder source ')?.getAttribute('data-srcset')",
-        "linkSelector": ".product-item__name",
+
         "schedule": "0 0 * * 4",
         "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb a')).map(m=>m.innerText).join(' ').toLowerCase()",
         "id": "60"

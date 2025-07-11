@@ -69,6 +69,7 @@ export default [
     '.old-price',
     '.discounted-price',
     '.product__listing--basket-price span',
+    '.product-item__price pz-price',
 
 
 ]
