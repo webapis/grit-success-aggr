@@ -27,5 +27,7 @@ export default [
     '.price .old',
     '.price .amount',
     '.product__grid__price  .price',
-    '.money.conversion-bear-money'
+    '.money.conversion-bear-money',
+    '.price .salesprice',
+    '.price .old'
 ]
