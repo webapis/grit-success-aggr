@@ -1,7 +1,28 @@
 function parsePrice(trimPrice) {
+  if (typeof trimPrice !== 'string') return 0;
+  trimPrice = trimPrice.trim();
+
   switch (true) {
+    // Turkish large numbers: 1.111.111,11
+    case /^\d{1,3}(\.\d{3})+,\d{2}$/.test(trimPrice):
+      return parseFloat(trimPrice.replace(/\./g, '').replace(',', '.'));
+
+    // US-style: 1,111,111.11 (only if needed)
+    case /^\d{1,3}(,\d{3})+\.\d{2}$/.test(trimPrice):
+      return parseFloat(trimPrice.replace(/,/g, ''));
+
+    // Zero-prefixed decimals
+    case /^0[,]\d\d$/.test(trimPrice): // 0,99
+    case /^0[.]\d\d$/.test(trimPrice): // 0.99
+      return parseFloat(trimPrice.replace(',', '.'));
+
+    // One-digit decimals like 1299,9
+    case /^\d+[,]\d$/.test(trimPrice):
+      return parseFloat(trimPrice.replace(',', '.'));
+
+    // Existing cases:
     case /^\d\d\d[,]\d\d$/.test(trimPrice): // 299,99
-    case /^\d\d\d[,]\d$/.test(trimPrice): // 299,9
+    case /^\d\d\d[,]\d$/.test(trimPrice):   // 299,9
       return parseFloat(trimPrice.replace(',', '.'));
 
     case /^\d\d\d[.]\d$/.test(trimPrice): // 299.9
@@ -70,6 +91,7 @@ function parsePrice(trimPrice) {
       return 0;
   }
 }
+
 
 export default function mapPrice(rawPrice, obj = {}, {
   usdRate = 33.5,
