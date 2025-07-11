@@ -55,4 +55,7 @@ export default [
     '.m-productCard__newPrice',
     '.m-productCard__oldPrice',
     '.money.buckscc-money',
+    '.product__listing--basket-price',
+    '.lone-price',
+    '.product__listing--price del'
 ]
