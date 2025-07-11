@@ -84,7 +84,9 @@ export default [
     '.ac-pc__price.-retail',
     '.current-price .product-price',
     '.product-discounted-price',
-    '.product-card__prices'
+    '.product-card__prices',
+    '.product-item__basket-offers-price',
+    '.color-primary font-financier-bold'
   
 
 
