@@ -108,7 +108,8 @@ export default [
      '.price-item.price-item--regular',
      '.price .theme-money',
      '.product-pricing-one__price',
-     '.product-pricing-two span'
+     '.product-pricing-two span',
+     '.woocommerce-Price-amount.amount'
 
 
 ]
