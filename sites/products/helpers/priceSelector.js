@@ -110,7 +110,8 @@ export default [
      '.product-pricing-one__price',
      '.product-pricing-two span',
      '.woocommerce-Price-amount.amount',
-     '.sale-price-basket .sale-price'
+     '.sale-price-basket .sale-price',
+     '.price.price-box .price-sales'
 
 
 ]
