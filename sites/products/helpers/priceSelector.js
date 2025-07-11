@@ -49,5 +49,7 @@ export default [
     '.product-price-wrapper .cart-discount',
     '.product-price-wrapper .current-price',
     '.prc.prc-last',
-    '.prc.prc-first'
+    '.prc.prc-first',
+    '.productPrice .newPrice',
+    '.productPrice .oldPrice'
 ]
