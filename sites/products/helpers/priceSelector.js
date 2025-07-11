@@ -6,5 +6,7 @@ export default [
     '.product__price.-actual.h4',
     '.product__price.h5.-label.-old.-size',
     '.discountPrice .discountPriceSpan',
-    '.regularPrice .regularPriceSpan'
+    '.regularPrice .regularPriceSpan',
+    '.price .price__new',
+    '.price.price--discounted .price__old'
 ]
