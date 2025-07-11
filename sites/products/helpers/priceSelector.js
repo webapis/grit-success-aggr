@@ -44,5 +44,6 @@ export default [
     'div.flex.flex-wrap.items-center.gap-2 span.text-primary',
     '.product-price-content .product-new-price',
     '.product-price-content .product-old-price',
-    '.price.actual-price'
+    '.price.actual-price',
+    '.setrowSepetKategori.in2 span'
 ]
