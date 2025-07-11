@@ -103,7 +103,9 @@ export default [
      '.discount-price span:nth-child(2)',
      '.discount-price span:nth-child(1)',
      '.sale .money',
-     '.t-subdued .money'
+     '.t-subdued .money',
+     '.price-item.price-item--sale.price-item--last',
+     '.price-item.price-item--regular'
 
 
 ]
