@@ -45,5 +45,7 @@ export default [
     '.product-price-content .product-new-price',
     '.product-price-content .product-old-price',
     '.price.actual-price',
-    '.setrowSepetKategori.in2 span'
+    '.setrowSepetKategori.in2 span',
+    '.product-price-wrapper .cart-discount',
+    '.product-price-wrapper .current-price'
 ]
