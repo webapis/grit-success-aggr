@@ -91,7 +91,9 @@ export default [
     '.p-wrap span.price',
     '.text-sm.font-semibold',
     '.product-item__price .money',
-    '[doubly-currency="TRY"]'
+    '[doubly-currency="TRY"]',
+    '.price .price-new',
+     '.price .price-old'
   
 
 

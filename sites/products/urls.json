@@ -974,10 +974,7 @@
         "urls": [
             "https://berr-in.com/kadin-elbise-modelleri"
         ],
-        "titleSelector": ".name a",
-        "imageSelector": "[data-src]",
-        "imageAttr": "data-src",
-        "linkSelector": ".name a",
+
         "schedule": "0 0 * * 4",
         "id": "96"
     },
