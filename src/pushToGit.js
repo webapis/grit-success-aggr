@@ -27,6 +27,7 @@ const validLinks = countByField(data, 'linkValid');
 const validimgs = countByField(data, 'imgValid');
 const validTitle = countByField(data, 'titleValid');
 const validPageTitle = countByField(data, 'pageTitleValid');
+const validPrice = countByField(data, 'priceValid');
 debugger
 const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
 
@@ -37,6 +38,7 @@ const baseRowData = {
     'Invalid Page Titles': validPageTitle,
     'Invalid Links': validLinks,
     'Invalid Images': validimgs,
+    'Invalid Prices': validPrice,
     'Total Unique Objects (by link)': totalUniqueObjects.count,
     'Error Objects': dataWithError.length,
     'Start Time': oldestTimestamp,
