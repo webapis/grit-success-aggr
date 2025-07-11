@@ -18,7 +18,8 @@ import imageAttributes from "./helpers/imageAttributes.js";
 import titleAttribute from "./helpers/titleAttribute.js";
 import getMiddleImageUrl from "../../src/scrap/getMiddleImageUrl.js";
 import getMainDomainPart from "../../src/scrap/getMainDomainPart.js";
-
+import priceSelector from "./helpers/priceSelector.js";
+import priceAttribute from "./helpers/priceAttribute.js";
 dotenv.config({ silent: true });
 debugger
 const site = process.env.site;
@@ -168,145 +169,174 @@ export async function second({
         }
 
 
-        const data = await page.evaluate((params) => {
-            function getBackgroundImageUrl(el) {
-                const bgImage = el?.style.backgroundImage;
-                const urlMatch = bgImage?.match(/url\(["']?(.*?)["']?\)/);
-                return urlMatch ? urlMatch[1] : null;
-            }
+ const data = await page.evaluate((params) => {
+    function getBackgroundImageUrl(el) {
+        const bgImage = el?.style.backgroundImage;
+        const urlMatch = bgImage?.match(/url\(["']?(.*?)["']?\)/);
+        return urlMatch ? urlMatch[1] : null;
+    }
 
-            const pageTitle = document.title;
-            const pageURL = document.URL;
+    const pageTitle = document.title;
+    const pageURL = document.URL;
 
-            // Find which selector matched from productPageSelector list
-            const pageSelectors = params.productPageSelector.split(',').map(s => s.trim());
-            let matchedDocument = null;
-            let matchedPageSelector = null;
-            for (const sel of pageSelectors) {
-                const el = document.querySelector(sel);
-                if (el) {
-                    matchedDocument = el;
-                    matchedPageSelector = sel;
-                    console.log('---matchedPageSelector', matchedPageSelector, el);
-                    break;
+    // Find which selector matched from productPageSelector list
+    const pageSelectors = params.productPageSelector.split(',').map(s => s.trim());
+    let matchedDocument = null;
+    let matchedPageSelector = null;
+    for (const sel of pageSelectors) {
+        const el = document.querySelector(sel);
+        if (el) {
+            matchedDocument = el;
+            matchedPageSelector = sel;
+            console.log('---matchedPageSelector', matchedPageSelector, el);
+            break;
+        }
+    }
+
+    const usedFallbackDocument = !matchedDocument;
+    const selectedDocument = matchedDocument || document;
+
+    return Array.from(selectedDocument.querySelectorAll(params.productItemSelector)).map(m => {
+        const titleSelectors = params.titleSelector.split(',').map(s => s.trim());
+        const imageSelectors = params.imageSelector.split(',').map(s => s.trim());
+        const linkSelectors = params.linkSelector.split(',').map(s => s.trim());
+        const priceSelectors = params.priceSelector.split(',').map(s => s.trim());
+
+        const titleElement = titleSelectors.map(sel => m.querySelector(sel)).find(Boolean);
+        const linkElement = linkSelectors.map(sel => m.querySelector(sel)).find(Boolean);
+
+        // Get all image elements per product
+        const imgElements = imageSelectors.flatMap(sel => Array.from(m.querySelectorAll(sel)));
+
+        // Extract image URLs from attributes
+        const imgUrls = imgElements.flatMap(el =>
+            params.imageAttributes
+                .split(',')
+                .map(attr => el?.getAttribute(attr?.replaceAll(" ", "")))
+                .filter(Boolean)
+        );
+
+        // Extract image URLs from background-image
+        const bgImgs = imgElements
+            .map(el => getBackgroundImageUrl(el))
+            .filter(Boolean);
+
+        // Combine and remove duplicates
+        const allImgs = [...new Set([...imgUrls, ...bgImgs])];
+        const primaryImg = allImgs[0] || null;
+
+        const titleSelectorMatched = titleElement
+            ? titleSelectors.find(sel => titleElement.matches(sel))
+            : null;
+
+        const firstImgElement = imgElements[0];
+        const imgSelectorMatched = firstImgElement
+            ? imageSelectors.find(sel => firstImgElement.matches(sel))
+            : null;
+
+        const title = titleElement &&
+            params.titleAttribute
+                .split(',')
+                .map(attr => titleElement[attr?.replaceAll(" ", "")])
+                .find(Boolean);
+
+        // MULTIPLE PRICE EXTRACTION
+        const priceInfo = [];
+        const matchedPriceElements = priceSelectors
+            .flatMap(sel => Array.from(m.querySelectorAll(sel)))
+            .filter(Boolean);
+
+        for (const priceEl of matchedPriceElements) {
+            const matchedSelector = priceSelectors.find(sel => priceEl.matches(sel));
+            const priceAttrList = params.priceAttribute.split(',').map(attr => attr.trim());
+
+            for (const attr of priceAttrList) {
+                let value = null;
+
+                if (attr === 'textContent' || attr === 'innerText') {
+                    value = priceEl[attr]?.trim();
+                } else {
+                    value = priceEl.getAttribute(attr)?.trim();
+                }
+
+                if (value) {
+                    priceInfo.push({
+                        value,
+                        selector: matchedSelector,
+                        attribute: attr
+                    });
+                    break; // stop at first valid attribute per element
                 }
             }
+        }
 
-            const usedFallbackDocument = !matchedDocument;
-            const selectedDocument = matchedDocument || document;
+        let link = null;
+        let linkSource = null;
 
-            debugger;
+        if (titleElement?.href) {
+            link = titleElement.href;
+            linkSource = `titleElement (matched: ${titleSelectorMatched})`;
+        } else if (linkElement?.href) {
+            const linkSelectorMatched = linkSelectors.find(sel => linkElement.matches(sel));
+            link = linkElement.href;
+            linkSource = `linkElement (matched: ${linkSelectorMatched})`;
+        } else if (m?.href) {
+            link = m.href;
+            linkSource = 'containerElement (m)';
+        }
 
-            return Array.from(selectedDocument.querySelectorAll(params.productItemSelector)).map(m => {
-                const titleSelectors = params.titleSelector.split(',').map(s => s.trim());
-                const imageSelectors = params.imageSelector.split(',').map(s => s.trim());
-                const linkSelectors = params.linkSelector.split(',').map(s => s.trim());
+        const matchedSelector = params.productItemSelector
+            .split(',')
+            .map(s => s.trim())
+            .find(selector => m.matches(selector));
 
-                const titleElement = titleSelectors.map(sel => m.querySelector(sel)).find(Boolean);
-                const linkElement = linkSelectors.map(sel => m.querySelector(sel)).find(Boolean);
-
-                // Get all image elements per product
-                const imgElements = imageSelectors.flatMap(sel => Array.from(m.querySelectorAll(sel)));
-
-                // Extract image URLs from attributes
-                const imgUrls = imgElements.flatMap(el =>
-                    params.imageAttributes
-                        .split(',')
-                        .map(attr => el?.getAttribute(attr?.replaceAll(" ", "")))
-                        .filter(Boolean)
-                );
-
-                // Extract image URLs from background-image
-                const bgImgs = imgElements
-                    .map(el => getBackgroundImageUrl(el))
-                    .filter(Boolean);
-
-                // Combine and remove duplicates
-                const allImgs = [...new Set([...imgUrls, ...bgImgs])];
-                const primaryImg = allImgs[0] || null;
-
-                const titleSelectorMatched = titleElement
-                    ? titleSelectors.find(sel => titleElement.matches(sel))
-                    : null;
-
-                const firstImgElement = imgElements[0];
-                const imgSelectorMatched = firstImgElement
-                    ? imageSelectors.find(sel => firstImgElement.matches(sel))
-                    : null;
-
-                const title = titleElement &&
-                    params.titleAttribute
-                        .split(',')
-                        .map(attr => titleElement[attr?.replaceAll(" ", "")])
-                        .find(Boolean);
-
-                let link = null;
-                let linkSource = null;
-
-                if (titleElement?.href) {
-                    link = titleElement.href;
-                    linkSource = `titleElement (matched: ${titleSelectorMatched})`;
-                } else if (linkElement?.href) {
-                    const linkSelectorMatched = linkSelectors.find(sel => linkElement.matches(sel));
-                    link = linkElement.href;
-                    linkSource = `linkElement (matched: ${linkSelectorMatched})`;
-                } else if (m?.href) {
-                    link = m.href;
-                    linkSource = 'containerElement (m)';
+        try {
+            return {
+                title,
+                img: allImgs,
+                primaryImg,
+                link,
+                price: priceInfo, // array of prices
+                matchedInfo: {
+                    linkSource,
+                    matchedSelector,
+                    titleSelectorMatched,
+                    imgSelectorMatched,
+                    usedFallbackDocument,
+                    matchedPageSelector
+                },
+                pageTitle,
+                pageURL,
+                timestamp: new Date().toISOString(),
+            };
+        } catch (error) {
+            return {
+                error: true,
+                message: error.message,
+                content: m.outerHTML,
+                url: document.URL,
+                pageTitle,
+                matchedInfo: {
+                    usedFallbackDocument,
+                    matchedPageSelector
                 }
+            };
+        }
+    });
+}, {
+    productPageSelector: productPageSelector.join(', '),
+    productItemSelector: productItemSelector.join(', '),
+    titleSelector: titleSelector.join(', '),
+    titleAttribute: titleAttribute.join(', '),
+    imageSelector: imageSelectors.join(', '),
+    imageAttributes: imageAttributes.join(', '),
+    linkSelector: linkSelectors.join(', '),
+    priceSelector: priceSelector.join(', '),
+    priceAttribute: priceAttribute.join(', '),
+    autoScroll,
+    breadcrumb
+});
 
-                const matchedSelector = params.productItemSelector
-                    .split(',')
-                    .map(s => s.trim())
-                    .find(selector => m.matches(selector));
-
-                try {
-                    return {
-                        title,
-                        img: allImgs,
-                        primaryImg,
-                        link,
-                        matchedInfo: {
-                            linkSource,
-                            matchedSelector,
-                            titleSelectorMatched,
-                            imgSelectorMatched,
-                            usedFallbackDocument,
-                            matchedPageSelector
-                        },
-                        pageTitle,
-                        pageURL,
-                        timestamp: new Date().toISOString(),
-                    };
-                } catch (error) {
-                    return {
-                        error: true,
-                        message: error.message,
-                        content: m.outerHTML,
-                        url: document.URL,
-                        pageTitle,
-                        matchedInfo: {
-                            usedFallbackDocument,
-                            matchedPageSelector
-                        }
-                    };
-                }
-            });
-
-        }, {
-            productPageSelector: productPageSelector.join(', '),
-            productItemSelector: productItemSelector.join(', '),
-            titleSelector: titleSelector.join(', '),
-            titleAttribute: titleAttribute.join(', '),
-            titleAttr,
-            imageSelector: imageSelectors.join(', '),
-            imageAttributes: imageAttributes.join(', '),
-            imageAttr,
-            imagePrefix,
-            linkSelector: linkSelectors.join(', '),
-            autoScroll,
-            breadcrumb
-        });
 
 
         console.log('data.length', data.length);
