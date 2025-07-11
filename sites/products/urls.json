@@ -629,10 +629,7 @@
         "urls": [
             "https://www.camper.com/tr_TR"
         ],
-        "titleSelector": "p.name",
-        "imageSelector": "[srcset]",
-        "imageAttr": "srcset",
-        "linkSelector": ".grid-item a",
+
         "schedule": "0 0 * * 4",
         "id": "52"
     },

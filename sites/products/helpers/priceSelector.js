@@ -61,5 +61,6 @@ export default [
     'pz-price',
     '.product-card-v2-price__current',
     '[itemprop="priceCurrency"]',
-    '[itemprop="highPrice"'
+    '[itemprop="highPrice"]',
+    '[data-ge-price="data-ge-price"]'
 ]
