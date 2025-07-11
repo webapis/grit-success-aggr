@@ -41,5 +41,7 @@ export default [
     '.urunListe_satisFiyat',
     '.product-current-price .price',
     '.product-old-price .discounted-price',
-    'div.flex.flex-wrap.items-center.gap-2 span.text-primary'
+    'div.flex.flex-wrap.items-center.gap-2 span.text-primary',
+    '.product-price-content .product-new-price',
+    '.product-price-content .product-old-price'
 ]
