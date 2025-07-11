@@ -20,5 +20,7 @@ export default [
     '.mainFiyat span',
     '.mainFiyat .fiyat',
     '.priceWrapper .currentPrice',
-    '.text-line.discountedPrice.pr'
+    '.text-line.discountedPrice.pr',
+    '.current-price.fw-semibold',
+    '.product-discounted-price.text-black.fw-regular'
 ]
