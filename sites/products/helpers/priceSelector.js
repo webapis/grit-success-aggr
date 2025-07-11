@@ -64,5 +64,8 @@ export default [
     '[itemprop="highPrice"]',
     '[data-ge-price="data-ge-price"]',
     '.product-price .product-sale-price',
-    '.product-price .product-list-price'
+    '.product-price .product-list-price',
+    '.product-price .price',
+    '.old-price',
+    '.discounted-price'
 ]
