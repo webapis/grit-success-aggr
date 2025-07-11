@@ -81,7 +81,9 @@ export default [
     '.product-discounted-price',
     '.price .price-normal',
     '.ac-pc__price',
-    '.ac-pc__price.-retail'
+    '.ac-pc__price.-retail',
+    '.current-price .product-price',
+    '.product-discounted-price'
   
 
 
