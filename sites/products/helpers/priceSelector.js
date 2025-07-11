@@ -109,7 +109,8 @@ export default [
      '.price .theme-money',
      '.product-pricing-one__price',
      '.product-pricing-two span',
-     '.woocommerce-Price-amount.amount'
+     '.woocommerce-Price-amount.amount',
+     '.sale-price-basket .sale-price'
 
 
 ]
