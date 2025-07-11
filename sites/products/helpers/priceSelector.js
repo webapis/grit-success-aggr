@@ -11,5 +11,6 @@ export default [
     '.price.price--discounted .price__old',
     '.showcase-price-new',
     '.showcase-price-old',
-    '.price-list .h6.text-on-sale'
+    '.price-list .h6.text-on-sale',
+    '.PriceArea .PPrice'
 ]
