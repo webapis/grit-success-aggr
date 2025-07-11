@@ -35,5 +35,6 @@ export default [
     '.product__price.h5.-label.-old.-size',
     '.product-price .oneprice',
     '.product-price .newprice.red',
-    '.product-price .oldprice'
+    '.product-price .oldprice',
+    '.productPrice  .lastprice'
 ]
