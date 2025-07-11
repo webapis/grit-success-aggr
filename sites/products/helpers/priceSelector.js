@@ -32,5 +32,8 @@ export default [
     '.price .old',
     '.product__price.-actual.h4',
     '.product__campaignFeaturedArea.-seperated',
-    '.product__price.h5.-label.-old.-size'
+    '.product__price.h5.-label.-old.-size',
+    '.product-price .oneprice',
+    '.product-price .newprice.red',
+    '.product-price .oldprice'
 ]
