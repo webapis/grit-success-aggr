@@ -62,5 +62,7 @@ export default [
     '.product-card-v2-price__current',
     '[itemprop="priceCurrency"]',
     '[itemprop="highPrice"]',
-    '[data-ge-price="data-ge-price"]'
+    '[data-ge-price="data-ge-price"]',
+    '.product-price .product-sale-price',
+    '.product-price .product-list-price'
 ]
