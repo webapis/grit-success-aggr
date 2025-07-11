@@ -59,5 +59,7 @@ export default [
     '.lone-price',
     '.product__listing--price del',
     'pz-price',
-    '.product-card-v2-price__current'
+    '.product-card-v2-price__current',
+    '[itemprop="priceCurrency"]',
+    '[itemprop="highPrice"'
 ]
