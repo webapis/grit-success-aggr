@@ -70,6 +70,7 @@ export default function mapPrice(
 
   // Clean known words and symbols
   const unneededWords = [
+    '2 ve üzeri net %50 indirim:',
     'sepette',
     'İndirimli fiyat',
     'Normal fiyat',
