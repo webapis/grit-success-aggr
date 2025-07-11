@@ -24,5 +24,6 @@ export default [
     '.current-price.fw-semibold',
     '.product-discounted-price.text-black.fw-regular',
     '.price .salesprice',
-    '.price .old'
+    '.price .old',
+    '.price .amount'
 ]
