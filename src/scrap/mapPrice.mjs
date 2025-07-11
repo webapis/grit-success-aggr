@@ -72,6 +72,7 @@ export default function mapPrice(
   const unneededWords = [
     'sepette',
     'İndirimli fiyat',
+    'Normal fiyat',
     'fırsat',
     'sadece',
     'indirimli',
