@@ -89,7 +89,9 @@ export default [
     '.color-primary font-financier-bold',
     '.product-item__price',
     '.p-wrap span.price',
-    '.text-sm.font-semibold'
+    '.text-sm.font-semibold',
+    '.product-item__price .money',
+    '[doubly-currency="TRY"]'
   
 
 

@@ -930,6 +930,8 @@
         "urls": [
             "https://perspectivewoman.com/"
         ],
+        "paused":true,
+        "pausedReason":"not for turkish audience",
         "schedule": "0 0 * * 4",
         "id": "90"
     },
