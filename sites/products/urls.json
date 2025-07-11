@@ -1093,6 +1093,8 @@
         "urls": [
             "https://ihandmore.com/"
         ],
+        "paused":true,
+        "pausedReason":"not sufficient products",
         "schedule": "0 0 * * 4",
         "id": "112"
     },
