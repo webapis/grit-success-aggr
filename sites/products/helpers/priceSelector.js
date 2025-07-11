@@ -78,7 +78,8 @@ export default [
     '[data-testid="product-price"]',
     'sale-price',
     '.current-price .product-price',
-    '.product-discounted-price'
+    '.product-discounted-price',
+    '.price .price-normal'
   
 
 
