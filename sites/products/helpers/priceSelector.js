@@ -51,5 +51,7 @@ export default [
     '.prc.prc-last',
     '.prc.prc-first',
     '.productPrice .newPrice',
-    '.productPrice .oldPrice'
+    '.productPrice .oldPrice',
+    '.m-productCard__newPrice',
+    '.m-productCard__oldPrice'
 ]
