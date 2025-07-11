@@ -93,7 +93,9 @@ export default [
     '.product-item__price .money',
     '[doubly-currency="TRY"]',
     '.price .price-new',
-     '.price .price-old'
+     '.price .price-old',
+     '.sepette-indirim .prom-fiyat',
+     '.prices  .sale-price.line'
   
 
 
