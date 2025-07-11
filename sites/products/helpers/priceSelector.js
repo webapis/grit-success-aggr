@@ -4,5 +4,7 @@ export default [
     '.base-price.lined-base-price',
     '.first-line .base-price',
     '.product__price.-actual.h4',
-    '.product__price.h5.-label.-old.-size'
+    '.product__price.h5.-label.-old.-size',
+    '.discountPrice .discountPriceSpan',
+    '.regularPrice .regularPriceSpan'
 ]
