@@ -70,6 +70,8 @@ export default [
     '.discounted-price',
     '.product__listing--basket-price span',
     '.product-item__price pz-price',
+    '.second-price',
+    '.first-price'
 
 
 ]
