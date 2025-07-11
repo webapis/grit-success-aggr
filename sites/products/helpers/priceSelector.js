@@ -79,7 +79,9 @@ export default [
     'sale-price',
     '.current-price .product-price',
     '.product-discounted-price',
-    '.price .price-normal'
+    '.price .price-normal',
+    '.ac-pc__price',
+    '.ac-pc__price.-retail'
   
 
 
