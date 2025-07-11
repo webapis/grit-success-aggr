@@ -900,6 +900,8 @@
         "urls": [
             "https://www.wemsey.com.tr/"
         ],
+        "paused":true,
+        "pausedReason":"detail page does not exist",
         "schedule": "0 0 * * 4",
         "id": "86"
     },
