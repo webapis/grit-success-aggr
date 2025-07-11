@@ -16,5 +16,7 @@ export default [
     '.price-list .h6.text-subdued',
     '.info .product-discounted-price',
     '.price__previous_mobile.product-list-price',
-    '.prices_mobile_custom .product-sale-price'
+    '.prices_mobile_custom .product-sale-price',
+    '.discountPrice .discountPriceSpan',
+    '.regularPrice .regularPriceSpan'
 ]
