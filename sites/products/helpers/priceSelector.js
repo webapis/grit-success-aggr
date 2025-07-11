@@ -43,5 +43,6 @@ export default [
     '.product-old-price .discounted-price',
     'div.flex.flex-wrap.items-center.gap-2 span.text-primary',
     '.product-price-content .product-new-price',
-    '.product-price-content .product-old-price'
+    '.product-price-content .product-old-price',
+    '.price.actual-price'
 ]
