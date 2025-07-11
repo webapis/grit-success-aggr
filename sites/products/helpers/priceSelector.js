@@ -75,7 +75,8 @@ export default [
     '.sell-price',
     '.current-price',
     '.KatSepetFiyat span',
-    '[data-testid="product-price"]'
+    '[data-testid="product-price"]',
+    'sale-price'
   
 
 
