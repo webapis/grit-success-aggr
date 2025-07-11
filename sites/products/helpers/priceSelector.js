@@ -95,7 +95,8 @@ export default [
     '.price .price-new',
      '.price .price-old',
      '.sepette-indirim .prom-fiyat',
-     '.prices  .sale-price.line'
+     '.prices  .sale-price.line',
+     '.grid-product__price span'
   
 
 
