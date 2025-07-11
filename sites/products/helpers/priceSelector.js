@@ -57,5 +57,6 @@ export default [
     '.money.buckscc-money',
     '.product__listing--basket-price',
     '.lone-price',
-    '.product__listing--price del'
+    '.product__listing--price del',
+    'pz-price'
 ]
