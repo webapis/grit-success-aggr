@@ -790,9 +790,7 @@
         "urls": [
             "https://www.panco.com.tr/"
         ],
-        "titleSelector": "[class^='product_card_product_title']",
-        "imageSelector": ".inline-block img",
-        "linkSelector": "[class^='product_card_product_title']",
+
         "schedule": "0 0 * * 4",
         "id": "71"
     },
