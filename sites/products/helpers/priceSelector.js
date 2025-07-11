@@ -40,5 +40,6 @@ export default [
     '.ProductItem__Price.Price.Text--subdued',
     '.urunListe_satisFiyat',
     '.product-current-price .price',
-    '.product-old-price .discounted-price'
+    '.product-old-price .discounted-price',
+    'div.flex.flex-wrap.items-center.gap-2 span.text-primary'
 ]
