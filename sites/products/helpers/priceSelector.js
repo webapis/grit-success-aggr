@@ -99,7 +99,9 @@ export default [
      '.grid-product__price span',
      '.product-price-wrapper .current-price',
      '.product-discounted-price',
-     '.current-price .product-price'
+     '.current-price .product-price',
+     '.discount-price span:nth-child(2)',
+     '.discount-price span:nth-child(1)'
 
 
 ]
