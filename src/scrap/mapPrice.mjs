@@ -47,6 +47,10 @@ function parsePrice(trimPrice) {
     // Turkish-style thousands without decimals: 13.999
     case /^\d{1,3}(\.\d{3})+$/.test(trimPrice):
       return parseFloat(trimPrice.replace(/\./g, ''));
+    // Comma thousands without decimals: 49,000
+    case /^\d{1,3}(,\d{3})+$/.test(trimPrice):
+      return parseFloat(trimPrice.replace(/,/g, ''));
+
     // Just digits
     case /^\d+$/.test(trimPrice):
       return parseFloat(trimPrice);
@@ -92,7 +96,7 @@ export default function mapPrice(
     'fiyatı',
     'fiyat',
     'adet',
-    
+
     'TRY',
     '₺',
     'tl',
