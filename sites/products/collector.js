@@ -112,7 +112,7 @@ export default async function first({ page, enqueueLinks, request, log, addReque
                     });
 
                 return filtered;
-            }, (siteUrls?.excludeUrlPatterns ));
+            }, (siteUrls?.excludeUrlPatterns ? siteUrls.excludeUrlPatterns : []));
             debugger
             console.log('enqueueLinks', result);
             await addRequests(result.filter(url =>
