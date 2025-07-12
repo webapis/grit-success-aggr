@@ -77,7 +77,7 @@ export default async function first({ page, enqueueLinks, request, log, addReque
     } else {
 
         try {
-            const result = await page.evaluate((excluded) => {
+            const result = await page.evaluate(() => {
                 const seen = new Set();
                 const filtered = [];
 
@@ -90,18 +90,10 @@ export default async function first({ page, enqueueLinks, request, log, addReque
                                 /^https?:\/\//.test(href)
                             ) {
                                 const url = new URL(href);
-
-                                // 1. Skip if root path only
                                 const isRoot = url.pathname === '/' || url.pathname === '';
 
-                                // 2. Skip if matches excluded pattern
-                                const isExcluded = excluded.some(pattern =>
-                                    href.toLowerCase().includes(pattern)
-                                );
-
                                 const normalized = href.toLowerCase();
-
-                                if (!isRoot && !isExcluded && !seen.has(normalized)) {
+                                if (!isRoot && !seen.has(normalized)) {
                                     seen.add(normalized);
                                     filtered.push(href);
                                 }
@@ -112,12 +104,17 @@ export default async function first({ page, enqueueLinks, request, log, addReque
                     });
 
                 return filtered;
-            }, (siteUrls?.excludeUrlPatterns ? siteUrls.excludeUrlPatterns : []));
+            });
+
             debugger
             console.log('enqueueLinks', result);
             // Filter out common excluded patterns
+            const combinedExcludedPatterns = [
+                ...commonExcludedPatterns,
+                ...(siteUrls?.excludeUrlPatterns || []),
+            ];
             const filteredResult = result.filter(url =>
-                !commonExcludedPatterns.some(pattern => url.toLowerCase().includes(pattern))
+                !combinedExcludedPatterns.some(pattern => url.toLowerCase().includes(pattern))
             );
             console.log('filteredResult', filteredResult);
             await addRequests(filteredResult.map(url => ({ url, label: 'second' })));
