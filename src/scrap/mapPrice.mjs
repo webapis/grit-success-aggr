@@ -9,9 +9,9 @@ function parsePrice(trimPrice) {
     case /^\d{1,3}(\.\d{3})+,\d{2}$/.test(trimPrice):
       return parseFloat(trimPrice.replace(/\./g, '').replace(',', '.'));
 
-    // US format: 1,111,111.11
-    case /^\d{1,3}(,\d{3})+\.\d{2}$/.test(trimPrice):
-      return parseFloat(trimPrice.replace(/,/g, ''));
+// US format: 1,111.11 or 25,900.00
+case /^\d{1,3}(,\d{3})*\.\d{2}$/.test(trimPrice):
+  return parseFloat(trimPrice.replace(/,/g, ''));
 
     // Mixed Turkish format like 6,825.00 (should become 6825.00)
     case /^\d{1,3},\d{3}\.\d{2}$/.test(trimPrice): // e.g., 6,825.00

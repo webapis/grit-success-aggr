@@ -36,6 +36,7 @@ export default [
     "evcil-hayvan-kiyafetleri",
     "cocuk-tumu",
     "sosyal-sorumluluk",
+    "cerez-politikasi",
     "lookbook",
     "https://www.gigiis.com/collections",
     "https://victorbaron.com.tr/index.php?route=common/home",
