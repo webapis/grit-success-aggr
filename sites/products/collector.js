@@ -115,9 +115,12 @@ export default async function first({ page, enqueueLinks, request, log, addReque
             }, (siteUrls?.excludeUrlPatterns ? siteUrls.excludeUrlPatterns : []));
             debugger
             console.log('enqueueLinks', result);
-            await addRequests(result.filter(url =>
-                !commonExcludedPatterns.some(pattern => url.includes(pattern))
-            ).map(url => ({ url, label: 'second' })))
+            // Filter out common excluded patterns
+            const filteredResult = result.filter(url =>
+                !commonExcludedPatterns.some(pattern => url.toLowerCase().includes(pattern))
+            );
+            console.log('filteredResult', filteredResult);
+            await addRequests(filteredResult.map(url => ({ url, label: 'second' })));
             debugger;
         } catch (error) {
             debugger;
