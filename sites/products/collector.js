@@ -407,6 +407,7 @@ export async function second({
         ? item.price.map(priceObj => {
             try {
                 const numericPrice = mapPrice(priceObj.value); // or priceObj.rawValue if that is correct
+                console.log('Parsed price:', numericPrice, 'from', JSON.stringify(priceObj));
                 return {
                     ...priceObj,
                     numericValue: numericPrice
