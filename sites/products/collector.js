@@ -112,12 +112,12 @@ export default async function first({ page, enqueueLinks, request, log, addReque
                     });
 
                 return filtered;
-            }, (siteUrls?.excludeUrlPatterns ? [...siteUrls?.excludeUrlPatterns, ...commonExcludedPatterns] : commonExcludedPatterns));
-
-            //   const result = await enqueueLinks({ selector: 'a', exclude: siteUrls ? [...siteUrls.excludeUrlPatterns, ...commonExcludedPatterns] : commonExcludedPatterns, label: 'second' })
+            }, (siteUrls?.excludeUrlPatterns ));
             debugger
             console.log('enqueueLinks', result);
-            await addRequests(result.map(url => ({ url, label: 'second' })))
+            await addRequests(result.filter(url =>
+                !commonExcludedPatterns.some(pattern => url.includes(pattern))
+            ).map(url => ({ url, label: 'second' })))
             debugger;
         } catch (error) {
             debugger;
@@ -396,45 +396,45 @@ export async function second({
             }
         }
 
-  const validData = data.map(item => {
-    const processedImgs = (item.img || [])
-        .map(m => getMiddleImageUrl(m, siteUrls.imageCDN || siteUrls.urls[0]))
-        .filter(Boolean);
+        const validData = data.map(item => {
+            const processedImgs = (item.img || [])
+                .map(m => getMiddleImageUrl(m, siteUrls.imageCDN || siteUrls.urls[0]))
+                .filter(Boolean);
 
-    const imgValid = processedImgs.some(isValidImageURL);
+            const imgValid = processedImgs.some(isValidImageURL);
 
-    const parsedPrices = Array.isArray(item.price)
-        ? item.price.map(priceObj => {
-            try {
-                const numericPrice = mapPrice(priceObj.value); // or priceObj.rawValue if that is correct
-                console.log('Parsed price:', numericPrice, 'from', JSON.stringify(priceObj));
-                return {
-                    ...priceObj,
-                    numericValue: numericPrice
-                };
-            } catch (error) {
-                return {
-                    ...priceObj,
-                    numericValue: 0,
-                    error: error.message
-                };
-            }
-        })
-        : [];
+            const parsedPrices = Array.isArray(item.price)
+                ? item.price.map(priceObj => {
+                    try {
+                        const numericPrice = mapPrice(priceObj.value); // or priceObj.rawValue if that is correct
+                        console.log('Parsed price:', numericPrice, 'from', JSON.stringify(priceObj));
+                        return {
+                            ...priceObj,
+                            numericValue: numericPrice
+                        };
+                    } catch (error) {
+                        return {
+                            ...priceObj,
+                            numericValue: 0,
+                            error: error.message
+                        };
+                    }
+                })
+                : [];
 
-    const priceValid = parsedPrices.length > 0 && parsedPrices.some(p => typeof p.numericValue === 'number' && p.numericValue > 0);
+            const priceValid = parsedPrices.length > 0 && parsedPrices.some(p => typeof p.numericValue === 'number' && p.numericValue > 0);
 
-    return {
-        ...item,
-        price: parsedPrices,
-        img: processedImgs,
-        imgValid,
-        linkValid: isValidURL(item.link),
-        titleValid: isValidText(item.title),
-        pageTitleValid: isValidText(item.pageTitle),
-        priceValid,
-    };
-});
+            return {
+                ...item,
+                price: parsedPrices,
+                img: processedImgs,
+                imgValid,
+                linkValid: isValidURL(item.link),
+                titleValid: isValidText(item.title),
+                pageTitleValid: isValidText(item.pageTitle),
+                priceValid,
+            };
+        });
 
         return validData
     } else {
