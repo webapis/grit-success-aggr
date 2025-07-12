@@ -92,11 +92,12 @@ export default function mapPrice(
     'fiyatı',
     'fiyat',
     'adet',
-    't',
+    
     'TRY',
     '₺',
     'tl',
     'TL',
+    't',
     ':',
     '\n',
   ];
