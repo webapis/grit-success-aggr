@@ -44,6 +44,9 @@ function parsePrice(trimPrice) {
     case /^\d[.]\d{3}[,]\d{2}$/.test(trimPrice):
       return parseFloat(trimPrice.replace('.', '').replace(',', '.'));
 
+    // Turkish-style thousands without decimals: 13.999
+    case /^\d{1,3}(\.\d{3})+$/.test(trimPrice):
+      return parseFloat(trimPrice.replace(/\./g, ''));
     // Just digits
     case /^\d+$/.test(trimPrice):
       return parseFloat(trimPrice);
