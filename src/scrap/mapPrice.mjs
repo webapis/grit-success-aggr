@@ -92,6 +92,7 @@ export default function mapPrice(
     'fiyatı',
     'fiyat',
     'adet',
+    't',
     'TRY',
     '₺',
     'tl',
@@ -114,7 +115,7 @@ export default function mapPrice(
   cleaned = cleaned
     .replace(/(USD|\$)/gi, '$')
     .replace(/€/g, '€')
-    .replace(/(TRY|TL|₺)/gi, '')
+    .replace(/(TRY|TL|₺|t)/gi, '')
     .replace(/\s+/g, '') // remove remaining spaces
     .trim();
 
