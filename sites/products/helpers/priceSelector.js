@@ -28,7 +28,6 @@ export default [
     '.price .amount',
     '.product__grid__price  .price',
     '.money.conversion-bear-money',
-    '.price .salesprice',
     '.price .old',
     '.product__price.-actual.h4',
     '.product__campaignFeaturedArea.-seperated',
@@ -115,7 +114,8 @@ export default [
      '.woocommerce-Price-amount.amount bdi',
      '[data-articlecode] div div p span',
      '.productPrice .discountPrice',
-     '.productPrice .regularPrice'
+     '.productPrice .regularPrice',
+     '.product-price-content .product-sale-price'
 
 
 ]
