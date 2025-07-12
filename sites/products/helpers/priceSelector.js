@@ -87,7 +87,7 @@ export default [
     '.product-card__prices',
     '.product-item__basket-offers-price',
     '.color-primary font-financier-bold',
-    '.product-item__price',
+//    '.product-item__price',
     '.p-wrap span.price',
     '.text-sm.font-semibold',
     '.product-item__price .money',
