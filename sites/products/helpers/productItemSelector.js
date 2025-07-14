@@ -1,4 +1,5 @@
 export default [
+    '.productCartMain',
     '[data-testid][class^="product_card_product_card"]',
     '.product-item',
     '.c-tiles-column',
