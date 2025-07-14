@@ -34,6 +34,7 @@ export default [
     "product__grid__info a",
     "div.product-info a",
     "a.detailLink.detailUrl",
-    ".product_image a"
+    ".product_image a",
+    '[id^="CardLink-template"]'
 
 ]
