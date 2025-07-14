@@ -78,6 +78,7 @@ export default function mapPrice(
   // Clean known words and symbols
   const unneededWords = [
     //'Sepette İndirimli Fiyatı: ',
+    'SALE PRICE',
     'İNDİRİMLİ FİYAT',
     'İndirimli fiyat',
     'Sepette %10 İndirim',

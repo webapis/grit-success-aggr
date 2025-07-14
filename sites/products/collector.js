@@ -21,6 +21,7 @@ import getMainDomainPart from "../../src/scrap/getMainDomainPart.js";
 import priceSelector from "./helpers/priceSelector.js";
 import priceAttribute from "./helpers/priceAttribute.js";
 import mapPrice from "../../src/scrap/mapPrice.mjs";
+
 dotenv.config({ silent: true });
 debugger
 const site = process.env.site;
@@ -433,6 +434,7 @@ export async function second({
                 titleValid: isValidText(item.title),
                 pageTitleValid: isValidText(item.pageTitle),
                 priceValid,
+              
             };
         });
 
