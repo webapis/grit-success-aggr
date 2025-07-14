@@ -41,6 +41,7 @@ export default [
     '#ProductGridContainer',//ateliergalin
     '#products-listing-section',//hm
     '.collection__products.collection__infinite-container',//arzukaprol
+    '[class^="listing_page_list_page_right_container"] .grid',
     '.products-view__list .products-list__body',
     '.p-g-mod.p-g-mod-t-20.p-g-mod-pagination .row',
     '.product_list_grid .product_list',

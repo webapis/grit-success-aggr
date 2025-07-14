@@ -1,4 +1,5 @@
 export default [
+    '[data-testid][class^="product_card_product_card"]',
     '.product-item',
     '.c-tiles-column',
     '[data-testid="product-box"]',
@@ -7,7 +8,7 @@ export default [
     '.ant-col.grid-item',
     '.item-box .product-item',
     '.productItemLayout',
-    '.react-multi-carousel-item',
+   // '.react-multi-carousel-item',
     'article.product-tile__plp',
     '.product-layout',
     "ac-product-card",
