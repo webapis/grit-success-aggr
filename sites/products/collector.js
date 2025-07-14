@@ -405,7 +405,7 @@ export async function second({
                 ? item.price.map(priceObj => {
                     try {
                         const numericPrice = mapPrice(priceObj.value); // or priceObj.rawValue if that is correct
-                        console.log('Parsed price:', numericPrice, 'from', JSON.stringify(priceObj));
+
                         return {
                             ...priceObj,
                             numericValue: numericPrice
@@ -421,7 +421,9 @@ export async function second({
                 : [];
 
             const priceValid = parsedPrices.length > 0 && parsedPrices.some(p => typeof p.numericValue === 'number' && p.numericValue > 0);
-
+                if(!priceValid){
+                    console.log('Invalid price data for item:', item);
+                }
             return {
                 ...item,
                 price: parsedPrices,
