@@ -805,6 +805,8 @@
         "urls": [
             "https://www.milkywilky.com.tr/"
         ],
+        "paused":true,
+        "pausedReason":"srapes in usd currency ",
         "schedule": "0 0 * * 4",
         "id": "73"
     },
