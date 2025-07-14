@@ -254,11 +254,9 @@ export async function second({
                     for (const attr of priceAttrList) {
                         let value = null;
 
-                        if (attr === 'textContent' || attr === 'innerText') {
+                  
                             value = priceEl[attr]?.trim();
-                        } else {
-                            value = priceEl.getAttribute(attr)?.trim();
-                        }
+                     
 
                         if (value) {
                             priceInfo.push({

@@ -115,7 +115,7 @@ export default [
      '[data-articlecode] div div p span',
      '.productPrice .discountPrice',
      '.productPrice .regularPrice',
-     '.product-price-content .product-sale-price'
+     '.product-price-content .product-sale-price',
 
 
 ]

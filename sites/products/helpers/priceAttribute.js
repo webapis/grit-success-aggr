@@ -1,1 +1,1 @@
-export default ["innerText"]
+export default ["innerText","innerHTML","textContent"]
