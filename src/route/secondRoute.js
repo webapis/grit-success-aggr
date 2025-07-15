@@ -269,7 +269,9 @@ export default async function second({
                 .filter(Boolean);
 
             const imgValid = processedImgs.some(isValidImageURL);
-
+            if(!imgValid){
+                console.warn(`Invalid image URLs for item: ${item}`);
+            }
             const {parsedPrices,priceValid} =priceParser(item);
 
             return {
