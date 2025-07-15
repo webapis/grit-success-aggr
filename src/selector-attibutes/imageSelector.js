@@ -46,7 +46,7 @@ export default [
   "[data-original]",
   ".product-image-item",
   "[data-lazysrc]",
-  "span.lazy-load-image-background [srcset]"
-
+  "span.lazy-load-image-background [srcset]",
+  'source[srcset]',
 
 ]
