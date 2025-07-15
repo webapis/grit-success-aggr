@@ -22,6 +22,7 @@ import priceSelector from "./helpers/priceSelector.js";
 import priceAttribute from "./helpers/priceAttribute.js";
 import productNotAvailable from "./helpers/productNotAvailable.js";
 import priceParser from "../../src/scrap/priceParcer.js";
+import  getNextPaginationUrls  from "../../src/scrap/getNextPaginationUrls.js";
 dotenv.config({ silent: true });
 debugger
 const site = process.env.site;
@@ -348,31 +349,8 @@ export async function second({
         ) {
             const foundpaginationPostfix = paginationPostfix.find(sub => !url.includes(sub))
             debugger
+            const nextPages = await getNextPaginationUrls(page, url, siteUrls.funcPageSelector, foundpaginationPostfix);
 
-            const nextPages = await page.evaluate((funcPageSelector, _url, _paginationPostfix,) => {
-                if (funcPageSelector.length === 1) {
-                    const paginationSelector = funcPageSelector[0];
-                    const nxtUrls = Array.from({ length: Math.max(...[...document.querySelectorAll(paginationSelector)].map(m => m.innerText).filter(f => Number(f))) - 1 }, (_, i) => i + 2).map(pageNumber => _url + _paginationPostfix[0] + pageNumber)
-
-                    return nxtUrls
-                }
-                else if (funcPageSelector.length === 2) {
-                    try {
-                        const pageCounterSelector = funcPageSelector[0];
-                        const itemsPerPage = funcPageSelector[1];
-                        const courrentItemCount = Number(document.querySelector(pageCounterSelector).innerText.replace(/\D/g, '') || 0);
-                        if (Number(document.querySelector(pageCounterSelector).innerText.replace(/\D/g, '') || 0) > itemsPerPage) {
-                            const nxtUrls = [...Array(Math.round(courrentItemCount / itemsPerPage) - 1)].map((_, i) => i + 2).map(pageNumber => _url + _paginationPostfix + pageNumber)
-                            return nxtUrls
-                        }
-                        else { return [] }
-                    } catch (error) {
-                        return error;
-                    }
-
-                }
-
-            }, siteUrls.funcPageSelector, url, foundpaginationPostfix)
 
             debugger;
 

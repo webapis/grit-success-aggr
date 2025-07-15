@@ -41,6 +41,7 @@ export default [
     "https://www.gigiis.com/collections",
     "https://victorbaron.com.tr/index.php?route=common/home",
     "https://victorbaron.com.tr/victorbaron-shirt",
+    "https://www.oxxo.com.tr/tr/kombinler",
     "ulke-secimi",
     "destek"
 
