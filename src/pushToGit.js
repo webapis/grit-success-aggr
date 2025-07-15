@@ -28,7 +28,7 @@ const validimgs = countByField(data, 'imgValid');
 const validTitle = countByField(data, 'titleValid');
 const validPageTitle = countByField(data, 'pageTitleValid');
 const validPrice = countByField(data, 'priceValid');
-const totalNotAvailable = countByField(data, 'productNotInStock',expectedValue = true);
+const totalNotAvailable = countByField(data, 'productNotInStock',true);
 debugger
 const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
 
