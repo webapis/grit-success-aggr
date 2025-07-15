@@ -615,6 +615,7 @@
         "urls": [
             "https://tr.burberry.com/"
         ],
+        "isAutoScroll":true,
         "schedule": "0 0 * * 4",
         "id": "50"
     },
