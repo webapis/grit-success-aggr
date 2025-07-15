@@ -20,7 +20,6 @@ import getMiddleImageUrl from "../../src/scrap/getMiddleImageUrl.js";
 import getMainDomainPart from "../../src/scrap/getMainDomainPart.js";
 import priceSelector from "./helpers/priceSelector.js";
 import priceAttribute from "./helpers/priceAttribute.js";
-import mapPrice from "../../src/scrap/mapPrice.mjs";
 import productNotAvailable from "./helpers/productNotAvailable.js";
 import priceParser from "../../src/scrap/priceParcer.js";
 dotenv.config({ silent: true });

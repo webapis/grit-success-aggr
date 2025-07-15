@@ -1,3 +1,4 @@
+import mapPrice from './mapPrice.js';
 export default function priceParser(item) {
     const parsedPrices = Array.isArray(item.price)
         ? item.price.map(priceObj => {
