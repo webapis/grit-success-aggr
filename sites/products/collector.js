@@ -21,7 +21,7 @@ import getMainDomainPart from "../../src/scrap/getMainDomainPart.js";
 import priceSelector from "./helpers/priceSelector.js";
 import priceAttribute from "./helpers/priceAttribute.js";
 import mapPrice from "../../src/scrap/mapPrice.mjs";
-
+import productNotAvailable from "./helpers/productNotAvailable.js";
 dotenv.config({ silent: true });
 debugger
 const site = process.env.site;
@@ -209,7 +209,7 @@ export async function second({
 
                 // Get all image elements per product
                 const imgElements = imageSelectors.flatMap(sel => Array.from(m.querySelectorAll(sel)));
-
+                const productNotInStock = m.querySelector(params.productNotAvailable)? true: false;
                 // Extract image URLs from attributes
                 const imgUrls = imgElements.flatMap(el =>
                     params.imageAttributes
@@ -297,6 +297,7 @@ export async function second({
                         primaryImg,
                         link,
                         price: priceInfo, // array of prices
+                        productNotInStock,
                         matchedInfo: {
                             linkSource,
                             matchedSelector,
@@ -333,6 +334,7 @@ export async function second({
             linkSelector: linkSelectors.join(', '),
             priceSelector: priceSelector.join(', '),
             priceAttribute: priceAttribute.join(', '),
+            productNotAvailable: productNotAvailable.join(', '),
             autoScroll,
             breadcrumb
         });
