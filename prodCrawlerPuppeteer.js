@@ -5,8 +5,8 @@ import { PuppeteerCrawler } from "crawlee";
 import { router } from "./prodRoutesPuppeteer.js";
 import preNavigationHooks from "./crawler-helper/preNavigationHooksProd2.js";
 import puppeteer from './crawler-helper/puppeteer-stealth.js';
-import getMainDomainPart from './src/scrap/getMainDomainPart.js';
-import urls from './sites/products/urls.json' assert { type: 'json' };
+import getMainDomainPart from './src/scrape-helpers/getMainDomainPart.js';
+import urls from './src/meta/urls.json' assert { type: 'json' };
 
 const site = process.env.site;
 const local = process.env.local;

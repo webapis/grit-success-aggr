@@ -1,137 +1,34 @@
 
 
 import dotenv from "dotenv";
-import scroller, { autoScroll } from "./scroller.js";
-import isValidImageURL from "../../src/scrap/isValidImageURL.js";
-import isValidURL from "../../src/scrap/isValidURL.js";
-import isValidText from "../../src/scrap/isValidText.js";
-import urls from './urls.json' assert { type: 'json' };
-import commonExcludedPatterns from "./helpers/commonExcludedPatterns.js";
-import { uploadToGoogleDrive } from './uploadToGoogleDrive.js';
-import paginationPostfix from "./helpers/paginationPostfix.js";
-import productItemSelector from './helpers/productItemSelector.js'
-import productPageSelector from "./helpers/productPageSelector.js";
-import titleSelector from "./helpers/titleSelector.js";
-import imageSelectors from "./helpers/imageSelector.js";
-import linkSelectors from "./helpers/linkSelector.js";
-import imageAttributes from "./helpers/imageAttributes.js";
-import titleAttribute from "./helpers/titleAttribute.js";
-import getMiddleImageUrl from "../../src/scrap/getMiddleImageUrl.js";
-import getMainDomainPart from "../../src/scrap/getMainDomainPart.js";
-import priceSelector from "./helpers/priceSelector.js";
-import priceAttribute from "./helpers/priceAttribute.js";
-import productNotAvailable from "./helpers/productNotAvailable.js";
-import priceParser from "../../src/scrap/priceParcer.js";
-import  getNextPaginationUrls  from "../../src/scrap/getNextPaginationUrls.js";
+import scroller, { autoScroll } from "../scrape-helpers/scroller.js";
+import isValidImageURL from "../scrape-helpers/isValidImageURL.js";
+import isValidURL from "../scrape-helpers/isValidURL.js";
+import isValidText from "../scrape-helpers/isValidText.js";
+import urls from '../meta/urls.json' assert { type: 'json' };
+import commonExcludedPatterns from "../selector-attibutes/commonExcludedPatterns.js";
+import paginationPostfix from "../selector-attibutes/paginationPostfix.js";
+import productItemSelector from '../selector-attibutes/productItemSelector.js'
+import productPageSelector from "../selector-attibutes/productPageSelector.js";
+import titleSelector from "../selector-attibutes/titleSelector.js";
+import imageSelectors from "../selector-attibutes/imageSelector.js";
+import linkSelectors from "../selector-attibutes/linkSelector.js";
+import imageAttributes from "../selector-attibutes/imageAttributes.js";
+import titleAttribute from "../selector-attibutes/titleAttribute.js";
+import getMiddleImageUrl from "../scrape-helpers/getMiddleImageUrl.js";
+import getMainDomainPart from "../scrape-helpers/getMainDomainPart.js";
+import priceSelector from "../selector-attibutes/priceSelector.js";
+import priceAttribute from "../selector-attibutes/priceAttribute.js";
+import productNotAvailable from "../selector-attibutes/productNotAvailable.js";
+import priceParser from "../scrape-helpers/priceParcer.js";
+import  getNextPaginationUrls  from "../scrape-helpers/getNextPaginationUrls.js";
 dotenv.config({ silent: true });
 debugger
 const site = process.env.site;
 const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
 
 
-export default async function first({ page, enqueueLinks, request, log, addRequests, productListSelector, excludeUrlPatterns, pageSelector }) {
-
-    await page.evaluate(() => {
-        return new Promise(resolve => setTimeout(resolve, 10000));
-    });
-
-    // take screenshot and upload to google drive
-    const screenshotBuffer = await page.screenshot({ fullPage: true });
-
-    const uploadResult = await uploadToGoogleDrive({
-        buffer: screenshotBuffer,
-        fileName: `screenshot-${site}-${Date.now()}.png`,
-        folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-        serviceAccountCredentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')),
-    });
-
-    console.log('📸 Screenshot uploaded:', uploadResult.webViewLink);
-
-
-
-    console.log('inside first route')
-
-    if (siteUrls.navigationUrls) {
-        try {
-
-
-            let result = await page.evaluate((navigationUrls) => {
-                const dynamicFunction = eval(navigationUrls);
-
-                return dynamicFunction;
-
-            }, siteUrls.navigationUrls);
-
-            if (!Array.isArray(result)) {
-
-                result = await eval(siteUrls.navigationUrls)(page);
-            }
-
-            console.log('navigationUrls', result);
-            const mappedUrls = result.filter(url => typeof url === 'string' && /^https?:\/\//.test(url)).map(url => ({ url, label: 'second' }));
-
-            await addRequests(mappedUrls);
-
-        } catch (error) {
-            console.log('Error in navigationUrls:', error);
-        }
-
-    } else {
-
-        try {
-            const result = await page.evaluate(() => {
-                const seen = new Set();
-                const filtered = [];
-
-                Array.from(document.querySelectorAll('a'))
-                    .map(a => a.href)
-                    .forEach(href => {
-                        try {
-                            if (
-                                typeof href === 'string' &&
-                                /^https?:\/\//.test(href)
-                            ) {
-                                const url = new URL(href);
-                                const isRoot = url.pathname === '/' || url.pathname === '';
-
-                                const normalized = href.toLowerCase();
-                                if (!isRoot && !seen.has(normalized)) {
-                                    seen.add(normalized);
-                                    filtered.push(href);
-                                }
-                            }
-                        } catch (e) {
-                            // skip invalid URLs
-                        }
-                    });
-
-                return filtered;
-            });
-
-            debugger
-            console.log('enqueueLinks', result);
-            // Filter out common excluded patterns
-            const combinedExcludedPatterns = [
-                ...commonExcludedPatterns,
-                ...(siteUrls?.excludeUrlPatterns || []),
-            ];
-            const filteredResult = result.filter(url =>
-                !combinedExcludedPatterns.some(pattern => url.toLowerCase().includes(pattern))
-            );
-            console.log('filteredResult', filteredResult);
-            await addRequests(filteredResult.map(url => ({ url, label: 'second' })));
-            debugger;
-        } catch (error) {
-            debugger;
-        }
-
-    }
-
-
-
-}
-
-export async function second({
+export default async function second({
     page,
     isAutoScroll = false,
     breadcrumb = () => "",
@@ -183,7 +80,6 @@ export async function second({
                 if (el) {
                     matchedDocument = el;
                     matchedPageSelector = sel;
-                    console.log('---matchedPageSelector', matchedPageSelector, el);
                     break;
                 }
             }
