@@ -424,8 +424,8 @@ export async function second({
                 : [];
 
             const priceValid = parsedPrices.length > 0 && parsedPrices.some(p => typeof p.numericValue === 'number' && p.numericValue > 0);
-            if (!priceValid) {
-                console.log('Invalid price data for item:', item);
+            if (!priceValid && !item.productNotInStock) {
+                console.log('Invalid price data for item (and product is in stock):', item);
             }
             return {
                 ...item,
