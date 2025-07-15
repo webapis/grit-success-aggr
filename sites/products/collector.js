@@ -133,14 +133,6 @@ export default async function first({ page, enqueueLinks, request, log, addReque
 
 export async function second({
     page,
-
-
-
-    titleAttr = "innerText",
-    imageSelector,
-    imageAttr = 'src',
-    imagePrefix = '',
-    linkSelector,
     isAutoScroll = false,
     breadcrumb = () => "",
     waitForSeconds = 0,
@@ -406,7 +398,7 @@ export async function second({
             const imgValid = processedImgs.some(isValidImageURL);
 
             const parsedPrices =priceParser(item);
-            
+
             return {
                 ...item,
                 price: parsedPrices,
