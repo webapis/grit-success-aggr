@@ -725,6 +725,7 @@
         "urls": [
             "https://morrez.com/"
         ],
+        "isAutoScroll":true,
         "schedule": "0 0 * * 4",
         "id": "63"
     },

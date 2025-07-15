@@ -1,4 +1,5 @@
 export default [
+    '.category__list__main .infinite-scroll-component__outerdiv .infinite-scroll-component ',
     '#ProductPageProductList.ProductList',//elleshoes
     '.js-list-product.list__products',//koton
     '#product-container .catalog-products',//defacto
