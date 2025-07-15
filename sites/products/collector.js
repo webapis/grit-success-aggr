@@ -209,7 +209,7 @@ export async function second({
 
                 // Get all image elements per product
                 const imgElements = imageSelectors.flatMap(sel => Array.from(m.querySelectorAll(sel)));
-                const productNotInStock = m.querySelector(params.productNotAvailable)? true: false;
+                const productNotInStock = m.querySelector(params.productNotAvailable) ? true : false;
                 // Extract image URLs from attributes
                 const imgUrls = imgElements.flatMap(el =>
                     params.imageAttributes
@@ -255,9 +255,9 @@ export async function second({
                     for (const attr of priceAttrList) {
                         let value = null;
 
-                  
-                            value = priceEl[attr]?.trim();
-                     
+
+                        value = priceEl[attr]?.trim();
+
 
                         if (value) {
                             priceInfo.push({
@@ -424,9 +424,9 @@ export async function second({
                 : [];
 
             const priceValid = parsedPrices.length > 0 && parsedPrices.some(p => typeof p.numericValue === 'number' && p.numericValue > 0);
-                if(!priceValid){
-                    console.log('Invalid price data for item:', item);
-                }
+            if (!priceValid) {
+                console.log('Invalid price data for item:', item);
+            }
             return {
                 ...item,
                 price: parsedPrices,
@@ -435,8 +435,8 @@ export async function second({
                 linkValid: isValidURL(item.link),
                 titleValid: isValidText(item.title),
                 pageTitleValid: isValidText(item.pageTitle),
-                priceValid,
-              
+                priceValid: item.productNotInStock ? true : priceValid,
+
             };
         });
 

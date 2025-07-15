@@ -28,7 +28,7 @@ const validimgs = countByField(data, 'imgValid');
 const validTitle = countByField(data, 'titleValid');
 const validPageTitle = countByField(data, 'pageTitleValid');
 const validPrice = countByField(data, 'priceValid');
-const totalNotAvailable = countByField(data, 'productNotInStock');
+const totalNotAvailable = countByField(data, 'productNotInStock',expectedValue = true);
 debugger
 const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
 
@@ -55,10 +55,11 @@ const baseRowData = {
 if (!siteUrls.paused && dataWithoutError.length > 0) {
     debugger
     console.log('✅ Collected data length:', dataWithoutError.length);
-
+const dataToUpload= dataWithoutError.filter(f=> f.linkValid && f.imgValid && f.titleValid  && f.priceValid && !f.productNotInStock)
+console.log('✅ Data to upload length:', dataToUpload.length);
     await uploadCollection({
         fileName: site || URL_CATEGORIES,
-        data: dataWithoutError,
+        data: dataToUpload,
         gitFolder: site,
     });
     await emitAsync('log-to-sheet', {
