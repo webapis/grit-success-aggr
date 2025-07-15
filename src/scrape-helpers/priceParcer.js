@@ -23,7 +23,7 @@ export default function priceParser(item) {
     const priceValid = parsedPrices.length > 0 && parsedPrices.every(p => typeof p.numericValue === 'number' && p.numericValue > 0);
     const priceisUnset = parsedPrices.some(p => p.unsetPrice);
     const priceScrapeError = parsedPrices.some(p => p.priceScrapeError);
-    if (!priceScrapeError || priceisUnset) {
+    if (priceScrapeError || priceisUnset) {
         console.log('Invalid price data for item (and product is in stock):', parsedPrices);
     }
 
