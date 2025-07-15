@@ -1,4 +1,5 @@
 export default [
+    'img.motion-reduce',
     'span.product-name',
     '.product-card-v2-title',
     '[class^="style_productCard"] p.name',
