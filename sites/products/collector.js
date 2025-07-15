@@ -397,7 +397,7 @@ export async function second({
 
             const imgValid = processedImgs.some(isValidImageURL);
 
-            const parsedPrices =priceParser(item);
+            const {parsedPrices,priceValid} =priceParser(item);
 
             return {
                 ...item,

@@ -23,6 +23,6 @@ export default function priceParser(item) {
         console.log('Invalid price data for item (and product is in stock):', item);
     }
 
-    return parsedPrices
+    return {parsedPrices, priceValid}
 
 }
