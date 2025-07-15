@@ -4,26 +4,29 @@ export default function priceParser(item) {
         ? item.price.map(priceObj => {
             try {
                 const numericPrice = mapPrice(priceObj.value); // or priceObj.rawValue if that is correct
-
                 return {
                     ...priceObj,
-                    numericValue: numericPrice
+                    numericValue: numericPrice,
+                    unsetPrice:  numericPrice=== 0? true: false,
                 };
             } catch (error) {
                 return {
                     ...priceObj,
                     numericValue: 0,
+                    priceScrapeError: true,
                     error: error.message
                 };
             }
         })
         : [];
 
-    const priceValid = parsedPrices.length > 0 && parsedPrices.some(p => typeof p.numericValue === 'number' && p.numericValue > 0);
-    if (!priceValid && !item.productNotInStock) {
-        console.log('Invalid price data for item (and product is in stock):', item);
+    const priceValid = parsedPrices.length > 0 && parsedPrices.every(p => typeof p.numericValue === 'number' && p.numericValue > 0);
+    const priceisUnset = parsedPrices.some(p => p.unsetPrice);
+    const priceScrapeError = parsedPrices.some(p => p.priceScrapeError);
+    if (!priceScrapeError || priceisUnset) {
+        console.log('Invalid price data for item (and product is in stock):', parsedPrices);
     }
 
-    return {parsedPrices, priceValid}
+    return { parsedPrices, priceValid, priceisUnset , priceScrapeError };
 
 }
