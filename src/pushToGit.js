@@ -1,4 +1,4 @@
-
+import { Readable } from 'stream';
 import { uploadCollection } from "./uploadCollection.js";
 import dotenv from 'dotenv';
 import { Dataset } from 'crawlee';
@@ -10,6 +10,7 @@ import getMainDomainPart from "./scrape-helpers/getMainDomainPart.js";
 import { emitAsync } from "./events.js";
 import './listeners.js'; // ← This registers event handlers
 import urls from './meta/urls.json' assert { type: 'json' };
+import uploadJSONToGoogleDrive from "./drive/uploadJSONToGoogleDrive.js";
 dotenv.config({ silent: true });
 
 const URL_CATEGORIES = process.env.URL_CATEGORIES;
@@ -28,12 +29,46 @@ const validimgs = countByField(data, 'imgValid');
 const validTitle = countByField(data, 'titleValid');
 const validPageTitle = countByField(data, 'pageTitleValid');
 //const validPrice = countByField(data, 'priceValid');
-const unsetPrice= countByField(data, 'priceisUnset',true);
-const priceScrapeError = countByField(data, 'priceScrapeError',true);
-const totalNotAvailable = countByField(data, 'productNotInStock',true);
+const unsetPrice = countByField(data, 'priceisUnset', true);
+const priceScrapeError = countByField(data, 'priceScrapeError', true);
+const totalNotAvailable = countByField(data, 'productNotInStock', true);
 debugger
 const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
 
+
+    const invalidItems = data.filter(item =>
+        !item.imgValid ||
+        !item.linkValid ||
+        !item.titleValid ||
+        !item.pageTitleValid ||
+        !item.priceValid
+    );
+    let jsonErrorUploadResult= null
+if (invalidItems.length > 0) {
+    const jsonBuffer = Buffer.from(JSON.stringify(invalidItems, null, 2), 'utf-8');
+    const jsonErrorUploadResult = await uploadJSONToGoogleDrive({
+        buffer: jsonBuffer,
+        fileName: `${site}-error.json`,
+        mimeType: 'application/json',
+        folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
+        serviceAccountCredentials: JSON.parse(
+            Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
+        ),
+    });
+    debugger;
+    console.log(`Uploaded invalid items to Google Drive: ${jsonErrorUploadResult.webViewLink}`);
+}
+const jsonBuffer = Buffer.from(JSON.stringify(data, null, 2), 'utf-8');
+const resultData = await uploadJSONToGoogleDrive({
+    buffer: jsonBuffer,
+    fileName: `${site}.json`,
+    mimeType: 'application/json',
+    folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
+    serviceAccountCredentials: JSON.parse(
+        Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
+    ),
+});
+console.log('✅ JSON file uploaded to Google Drive:', resultData.webViewLink);
 const baseRowData = {
     Site: site,
     'Total Objects': dataWithoutError.length,
@@ -46,7 +81,9 @@ const baseRowData = {
     'Product Not Available': totalNotAvailable,
     'Total Unique Objects (by link)': totalUniqueObjects.count,
     'Error Objects': dataWithError.length,
-    'Start Time': oldestTimestamp,
+    "JSONERRORURL": jsonErrorUploadResult ? jsonErrorUploadResult.webViewLink : 'N/A',
+    "JSONData":resultData ? resultData.webViewLink : 'N/A',
+        'Start Time': oldestTimestamp,
     'End Time': newestTimestamp,
     'Span (min)': minutesSpan,
     'Total Pages': totalPages.count,
@@ -58,8 +95,8 @@ const baseRowData = {
 if (!siteUrls.paused && dataWithoutError.length > 0) {
     debugger
     console.log('✅ Collected data length:', dataWithoutError.length);
-const dataToUpload= dataWithoutError.filter(f=> f.linkValid && f.imgValid && f.titleValid  && f.priceValid && !f.productNotInStock)
-console.log('✅ Data to upload length:', dataToUpload.length);
+    const dataToUpload = dataWithoutError.filter(f => f.linkValid && f.imgValid && f.titleValid && f.priceValid && !f.productNotInStock)
+    console.log('✅ Data to upload length:', dataToUpload.length);
     await uploadCollection({
         fileName: site || URL_CATEGORIES,
         data: dataToUpload,
