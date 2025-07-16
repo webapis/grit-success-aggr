@@ -34,7 +34,7 @@ export default [
     ".ProductItem__Wrapper",
     ".prd",
     ".prod-card",
-    ".max-w-xl.fade-in",
+    ".max-w-xl.fade-in:has(img)",
     ".productCartMain",
     ".prd-link",
     "[class^='ProductCard_productCard']",
