@@ -43,10 +43,10 @@ const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
         !item.pageTitleValid ||
         !item.priceValid
     );
-    let jsonErrorUploadResult= null
+    let jsonErrorwebViewLink= '';
 if (invalidItems.length > 0) {
     const jsonBuffer = Buffer.from(JSON.stringify(invalidItems, null, 2), 'utf-8');
-    const jsonErrorUploadResult = await uploadJSONToGoogleDrive({
+    const result = await uploadJSONToGoogleDrive({
         buffer: jsonBuffer,
         fileName: `${site}-error.json`,
         mimeType: 'application/json',
@@ -55,9 +55,11 @@ if (invalidItems.length > 0) {
             Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
         ),
     });
-    debugger;
-    console.log(`Uploaded invalid items to Google Drive: ${jsonErrorUploadResult.webViewLink}`);
+   jsonErrorwebViewLink = result.webViewLink;
+    console.log(`Uploaded invalid items to Google Drive: ${result.webViewLink}`);
+     debugger;
 }
+debugger
 const jsonBuffer = Buffer.from(JSON.stringify(data, null, 2), 'utf-8');
 const resultData = await uploadJSONToGoogleDrive({
     buffer: jsonBuffer,
@@ -81,7 +83,7 @@ const baseRowData = {
     'Product Not Available': totalNotAvailable,
     'Total Unique Objects (by link)': totalUniqueObjects.count,
     'Error Objects': dataWithError.length,
-    "JSONERRORURL": jsonErrorUploadResult ? jsonErrorUploadResult.webViewLink : 'N/A',
+    "JSONERRORURL": jsonErrorwebViewLink ? jsonErrorwebViewLink : 'N/A',
     "JSONData":resultData ? resultData.webViewLink : 'N/A',
         'Start Time': oldestTimestamp,
     'End Time': newestTimestamp,
