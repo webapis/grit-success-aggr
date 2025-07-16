@@ -5,7 +5,7 @@ export default [
     '.c-tiles-column',
     '[data-testid="product-box"]',
     '.js-product-list-item',
-    '.list-content-product-item',
+    '.list-content-product-item:has(.product-name a)',
     '.ant-col.grid-item',
     '.item-box .product-item',
     '.productItemLayout',
