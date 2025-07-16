@@ -408,7 +408,7 @@
         "urls": [
             "https://www.brooksbrothers.com.tr/"
         ],
-        "isAutoScroll": true,
+    
         "funcPageSelector": [
             "span.text-primary",
             12
