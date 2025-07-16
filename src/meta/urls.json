@@ -408,6 +408,7 @@
         "urls": [
             "https://www.brooksbrothers.com.tr/"
         ],
+        "isAutoScroll": true,
         "funcPageSelector": [
             "span.text-primary",
             12
@@ -579,12 +580,11 @@
         "urls": [
             "https://www.ateliergalin.com/"
         ],
-
         "funcPageSelector": [
             "a.pagination__item"
         ],
-        "paused":true,
-        "pausedReason":"website is very slow",
+        "paused": true,
+        "pausedReason": "website is very slow",
         "schedule": "0 0 * * 4",
         "id": "46"
     },
@@ -615,7 +615,7 @@
         "urls": [
             "https://tr.burberry.com/"
         ],
-        "isAutoScroll":true,
+        "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "50"
     },
@@ -630,7 +630,6 @@
         "urls": [
             "https://www.camper.com/tr_TR"
         ],
-
         "schedule": "0 0 * * 4",
         "id": "52"
     },
@@ -699,7 +698,6 @@
         "urls": [
             "https://www.marksandspencer.com.tr/"
         ],
-
         "schedule": "0 0 * * 4",
         "breadcrumb": "(document)=>Array.from(document.querySelectorAll('.breadcrumb a')).map(m=>m.innerText).join(' ').toLowerCase()",
         "id": "60"
@@ -709,7 +707,6 @@
             "https://www2.hm.com/tr_tr/index.html"
         ],
         "imageCDN": "https://image.hm.com/",
-
         "schedule": "0 0 * * 4",
         "id": "61"
     },
@@ -726,7 +723,7 @@
         "urls": [
             "https://morrez.com/"
         ],
-        "isAutoScroll":true,
+        "isAutoScroll": true,
         "schedule": "0 0 * * 4",
         "id": "63"
     },
@@ -741,8 +738,8 @@
         "urls": [
             "https://www.ltbjeans.com/tr-TR"
         ],
-        "paused":true,
-        "pausedReason":"website is very slow",
+        "paused": true,
+        "pausedReason": "website is very slow",
         "schedule": "0 0 * * 4",
         "id": "65"
     },
@@ -756,11 +753,9 @@
     {
         "urls": [
             "https://www.edliskids.com/urun-kategori/kiz-bebek/"
-           
         ],
-
-        "paused":true,
-        "pausedReason":"website does not contain enough products",
+        "paused": true,
+        "pausedReason": "website does not contain enough products",
         "schedule": "0 0 * * 4",
         "id": "67"
     },
@@ -775,7 +770,6 @@
         "urls": [
             "https://www.cartersoshkosh.com.tr/"
         ],
-
         "schedule": "0 0 * * 4",
         "id": "69"
     },
@@ -783,8 +777,8 @@
         "urls": [
             "https://sagaza.com/"
         ],
-        "paused":true,
-        "pausedReason":"page does not scrape on github actions",
+        "paused": true,
+        "pausedReason": "page does not scrape on github actions",
         "schedule": "0 0 * * 4",
         "id": "70"
     },
@@ -792,7 +786,6 @@
         "urls": [
             "https://www.panco.com.tr/"
         ],
-
         "schedule": "0 0 * * 4",
         "id": "71"
     },
@@ -807,8 +800,8 @@
         "urls": [
             "https://www.milkywilky.com.tr/"
         ],
-        "paused":true,
-        "pausedReason":"srapes in usd currency ",
+        "paused": true,
+        "pausedReason": "srapes in usd currency ",
         "schedule": "0 0 * * 4",
         "id": "73"
     },
@@ -904,8 +897,8 @@
         "urls": [
             "https://www.wemsey.com.tr/"
         ],
-        "paused":true,
-        "pausedReason":"detail page does not exist",
+        "paused": true,
+        "pausedReason": "detail page does not exist",
         "schedule": "0 0 * * 4",
         "id": "86"
     },
@@ -934,8 +927,8 @@
         "urls": [
             "https://perspectivewoman.com/"
         ],
-        "paused":true,
-        "pausedReason":"not for turkish audience",
+        "paused": true,
+        "pausedReason": "not for turkish audience",
         "schedule": "0 0 * * 4",
         "id": "90"
     },
@@ -978,7 +971,6 @@
         "urls": [
             "https://berr-in.com/kadin-elbise-modelleri"
         ],
-
         "schedule": "0 0 * * 4",
         "id": "96"
     },
@@ -1097,7 +1089,6 @@
         "urls": [
             "https://ihandmore.com/"
         ],
- 
         "schedule": "0 0 * * 4",
         "id": "112"
     },
