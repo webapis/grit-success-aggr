@@ -1,4 +1,5 @@
 export default [
+    '.wpb_column.vc_column_container .vc_column-inner .wpb_wrapper',
     '[itemprop="mainContentOfPage"] .products_wrapper.mfn-woo-products .products',
     '#ProductPageProductList.ProductList',//elleshoes
     '.js-list-product.list__products',//koton
