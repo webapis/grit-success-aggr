@@ -1,5 +1,5 @@
 export default [
-
+'img.productSliderImage',
   '[imagetype="PRODUCT_IMAGE"]',
   'img.image-responsive',
   'picture.media-carousel-container__media source',
