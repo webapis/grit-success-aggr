@@ -1,1 +1,1 @@
-export default [".mainTukendi"]
+export default [".mainTukendi",'.qode-pli-out-of-stock']
