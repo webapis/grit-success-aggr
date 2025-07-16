@@ -1,4 +1,5 @@
 export default [
+    '[itemprop="mainContentOfPage"] .products_wrapper.mfn-woo-products .products',
     '#ProductPageProductList.ProductList',//elleshoes
     '.js-list-product.list__products',//koton
     '#product-container .catalog-products',//defacto
@@ -60,7 +61,7 @@ export default [
     ".main-products-wrapper",
     ".js-product-list",
     // ".product-list",
-    "ul.products",
+    //"ul.products",
     "#product-grid",
     ".category__list__main",
     ".main-products.product-grid",
