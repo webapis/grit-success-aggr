@@ -28,7 +28,7 @@ const validLinks = countByField(data, 'linkValid');
 const validimgs = countByField(data, 'imgValid');
 const validTitle = countByField(data, 'titleValid');
 const validPageTitle = countByField(data, 'pageTitleValid');
-//const validPrice = countByField(data, 'priceValid');
+const validPrice = countByField(data, 'priceValid');
 const unsetPrice = countByField(data, 'priceisUnset', true);
 const priceScrapeError = countByField(data, 'priceScrapeError', true);
 const totalNotAvailable = countByField(data, 'productNotInStock', true);
@@ -78,6 +78,7 @@ const baseRowData = {
     'Invalid Page Titles': validPageTitle,
     'Invalid Links': validLinks,
     'Invalid Images': validimgs,
+    'Invalid Prices': validPrice,
     'Unset Prices': unsetPrice,
     'Price Scrape Errors': priceScrapeError,
     'Product Not Available': totalNotAvailable,
