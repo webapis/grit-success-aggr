@@ -1,5 +1,5 @@
 export default [
-    '.entry-title.qode-pli-title',
+    '.entry-title.qode-pli-title a',
     'img.motion-reduce',
     'span.product-name',
     '.product-card-v2-title',
