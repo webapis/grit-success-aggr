@@ -19,11 +19,11 @@ import getMiddleImageUrl from "../scrape-helpers/getMiddleImageUrl.js";
 import getMainDomainPart from "../scrape-helpers/getMainDomainPart.js";
 import priceSelector from "../selector-attibutes/priceSelector.js";
 import priceAttribute from "../selector-attibutes/priceAttribute.js";
-import videoAttributes from "../selector-attibutes/videoAttributes.js";
-import videoSelectors from "../selector-attibutes/videoSelectors.js";
+import videoAttribute from "../selector-attibutes/videoAttribute.js";
+import videoSelector from "../selector-attibutes/videoSelector.js";
 import productNotAvailable from "../selector-attibutes/productNotAvailable.js";
 import priceParser from "../scrape-helpers/priceParcer.js";
-import getNextPaginationUrls from "../scrape-helpers/getNextPaginationUrls.js";
+import  getNextPaginationUrls  from "../scrape-helpers/getNextPaginationUrls.js";
 dotenv.config({ silent: true });
 debugger
 const site = process.env.site;
@@ -94,8 +94,6 @@ export default async function second({
                 const imageSelectors = params.imageSelector.split(',').map(s => s.trim());
                 const linkSelectors = params.linkSelector.split(',').map(s => s.trim());
                 const priceSelectors = params.priceSelector.split(',').map(s => s.trim());
-                const videoSelectors = params.videoSelector.split(',').map(s => s.trim());
-                const videoAttrList = params.videoAttribute.split(',').map(attr => attr.trim());
 
                 const titleElement = titleSelectors.map(sel => m.querySelector(sel)).find(Boolean);
                 const linkElement = linkSelectors.map(sel => m.querySelector(sel)).find(Boolean);
@@ -103,7 +101,6 @@ export default async function second({
                 // Get all image elements per product
                 const imgElements = imageSelectors.flatMap(sel => Array.from(m.querySelectorAll(sel)));
                 const productNotInStock = m.querySelector(params.productNotAvailable) ? true : false;
-
                 // Extract image URLs from attributes
                 const imgUrls = imgElements.flatMap(el =>
                     params.imageAttributes
@@ -113,16 +110,11 @@ export default async function second({
                 );
 
                 // Extract image URLs from background-image
-                function getBackgroundImageUrl(el) {
-                    const bgImage = el?.style.backgroundImage;
-                    const urlMatch = bgImage?.match(/url\(["']?(.*?)["']?\)/);
-                    return urlMatch ? urlMatch[1] : null;
-                }
-
                 const bgImgs = imgElements
                     .map(el => getBackgroundImageUrl(el))
                     .filter(Boolean);
 
+                // Combine and remove duplicates
                 const allImgs = [...new Set([...imgUrls, ...bgImgs])];
                 const primaryImg = allImgs[0] || null;
 
@@ -152,7 +144,12 @@ export default async function second({
                     const priceAttrList = params.priceAttribute.split(',').map(attr => attr.trim());
 
                     for (const attr of priceAttrList) {
-                        let value = priceEl[attr]?.trim();
+                        let value = null;
+
+
+                        value = priceEl[attr]?.trim();
+
+
                         if (value) {
                             priceInfo.push({
                                 value,
@@ -164,22 +161,6 @@ export default async function second({
                     }
                 }
 
-                // 🎥 VIDEO EXTRACTION
-                const videoElements = videoSelectors.flatMap(sel => Array.from(m.querySelectorAll(sel)));
-                const videoUrls = videoElements
-                    .flatMap(el =>
-                        videoAttrList
-                            .map(attr => el?.getAttribute(attr))
-                            .filter(Boolean)
-                    );
-
-                const allVideos = [...new Set(videoUrls)];
-                const firstVideoElement = videoElements[0];
-                const videoSelectorMatched = firstVideoElement
-                    ? videoSelectors.find(sel => firstVideoElement.matches(sel))
-                    : null;
-
-                // LINK RESOLUTION
                 let link = null;
                 let linkSource = null;
 
@@ -206,15 +187,13 @@ export default async function second({
                         img: allImgs,
                         primaryImg,
                         link,
-                        price: priceInfo,
-                        videos: allVideos,
+                        price: priceInfo, // array of prices
                         productNotInStock,
                         matchedInfo: {
                             linkSource,
                             matchedSelector,
                             titleSelectorMatched,
                             imgSelectorMatched,
-                            videoSelectorMatched,
                             usedFallbackDocument,
                             matchedPageSelector
                         },
@@ -236,7 +215,6 @@ export default async function second({
                     };
                 }
             });
-
         }, {
             productPageSelector: productPageSelector.join(', '),
             productItemSelector: productItemSelector.join(', '),
@@ -248,8 +226,6 @@ export default async function second({
             priceSelector: priceSelector.join(', '),
             priceAttribute: priceAttribute.join(', '),
             productNotAvailable: productNotAvailable.join(', '),
-            videoSelector: videoSelectors.join(', '),
-            videoAttribute: videoAttributes.join(', '),
             autoScroll,
             breadcrumb
         });
@@ -295,10 +271,10 @@ export default async function second({
                 .filter(Boolean);
 
             const imgValid = processedImgs.some(isValidImageURL);
-            if (!imgValid) {
-                console.log(`Invalid image URLs for item:`, item);
+            if(!imgValid){
+                console.log(`Invalid image URLs for item:`,item);
             }
-            const { parsedPrices, priceValid } = priceParser(item);
+            const {parsedPrices,priceValid} =priceParser(item);
 
             return {
                 ...item,
