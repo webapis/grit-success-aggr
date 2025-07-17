@@ -8,7 +8,7 @@ import isValidText from "../scrape-helpers/isValidText.js";
 import urls from '../meta/urls.json' assert { type: 'json' };
 import commonExcludedPatterns from "../selector-attibutes/commonExcludedPatterns.js";
 import paginationPostfix from "../selector-attibutes/paginationPostfix.js";
-//import productItemSelector from '../selector-attibutes/productItemSelector.js'
+import productItemSelector from '../selector-attibutes/productItemSelector.js'
 import productPageSelector from "../selector-attibutes/productPageSelector.js";
 import titleSelector from "../selector-attibutes/titleSelector.js";
 import imageSelectors from "../selector-attibutes/imageSelector.js";
@@ -64,7 +64,7 @@ export default async function second({
         }
 
         const bodyElement= await page.evaluate(() => document.body.outerHTML);
-        const productItemSelector = identifyProductContainer(bodyElement);
+        const productItemSelectorAuto = identifyProductContainer(bodyElement);
 debugger
         const data = await page.evaluate((params) => {
             function getBackgroundImageUrl(el) {
@@ -242,7 +242,7 @@ debugger
 
         }, {
             productPageSelector: productPageSelector.join(', '),
-            productItemSelector:productItemSelector.selector.replace(/\.$/, ''),
+            productItemSelector:productItemSelectorAuto.selector.replace(/\.$/, '') || productItemSelector.join(', '),
             titleSelector: titleSelector.join(', '),
             titleAttribute: titleAttribute.join(', '),
             imageSelector: imageSelectors.join(', '),
@@ -305,6 +305,10 @@ debugger
 
             return {
                 ...item,
+                matchedInfo:{
+                    ...item.matchedInfo,
+                    productItemSelectorAuto
+                },
                 price: parsedPrices,
                 img: processedImgs,
                 imgValid,

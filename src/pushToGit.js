@@ -91,7 +91,9 @@ const baseRowData = {
     'Span (min)': minutesSpan,
     'Total Pages': totalPages.count,
     'Unique Page URLs': uniquePageURLs.length,
-    'AutoScroll': siteUrls.isAutoScroll ? 'true' : 'false'
+    'AutoScroll': siteUrls.isAutoScroll ? 'true' : 'false',
+    'productItemSelectorAuto': dataWithoutError.length > 0 ? dataWithoutError[0].matchedInfo?.productItemSelectorAuto?.selector : 'N/A',
+    'productItemSelector': dataWithoutError.length > 0 ? dataWithoutError[0].matchedInfo?.matchedSelector : 'N/A',  
 };
 
 
