@@ -93,7 +93,7 @@ const baseRowData = {
     'Unique Page URLs': uniquePageURLs.length,
     'AutoScroll': siteUrls.isAutoScroll ? 'true' : 'false',
     'productItemSelectorAuto': dataWithoutError.length > 0 ? dataWithoutError[0].matchedInfo?.productItemSelectorAuto?.selector : 'N/A',
-    'productItemSelector': dataWithoutError.length > 0 ? dataWithoutError[0].matchedInfo?.matchedSelector : 'N/A',  
+    'productItemSelector': dataWithoutError.length > 0 ? dataWithoutError[0].matchedInfo?.matchedProductItemSelectorManual : 'N/A',  
 };
 
 

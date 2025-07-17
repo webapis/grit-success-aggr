@@ -65,6 +65,8 @@ export default async function second({
 
         const bodyElement= await page.evaluate(() => document.body.outerHTML);
         const productItemSelectorAuto = identifyProductContainer(bodyElement);
+
+        
 debugger
         const data = await page.evaluate((params) => {
             function getBackgroundImageUrl(el) {
@@ -202,7 +204,7 @@ debugger
                     .split(',')
                     .map(s => s.trim())
                     .find(selector => m.matches(selector));
-
+                const matchedProductItemSelectorManual = params.productItemSelectorManual;
                 try {
                     return {
                         title,
@@ -215,6 +217,7 @@ debugger
                         matchedInfo: {
                             linkSource,
                             matchedSelector,
+                            matchedProductItemSelectorManual,
                             titleSelectorMatched,
                             imgSelectorMatched,
                             videoSelectorMatched,
@@ -243,6 +246,7 @@ debugger
         }, {
             productPageSelector: productPageSelector.join(', '),
             productItemSelector:productItemSelectorAuto.selector.replace(/\.$/, '') || productItemSelector.join(', '),
+            productItemSelectorManual: productItemSelector.join(', '),
             titleSelector: titleSelector.join(', '),
             titleAttribute: titleAttribute.join(', '),
             imageSelector: imageSelectors.join(', '),
@@ -307,7 +311,8 @@ debugger
                 ...item,
                 matchedInfo:{
                     ...item.matchedInfo,
-                    productItemSelectorAuto
+                    productItemSelectorAuto,
+
                 },
                 price: parsedPrices,
                 img: processedImgs,
