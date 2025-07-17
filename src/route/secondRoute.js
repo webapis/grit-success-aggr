@@ -63,11 +63,11 @@ export default async function second({
             //  await scroller(page, 150, 5);
         }
 
-        const bodyElement= await page.evaluate(() => document.body.outerHTML);
+        const bodyElement = await page.evaluate(() => document.body.outerHTML);
         const productItemSelectorAuto = identifyProductContainer(bodyElement);
 
-        
-debugger
+
+        debugger
         const data = await page.evaluate((params) => {
             function getBackgroundImageUrl(el) {
                 const bgImage = el?.style.backgroundImage;
@@ -204,7 +204,9 @@ debugger
                     .split(',')
                     .map(s => s.trim())
                     .find(selector => m.matches(selector));
-                const matchedProductItemSelectorManual = params.productItemSelectorManual;
+                const matchedProductItemSelectorManual = params.productItemSelectorManual.split(',')
+                    .map(s => s.trim())
+                    .find(selector => m.matches(selector));
                 try {
                     return {
                         title,
@@ -245,7 +247,7 @@ debugger
 
         }, {
             productPageSelector: productPageSelector.join(', '),
-            productItemSelector:productItemSelectorAuto.selector.replace(/\.$/, '') || productItemSelector.join(', '),
+            productItemSelector: productItemSelectorAuto.selector.replace(/\.$/, '') || productItemSelector.join(', '),
             productItemSelectorManual: productItemSelector.join(', '),
             titleSelector: titleSelector.join(', '),
             titleAttribute: titleAttribute.join(', '),
@@ -309,7 +311,7 @@ debugger
 
             return {
                 ...item,
-                matchedInfo:{
+                matchedInfo: {
                     ...item.matchedInfo,
                     productItemSelectorAuto,
 
