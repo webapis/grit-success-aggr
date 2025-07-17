@@ -60,7 +60,7 @@ if (invalidItems.length > 0) {
      debugger;
 }
 debugger
-const jsonBuffer = Buffer.from(JSON.stringify(data, null, 2), 'utf-8');
+const jsonBuffer = Buffer.from(JSON.stringify(dataWithoutError.filter((f,i)=>i<5), null, 2), 'utf-8');
 const resultData = await uploadJSONToGoogleDrive({
     buffer: jsonBuffer,
     fileName: `${site}.json`,
