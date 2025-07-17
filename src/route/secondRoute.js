@@ -8,7 +8,7 @@ import isValidText from "../scrape-helpers/isValidText.js";
 import urls from '../meta/urls.json' assert { type: 'json' };
 import commonExcludedPatterns from "../selector-attibutes/commonExcludedPatterns.js";
 import paginationPostfix from "../selector-attibutes/paginationPostfix.js";
-import productItemSelector from '../selector-attibutes/productItemSelector.js'
+//import productItemSelector from '../selector-attibutes/productItemSelector.js'
 import productPageSelector from "../selector-attibutes/productPageSelector.js";
 import titleSelector from "../selector-attibutes/titleSelector.js";
 import imageSelectors from "../selector-attibutes/imageSelector.js";
@@ -24,6 +24,7 @@ import videoSelectors from "../selector-attibutes/videoSelectors.js";
 import productNotAvailable from "../selector-attibutes/productNotAvailable.js";
 import priceParser from "../scrape-helpers/priceParcer.js";
 import getNextPaginationUrls from "../scrape-helpers/getNextPaginationUrls.js";
+import { identifyProductContainer } from "../test/identifyProductContainer.js";
 dotenv.config({ silent: true });
 debugger
 const site = process.env.site;
@@ -62,7 +63,9 @@ export default async function second({
             //  await scroller(page, 150, 5);
         }
 
-
+        const bodyElement= await page.evaluate(() => document.body.outerHTML);
+        const productItemSelector = identifyProductContainer(bodyElement);
+debugger
         const data = await page.evaluate((params) => {
             function getBackgroundImageUrl(el) {
                 const bgImage = el?.style.backgroundImage;
@@ -239,7 +242,7 @@ export default async function second({
 
         }, {
             productPageSelector: productPageSelector.join(', '),
-            productItemSelector: productItemSelector.join(', '),
+            productItemSelector:productItemSelector.selector.replace(/\.$/, ''),
             titleSelector: titleSelector.join(', '),
             titleAttribute: titleAttribute.join(', '),
             imageSelector: imageSelectors.join(', '),
