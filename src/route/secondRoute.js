@@ -24,7 +24,7 @@ import videoSelectors from "../selector-attibutes/videoSelectors.js";
 import productNotAvailable from "../selector-attibutes/productNotAvailable.js";
 import priceParser from "../scrape-helpers/priceParcer.js";
 import getNextPaginationUrls from "../scrape-helpers/getNextPaginationUrls.js";
-import { identifyProductContainer } from "../test/identifyProductContainer.js";
+
 dotenv.config({ silent: true });
 debugger
 const site = process.env.site;
@@ -64,7 +64,7 @@ export default async function second({
         }
 
         const bodyElement = await page.evaluate(() => document.body.outerHTML);
-        const productItemSelectorAuto = identifyProductContainer(bodyElement);
+
 
 
         debugger
@@ -247,7 +247,7 @@ export default async function second({
 
         }, {
             productPageSelector: productPageSelector.join(', '),
-            productItemSelector: productItemSelectorAuto.selector.replace(/\.$/, '') || productItemSelector.join(', '),
+            productItemSelector: productItemSelector.join(', '),
             productItemSelectorManual: productItemSelector.join(', '),
             titleSelector: titleSelector.join(', '),
             titleAttribute: titleAttribute.join(', '),
@@ -311,11 +311,6 @@ export default async function second({
 
             return {
                 ...item,
-                matchedInfo: {
-                    ...item.matchedInfo,
-                    productItemSelectorAuto,
-
-                },
                 price: parsedPrices,
                 img: processedImgs,
                 imgValid,
