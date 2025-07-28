@@ -17,16 +17,16 @@ export default async function first({ page, addRequests }) {
     });
 
     // take screenshot and upload to google drive
-    const screenshotBuffer = await page.screenshot({ fullPage: true });
+    // const screenshotBuffer = await page.screenshot({ fullPage: true });
 
-    const uploadResult = await uploadToGoogleDrive({
-        buffer: screenshotBuffer,
-        fileName: `screenshot-${site}-${Date.now()}.png`,
-        folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-        serviceAccountCredentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')),
-    });
+    // const uploadResult = await uploadToGoogleDrive({
+    //     buffer: screenshotBuffer,
+    //     fileName: `screenshot-${site}-${Date.now()}.png`,
+    //     folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
+    //     serviceAccountCredentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')),
+    // });
 
-    console.log('📸 Screenshot uploaded:', uploadResult.webViewLink);
+    // console.log('📸 Screenshot uploaded:', uploadResult.webViewLink);
 
 
 
