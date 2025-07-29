@@ -33,6 +33,8 @@ const unsetPrice = countByField(data, 'priceisUnset', true);
 const priceScrapeError = countByField(data, 'priceScrapeError', true);
 const totalNotAvailable = countByField(data, 'productNotInStock', true);
 debugger
+
+
 const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
 
 
@@ -46,19 +48,19 @@ const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
     let jsonErrorwebViewLink= '';
 if (invalidItems.length > 0) {
 
-//     const jsonBuffer = Buffer.from(JSON.stringify(invalidItems, null, 2), 'utf-8');
-//     const result = await uploadJSONToGoogleDrive({
-//         buffer: jsonBuffer,
-//         fileName: `${site}-error.json`,
-//         mimeType: 'application/json',
-//         folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-//         serviceAccountCredentials: JSON.parse(
-//             Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
-//         ),
-//     });
-//    jsonErrorwebViewLink = result.webViewLink;
-//     console.log(`Uploaded invalid items to Google Drive: ${result.webViewLink}`);
-//      debugger;
+    const jsonBuffer = Buffer.from(JSON.stringify(invalidItems, null, 2), 'utf-8');
+    const result = await uploadJSONToGoogleDrive({
+        buffer: jsonBuffer,
+        fileName: `${site}-error.json`,
+        mimeType: 'application/json',
+        folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
+        serviceAccountCredentials: JSON.parse(
+            Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
+        ),
+    });
+   jsonErrorwebViewLink = result.webViewLink;
+    console.log(`Uploaded invalid items to Google Drive: ${result.webViewLink}`);
+     debugger;
 
 }
 debugger
@@ -92,7 +94,7 @@ const baseRowData = {
     'Product Not Available': totalNotAvailable,
     'Total Unique Objects (by link)': totalUniqueObjects.count,
     'Error Objects': dataWithError.length,
-   // "JSONERRORURL": jsonErrorwebViewLink ? jsonErrorwebViewLink : 'N/A',
+    "JSONERRORURL": jsonErrorwebViewLink ? jsonErrorwebViewLink : 'N/A',
     "JSONData":resultData ? resultData.webViewLink : 'N/A',
         'Start Time': oldestTimestamp,
     'End Time': newestTimestamp,
