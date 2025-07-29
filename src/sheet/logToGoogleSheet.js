@@ -38,6 +38,7 @@ debugger
     // Set header row if missing
     const currentHeaders = sheet.headerValues || [];
     const newHeaders = Object.keys(rowData);
+    console.log('Current Headers:----------', currentHeaders);
 debugger
     if (currentHeaders.length === 0) {
         debugger
