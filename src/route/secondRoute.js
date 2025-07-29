@@ -26,7 +26,7 @@ import priceParser from "../scrape-helpers/priceParcer.js";
 import getNextPaginationUrls from "../scrape-helpers/getNextPaginationUrls.js";
 
 dotenv.config({ silent: true });
-debugger
+
 const site = process.env.site;
 const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
 

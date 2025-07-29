@@ -8,10 +8,12 @@ import { uploadToGoogleDrive } from '../sheet/uploadToGoogleDrive.js';
 import getMainDomainPart from "../scrape-helpers/getMainDomainPart.js";
 
 dotenv.config({ silent: true });
-debugger
+
 const site = process.env.site;
 const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
-const womanBags =["kadin-canta","kadin-cuzdan","valiz-modelleri"]
+const womanBags =["kadin-canta" ,"kadin-cuzdan","valiz-modelleri"
+
+]
 export default async function first({ page, addRequests }) {
 
     await page.evaluate(() => {
@@ -91,7 +93,7 @@ export default async function first({ page, addRequests }) {
                 return filtered;
             });
 
-            debugger
+      
  
             // Filter out common excluded patterns
             const combinedExcludedPatterns = [
@@ -102,6 +104,7 @@ export default async function first({ page, addRequests }) {
                 !combinedExcludedPatterns.some(pattern => url.toLowerCase().includes(pattern))
             );
             console.log('filteredResult', filteredResult);
+            debugger;
             await addRequests(filteredResult.map(url => ({ url, label: 'second' })));
             debugger;
         } catch (error) {
