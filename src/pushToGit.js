@@ -65,7 +65,7 @@ debugger
 console.log('dataWithoutError.length',dataWithoutError.filter((f,i)=>i<5).length, dataWithoutError.filter((f,i)=>i<5));
 console.log('site', site);
 const jsonBuffer = Buffer.from(JSON.stringify(dataWithoutError.filter((f,i)=>i<5), null, 2), 'utf-8');
-try {
+
     const resultData = await uploadJSONToGoogleDrive({
     buffer: jsonBuffer,
     fileName: `${site}.json`,
@@ -75,11 +75,10 @@ try {
         Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
     ),
 });
-} catch (error) {
-    console.error('Error uploading JSON to Google Drive:', error);
-}
-
 console.log('✅ JSON file uploaded to Google Drive:', resultData.webViewLink);
+
+
+
 const baseRowData = {
     Site: site,
     'Total Objects': dataWithoutError.length,
@@ -94,7 +93,7 @@ const baseRowData = {
     'Total Unique Objects (by link)': totalUniqueObjects.count,
     'Error Objects': dataWithError.length,
    // "JSONERRORURL": jsonErrorwebViewLink ? jsonErrorwebViewLink : 'N/A',
-   // "JSONData":resultData ? resultData.webViewLink : 'N/A',
+    "JSONData":resultData ? resultData.webViewLink : 'N/A',
         'Start Time': oldestTimestamp,
     'End Time': newestTimestamp,
     'Span (min)': minutesSpan,
