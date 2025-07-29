@@ -45,31 +45,33 @@ const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
     );
     let jsonErrorwebViewLink= '';
 if (invalidItems.length > 0) {
-    const jsonBuffer = Buffer.from(JSON.stringify(invalidItems, null, 2), 'utf-8');
-    const result = await uploadJSONToGoogleDrive({
-        buffer: jsonBuffer,
-        fileName: `${site}-error.json`,
-        mimeType: 'application/json',
-        folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-        serviceAccountCredentials: JSON.parse(
-            Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
-        ),
-    });
-   jsonErrorwebViewLink = result.webViewLink;
-    console.log(`Uploaded invalid items to Google Drive: ${result.webViewLink}`);
-     debugger;
+
+//     const jsonBuffer = Buffer.from(JSON.stringify(invalidItems, null, 2), 'utf-8');
+//     const result = await uploadJSONToGoogleDrive({
+//         buffer: jsonBuffer,
+//         fileName: `${site}-error.json`,
+//         mimeType: 'application/json',
+//         folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
+//         serviceAccountCredentials: JSON.parse(
+//             Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
+//         ),
+//     });
+//    jsonErrorwebViewLink = result.webViewLink;
+//     console.log(`Uploaded invalid items to Google Drive: ${result.webViewLink}`);
+//      debugger;
+
 }
 debugger
-const jsonBuffer = Buffer.from(JSON.stringify(dataWithoutError.filter((f,i)=>i<5), null, 2), 'utf-8');
-const resultData = await uploadJSONToGoogleDrive({
-    buffer: jsonBuffer,
-    fileName: `${site}.json`,
-    mimeType: 'application/json',
-    folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-    serviceAccountCredentials: JSON.parse(
-        Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
-    ),
-});
+// const jsonBuffer = Buffer.from(JSON.stringify(dataWithoutError.filter((f,i)=>i<5), null, 2), 'utf-8');
+// const resultData = await uploadJSONToGoogleDrive({
+//     buffer: jsonBuffer,
+//     fileName: `${site}.json`,
+//     mimeType: 'application/json',
+//     folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
+//     serviceAccountCredentials: JSON.parse(
+//         Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
+//     ),
+// });
 console.log('✅ JSON file uploaded to Google Drive:', resultData.webViewLink);
 const baseRowData = {
     Site: site,
