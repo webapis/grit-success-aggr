@@ -63,9 +63,6 @@ export default async function second({
             //  await scroller(page, 150, 5);
         }
 
-        const bodyElement = await page.evaluate(() => document.body.outerHTML);
-
-
 
         debugger
         const data = await page.evaluate((params) => {

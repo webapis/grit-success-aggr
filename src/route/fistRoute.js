@@ -6,10 +6,12 @@ import urls from '../meta/urls.json' assert { type: 'json' };
 import commonExcludedPatterns from "../selector-attibutes/commonExcludedPatterns.js";
 import { uploadToGoogleDrive } from '../sheet/uploadToGoogleDrive.js';
 import getMainDomainPart from "../scrape-helpers/getMainDomainPart.js";
+
 dotenv.config({ silent: true });
 debugger
 const site = process.env.site;
 const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
+const womanBags =["kadin-canta","kadin-cuzdan","valiz-modelleri"]
 export default async function first({ page, addRequests }) {
 
     await page.evaluate(() => {
@@ -49,7 +51,7 @@ export default async function first({ page, addRequests }) {
             }
 
             console.log('navigationUrls', result);
-            const mappedUrls = result.filter(url => typeof url === 'string' && /^https?:\/\//.test(url)).map(url => ({ url, label: 'second' }));
+            const mappedUrls = result.filter(url => typeof url === 'string' && /^https?:\/\//.test(url) && womanBags.some(keyword => url.includes(keyword))).map(url => ({ url, label: 'second' }));
 
             await addRequests(mappedUrls);
 
@@ -96,7 +98,7 @@ export default async function first({ page, addRequests }) {
                 ...commonExcludedPatterns,
                 ...(siteUrls?.excludeUrlPatterns || []),
             ];
-            const filteredResult = result.filter(url =>
+            const filteredResult = result.filter((url)=>womanBags.some(keyword => url.includes(keyword))).filter(url =>
                 !combinedExcludedPatterns.some(pattern => url.toLowerCase().includes(pattern))
             );
             console.log('filteredResult', filteredResult);

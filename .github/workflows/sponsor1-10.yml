@@ -29,6 +29,7 @@ jobs:
     uses: ./.github/workflows/reusableProdPuppeteer.yml
     with:
       site: ${{ matrix.site }}
+      category: woman-bags
     secrets: inherit
 
 # name: sponsor1-10
