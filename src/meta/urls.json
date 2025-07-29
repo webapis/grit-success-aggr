@@ -64,7 +64,7 @@
         "urls": [
             "https://www.elleshoes.com/"
         ],
-        "isAutoScroll": false,
+        "isAutoScroll": true,
         "funcPageSelector": [
             ".UrunAdet",
             48
