@@ -92,7 +92,7 @@ export default async function first({ page, addRequests }) {
             });
 
             debugger
-            console.log('enqueueLinks', result);
+ 
             // Filter out common excluded patterns
             const combinedExcludedPatterns = [
                 ...commonExcludedPatterns,
