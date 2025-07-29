@@ -11,7 +11,7 @@ dotenv.config({ silent: true });
 
 const site = process.env.site;
 const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
-const womanBags =["kadin-canta" ,"kadin-cuzdan","valiz-modelleri","seyahat","canta-155",
+const womanBags = ["kadin-canta", "kadin-cuzdan", "valiz-modelleri", "seyahat", "canta-155", "canta-aksesuar", "canta"
 
 ]
 export default async function first({ page, addRequests }) {
@@ -93,14 +93,14 @@ export default async function first({ page, addRequests }) {
                 return filtered;
             });
 
-      
- 
+
+
             // Filter out common excluded patterns
             const combinedExcludedPatterns = [
                 ...commonExcludedPatterns,
                 ...(siteUrls?.excludeUrlPatterns || []),
             ];
-            const filteredResult = result.filter((url)=>womanBags.some(keyword => url.includes(keyword))).filter(url =>
+            const filteredResult = result.filter((url) => womanBags.some(keyword => url.includes(keyword))).filter(url =>
                 !combinedExcludedPatterns.some(pattern => url.toLowerCase().includes(pattern))
             );
             console.log('filteredResult', filteredResult);
