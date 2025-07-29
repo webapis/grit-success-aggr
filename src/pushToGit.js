@@ -62,7 +62,7 @@ if (invalidItems.length > 0) {
 
 }
 debugger
-console.log('dataWithoutError.length', dataWithoutError.length);
+console.log('dataWithoutError.length',dataWithoutError.filter((f,i)=>i<5).length, dataWithoutError.filter((f,i)=>i<5));
 console.log('site', site);
 const jsonBuffer = Buffer.from(JSON.stringify(dataWithoutError.filter((f,i)=>i<5), null, 2), 'utf-8');
 try {
