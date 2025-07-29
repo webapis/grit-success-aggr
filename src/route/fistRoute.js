@@ -11,7 +11,7 @@ dotenv.config({ silent: true });
 
 const site = process.env.site;
 const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
-const womanBags =["kadin-canta" ,"kadin-cuzdan","valiz-modelleri","seyahat","kadin-aksesuar"
+const womanBags =["kadin-canta" ,"kadin-cuzdan","valiz-modelleri","seyahat","canta-155",
 
 ]
 export default async function first({ page, addRequests }) {
