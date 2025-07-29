@@ -72,7 +72,7 @@ debugger
 //         Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
 //     ),
 // });
-console.log('✅ JSON file uploaded to Google Drive:', resultData.webViewLink);
+//console.log('✅ JSON file uploaded to Google Drive:', resultData.webViewLink);
 const baseRowData = {
     Site: site,
     'Total Objects': dataWithoutError.length,
@@ -86,8 +86,8 @@ const baseRowData = {
     'Product Not Available': totalNotAvailable,
     'Total Unique Objects (by link)': totalUniqueObjects.count,
     'Error Objects': dataWithError.length,
-    "JSONERRORURL": jsonErrorwebViewLink ? jsonErrorwebViewLink : 'N/A',
-    "JSONData":resultData ? resultData.webViewLink : 'N/A',
+   // "JSONERRORURL": jsonErrorwebViewLink ? jsonErrorwebViewLink : 'N/A',
+   // "JSONData":resultData ? resultData.webViewLink : 'N/A',
         'Start Time': oldestTimestamp,
     'End Time': newestTimestamp,
     'Span (min)': minutesSpan,
