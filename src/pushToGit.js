@@ -62,17 +62,17 @@ if (invalidItems.length > 0) {
 
 }
 debugger
-// const jsonBuffer = Buffer.from(JSON.stringify(dataWithoutError.filter((f,i)=>i<5), null, 2), 'utf-8');
-// const resultData = await uploadJSONToGoogleDrive({
-//     buffer: jsonBuffer,
-//     fileName: `${site}.json`,
-//     mimeType: 'application/json',
-//     folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-//     serviceAccountCredentials: JSON.parse(
-//         Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
-//     ),
-// });
-//console.log('✅ JSON file uploaded to Google Drive:', resultData.webViewLink);
+const jsonBuffer = Buffer.from(JSON.stringify(dataWithoutError.filter((f,i)=>i<5), null, 2), 'utf-8');
+const resultData = await uploadJSONToGoogleDrive({
+    buffer: jsonBuffer,
+    fileName: `${site}.json`,
+    mimeType: 'application/json',
+    folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
+    serviceAccountCredentials: JSON.parse(
+        Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
+    ),
+});
+console.log('✅ JSON file uploaded to Google Drive:', resultData.webViewLink);
 const baseRowData = {
     Site: site,
     'Total Objects': dataWithoutError.length,
