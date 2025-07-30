@@ -27,6 +27,14 @@ jobs:
       - name: Install dependencies
         run: npm install googleapis
       
+      - name: Create package.json for CommonJS
+        run: |
+          cat > package.json << 'EOF'
+          {
+            "type": "commonjs"
+          }
+          EOF
+      
       - name: Fetch sites from Google Sheets
         id: set-sites
         run: |
@@ -47,10 +55,10 @@ jobs:
               const sheets = google.sheets({ version: 'v4', auth });
               
               // Fetch data from the sheet
-              // Adjust the range according to your sheet structure
+              // Using A1:A to get all data in column A
               const response = await sheets.spreadsheets.values.get({
                 spreadsheetId: process.env.GOOGLE_SHEET_ID,
-                range: 'wbags!A1:A', // Adjust this range as needed
+                range: 'wbags!A1:A', // Updated to match your sheet name
               });
               
               const rows = response.data.values;
@@ -77,6 +85,9 @@ jobs:
             const sitesArray = JSON.stringify(sites);
             console.log('Sites fetched:', sitesArray);
             console.log(`sites=${sitesArray}`);
+          }).catch(error => {
+            console.error('Error:', error);
+            process.exit(1);
           });
           EOF
           
