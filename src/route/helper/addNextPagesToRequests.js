@@ -1,24 +1,40 @@
 import dotenv from "dotenv";
-import urls from '../meta/urls.json' assert { type: 'json' };
-import commonExcludedPatterns from "../selector-attibutes/commonExcludedPatterns.js";
-import paginationPostfix from "../selector-attibutes/paginationPostfix.js";
-import getMainDomainPart from "../scrape-helpers/getMainDomainPart.js";
-import getNextPaginationUrls from "../scrape-helpers/getNextPaginationUrls.js";
-
+import urls from '../../meta/urls.json' assert { type: 'json' };
+import commonExcludedPatterns from "../../selector-attibutes/commonExcludedPatterns.js";
+import paginationPostfix from "../../selector-attibutes/paginationPostfix.js";
+import getMainDomainPart from "../../scrape-helpers/getMainDomainPart.js";
+import getNextPaginationUrls from "../../scrape-helpers/getNextPaginationUrls.js";
+import productPageSelector from "../../selector-attibutes/productPageSelector.js";
+import scroller, { autoScroll } from "../../scrape-helpers/scroller.js";
 dotenv.config({ silent: true });
 
 const site = process.env.site;
 const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
 
-
-
-export default async function addNextPagesToRequests({ page }) {
+export default async function addNextPagesToRequests({ page, addRequests }) {
     //next pages
+
+    const isAutoScroll = siteUrls?.isAutoScroll || false;
+    const productItemsCount = await page.$$eval(productPageSelector.join(', '), elements => elements.length);
+    if (productItemsCount === 0) {
+        console.log('No product items found on the page');
+        return [];
+    }
+    if (isAutoScroll) {
+        console.log('autoscrolling')
+        await autoScroll(page, 150)
+    } else {
+        //  await scroller(page, 150, 5);
+    }
+    const url = await page.url();
+
+
     if (
         siteUrls.funcPageSelector &&
         url.length > 0 &&
         paginationPostfix.every(sub => !url.includes(sub))
     ) {
+
         const foundpaginationPostfix = paginationPostfix.find(sub => !url.includes(sub))
         debugger
         const nextPages = await getNextPaginationUrls(page, url, siteUrls.funcPageSelector, foundpaginationPostfix);
