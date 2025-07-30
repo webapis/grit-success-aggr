@@ -2,20 +2,14 @@
 
 
 import dotenv from "dotenv";
-import urls from '../meta/urls.json' assert { type: 'json' };
+
 import { uploadToGoogleDrive } from '../sheet/uploadToGoogleDrive.js';
-import getMainDomainPart from "../scrape-helpers/getMainDomainPart.js";
+
 import scrapeData from "./helper/scrapeData.js";
 import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
 import addInitialPagesToRequests from "./helper/addInitialPagesToRequests.js";
 dotenv.config({ silent: true });
 
-const site = process.env.site;
-const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
-const womanBags = ["kadin-canta",
-    //  "kadin-cuzdan", "valiz-modelleri", "seyahat", "canta-155", "canta-aksesuar", "canta","bags","aksesuar"
-
-]
 export default async function first({ page, addRequests }) {
 
     await page.evaluate(() => {
