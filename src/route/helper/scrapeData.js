@@ -18,25 +18,16 @@ import videoSelectors from "../../selector-attibutes/videoSelectors.js";
 import productNotAvailable from "../../selector-attibutes/productNotAvailable.js";
 import priceParser from "../../scrape-helpers/priceParcer.js";
 import getMainDomainPart from "../../scrape-helpers/getMainDomainPart.js";
-import scroller, { autoScroll } from "../../scrape-helpers/scroller.js";
 import urls from '../../meta/urls.json' assert { type: 'json' };
+import continueIfProductPage from "./continueIfProductPage.js";
 dotenv.config({ silent: true });
 
 export default async function scrapeData({ page }) {
     const site = process.env.site;
     const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
-    const isAutoScroll = siteUrls?.isAutoScroll || false;
-    const productItemsCount = await page.$$eval(productPageSelector.join(', '), elements => elements.length);
-    if (productItemsCount === 0) {
-        console.log('No product items found on the page');
-        return [];
-    }
-    if (isAutoScroll) {
-        console.log('autoscrolling')
-        await autoScroll(page, 150)
-    } else {
-        //  await scroller(page, 150, 5);
-    }
+
+    
+    await continueIfProductPage({page})
 
     const data = await page.evaluate((params) => {
 

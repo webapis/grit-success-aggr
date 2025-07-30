@@ -4,8 +4,7 @@ import commonExcludedPatterns from "../../selector-attibutes/commonExcludedPatte
 import paginationPostfix from "../../selector-attibutes/paginationPostfix.js";
 import getMainDomainPart from "../../scrape-helpers/getMainDomainPart.js";
 import getNextPaginationUrls from "../../scrape-helpers/getNextPaginationUrls.js";
-import productPageSelector from "../../selector-attibutes/productPageSelector.js";
-import scroller, { autoScroll } from "../../scrape-helpers/scroller.js";
+import continueIfProductPage from "./continueIfProductPage.js";
 dotenv.config({ silent: true });
 
 const site = process.env.site;
@@ -14,18 +13,9 @@ const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
 export default async function addNextPagesToRequests({ page, addRequests }) {
     //next pages
 
-    const isAutoScroll = siteUrls?.isAutoScroll || false;
-    const productItemsCount = await page.$$eval(productPageSelector.join(', '), elements => elements.length);
-    if (productItemsCount === 0) {
-        console.log('No product items found on the page');
-        return [];
-    }
-    if (isAutoScroll) {
-        console.log('autoscrolling')
-        await autoScroll(page, 150)
-    } else {
-        //  await scroller(page, 150, 5);
-    }
+    await continueIfProductPage({ page })
+
+
     const url = await page.url();
 
 
