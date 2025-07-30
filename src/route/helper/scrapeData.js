@@ -26,8 +26,8 @@ export default async function scrapeData({ page }) {
     const site = process.env.site;
     const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site);
 
-    await continueIfProductPage({ page });
-
+    const shouldContinue = await continueIfProductPage({ page });
+    if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
     const data = await page.evaluate((params) => {
         const pageTitle = document.title;
         const pageURL = document.URL;
