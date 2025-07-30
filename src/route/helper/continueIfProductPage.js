@@ -16,10 +16,10 @@ export default async function continueIfProductPage({ page }) {
     const isAutoScroll = siteUrls?.isAutoScroll || false;
     const waitForSeconds = siteUrls?.waitForSeconds || 0
     const productItemsCount = await page.$$eval(productPageSelector.join(', '), elements => elements.length);
-    if (productItemsCount === 0) {
-        console.log('No product items found on the page');
-        return [];
-    }
+if (!productItemsCount || productItemsCount <= 0) {
+    console.log('No product items found on the page');
+    return [];
+}
 
     if (waitForSeconds > 0) {
         await page.evaluate(async (seconds) => {
