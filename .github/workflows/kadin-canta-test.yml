@@ -1,4 +1,4 @@
-name: kadin-canta-test
+name: kadin-canta
 on:
    workflow_dispatch:  # Allows manual triggering
    schedule:
@@ -43,7 +43,7 @@ jobs:
           
           async function fetchSites() {
             try {
-              // Debug: Check if environment variables exist
+              // Check if environment variables exist
               if (!process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS) {
                 throw new Error('GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable is not set');
               }
@@ -52,17 +52,12 @@ jobs:
                 throw new Error('GOOGLE_SHEET_ID environment variable is not set');
               }
               
-              console.log('Credentials (base64) length:', process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS.length);
-              
               // Decode base64 credentials
               let decodedCredentials;
               try {
                 decodedCredentials = Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf8');
-                console.log('Decoded credentials length:', decodedCredentials.length);
-                console.log('First 50 chars of decoded:', decodedCredentials.substring(0, 50));
               } catch (decodeError) {
-                console.error('Base64 Decode Error:', decodeError.message);
-                throw new Error('Failed to decode base64 GOOGLE_SERVICE_ACCOUNT_CREDENTIALS');
+                throw new Error('Failed to decode base64 GOOGLE_SERVICE_ACCOUNT_CREDENTIALS: ' + decodeError.message);
               }
               
               // Parse the service account credentials
@@ -70,9 +65,7 @@ jobs:
               try {
                 credentials = JSON.parse(decodedCredentials);
               } catch (jsonError) {
-                console.error('JSON Parse Error:', jsonError.message);
-                console.error('Invalid JSON content:', decodedCredentials.substring(0, 100));
-                throw new Error('Failed to parse decoded credentials as JSON');
+                throw new Error('Failed to parse decoded credentials as JSON: ' + jsonError.message);
               }
               
               // Create auth client
@@ -84,9 +77,6 @@ jobs:
               const sheets = google.sheets({ version: 'v4', auth });
               
               // Fetch data from the sheet
-              console.log('Fetching data from sheet ID:', process.env.GOOGLE_SHEET_ID);
-              console.log('Using range: wbags!A1:A');
-              
               const response = await sheets.spreadsheets.values.get({
                 spreadsheetId: process.env.GOOGLE_SHEET_ID,
                 range: 'wbags!A1:A',
@@ -94,11 +84,8 @@ jobs:
               
               const rows = response.data.values;
               if (!rows || rows.length === 0) {
-                console.log('No data found.');
                 return [];
               }
-              
-              console.log('Raw data from sheet:', rows);
               
               // Extract site names (assuming they are in the first column)
               // Filter out empty cells and header if exists
@@ -107,21 +94,19 @@ jobs:
                 .filter(site => site && site.trim() !== '' && site.toLowerCase() !== 'site')
                 .map(site => site.trim());
               
-              console.log('Processed sites:', sites);
               return sites;
             } catch (error) {
               console.error('Error fetching data from Google Sheets:', error.message);
-              console.error('Full error:', error);
               process.exit(1);
             }
           }
           
           fetchSites().then(sites => {
             const sitesArray = JSON.stringify(sites);
-            console.log('Final sites array:', sitesArray);
+            // Only output the required format for GitHub Actions
             console.log(`sites=${sitesArray}`);
           }).catch(error => {
-            console.error('Promise Error:', error);
+            console.error('Promise Error:', error.message);
             process.exit(1);
           });
           EOF
