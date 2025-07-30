@@ -221,7 +221,8 @@
     },
     {
         "urls": [
-            "https://gustoeshop.com/"
+            "https://gustoeshop.com/canta",
+            "https://gustoeshop.com/cuzdan"
         ],
         "schedule": "0 0 * * 4",
         "isAutoScroll": true,
