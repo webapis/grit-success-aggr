@@ -16,31 +16,23 @@ export default async function first({ page, addRequests }) {
         return new Promise(resolve => setTimeout(resolve, 10000));
     });
 
-    // take screenshot and upload to google drive
-    // const screenshotBuffer = await page.screenshot({ fullPage: true });
-
-    // const uploadResult = await uploadToGoogleDrive({
-    //     buffer: screenshotBuffer,
-    //     fileName: `screenshot-${site}-${Date.now()}.png`,
-    //     folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-    //     serviceAccountCredentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')),
-    // });
-
-    // console.log('📸 Screenshot uploaded:', uploadResult.webViewLink);
-
-
-
     console.log('inside first route')
     const initialPages = await addInitialPagesToRequests({ page, addRequests });
     if (initialPages?.length > 0) {
         await addNextPagesToRequests({ page, addRequests });
         return await scrapeData({ page })
     } else {
+
+        //take screenshot if initial pages could not be retrieved.
+        const screenshotBuffer = await page.screenshot({ fullPage: true });
+
+        const uploadResult = await uploadToGoogleDrive({
+            buffer: screenshotBuffer,
+            fileName: `screenshot-${site}-${Date.now()}.png`,
+            folderId: process.env.GOOGLE_DRIVE_FOLDER_ID_SNAPSHOT,
+            serviceAccountCredentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')),
+        });
+        console.log('📸 Screenshot uploaded:', uploadResult.webViewLink);
         return []
     }
-
-
-
-
-
 }
