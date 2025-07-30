@@ -31,12 +31,16 @@ export default async function first({ page, addRequests }) {
 
 
     console.log('inside first route')
-    await addInitialPagesToRequests({ page, addRequests });
-    await addNextPagesToRequests({ page, addRequests });
+    const initialPages = await addInitialPagesToRequests({ page, addRequests });
+    if (initialPages?.length > 0) {
+        await addNextPagesToRequests({ page, addRequests });
+        return await scrapeData({ page })
+    } else {
+        return []
+    }
 
-    const data = await scrapeData({ page })
 
-    return data
+
 
 
 }

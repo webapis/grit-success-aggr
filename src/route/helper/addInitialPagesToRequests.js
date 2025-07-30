@@ -83,9 +83,14 @@ export default async function addInitialPagesToRequests({ page, addRequests }) {
             console.log('filteredResult', filteredResult);
             debugger;
             await addRequests(filteredResult.map(url => ({ url, label: 'second' })));
+
+            return filteredResult
             debugger;
         } catch (error) {
-            debugger;
+
+            console.log(error)
+            return []
+
         }
 
     }
