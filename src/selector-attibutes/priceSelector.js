@@ -1,9 +1,10 @@
 export default [
     '.mainFiyat .mainFiyat2',
     '.product-item__info-price',
-    '.base-price.campaing-base-price',
+   // '.base-price.campaing-base-price', defacto errored
+    '.second-line .base-price',//defacto
+    '.first-line .base-price',//defacto
     '.base-price.lined-base-price',
-    '.first-line .base-price',
     '.product__price.-actual.h4',
     '.product__price.h5.-label.-old.-size',
     '.discountPrice .discountPriceSpan',
