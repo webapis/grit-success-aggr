@@ -230,7 +230,8 @@
     },
     {
         "urls": [
-            "https://www.ipekyol.com.tr/"
+            "https://www.ipekyol.com.tr/",
+            "https://www.ipekyol.com.tr/aksesuar/canta-cuzdan-modelleri"
         ],
         "excludeUrlPatterns": [
             "**giyim-modelleri**"
