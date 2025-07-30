@@ -1,0 +1,94 @@
+name: kadin-canta-test
+on:
+   workflow_dispatch:  # Allows manual triggering
+   schedule:
+     - cron: '0 5 * * 1'  # Runs at 5:00 AM UTC on Monday 
+    #  - cron: '0 14 * * *'  # Runs at 2:00 PM UTC daily
+env:
+  MONGODB_URL: ${{secrets.MONGODB_URL}}
+  GH_TOKEN: ${{secrets.GH_TOKEN}}
+  GOOGLE_SERVICE_ACCOUNT_CREDENTIALS: ${{secrets.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS}}
+  GOOGLE_SHEET_ID: ${{secrets.GOOGLE_SHEET_ID}}
+
+jobs:
+  prepare_matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      sites: ${{ steps.set-sites.outputs.sites }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm install googleapis
+      
+      - name: Fetch sites from Google Sheets
+        id: set-sites
+        run: |
+          cat > fetch_sites.js << 'EOF'
+          const { google } = require('googleapis');
+          
+          async function fetchSites() {
+            try {
+              // Parse the service account credentials
+              const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS);
+              
+              // Create auth client
+              const auth = new google.auth.GoogleAuth({
+                credentials: credentials,
+                scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+              });
+              
+              const sheets = google.sheets({ version: 'v4', auth });
+              
+              // Fetch data from the sheet
+              // Adjust the range according to your sheet structure
+              const response = await sheets.spreadsheets.values.get({
+                spreadsheetId: process.env.GOOGLE_SHEET_ID,
+                range: 'wbags!A1:A', // Adjust this range as needed
+              });
+              
+              const rows = response.data.values;
+              if (!rows || rows.length === 0) {
+                console.log('No data found.');
+                return [];
+              }
+              
+              // Extract site names (assuming they are in the first column)
+              // Filter out empty cells and header if exists
+              const sites = rows
+                .flat()
+                .filter(site => site && site.trim() !== '' && site.toLowerCase() !== 'site')
+                .map(site => site.trim());
+              
+              return sites;
+            } catch (error) {
+              console.error('Error fetching data from Google Sheets:', error);
+              process.exit(1);
+            }
+          }
+          
+          fetchSites().then(sites => {
+            const sitesArray = JSON.stringify(sites);
+            console.log('Sites fetched:', sitesArray);
+            console.log(`sites=${sitesArray}`);
+          });
+          EOF
+          
+          node fetch_sites.js >> $GITHUB_OUTPUT
+
+  dizitv_job:
+    needs: prepare_matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        site: ${{ fromJSON(needs.prepare_matrix.outputs.sites) }}
+    uses: ./.github/workflows/reusableProdPuppeteer.yml
+    with:
+      site: ${{ matrix.site }}
+    secrets: inherit

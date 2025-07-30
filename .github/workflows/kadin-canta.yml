@@ -28,7 +28,8 @@ jobs:
             "lovemybody",
             "beautyomelette",
             "birelin",
-            "gustoeshop"
+            "gustoeshop",
+            "ipekyol"
           ]')
           echo "sites=$SITES_ARRAY" >> $GITHUB_OUTPUT
 
