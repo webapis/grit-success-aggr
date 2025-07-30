@@ -17,7 +17,19 @@ jobs:
     steps:
       - id: set-sites
         run: |
-          SITES_ARRAY='["koton", "defacto","desa","divarese","elleshoes","manuatelier","bsl","lovemybody","beautyomelette","birelin","gustoeshop"]'
+          SITES_ARRAY='[
+           "koton",
+           "defacto",
+           "desa",
+           "divarese",
+           "elleshoes",
+           "manuatelier",
+           "bsl",
+           "lovemybody",
+           "beautyomelette",
+           "birelin",
+           "gustoeshop"
+           ]'
           echo "sites=$SITES_ARRAY" >> $GITHUB_OUTPUT
 
   dizitv_job:
