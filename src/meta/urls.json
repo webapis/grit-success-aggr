@@ -15,7 +15,7 @@
     },
     {
         "urls": [
-            "https://www.defacto.com.tr/kadin-cantaa"
+            "https://www.defacto.com.tr/kadin-cnantaa"
         ],
         "funcPageSelector": [
             ".catalog__meta--product-count span",
