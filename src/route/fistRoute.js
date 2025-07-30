@@ -2,9 +2,7 @@
 
 
 import dotenv from "dotenv";
-
 import { uploadToGoogleDrive } from '../sheet/uploadToGoogleDrive.js';
-
 import scrapeData from "./helper/scrapeData.js";
 import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
 import addInitialPagesToRequests from "./helper/addInitialPagesToRequests.js";
