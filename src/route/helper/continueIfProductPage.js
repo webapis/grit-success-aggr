@@ -16,21 +16,25 @@ export default async function continueIfProductPage({ page }) {
     const isAutoScroll = siteUrls?.isAutoScroll || false;
     const waitForSeconds = siteUrls?.waitForSeconds || 0
     const productItemsCount = await page.$$eval(productPageSelector.join(', '), elements => elements.length);
-    if (productItemsCount === 0) {
-        console.log('No product items found on the page');
-        return [];
-    }
+    if (productItemsCount > 0) {
 
-    if (waitForSeconds > 0) {
-        await page.evaluate(async (seconds) => {
-            await new Promise(resolve => setTimeout(resolve, seconds * 1)); // Wait for specified seconds
-        }, waitForSeconds);
-    }
+        if (waitForSeconds > 0) {
+            await page.evaluate(async (seconds) => {
+                await new Promise(resolve => setTimeout(resolve, seconds * 1)); // Wait for specified seconds
+            }, waitForSeconds);
+        }
 
-    if (isAutoScroll) {
-        console.log('autoscrolling')
-        await autoScroll(page, 150)
+        if (isAutoScroll) {
+            console.log('autoscrolling')
+            await autoScroll(page, 150)
+        } else {
+            //  await scroller(page, 150, 5);
+        }
+        return true;
     } else {
-        //  await scroller(page, 150, 5);
+        console.log('No product items found on the page');
+        return false;
     }
+
+
 }

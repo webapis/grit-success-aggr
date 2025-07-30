@@ -1,8 +1,9 @@
+
 import dotenv from "dotenv";
 import isValidImageURL from "../../scrape-helpers/isValidImageURL.js";
 import isValidURL from "../../scrape-helpers/isValidURL.js";
 import isValidText from "../../scrape-helpers/isValidText.js";
-import productItemSelector from '../../selector-attibutes/productItemSelector.js';
+import productItemSelector from '../../selector-attibutes/productItemSelector.js'
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 import titleSelector from "../../selector-attibutes/titleSelector.js";
 import imageSelectors from "../../selector-attibutes/imageSelector.js";
@@ -19,19 +20,22 @@ import priceParser from "../../scrape-helpers/priceParcer.js";
 import getMainDomainPart from "../../scrape-helpers/getMainDomainPart.js";
 import urls from '../../meta/urls.json' assert { type: 'json' };
 import continueIfProductPage from "./continueIfProductPage.js";
-
 dotenv.config({ silent: true });
 
 export default async function scrapeData({ page }) {
     const site = process.env.site;
-    const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site);
+    const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
 
-    const shouldContinue = await continueIfProductPage({ page });
-    if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
+    
+    await continueIfProductPage({page})
+
     const data = await page.evaluate((params) => {
+
+
         const pageTitle = document.title;
         const pageURL = document.URL;
 
+        // Find which selector matched from productPageSelector list
         const pageSelectors = params.productPageSelector.split(',').map(s => s.trim());
         let matchedDocument = null;
         let matchedPageSelector = null;
@@ -58,9 +62,11 @@ export default async function scrapeData({ page }) {
             const titleElement = titleSelectors.map(sel => m.querySelector(sel)).find(Boolean);
             const linkElement = linkSelectors.map(sel => m.querySelector(sel)).find(Boolean);
 
+            // Get all image elements per product
             const imgElements = imageSelectors.flatMap(sel => Array.from(m.querySelectorAll(sel)));
             const productNotInStock = m.querySelector(params.productNotAvailable) ? true : false;
 
+            // Extract image URLs from attributes
             const imgUrls = imgElements.flatMap(el =>
                 params.imageAttributes
                     .split(',')
@@ -68,6 +74,7 @@ export default async function scrapeData({ page }) {
                     .filter(Boolean)
             );
 
+            // Extract image URLs from background-image
             function getBackgroundImageUrl(el) {
                 const bgImage = el?.style.backgroundImage;
                 const urlMatch = bgImage?.match(/url\(["']?(.*?)["']?\)/);
@@ -96,19 +103,16 @@ export default async function scrapeData({ page }) {
                     .map(attr => titleElement[attr?.replaceAll(" ", "")])
                     .find(Boolean);
 
+            // MULTIPLE PRICE EXTRACTION
             const priceInfo = [];
-            const priceSelectorsMatched = new Set();
             const matchedPriceElements = priceSelectors
                 .flatMap(sel => Array.from(m.querySelectorAll(sel)))
                 .filter(Boolean);
 
             for (const priceEl of matchedPriceElements) {
                 const matchedSelector = priceSelectors.find(sel => priceEl.matches(sel));
-                if (matchedSelector) {
-                    priceSelectorsMatched.add(matchedSelector);
-                }
-
                 const priceAttrList = params.priceAttribute.split(',').map(attr => attr.trim());
+
                 for (const attr of priceAttrList) {
                     let value = priceEl[attr]?.trim();
                     if (value) {
@@ -117,11 +121,12 @@ export default async function scrapeData({ page }) {
                             selector: matchedSelector,
                             attribute: attr
                         });
-                        break;
+                        break; // stop at first valid attribute per element
                     }
                 }
             }
 
+            // 🎥 VIDEO EXTRACTION
             const videoElements = videoSelectors.flatMap(sel => Array.from(m.querySelectorAll(sel)));
             const videoUrls = videoElements
                 .flatMap(el =>
@@ -136,6 +141,7 @@ export default async function scrapeData({ page }) {
                 ? videoSelectors.find(sel => firstVideoElement.matches(sel))
                 : null;
 
+            // LINK RESOLUTION
             let link = null;
             let linkSource = null;
 
@@ -158,7 +164,6 @@ export default async function scrapeData({ page }) {
             const matchedProductItemSelectorManual = params.productItemSelectorManual.split(',')
                 .map(s => s.trim())
                 .find(selector => m.matches(selector));
-
             try {
                 return {
                     title,
@@ -175,7 +180,6 @@ export default async function scrapeData({ page }) {
                         titleSelectorMatched,
                         imgSelectorMatched,
                         videoSelectorMatched,
-                        priceSelectorsMatched: Array.from(priceSelectorsMatched), // ✅ ALL matched selectors
                         usedFallbackDocument,
                         matchedPageSelector
                     },
@@ -214,6 +218,8 @@ export default async function scrapeData({ page }) {
         videoAttribute: videoAttributes.join(', ')
     });
 
+
+
     const validData = data.map(item => {
         const processedImgs = (item.img || [])
             .map(m => getMiddleImageUrl(m, siteUrls.imageCDN || siteUrls.urls[0]))
@@ -234,8 +240,9 @@ export default async function scrapeData({ page }) {
             titleValid: isValidText(item.title),
             pageTitleValid: isValidText(item.pageTitle),
             priceValid: item.productNotInStock ? true : priceValid,
+
         };
     });
 
-    return validData;
+    return validData
 }

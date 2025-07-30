@@ -13,7 +13,8 @@ const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
 export default async function addNextPagesToRequests({ page, addRequests }) {
     //next pages
 
-    await continueIfProductPage({ page })
+const shouldContinue = await continueIfProductPage({ page });
+if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
 
 
     const url = await page.url();
