@@ -1,4 +1,17 @@
-[
+[    {
+        "urls": [
+            "https://www.example.com/"
+        ],
+        "funcPageSelector": [
+            ".pz-pagination-link"
+        ],
+        "excludeUrlPatterns": [
+            "**filterable**",
+            "**indirim**"
+        ],
+        "schedule": "0 0 * * 2",
+        "id": "1"
+    },
     {
         "urls": [
             "https://www.koton.com/site-haritasi"
