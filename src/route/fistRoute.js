@@ -8,6 +8,7 @@ import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
 import addInitialPagesToRequests from "./helper/addInitialPagesToRequests.js";
 dotenv.config({ silent: true });
 
+const site = process.env.site;
 export default async function first({ page, addRequests }) {
 
     await page.evaluate(() => {
