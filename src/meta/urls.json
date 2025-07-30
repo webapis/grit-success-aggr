@@ -1,4 +1,17 @@
-[
+[    {
+        "urls": [
+            "https://www.example.com/"
+        ],
+        "funcPageSelector": [
+            ".pz-pagination-link"
+        ],
+        "excludeUrlPatterns": [
+            "**filterable**",
+            "**indirim**"
+        ],
+        "schedule": "0 0 * * 2",
+        "id": "1"
+    },
     {
         "urls": [
             "https://www.koton.com/site-haritasi"
@@ -15,7 +28,7 @@
     },
     {
         "urls": [
-            "https://www.defacto.com.tr/kadin-cnantaa"
+            "https://www.defacto.com.tr"
         ],
         "funcPageSelector": [
             ".catalog__meta--product-count span",
