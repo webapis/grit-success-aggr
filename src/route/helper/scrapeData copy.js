@@ -17,14 +17,14 @@ import videoAttributes from "../../selector-attibutes/videoAttributes.js";
 import videoSelectors from "../../selector-attibutes/videoSelectors.js";
 import productNotAvailable from "../../selector-attibutes/productNotAvailable.js";
 import priceParser from "../../scrape-helpers/priceParcer.js";
-import getMainDomainPart from "../../scrape-helpers/getMainDomainPart.js";
-import urls from '../../meta/urls.json' assert { type: 'json' };
+
+import { getCachedSiteConfig } from "../../helper/siteConfig.js";
 import continueIfProductPage from "./continueIfProductPage.js";
 dotenv.config({ silent: true });
 
 export default async function scrapeData({ page }) {
-    const site = process.env.site;
-    const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
+
+    const siteUrls = getCachedSiteConfig()
 
     
     await continueIfProductPage({page})

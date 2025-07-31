@@ -1,19 +1,21 @@
 
 import dotenv from "dotenv";
-import urls from '../../meta/urls.json' assert { type: 'json' };
+
 import commonExcludedPatterns from "../../selector-attibutes/commonExcludedPatterns.js";
-import getMainDomainPart from "../../scrape-helpers/getMainDomainPart.js";
+
+
 
 dotenv.config({ silent: true });
 
-const site = process.env.site;
-const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
+
+
+debugger
 const womanBags = ["kadin-canta",
     "kadin-cuzdan", "valiz-modelleri", "seyahat", "canta-155", "canta-aksesuar", "canta", "bags", "aksesuar"
 
 ]
-export default async function addInitialPagesToRequests({ page, addRequests }) {
-    if (siteUrls.navigationUrls) {
+export default async function addInitialPagesToRequests({ page, addRequests,siteUrls }) {
+    if (siteUrls?.navigationUrls) {
         try {
 
 

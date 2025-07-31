@@ -1,13 +1,11 @@
 import dotenv from "dotenv";
 import scroller, { autoScroll } from "../../scrape-helpers/scroller.js";
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
-import urls from '../../meta/urls.json' assert { type: 'json' };
-import getMainDomainPart from "../../scrape-helpers/getMainDomainPart.js";
+
 dotenv.config({ silent: true });
 
-const site = process.env.site;
-const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
-export default async function continueIfProductPage({ page }) {
+
+export default async function continueIfProductPage({ page, siteUrls }) {
 
     page.on("console", (message) => {
         console.log("Message from Puppeteer page:", message.text());

@@ -1,6 +1,6 @@
 // siteConfig.js - Site Configuration Module
 import { google } from 'googleapis';
-import getMainDomainPart from './src/scrape-helpers/getMainDomainPart.js';
+import getMainDomainPart from './getMainDomainPart.js';
 
 // Environment variables for Google Sheets access
 const GOOGLE_SERVICE_ACCOUNT_CREDENTIALS = process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS;
@@ -62,10 +62,10 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
 
         const sheets = google.sheets({ version: 'v4', auth });
 
-        // Fetch data from the 'wbags' sheet, columns A to F
+        // Fetch data from the 'wbags' sheet, columns A to G
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId: GOOGLE_SHEET_ID,
-            range: 'wbags!A:F',
+            range: 'wbags!A:G',
         });
 
         const rows = response.data.values;
@@ -82,7 +82,7 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
 
         // Validate header structure (optional but recommended)
         const headerRow = rows[0];
-        const expectedHeaders = ['brands', 'funcPageSelector', 'isAutoScroll', 'urls', 'paused', 'pausedReason'];
+        const expectedHeaders = ['brands', 'funcPageSelector', 'isAutoScroll', 'urls', 'paginationPostfix', 'paused', 'pausedReason'];
         
         // Log header validation (optional - can be removed in production)
         if (headerRow && headerRow.length >= 4) {
@@ -90,12 +90,11 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
         }
 
         // Expected columns based on your sheet:
-        // A: brands, B: funcPageSelector, C: isAutoScroll, D: urls, E: paused, F: pausedReason
+        // A: brands, B: funcPageSelector, C: isAutoScroll, D: urls, E: paginationPostfix, F: paused, G: pausedReason
         const dataRows = rows.slice(1); // Skip header row
 
         let allUrls = [];
-        let paused = false;
-        let pausedReason = '';
+        let siteConfigurations = [];
         let foundBrand = false;
 
         console.log(`Searching for URLs with domain containing: "${targetSite}" in ${dataRows.length} data rows`);
@@ -144,18 +143,25 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
                     console.log(`  ✓ Found ${matchingUrls.length} matching URLs in row ${index + 2}`);
                     foundBrand = true;
                     
+                    // Create configuration object for this row
+                    const rowConfig = {
+                        brand: row[0] ? row[0].trim() : '',
+                        funcPageSelector: row[1] ? JSON.parse(row[1].trim()) : '',
+                        isAutoScroll: row[2] ? row[2].trim().toLowerCase() === 'true' : false,
+                        urls: matchingUrls,
+                        paginationPostfix: row[4] ? row[4].trim() : '',
+                        paused: row[5] ? row[5].trim().toLowerCase() === 'true' : false,
+                        pausedReason: row[6] ? row[6].trim() : '',
+                        rowIndex: index + 2 // For reference
+                    };
+
+                    console.log(`  Row configuration:`, rowConfig);
+                    siteConfigurations.push(rowConfig);
+                    
                     console.log(`  Current total URLs before adding: ${allUrls.length}`);
                     allUrls.push(...matchingUrls);
                     console.log(`  Current total URLs after adding: ${allUrls.length}`);
                     console.log(`  All URLs so far:`, allUrls);
-
-                    // Parse paused status and reason (take from first occurrence)
-                    if (!paused) { // Only set if not already set
-                        const pausedValue = row[4] ? row[4].trim().toLowerCase() : '';
-                        paused = pausedValue === 'true' || pausedValue === '1' || pausedValue === 'yes';
-                        pausedReason = row[5] ? row[5].trim() : '';
-                        console.log(`  Paused status: ${paused}, Reason: "${pausedReason}"`);
-                    }
                 }
             }
         }
@@ -170,18 +176,26 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
             return null;
         }
 
-        console.log(`Found configuration for site "${targetSite}":`, {
-            urls: allUrls,
-            paused: paused,
-            pausedReason: pausedReason,
-            totalUrls: allUrls.length
-        });
+        // Determine overall paused status (if ANY matching row is paused, consider the site paused)
+        const isPaused = siteConfigurations.some(config => config.paused);
+        const pausedReason = siteConfigurations.find(config => config.paused)?.pausedReason || '';
 
-        return {
+        const finalConfig = {
+            targetSite: targetSite,
             urls: allUrls,
-            paused: paused,
+            totalUrls: allUrls.length,
+            paused: isPaused,
             pausedReason: pausedReason,
+            configurations: siteConfigurations, // All matching row configurations
+            // Convenience properties (from first matching configuration)
+            funcPageSelector: siteConfigurations[0]?.funcPageSelector || '',
+            isAutoScroll: siteConfigurations[0]?.isAutoScroll || false,
+            paginationPostfix: siteConfigurations[0]?.paginationPostfix || '',
         };
+
+        console.log(`Found configuration for site "${targetSite}":`, finalConfig);
+
+        return finalConfig;
 
     } catch (error) {
         console.error('Error fetching data from Google Sheets:', error.message);
@@ -197,6 +211,7 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
  * @returns {Promise<Object|null>} Site configuration object
  */
 async function getSiteConfig(targetSite, forceRefresh = false) {
+
     // Return cached config if available and not forcing refresh
     if (global.siteConfigCache && !forceRefresh) {
         console.log(`Using cached configuration for site: ${targetSite}`);
@@ -207,6 +222,7 @@ async function getSiteConfig(targetSite, forceRefresh = false) {
     const config = await fetchSiteUrlsFromGoogleSheet(targetSite);
     
     if (config) {
+  
         // Cache the configuration globally
         global.siteConfigCache = config;
         console.log(`Configuration cached globally for site: ${targetSite}`);

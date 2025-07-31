@@ -2,41 +2,32 @@ import dotenv from "dotenv";
 import { createPuppeteerRouter, Dataset } from "crawlee";
 import first from "./src/route/fistRoute.js";
 import second from "./src/route/secondRoute.js";
-import getMainDomainPart from "./src/scrape-helpers/getMainDomainPart.js";
-import urls from './src/meta/urls.json' assert { type: 'json' };
 
 dotenv.config({ silent: true });
 
 const site = process.env.site;
 const gitFolder = process.env.gitFolder;
 
-const productsDataset = await Dataset.open(site);
+export const createRouter = async (siteUrls) => {
+  const productsDataset = await Dataset.open(site);
+  const router = createPuppeteerRouter();
+debugger
+  router.addDefaultHandler(async (props) => {
+    debugger;
+    const data = await first({ ...props, label: "default", siteUrls });
 
-const selectors = urls.find(f => getMainDomainPart(f.urls[0]) === site)
+    if (data) {
+      await productsDataset.pushData(data);
+    }
+  });
 
-export const router = createPuppeteerRouter();
+  router.addHandler("second", async (props) => {
+    const data = await second({ ...props, label: "second", siteUrls });
 
-router.addDefaultHandler(async (props) => {
+    if (data) {
+      await productsDataset.pushData(data);
+    }
+  });
 
-
-  const data = await first({ ...props, label: "default", ...selectors })
-
-  if (data) {
-    await productsDataset.pushData(data);
-  }
-});
-
-router.addHandler("second", async (props) => {
-
-  const data = await second({ ...props, label: "second", ...selectors })
-
-
-  if (data) {
-    await productsDataset.pushData(data);
-  }
-
-});
-
-
-
-
+  return router;
+};

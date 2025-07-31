@@ -1,19 +1,20 @@
 import dotenv from "dotenv";
-import urls from '../../meta/urls.json' assert { type: 'json' };
+
 import commonExcludedPatterns from "../../selector-attibutes/commonExcludedPatterns.js";
 import paginationPostfix from "../../selector-attibutes/paginationPostfix.js";
-import getMainDomainPart from "../../scrape-helpers/getMainDomainPart.js";
+
 import getNextPaginationUrls from "../../scrape-helpers/getNextPaginationUrls.js";
 import continueIfProductPage from "./continueIfProductPage.js";
+
 dotenv.config({ silent: true });
 
-const site = process.env.site;
-const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
 
-export default async function addNextPagesToRequests({ page, addRequests }) {
+
+debugger
+export default async function addNextPagesToRequests({ page, addRequests, siteUrls }) {
     //next pages
-
-const shouldContinue = await continueIfProductPage({ page });
+debugger
+const shouldContinue = await continueIfProductPage({ page, siteUrls });
 if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
 
 
