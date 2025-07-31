@@ -82,6 +82,7 @@ export default function mapPrice(
     'İNDİRİMLİ FİYAT',
     'İndirimli fiyat',
     'Sepette %10 İndirim',
+    'Sepetteki Fiyatı',
     '2 ve üzeri net %50 indirim:',
     'sepette',
     'İndirimli fiyat',
