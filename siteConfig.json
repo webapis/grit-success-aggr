@@ -1,0 +1,30 @@
+{
+  "targetSite": "edwards",
+  "urls": [
+    "https://www.edwards.com.tr/gomlek-18/"
+  ],
+  "totalUrls": 1,
+  "paused": false,
+  "pausedReason": "",
+  "configurations": [
+    {
+      "brand": "edwards",
+      "funcPageSelector": [
+        ".pagination-item.js-pagination"
+      ],
+      "isAutoScroll": false,
+      "urls": [
+        "https://www.edwards.com.tr/gomlek-18/"
+      ],
+      "paginationPostfix": "",
+      "paused": false,
+      "pausedReason": "",
+      "rowIndex": 33
+    }
+  ],
+  "funcPageSelector": [
+    ".pagination-item.js-pagination"
+  ],
+  "isAutoScroll": false,
+  "paginationPostfix": ""
+}

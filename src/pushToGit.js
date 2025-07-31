@@ -6,16 +6,16 @@ import getAggrTimeSpan from "./sheet/getAggrTimeSpan.js";
 import countUnique from "./sheet/countUnique.js";
 import countByField from "./scrape-helpers/countByField.js";
 import getUniquePageURLs from "./sheet/getUniquePageURLs.js";
-import getMainDomainPart from "./helper/getMainDomainPart.js";
 import { emitAsync } from "./events.js";
 import './listeners.js'; // ← This registers event handlers
-import urls from './meta/urls.json' assert { type: 'json' };
 import uploadJSONToGoogleDrive from "./drive/uploadJSONToGoogleDrive.js";
+import { getCachedSiteConfigFromFile } from './helper/siteConfig.js';
 dotenv.config({ silent: true });
 
 const URL_CATEGORIES = process.env.URL_CATEGORIES;
 const site = process.env.site;
-const siteUrls = urls.find(f => getMainDomainPart(f.urls[0]) === site)
+const siteUrls =await getCachedSiteConfigFromFile()//urls.find(f => getMainDomainPart(f.urls[0]) === site)
+debugger;
 const dataset = await Dataset.open(site);
 const { items: data } = await dataset.getData();
 
@@ -38,14 +38,14 @@ debugger
 const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
 
 
-    const invalidItems = data.filter(item =>
-        !item.imgValid ||
-        !item.linkValid ||
-        !item.titleValid ||
-        !item.pageTitleValid ||
-        !item.priceValid
-    );
-    let jsonErrorwebViewLink= '';
+const invalidItems = data.filter(item =>
+    !item.imgValid ||
+    !item.linkValid ||
+    !item.titleValid ||
+    !item.pageTitleValid ||
+    !item.priceValid
+);
+let jsonErrorwebViewLink = '';
 if (invalidItems.length > 0) {
 
     const jsonBuffer = Buffer.from(JSON.stringify(invalidItems, null, 2), 'utf-8');
@@ -58,17 +58,17 @@ if (invalidItems.length > 0) {
             Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
         ),
     });
-   jsonErrorwebViewLink = result.webViewLink;
+    jsonErrorwebViewLink = result.webViewLink;
     console.log(`Uploaded invalid items to Google Drive: ${result.webViewLink}`);
-     debugger;
+    debugger;
 
 }
 debugger
-console.log('dataWithoutError.length',dataWithoutError.filter((f,i)=>i<5).length, dataWithoutError.filter((f,i)=>i<5));
+console.log('dataWithoutError.length', dataWithoutError.filter((f, i) => i < 5).length, dataWithoutError.filter((f, i) => i < 5));
 console.log('site', site);
-const jsonBuffer = Buffer.from(JSON.stringify(dataWithoutError.filter((f,i)=>i<5), null, 2), 'utf-8');
+const jsonBuffer = Buffer.from(JSON.stringify(dataWithoutError.filter((f, i) => i < 5), null, 2), 'utf-8');
 
-    const resultData = await uploadJSONToGoogleDrive({
+const resultData = await uploadJSONToGoogleDrive({
     buffer: jsonBuffer,
     fileName: `${site}.json`,
     mimeType: 'application/json',
@@ -95,14 +95,14 @@ const baseRowData = {
     'Total Unique Objects (by link)': totalUniqueObjects.count,
     'Error Objects': dataWithError.length,
     "JSONERRORURL": jsonErrorwebViewLink ? jsonErrorwebViewLink : 'N/A',
-    "JSONData":resultData ? resultData.webViewLink : 'N/A',
-        'Start Time': oldestTimestamp,
+    "JSONData": resultData ? resultData.webViewLink : 'N/A',
+    'Start Time': oldestTimestamp,
     'End Time': newestTimestamp,
     'Span (min)': minutesSpan,
     'Total Pages': totalPages.count,
     'Unique Page URLs': uniquePageURLs.length,
     'AutoScroll': siteUrls.isAutoScroll ? 'true' : 'false',
-    'productItemSelector': dataWithoutError.length > 0 ? dataWithoutError[0].matchedInfo?.matchedProductItemSelectorManual : 'N/A',  
+    'productItemSelector': dataWithoutError.length > 0 ? dataWithoutError[0].matchedInfo?.matchedProductItemSelectorManual : 'N/A',
 };
 
 
