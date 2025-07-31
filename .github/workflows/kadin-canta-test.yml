@@ -92,7 +92,7 @@ jobs:
               const sites = rows
                 .filter(row => {
                   const brandName = row[0]; // Column A
-                  const isPaused = row[4]; // Column E (paused)
+                  const isPaused = row[5]; // Column F (paused)
                   
                   // Include only if brand name exists, is not empty, and is not paused
                   return brandName && 
