@@ -1,4 +1,4 @@
-#https://claude.ai/chat/e31defb6-2da1-408c-a94e-1c914be205ac
+# https://claude.ai/chat/e31defb6-2da1-408c-a94e-1c914be205ac
 name: kadin-canta
 on:
    workflow_dispatch:  # Allows manual triggering
@@ -81,12 +81,6 @@ jobs:
               const response = await sheets.spreadsheets.values.get({
                 spreadsheetId: process.env.GOOGLE_SHEET_ID,
                 range: 'wbags!A2:A', // Start from A2 to skip the header
-              });
-              
-              // Fetch data from the sheet - get both brands (A) and paused status (E)
-              const response = await sheets.spreadsheets.values.get({
-                spreadsheetId: process.env.GOOGLE_SHEET_ID,
-                range: 'wbags!A2:E', // Get columns A through E starting from row 2
               });
               
               const rows = response.data.values;
