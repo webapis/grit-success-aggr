@@ -15,7 +15,7 @@ debugger
   router.addDefaultHandler(async (props) => {
     debugger;
     const data = await first({ ...props, label: "default", siteUrls });
-
+debugger;
     if (data) {
       await productsDataset.pushData(data);
     }

@@ -1,4 +1,5 @@
 export default [
+    '.padding-lg.list-content-product-item',
     '.productCartMain',
     '[data-testid][class^="product_card_product_card"]',
     '.product-item',
@@ -9,7 +10,7 @@ export default [
     '.ant-col.grid-item',
     '.item-box .product-item',
     '.productItemLayout',
-   // '.react-multi-carousel-item',
+    // '.react-multi-carousel-item',
     'article.product-tile__plp',
     '.product-layout',
     "ac-product-card",
