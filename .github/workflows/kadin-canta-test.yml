@@ -1,5 +1,5 @@
 # https://claude.ai/chat/e31defb6-2da1-408c-a94e-1c914be205ac
-name: kadin-canta-test
+name: kadin-canta-test-1
 on:
    workflow_dispatch:  # Allows manual triggering
    schedule:
