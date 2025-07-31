@@ -1,4 +1,5 @@
 export default [
+    'span.divUFiyat1',//buenoshoes
     '.mainFiyat .mainFiyat2',
     '.product-item__info-price',
    // '.base-price.campaing-base-price', defacto errored
