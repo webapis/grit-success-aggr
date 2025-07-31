@@ -62,7 +62,7 @@ export default [
     '.product__listing--price del',
     'pz-price',
     '.product-card-v2-price__current',
-    '[itemprop="priceCurrency"]',
+    //'[itemprop="priceCurrency"]', causes error for: buenoshoes
     '[itemprop="highPrice"]',
     '[data-ge-price="data-ge-price"]',
     '.product-price .product-sale-price',
