@@ -1,24 +1,13 @@
-//https://claude.ai/chat/1b181954-37f9-4d0e-bc03-e6734fc83cbc
-//https://gemini.google.com/app/22f6ffd689b5a270
-import { emitAsync } from './src/events.js';
-import './src/listeners.js'; // ← This registers event handlers
-
-import { PuppeteerCrawler } from "crawlee";
-import { router } from "./prodRoutesPuppeteer.js";
-import preNavigationHooks from "./crawler-helper/preNavigationHooksProd2.js";
-import puppeteer from './crawler-helper/puppeteer-stealth.js';
-import getMainDomainPart from './src/scrape-helpers/getMainDomainPart.js';
-
-// Import googleapis for interacting with Google Sheets
+// siteConfig.js - Site Configuration Module
 import { google } from 'googleapis';
-
-const site = process.env.site;
-const local = process.env.local;
-const HEADLESS = process.env.HEADLESS;
+import getMainDomainPart from './src/scrape-helpers/getMainDomainPart.js';
 
 // Environment variables for Google Sheets access
 const GOOGLE_SERVICE_ACCOUNT_CREDENTIALS = process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS;
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
+
+// Global variable to cache site configuration
+global.siteConfigCache = null;
 
 /**
  * Validates if a string is a valid URL
@@ -40,8 +29,6 @@ function isValidUrl(string) {
  * @returns {Promise<Object|null>} An object containing site URLs, paused status, and reason, or null if not found.
  */
 async function fetchSiteUrlsFromGoogleSheet(targetSite) {
-    debugger
-    
     // Validate required environment variables
     if (!GOOGLE_SERVICE_ACCOUNT_CREDENTIALS) {
         console.error('Error: GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable is not set.');
@@ -203,79 +190,51 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
     }
 }
 
-// Main execution block
-(async () => {
-    try {
-        if (!site) {
-            console.error('Error: site environment variable is not set.');
-            process.exit(1);
-        }
-
-        console.log(`Fetching configuration for site: ${site}`);
-        const siteConfig = await fetchSiteUrlsFromGoogleSheet(site);
-        debugger
-
-        if (!siteConfig) {
-            console.error(`Could not retrieve configuration for site: ${site}. Exiting.`);
-            process.exit(1);
-        }
-
-        // Check if site is paused
-        if (siteConfig.paused) {
-            const logData = {
-                sheetTitle: 'paused-sites',
-                message: `Site ${site} is paused from aggregating. Reason: ${siteConfig.pausedReason || 'No reason provided'}`,
-                rowData: {
-                    site,
-                    status: 'Paused',
-                    pausedReason: siteConfig.pausedReason || 'No reason provided',
-                    timestamp: new Date().toISOString(),
-                }
-            };
-
-            await emitAsync('log-to-sheet', logData);
-            console.log(`Site ${site} is paused from aggregating. Reason: ${siteConfig.pausedReason || 'No reason provided'}`);
-            process.exit(0);
-        }
-
-        // Validate URLs before starting crawler
-        if (!siteConfig.urls || siteConfig.urls.length === 0) {
-            console.error(`No valid URLs found for site: ${site}. Exiting.`);
-            process.exit(1);
-        }
-
-        console.log(`Starting crawler for site: ${site} with ${siteConfig.urls.length} URLs`);
-        console.log('URLs to crawl:', siteConfig.urls);
-
-        // Initialize and run crawler
-        const crawler = new PuppeteerCrawler({
-            launchContext: {
-                useChrome: local === 'true' ? true : false,
-                launcher: puppeteer,
-                launchOptions: {
-                    args: [
-                        '--no-sandbox',
-                        '--disable-setuid-sandbox',
-                        '--disable-dev-shm-usage',
-                        '--disable-gpu',
-                        '--window-size=1920,1080'
-                    ]
-                }
-            },
-            requestHandler: router,
-            maxConcurrency: 1,
-            preNavigationHooks,
-            navigationTimeoutSecs: 120,
-            headless: HEADLESS === "false" ? false : true,
-            requestHandlerTimeoutSecs: 600000,
-            // maxRequestsPerCrawl: 50
-        });
-
-        await crawler.run(siteConfig.urls);
-        console.log(`Crawler completed for site: ${site}`);
-
-    } catch (error) {
-        console.error('Fatal error in main execution:', error);
-        process.exit(1);
+/**
+ * Gets site configuration from cache or fetches from Google Sheets
+ * @param {string} targetSite - The site name to look for
+ * @param {boolean} forceRefresh - Force refresh from Google Sheets even if cached
+ * @returns {Promise<Object|null>} Site configuration object
+ */
+async function getSiteConfig(targetSite, forceRefresh = false) {
+    // Return cached config if available and not forcing refresh
+    if (global.siteConfigCache && !forceRefresh) {
+        console.log(`Using cached configuration for site: ${targetSite}`);
+        return global.siteConfigCache;
     }
-})();
+
+    console.log(`Fetching fresh configuration for site: ${targetSite}`);
+    const config = await fetchSiteUrlsFromGoogleSheet(targetSite);
+    
+    if (config) {
+        // Cache the configuration globally
+        global.siteConfigCache = config;
+        console.log(`Configuration cached globally for site: ${targetSite}`);
+    }
+    
+    return config;
+}
+
+/**
+ * Clears the cached site configuration
+ */
+function clearSiteConfigCache() {
+    global.siteConfigCache = null;
+    console.log('Site configuration cache cleared');
+}
+
+/**
+ * Gets the currently cached site configuration without making API calls
+ * @returns {Object|null} Cached site configuration or null if not cached
+ */
+function getCachedSiteConfig() {
+    return global.siteConfigCache;
+}
+
+// Export functions
+export {
+    getSiteConfig,
+    fetchSiteUrlsFromGoogleSheet,
+    clearSiteConfigCache,
+    getCachedSiteConfig
+};

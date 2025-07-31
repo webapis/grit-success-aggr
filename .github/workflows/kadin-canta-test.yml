@@ -1,5 +1,5 @@
 # https://claude.ai/chat/e31defb6-2da1-408c-a94e-1c914be205ac
-name: kadin-canta-test
+name: kadin-canta
 on:
    workflow_dispatch:  # Allows manual triggering
    schedule:
@@ -77,10 +77,16 @@ jobs:
               
               const sheets = google.sheets({ version: 'v4', auth });
               
-              // Fetch data from the sheet
+              // Fetch data from the sheet - skip header row
               const response = await sheets.spreadsheets.values.get({
                 spreadsheetId: process.env.GOOGLE_SHEET_ID,
-                range: 'wbags!A1:A',
+                range: 'wbags!A2:A', // Start from A2 to skip the header
+              });
+              
+              // Fetch data from the sheet - get both brands (A) and paused status (E)
+              const response = await sheets.spreadsheets.values.get({
+                spreadsheetId: process.env.GOOGLE_SHEET_ID,
+                range: 'wbags!A2:E', // Get columns A through E starting from row 2
               });
               
               const rows = response.data.values;
@@ -88,12 +94,19 @@ jobs:
                 return [];
               }
               
-              // Extract site names (assuming they are in the first column)
-              // Filter out empty cells and header if exists
+              // Extract site names from column A (index 0) where column E (index 4) is not "TRUE"
               const sites = rows
-                .flat()
-                .filter(site => site && site.trim() !== '' && site.toLowerCase() !== 'site')
-                .map(site => site.trim());
+                .filter(row => {
+                  const brandName = row[0]; // Column A
+                  const isPaused = row[4]; // Column E (paused)
+                  
+                  // Include only if brand name exists, is not empty, and is not paused
+                  return brandName && 
+                         brandName.trim() !== '' && 
+                         brandName.toLowerCase() !== 'brands' &&
+                         isPaused !== 'TRUE';
+                })
+                .map(row => row[0].trim()); // Get the brand name and trim whitespace
               
               return sites;
             } catch (error) {
