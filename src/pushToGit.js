@@ -6,7 +6,7 @@ import getAggrTimeSpan from "./sheet/getAggrTimeSpan.js";
 import countUnique from "./sheet/countUnique.js";
 import countByField from "./scrape-helpers/countByField.js";
 import getUniquePageURLs from "./sheet/getUniquePageURLs.js";
-import getMainDomainPart from "./scrape-helpers/getMainDomainPart.js";
+import getMainDomainPart from "./helper/getMainDomainPart.js";
 import { emitAsync } from "./events.js";
 import './listeners.js'; // ← This registers event handlers
 import urls from './meta/urls.json' assert { type: 'json' };
