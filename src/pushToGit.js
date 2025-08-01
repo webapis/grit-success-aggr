@@ -14,7 +14,7 @@ dotenv.config({ silent: true });
 
 const URL_CATEGORIES = process.env.URL_CATEGORIES;
 const site = process.env.site;
-const siteUrls =await getCachedSiteConfigFromFile()//urls.find(f => getMainDomainPart(f.urls[0]) === site)
+const siteUrls = await getCachedSiteConfigFromFile()//urls.find(f => getMainDomainPart(f.urls[0]) === site)
 debugger;
 const dataset = await Dataset.open(site);
 const { items: data } = await dataset.getData();
@@ -45,11 +45,12 @@ const invalidItems = data.filter(item =>
     !item.pageTitleValid ||
     !item.priceValid
 );
-let jsonErrorwebViewLink = '';
+let JSONErrorDrive = null;
+let JSONErrorGit=null;
 if (invalidItems.length > 0) {
 
     const jsonBuffer = Buffer.from(JSON.stringify(invalidItems, null, 2), 'utf-8');
-    const result = await uploadJSONToGoogleDrive({
+    const JSONErrorDrive = await uploadJSONToGoogleDrive({
         buffer: jsonBuffer,
         fileName: `${site}-error.json`,
         mimeType: 'application/json',
@@ -58,17 +59,24 @@ if (invalidItems.length > 0) {
             Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
         ),
     });
-    jsonErrorwebViewLink = result.webViewLink;
-    console.log(`Uploaded invalid items to Google Drive: ${result.webViewLink}`);
+    jsonErrorwebViewLink = JSONErrorDrive.webViewLink;
+    console.log(`Uploaded invalid items to Google Drive: ${JSONErrorDrive.webViewLink}`);
     debugger;
 
+     JSONErrorGit = await uploadCollection({
+        fileName: site,
+        data:invalidItems.filter((i=>i<2)),
+        gitFolder: "validSample",
+        compress:false
+    });
+        jsonErrorwebViewLink =  JSONErrorGit.url 
 }
 debugger
 console.log('dataWithoutError.length', dataWithoutError.filter((f, i) => i < 5).length, dataWithoutError.filter((f, i) => i < 5));
 console.log('site', site);
 const jsonBuffer = Buffer.from(JSON.stringify(dataWithoutError.filter((f, i) => i < 5), null, 2), 'utf-8');
 
-const resultData = await uploadJSONToGoogleDrive({
+const JSONDataDrive = await uploadJSONToGoogleDrive({
     buffer: jsonBuffer,
     fileName: `${site}.json`,
     mimeType: 'application/json',
@@ -77,9 +85,15 @@ const resultData = await uploadJSONToGoogleDrive({
         Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
     ),
 });
-console.log('✅ JSON file uploaded to Google Drive:', resultData.webViewLink);
+console.log('✅ JSON file uploaded to Google Drive:', JSONDataDrive.webViewLink);
 
-
+    const JSONDataGit = await uploadCollection({
+        fileName: site,
+        data:dataWithoutError.filter((f, i) => i < 5),
+        gitFolder: "validSample",
+        compress:false
+    });
+debugger
 
 const baseRowData = {
     Site: site,
@@ -94,8 +108,10 @@ const baseRowData = {
     'Product Not Available': totalNotAvailable,
     'Total Unique Objects (by link)': totalUniqueObjects.count,
     'Error Objects': dataWithError.length,
-    "JSONERRORURL": jsonErrorwebViewLink ? jsonErrorwebViewLink : 'N/A',
-    "JSONData": resultData ? resultData.webViewLink : 'N/A',
+    "JSONErrorGit": JSONErrorGit ? JSONErrorGit.url : 'N/A',
+    "JSONErrorDrive": JSONErrorDrive ? JSONErrorDrive.webViewLink : 'N/A',
+    "JSONDataGit": JSONDataGit ? JSONDataGit.url : 'N/A',
+    "JSONDataDrive": JSONDataDrive ? JSONDataDrive.webViewLink : 'N/A',
     'Start Time': oldestTimestamp,
     'End Time': newestTimestamp,
     'Span (min)': minutesSpan,
@@ -111,11 +127,12 @@ if (!siteUrls.paused && dataWithoutError.length > 0) {
     console.log('✅ Collected data length:', dataWithoutError.length);
     const dataToUpload = dataWithoutError.filter(f => f.linkValid && f.imgValid && f.titleValid && f.priceValid && !f.productNotInStock)
     console.log('✅ Data to upload length:', dataToUpload.length);
-    await uploadCollection({
+    const response = await uploadCollection({
         fileName: site || URL_CATEGORIES,
         data: dataToUpload,
         gitFolder: site,
     });
+    debugger;
     await emitAsync('log-to-sheet', {
         sheetTitle: 'Crawl Logs(success)',
         message: console.log(`Site ${site} is logging data to Google Sheet.`),
