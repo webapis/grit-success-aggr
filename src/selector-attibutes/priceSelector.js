@@ -1,4 +1,5 @@
 export default [
+    '.product-price__list-price',
     '.product-price__sales-price',//jackjones
     '.price--wrap div.new--price',//ltbjeans
     'span.divUFiyat1',//buenoshoes

@@ -1,4 +1,5 @@
 export default [
+    'article.product-tile__plp',
     '.ltb__product.js-gtm-impression',
     '.padding-lg.list-content-product-item',
     '.productCartMain',
