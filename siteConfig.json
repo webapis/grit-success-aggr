@@ -4,8 +4,8 @@
     "https://www.ltbjeans.com/tr-TR/kadin-aksesuar-kadin-canta-c-227"
   ],
   "totalUrls": 1,
-  "paused": false,
-  "pausedReason": "",
+  "paused": true,
+  "pausedReason": "price not fetched on remote scrape",
   "configurations": [
     {
       "brand": "ltbjeans",
@@ -17,8 +17,8 @@
         "https://www.ltbjeans.com/tr-TR/kadin-aksesuar-kadin-canta-c-227"
       ],
       "paginationPostfix": "",
-      "paused": false,
-      "pausedReason": "",
+      "paused": true,
+      "pausedReason": "price not fetched on remote scrape",
       "rowIndex": 39
     }
   ],
