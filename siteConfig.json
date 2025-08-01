@@ -1,29 +1,29 @@
 {
-  "targetSite": "edwards",
+  "targetSite": "ltbjeans",
   "urls": [
-    "https://www.edwards.com.tr/canta/"
+    "https://www.ltbjeans.com/tr-TR/kadin-aksesuar-kadin-canta-c-227"
   ],
   "totalUrls": 1,
   "paused": false,
   "pausedReason": "",
   "configurations": [
     {
-      "brand": "edwards",
+      "brand": "ltbjeans",
       "funcPageSelector": [
-        ".pagination-item.js-pagination"
+        ".pagination__items a"
       ],
       "isAutoScroll": false,
       "urls": [
-        "https://www.edwards.com.tr/canta/"
+        "https://www.ltbjeans.com/tr-TR/kadin-aksesuar-kadin-canta-c-227"
       ],
       "paginationPostfix": "",
       "paused": false,
       "pausedReason": "",
-      "rowIndex": 33
+      "rowIndex": 39
     }
   ],
   "funcPageSelector": [
-    ".pagination-item.js-pagination"
+    ".pagination__items a"
   ],
   "isAutoScroll": false,
   "paginationPostfix": ""
