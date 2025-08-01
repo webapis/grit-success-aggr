@@ -1,4 +1,5 @@
 export default [
+    '.gallery-swiper__body a',
     '.entry-title.qode-pli-title a',
     'img.motion-reduce',
     'span.product-name',
