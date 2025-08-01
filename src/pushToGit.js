@@ -51,7 +51,7 @@ if (invalidItems.length > 0) {
 
 const jsonBuffer = Buffer.from(JSON.stringify(invalidItems.filter((f, i) => i < 5), null, 2), 'utf-8');
 
-    const JSONErrorDrive = await uploadJSONToGoogleDrive({
+     JSONErrorDrive = await uploadJSONToGoogleDrive({
         buffer: jsonBuffer,
         fileName: `${site}-error.json`,
         mimeType: 'application/json',
