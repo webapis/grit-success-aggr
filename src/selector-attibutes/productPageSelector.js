@@ -1,4 +1,5 @@
 export default [
+    '.yCmsComponent.product-grid',//ltbjeans
     '.list-container__products',//edwards
     '.wpb_column.vc_column_container .vc_column-inner .wpb_wrapper',
     '[itemprop="mainContentOfPage"] .products_wrapper.mfn-woo-products .products',

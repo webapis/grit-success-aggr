@@ -1,4 +1,5 @@
 export default [
+    '.ltb__product.js-gtm-impression',
     '.padding-lg.list-content-product-item',
     '.productCartMain',
     '[data-testid][class^="product_card_product_card"]',
