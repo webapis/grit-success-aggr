@@ -59,7 +59,7 @@ if (invalidItems.length > 0) {
             Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
         ),
     });
-    jsonErrorwebViewLink = JSONErrorDrive.webViewLink;
+
     console.log(`Uploaded invalid items to Google Drive: ${JSONErrorDrive.webViewLink}`);
     debugger;
 
@@ -69,7 +69,7 @@ if (invalidItems.length > 0) {
         gitFolder: "validSample",
         compress:false
     });
-        jsonErrorwebViewLink =  JSONErrorGit.url 
+   
 }
 debugger
 console.log('dataWithoutError.length', dataWithoutError.filter((f, i) => i < 5).length, dataWithoutError.filter((f, i) => i < 5));
