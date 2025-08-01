@@ -1,4 +1,5 @@
 export default [
+    '.price--wrap div.new--price',//ltbjeans
     'span.divUFiyat1',//buenoshoes
     '.mainFiyat .mainFiyat2',
     '.product-item__info-price',
