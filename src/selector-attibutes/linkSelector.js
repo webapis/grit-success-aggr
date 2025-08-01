@@ -1,4 +1,5 @@
 export default [
+    '.gallery-swiper__body a',
     'a.carousel-item-container',
     '.cta-link-primary.product-card-v2-anchor',
     '[class^="style_productCard"] a.block',

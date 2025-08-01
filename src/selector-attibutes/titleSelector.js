@@ -1,5 +1,5 @@
 export default [
-    '.gallery-swiper__body a',
+
     '.entry-title.qode-pli-title a',
     'img.motion-reduce',
     'span.product-name',
@@ -12,6 +12,7 @@ export default [
     '.fast-filters-image-title',
     '.cta-link-primary.product-card-v2-anchor',
     'h2.product-card-v2-title',
+    ".product-tile-info__title",
     '.product-item__info-product-name',
     'h3.product__name a',
     '.product-tile-body__link',
