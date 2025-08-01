@@ -20,10 +20,10 @@ import continueIfProductPage from "./continueIfProductPage.js";
 
 dotenv.config({ silent: true });
 
-export default async function scrapeData({ page,siteUrls }) {
-debugger
+export default async function scrapeData({ page, siteUrls }) {
+    debugger
 
-    const shouldContinue = await continueIfProductPage({ page,siteUrls });
+    const shouldContinue = await continueIfProductPage({ page, siteUrls });
     if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
     const data = await page.evaluate((params) => {
         const pageTitle = document.title;
@@ -179,6 +179,7 @@ debugger
                     pageTitle,
                     pageURL,
                     timestamp: new Date().toISOString(),
+                   // m: m.innerHTML
                 };
             } catch (error) {
                 return {
