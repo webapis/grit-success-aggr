@@ -67,7 +67,7 @@ const jsonBuffer = Buffer.from(JSON.stringify(invalidItems.filter((f, i) => i < 
      JSONErrorGit = await uploadCollection({
         fileName: site,
         data:invalidItems.filter((i=>i<2)),
-        gitFolder: "validSample",
+        gitFolder: "ErrorSample",
         compress:false
     });
    

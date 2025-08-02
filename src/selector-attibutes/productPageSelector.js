@@ -1,4 +1,5 @@
 export default [
+    '#productList',
     '.product-list.plp-products',
     '.yCmsComponent.product-grid',//ltbjeans
     '.list-container__products',//edwards
