@@ -5,7 +5,6 @@ export default [
     '.list-container__products',//edwards
     '.wpb_column.vc_column_container .vc_column-inner .wpb_wrapper',
     '[itemprop="mainContentOfPage"] .products_wrapper.mfn-woo-products .products',
-    '#ProductPageProductList.ProductList',//elleshoes
     '.js-list-product.list__products',//koton
     '#product-container .catalog-products',//defacto
     '.js-list-products .list-content',//desa
@@ -15,7 +14,7 @@ export default [
     '.collection .collection__main',//biancoenero
     '.PrdContainer .Products .ProductList',//bsl, oxxo
     '.js-list-products .list-row',//lovemybody
-    '#ProductPageProductList.ProductList',//beautyomelette,birelin,modalogy
+    '#ProductPageProductList.ProductList',//beautyomelette,birelin,modalogy,elleshoes,rivus
     '#katalog .catalogWrapper',//fever
     '#catalog-list',//gustoeshop
     '.prd-list .product-list-grid',//ipekyol
