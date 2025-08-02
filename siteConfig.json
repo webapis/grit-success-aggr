@@ -1,29 +1,29 @@
 {
-  "targetSite": "ltbjeans",
+  "targetSite": "jackjones",
   "urls": [
-    "https://www.ltbjeans.com/tr-TR/kadin-aksesuar-kadin-canta-c-227"
+    "https://www.jackjones.com.tr/tr-tr/kadin-giyim/aksesuar"
   ],
   "totalUrls": 1,
-  "paused": true,
-  "pausedReason": "price not fetched on remote scrape",
+  "paused": false,
+  "pausedReason": "",
   "configurations": [
     {
-      "brand": "ltbjeans",
+      "brand": "jackjones",
       "funcPageSelector": [
-        ".pagination__items a"
+        ".paginator__item a"
       ],
       "isAutoScroll": false,
       "urls": [
-        "https://www.ltbjeans.com/tr-TR/kadin-aksesuar-kadin-canta-c-227"
+        "https://www.jackjones.com.tr/tr-tr/kadin-giyim/aksesuar"
       ],
       "paginationPostfix": "",
-      "paused": true,
-      "pausedReason": "price not fetched on remote scrape",
-      "rowIndex": 39
+      "paused": false,
+      "pausedReason": "",
+      "rowIndex": 40
     }
   ],
   "funcPageSelector": [
-    ".pagination__items a"
+    ".paginator__item a"
   ],
   "isAutoScroll": false,
   "paginationPostfix": ""
