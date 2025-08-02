@@ -1,29 +1,29 @@
 {
-  "targetSite": "jackjones",
+  "targetSite": "tubabutik",
   "urls": [
-    "https://www.jackjones.com.tr/tr-tr/kadin-giyim/aksesuar"
+    "https://tubabutik.com/canta"
   ],
   "totalUrls": 1,
   "paused": false,
   "pausedReason": "",
   "configurations": [
     {
-      "brand": "jackjones",
+      "brand": "tubabutik",
       "funcPageSelector": [
-        ".paginator__item a"
+        ".flex.items-center button div"
       ],
       "isAutoScroll": false,
       "urls": [
-        "https://www.jackjones.com.tr/tr-tr/kadin-giyim/aksesuar"
+        "https://tubabutik.com/canta"
       ],
       "paginationPostfix": "",
       "paused": false,
       "pausedReason": "",
-      "rowIndex": 40
+      "rowIndex": 41
     }
   ],
   "funcPageSelector": [
-    ".paginator__item a"
+    ".flex.items-center button div"
   ],
   "isAutoScroll": false,
   "paginationPostfix": ""
