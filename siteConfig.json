@@ -1,31 +1,29 @@
 {
-  "targetSite": "benetton",
+  "targetSite": "longchamp",
   "urls": [
-    "https://tr.benetton.com/erkek-ust-giyim"
+    "https://www.longchamp.com.tr/en/women/bags"
   ],
   "totalUrls": 1,
   "paused": false,
   "pausedReason": "",
   "configurations": [
     {
-      "brand": "benetton",
+      "brand": "longchamp",
       "funcPageSelector": [
-        "[data-js='product-count']",
-        48
+        ".page-item a"
       ],
       "isAutoScroll": false,
       "urls": [
-        "https://tr.benetton.com/erkek-ust-giyim"
+        "https://www.longchamp.com.tr/en/women/bags"
       ],
       "paginationPostfix": "",
       "paused": false,
       "pausedReason": "",
-      "rowIndex": 52
+      "rowIndex": 50
     }
   ],
   "funcPageSelector": [
-    "[data-js='product-count']",
-    48
+    ".page-item a"
   ],
   "isAutoScroll": false,
   "paginationPostfix": ""
