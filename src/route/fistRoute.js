@@ -22,7 +22,7 @@ export default async function first({ page, addRequests, siteUrls }) {
 
 
     const shouldContinue = await continueIfProductPage({ page, siteUrls });
-    if (shouldContinue) {
+    if (false) {
         await addNextPagesToRequests({ page, addRequests, siteUrls });
         return await scrapeData({ page, siteUrls })
     } else {
