@@ -4,7 +4,7 @@ export default [
     '.price--wrap div.new--price',//ltbjeans
     'span.divUFiyat1',//buenoshoes
     '.mainFiyat .mainFiyat2',
-    '.product-item__info-price',
+    //'.product-item__info-price',//causing problem for "gap.com"
    // '.base-price.campaing-base-price', defacto errored
     '.second-line .base-price:not(.campaing-base-price)',//defacto
     '.first-line .base-price:not(.campaing-base-price)',//defacto
