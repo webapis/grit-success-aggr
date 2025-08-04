@@ -24,11 +24,11 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         if (isAutoScroll) {
             console.log('autoscrolling')
 
-            // await scrollWithShowMoreAdvanced(page, 500, '.load-more-container button', {
-            //     waitAfterClick: 3000, // Wait 3 seconds after clicking
-            //     maxConsecutiveBottomReached: 3 // Stop after 3 attempts with no button
-            // });
-             await autoScroll(page, 150)
+            await scrollWithShowMoreAdvanced(page, 500, '.load-more-container button', {
+                waitAfterClick: 3000, // Wait 3 seconds after clicking
+                maxConsecutiveBottomReached: 3 // Stop after 3 attempts with no button
+            });
+            // await autoScroll(page, 150)
         } else {
             //  await scroller(page, 150, 5);
         }
