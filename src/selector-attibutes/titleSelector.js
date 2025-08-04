@@ -1,5 +1,5 @@
 export default [
-
+    '.js-aa-pdp-href.aa-pdp-href',
     '.entry-title.qode-pli-title a',
     'img.motion-reduce',
     'span.product-name',

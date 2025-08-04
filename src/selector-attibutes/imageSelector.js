@@ -1,4 +1,5 @@
 export default [
+  '.product-grid__image',//guess
 'img.productSliderImage',
   '[imagetype="PRODUCT_IMAGE"]',
   'img.image-responsive',

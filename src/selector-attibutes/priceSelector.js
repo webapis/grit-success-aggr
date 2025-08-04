@@ -1,4 +1,5 @@
 export default [
+    '.value.item-price.txt-bold',
     '.product-price__list-price',
     '.product-price__sales-price',//jackjones
     '.price--wrap div.new--price',//ltbjeans
