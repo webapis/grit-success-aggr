@@ -1,30 +1,26 @@
 {
-  "targetSite": "longchamp",
+  "targetSite": "vakko",
   "urls": [
-    "https://www.longchamp.com.tr/en/women/bags"
+    "https://www.vakko.com/ayakkabi-canta/kadin-canta-c-3030102"
   ],
   "totalUrls": 1,
   "paused": false,
   "pausedReason": "",
   "configurations": [
     {
-      "brand": "longchamp",
-      "funcPageSelector": [
-        ".page-item a"
-      ],
-      "isAutoScroll": false,
+      "brand": "vakko",
+      "funcPageSelector": "",
+      "isAutoScroll": true,
       "urls": [
-        "https://www.longchamp.com.tr/en/women/bags"
+        "https://www.vakko.com/ayakkabi-canta/kadin-canta-c-3030102"
       ],
       "paginationPostfix": "",
       "paused": false,
       "pausedReason": "",
-      "rowIndex": 50
+      "rowIndex": 56
     }
   ],
-  "funcPageSelector": [
-    ".page-item a"
-  ],
-  "isAutoScroll": false,
+  "funcPageSelector": "",
+  "isAutoScroll": true,
   "paginationPostfix": ""
 }
