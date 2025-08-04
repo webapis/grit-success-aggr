@@ -1,4 +1,5 @@
 export default [
+    'span.value.item-price',
     '.value.item-price.txt-bold',
     '.product-price__list-price',
     '.product-price__sales-price',//jackjones
