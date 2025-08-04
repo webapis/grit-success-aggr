@@ -1,4 +1,5 @@
 export default [
+    '.p-price .one-price',
     'span.value.item-price',
     '.value.item-price.txt-bold',
     '.product-price__list-price',
@@ -7,7 +8,7 @@ export default [
     'span.divUFiyat1',//buenoshoes
     '.mainFiyat .mainFiyat2',
     //'.product-item__info-price',//causing problem for "gap.com"
-   // '.base-price.campaing-base-price', defacto errored
+    // '.base-price.campaing-base-price', defacto errored
     '.second-line .base-price:not(.campaing-base-price)',//defacto
     '.first-line .base-price:not(.campaing-base-price)',//defacto
     '.base-price.lined-base-price',
@@ -82,7 +83,7 @@ export default [
     '.sell-price',
     '.current-price',
     '.KatSepetFiyat span',
-   // '[data-testid="product-price"]',
+    // '[data-testid="product-price"]',
     'sale-price',
     '.current-price .product-price',
     '.product-discounted-price',

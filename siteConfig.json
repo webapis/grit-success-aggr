@@ -1,29 +1,31 @@
 {
-  "targetSite": "tubabutik",
+  "targetSite": "benetton",
   "urls": [
-    "https://tubabutik.com/canta"
+    "https://tr.benetton.com/erkek-ust-giyim"
   ],
   "totalUrls": 1,
   "paused": false,
   "pausedReason": "",
   "configurations": [
     {
-      "brand": "tubabutik",
+      "brand": "benetton",
       "funcPageSelector": [
-        ".flex.items-center button div"
+        "[data-js='product-count']",
+        48
       ],
       "isAutoScroll": false,
       "urls": [
-        "https://tubabutik.com/canta"
+        "https://tr.benetton.com/erkek-ust-giyim"
       ],
       "paginationPostfix": "",
       "paused": false,
       "pausedReason": "",
-      "rowIndex": 41
+      "rowIndex": 52
     }
   ],
   "funcPageSelector": [
-    ".flex.items-center button div"
+    "[data-js='product-count']",
+    48
   ],
   "isAutoScroll": false,
   "paginationPostfix": ""

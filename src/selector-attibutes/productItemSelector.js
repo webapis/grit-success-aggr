@@ -1,4 +1,5 @@
 export default [
+    '.p-item.col',
     '.js-tile.product__tile',
     'article.product-tile__plp',
     '.ltb__product.js-gtm-impression',

@@ -1,4 +1,5 @@
 export default [
+    '.product-list.js-customize',
     '.aa-product-tile__list',
     '#productList',
     '.product-list.plp-products',
