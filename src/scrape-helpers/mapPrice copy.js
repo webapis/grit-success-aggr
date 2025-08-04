@@ -120,21 +120,22 @@ export default function mapPrice(
     cleaned = cleaned.replace(regex, '');
   }
 
-  // Currency detection BEFORE removing currency symbols
-  let currency = 'TRY';
-  if (cleaned.includes('$') || /USD/gi.test(cleaned)) {
-    currency = 'USD';
-  } else if (cleaned.includes('€') || /EUR/gi.test(cleaned)) {
-    currency = 'EUR';
-  }
-
-  // Now clean currency symbols and words
   cleaned = cleaned
-    .replace(/(USD|\$)/gi, '')
-    .replace(/(EUR|€)/gi, '')
+    .replace(/(USD|\$)/gi, '$')
+    .replace(/€/g, '€')
     .replace(/(TRY|TL|₺|t)/gi, '')
     .replace(/\s+/g, '') // remove remaining spaces
     .trim();
+
+  // Currency detection
+  let currency = 'TRY';
+  if (cleaned.includes('$')) {
+    currency = 'USD';
+    cleaned = cleaned.replace(/\$/g, '');
+  } else if (cleaned.includes('€')) {
+    currency = 'EUR';
+    cleaned = cleaned.replace(/€/g, '');
+  }
 
   // ✅ Fix mixed format before parsing
   if (/^\d{1,3},\d{3}\.\d{2}$/.test(cleaned)) {
