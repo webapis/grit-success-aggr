@@ -1,4 +1,3 @@
-//https://claude.ai/chat/6fc284bd-77f8-4961-bd8e-aa5ed861453c
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
@@ -7,14 +6,12 @@ const fs = require('fs')
 var zlib = require('zlib');
 const fetch = require('node-fetch')
 
-async function uploadCollection({ fileName, data, gitFolder, compress = true }) {
+async function uploadCollection({ fileName, data, gitFolder, compress = true, maxRetries = 3 }) {
 
     console.log('process.env.GH_TOKEN__', process.env.GH_TOKEN)
 
     const fileExtension = compress ? '.json.gz' : '.json'
     const fullFileName = `${fileName}${fileExtension}`
-
-    const responsesha = await fetch(`https://api.github.com/repos/webapis/crawler-state-2/contents/${gitFolder}/${fullFileName}`, { method: 'get', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${process.env.GH_TOKEN}`, "X-GitHub-Api-Version": "2022-11-28" } })
 
     let base64data
 
@@ -27,37 +24,117 @@ async function uploadCollection({ fileName, data, gitFolder, compress = true }) 
         base64data = Buffer.from(jsonString, 'utf8').toString('base64')
     }
 
-    if (responsesha.ok) {
+    // Retry logic for handling conflicts
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+            console.log(`Attempt ${attempt} to upload ${fullFileName}`)
+            
+            // Get current file info (including SHA)
+            const responsesha = await fetch(`https://api.github.com/repos/webapis/crawler-state-2/contents/${gitFolder}/${fullFileName}`, { 
+                method: 'get', 
+                headers: { 
+                    Accept: "application/vnd.github.v3+json", 
+                    authorization: `token ${process.env.GH_TOKEN}`, 
+                    "X-GitHub-Api-Version": "2022-11-28" 
+                } 
+            })
 
-        const { sha } = await responsesha.json()
+            let response;
 
-        const response = await fetch(`https://api.github.com/repos/webapis/crawler-state-2/contents/${gitFolder}/${fullFileName}`, { method: 'put', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${process.env.GH_TOKEN}`, "X-GitHub-Api-Version": "2022-11-28" }, body: JSON.stringify({ message: 'coder content', sha, content: base64data, branch: 'main' }) })
+            if (responsesha.ok) {
+                // File exists, need to update with SHA
+                const { sha } = await responsesha.json()
+                console.log(`File exists, updating with SHA: ${sha}`)
 
-        if (!response.ok) {
-            throw response
-        } else {
-            const responseData = await response.json()
-     
-            return {
-                response,
-                url: responseData.content.html_url,
-                downloadUrl: responseData.content.download_url
+                response = await fetch(`https://api.github.com/repos/webapis/crawler-state-2/contents/${gitFolder}/${fullFileName}`, { 
+                    method: 'put', 
+                    headers: { 
+                        Accept: "application/vnd.github.v3+json", 
+                        authorization: `token ${process.env.GH_TOKEN}`, 
+                        "X-GitHub-Api-Version": "2022-11-28" 
+                    }, 
+                    body: JSON.stringify({ 
+                        message: `Update ${fullFileName} - attempt ${attempt}`, 
+                        sha, 
+                        content: base64data, 
+                        branch: 'main' 
+                    }) 
+                })
+            } else if (responsesha.status === 404) {
+                // File doesn't exist, create new
+                console.log(`File doesn't exist, creating new file`)
+                
+                response = await fetch(`https://api.github.com/repos/webapis/crawler-state-2/contents/${gitFolder}/${fullFileName}`, { 
+                    method: 'put', 
+                    headers: { 
+                        Accept: "application/vnd.github.v3+json", 
+                        authorization: `token ${process.env.GH_TOKEN}`, 
+                        "X-GitHub-Api-Version": "2022-11-28" 
+                    }, 
+                    body: JSON.stringify({ 
+                        message: `Create ${fullFileName} - attempt ${attempt}`, 
+                        content: base64data, 
+                        branch: 'main' 
+                    }) 
+                })
+            } else {
+                // Some other error occurred when fetching file info
+                throw new Error(`Failed to fetch file info: ${responsesha.status} ${responsesha.statusText}`)
             }
-        }
-    }
-    else {
 
-        const response = await fetch(`https://api.github.com/repos/webapis/crawler-state-2/contents/${gitFolder}/${fullFileName}`, { method: 'put', headers: { Accept: "application/vnd.github.v3+json", authorization: `token ${process.env.GH_TOKEN}`, "X-GitHub-Api-Version": "2022-11-28" }, body: JSON.stringify({ message: 'coder content', content: base64data, branch: 'main' }) })
-        
-        if (!response.ok) {
-            throw response
-        } else {
-            const responseData = await response.json()
-            return {
-                response,
-                url: responseData.content.html_url,
-                downloadUrl: responseData.content.download_url
+            if (response.ok) {
+                // Success!
+                const responseData = await response.json()
+                console.log(`✅ Successfully uploaded ${fullFileName} on attempt ${attempt}`)
+                
+                // Clean up temporary files if compression was used
+                if (compress) {
+                    try {
+                        fs.unlinkSync(`${fileName}.json`)
+                        fs.unlinkSync(`${fileName}.json.gz`)
+                    } catch (cleanupError) {
+                        console.warn('Failed to clean up temporary files:', cleanupError.message)
+                    }
+                }
+                
+                return {
+                    response,
+                    url: responseData.content.html_url,
+                    downloadUrl: responseData.content.download_url
+                }
+            } else if (response.status === 409 && attempt < maxRetries) {
+                // Conflict - file was updated by someone else, retry
+                console.warn(`⚠️ Conflict detected on attempt ${attempt}. Retrying...`)
+                const errorBody = await response.text()
+                console.warn(`Conflict details: ${errorBody}`)
+                
+                // Wait a bit before retrying to reduce chance of another conflict
+                await new Promise(resolve => setTimeout(resolve, 1000 * attempt))
+                continue
+            } else {
+                // Other error or max retries reached
+                const errorBody = await response.text()
+                throw new Error(`Upload failed: ${response.status} ${response.statusText} - ${errorBody}`)
             }
+
+        } catch (error) {
+            console.error(`Attempt ${attempt} failed:`, error.message)
+            
+            if (attempt === maxRetries) {
+                // Clean up temporary files before throwing
+                if (compress) {
+                    try {
+                        fs.unlinkSync(`${fileName}.json`)
+                        fs.unlinkSync(`${fileName}.json.gz`)
+                    } catch (cleanupError) {
+                        console.warn('Failed to clean up temporary files:', cleanupError.message)
+                    }
+                }
+                throw error
+            }
+            
+            // Wait before retrying
+            await new Promise(resolve => setTimeout(resolve, 2000 * attempt))
         }
     }
 }
