@@ -1,4 +1,5 @@
 export default [
+    '.aa-product-tile__list',
     '#productList',
     '.product-list.plp-products',
     '.yCmsComponent.product-grid',//ltbjeans
