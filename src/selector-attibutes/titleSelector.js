@@ -1,4 +1,5 @@
 export default [
+    '.plp-card-title',
     '.js-aa-pdp-href.aa-pdp-href',
     '.entry-title.qode-pli-title a',
     'img.motion-reduce',

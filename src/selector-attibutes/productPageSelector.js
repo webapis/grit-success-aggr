@@ -1,4 +1,5 @@
 export default [
+    'ol.products-grid',
     '.category-page #catalog-products',
     '.product-list.js-customize',
     '.aa-product-tile__list',

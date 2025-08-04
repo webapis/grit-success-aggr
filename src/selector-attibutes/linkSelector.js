@@ -1,4 +1,5 @@
 export default [
+    '.product-card__link',
     '.product-tile-info__link',
     'a.carousel-item-container',
     '.cta-link-primary.product-card-v2-anchor',

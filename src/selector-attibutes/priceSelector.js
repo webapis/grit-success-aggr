@@ -1,4 +1,5 @@
 export default [
+    '.product-card__price--new',
     '.p-price .one-price',
     'span.value.item-price',
     '.value.item-price.txt-bold',
