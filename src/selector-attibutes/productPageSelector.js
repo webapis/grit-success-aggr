@@ -1,4 +1,5 @@
 export default [
+    '.category-page #catalog-products',
     '.product-list.js-customize',
     '.aa-product-tile__list',
     '#productList',
