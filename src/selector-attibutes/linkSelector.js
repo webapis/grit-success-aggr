@@ -1,5 +1,5 @@
 export default [
-    '.product-item a',//
+    ".product-item a:not([href*='login'])",//
     '.product-card__link',
     '.product-tile-info__link',
     'a.carousel-item-container',
