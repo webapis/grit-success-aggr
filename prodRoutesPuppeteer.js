@@ -11,11 +11,11 @@ const gitFolder = process.env.gitFolder;
 export const createRouter = async (siteUrls) => {
   const productsDataset = await Dataset.open(site);
   const router = createPuppeteerRouter();
-debugger
+
   router.addDefaultHandler(async (props) => {
-    debugger;
+
     const data = await first({ ...props, label: "default", siteUrls });
-debugger;
+
     if (data) {
       await productsDataset.pushData(data);
     }

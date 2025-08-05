@@ -152,7 +152,14 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
                     const rowConfig = {
                         brand: row[0] ? row[0].trim() : '',
                         funcPageSelector: row[1] ? JSON.parse(row[1].trim()) : '',
-                        isAutoScroll: row[2] ? row[2].trim().toLowerCase() === 'true' : false,
+                        isAutoScroll: (() => {
+                            if (!row[2]) return false;
+                            const value = row[2].trim();
+                            // Check if it's TRUE (case-insensitive)
+                            if (value.toLowerCase() === 'true') return true;
+                            // Otherwise treat it as a selector string
+                            return value;
+                        })(),
                         urls: matchingUrls,
                         paginationPostfix: row[4] ? row[4].trim() : '',
                         paused: row[5] ? row[5].trim().toLowerCase() === 'true' : false,
@@ -184,7 +191,7 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
         // Determine overall paused status (if ANY matching row is paused, consider the site paused)
         const isPaused = siteConfigurations.some(config => config.paused);
         const pausedReason = siteConfigurations.find(config => config.paused)?.pausedReason || '';
-
+        debugger
         const finalConfig = {
             targetSite: targetSite,
             urls: allUrls,

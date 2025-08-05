@@ -10,10 +10,10 @@ dotenv.config({ silent: true });
 
 
 
-debugger
+
 export default async function addNextPagesToRequests({ page, addRequests, siteUrls }) {
     //next pages
-debugger
+
 const shouldContinue = await continueIfProductPage({ page, siteUrls });
 if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
 

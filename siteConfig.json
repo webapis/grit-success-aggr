@@ -10,7 +10,7 @@
     {
       "brand": "vakko",
       "funcPageSelector": "",
-      "isAutoScroll": true,
+      "isAutoScroll": ".load-more-container button",
       "urls": [
         "https://www.vakko.com/ayakkabi-canta/kadin-canta-c-3030102"
       ],
@@ -21,6 +21,6 @@
     }
   ],
   "funcPageSelector": "",
-  "isAutoScroll": true,
+  "isAutoScroll": ".load-more-container button",
   "paginationPostfix": ""
 }

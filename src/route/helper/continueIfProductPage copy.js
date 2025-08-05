@@ -4,6 +4,7 @@ import productPageSelector from "../../selector-attibutes/productPageSelector.js
 
 dotenv.config({ silent: true });
 
+
 export default async function continueIfProductPage({ page, siteUrls }) {
 
     page.on("console", (message) => {
@@ -11,10 +12,8 @@ export default async function continueIfProductPage({ page, siteUrls }) {
     });
 
     const isAutoScroll = siteUrls?.isAutoScroll || false;
-    const waitForSeconds = siteUrls?.waitForSeconds || 0;
-    
+    const waitForSeconds = siteUrls?.waitForSeconds || 0
     const productItemsCount = await page.$$eval(productPageSelector.join(', '), elements => elements.length);
-    
     if (productItemsCount > 0) {
         if (waitForSeconds > 0) {
             await page.evaluate(async (seconds) => {
@@ -22,23 +21,22 @@ export default async function continueIfProductPage({ page, siteUrls }) {
             }, waitForSeconds);
         }
 
-        // Handle different types for isAutoScroll
-        if (typeof isAutoScroll === 'boolean') {
-            debugger
-            console.log('Running basic auto scroll');
-            await autoScroll(page, 150);
-        } else if (typeof isAutoScroll === 'string') {
-            debugger
-            console.log('Running advanced scroll with selector:', isAutoScroll);
-            await scrollWithShowMoreAdvanced(page, 500, isAutoScroll, {
+        if (isAutoScroll) {
+            console.log('autoscrolling')
+
+            await scrollWithShowMoreAdvanced(page, 500, '.load-more-container button', {
                 waitAfterClick: 3000, // Wait 3 seconds after clicking
                 maxConsecutiveBottomReached: 3 // Stop after 3 attempts with no button
             });
+            // await autoScroll(page, 150)
+        } else {
+            //  await scroller(page, 150, 5);
         }
-        
         return true;
     } else {
         console.log('No product items found on the page');
         return false;
     }
+
+
 }
