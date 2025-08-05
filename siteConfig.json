@@ -16,7 +16,7 @@
       "urls": [
         "https://tr.tommy.com/erkek-giyim"
       ],
-      "paginationPostfix": "?p=2",
+      "paginationPostfix": "?p=",
       "paused": false,
       "pausedReason": "",
       "rowIndex": 56
@@ -26,5 +26,5 @@
     ".total-page"
   ],
   "isAutoScroll": false,
-  "paginationPostfix": "?p=2"
+  "paginationPostfix": "?p="
 }

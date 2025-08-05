@@ -36,9 +36,10 @@ if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
 
         if (nextPages.length > 0) {
 
-            const cleanedPatterns = siteUrls.excludeUrlPatterns ? [...commonExcludedPatterns, ...siteUrls.excludeUrlPatterns.map(p => p.replace(/\*/g, ''))] : commonExcludedPatterns
+            const cleanedPatterns =  commonExcludedPatterns
+            debugger
             const filtered = nextPages
-                .filter(url => !cleanedPatterns.some(pattern => url.toLowerCase().includes(pattern)))
+           
                 .map(url => ({ url: url.replace('??', '?'), label: 'second' }));
 
             console.log('filtered', filtered);
