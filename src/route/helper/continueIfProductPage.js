@@ -23,7 +23,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         }
 
         // Handle different types for isAutoScroll
-        if (typeof isAutoScroll === 'boolean') {
+        if (typeof isAutoScroll === 'boolean'&& isAutoScroll === true) {
             debugger
             console.log('Running basic auto scroll');
             await autoScroll(page, 150);

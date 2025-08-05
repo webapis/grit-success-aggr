@@ -1,26 +1,30 @@
 {
-  "targetSite": "vakko",
+  "targetSite": "tommy",
   "urls": [
-    "https://www.vakko.com/ayakkabi-canta/kadin-canta-c-3030102"
+    "https://tr.tommy.com/erkek-giyim"
   ],
   "totalUrls": 1,
   "paused": false,
   "pausedReason": "",
   "configurations": [
     {
-      "brand": "vakko",
-      "funcPageSelector": "",
-      "isAutoScroll": ".load-more-container button",
+      "brand": "tommy",
+      "funcPageSelector": [
+        ".total-page"
+      ],
+      "isAutoScroll": false,
       "urls": [
-        "https://www.vakko.com/ayakkabi-canta/kadin-canta-c-3030102"
+        "https://tr.tommy.com/erkek-giyim"
       ],
       "paginationPostfix": "",
       "paused": false,
       "pausedReason": "",
-      "rowIndex": 54
+      "rowIndex": 56
     }
   ],
-  "funcPageSelector": "",
-  "isAutoScroll": ".load-more-container button",
+  "funcPageSelector": [
+    ".total-page"
+  ],
+  "isAutoScroll": false,
   "paginationPostfix": ""
 }
