@@ -1,4 +1,5 @@
 export default [
+    '.p-image a',
     ".product-item a:not([href*='login'])",//
     '.product-card__link',
     '.product-tile-info__link',

@@ -20,10 +20,12 @@ export default async function first({ page, addRequests, siteUrls }) {
 
     console.log('inside first route')
 
-
+debugger
     const shouldContinue = await continueIfProductPage({ page, siteUrls });
     if (shouldContinue) {
+        debugger
         await addNextPagesToRequests({ page, addRequests, siteUrls });
+        debugger
         return await scrapeData({ page, siteUrls })
     } else {
         //take screenshot if initial pages could not be retrieved.

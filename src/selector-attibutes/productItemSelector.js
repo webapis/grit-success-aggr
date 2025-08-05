@@ -1,4 +1,5 @@
 export default [
+    '.p-item.col-6',
     'article.product-card',
     '.p-item.col',
     '.js-tile.product__tile',

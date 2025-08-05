@@ -43,8 +43,7 @@ export default async function scrapeData({ page, siteUrls }) {
 
         const usedFallbackDocument = !matchedDocument;
         const selectedDocument = matchedDocument || document;
-
-        return Array.from(selectedDocument.querySelectorAll(params.productItemSelector)).map(m => {
+        const candidateItems = Array.from(selectedDocument.querySelectorAll(params.productItemSelector)).map(m => {
             const titleSelectors = params.titleSelector.split(',').map(s => s.trim());
             const imageSelectors = params.imageSelector.split(',').map(s => s.trim());
             const linkSelectors = params.linkSelector.split(',').map(s => s.trim());
@@ -157,6 +156,8 @@ export default async function scrapeData({ page, siteUrls }) {
                 .find(selector => m.matches(selector));
 
             try {
+
+                debugger
                 return {
                     title,
                     img: allImgs,
@@ -179,9 +180,10 @@ export default async function scrapeData({ page, siteUrls }) {
                     pageTitle,
                     pageURL,
                     timestamp: new Date().toISOString(),
-                   // m: m.innerHTML
+                    // m: m.innerHTML
                 };
             } catch (error) {
+                debugger
                 return {
                     error: true,
                     message: error.message,
@@ -195,7 +197,9 @@ export default async function scrapeData({ page, siteUrls }) {
                 };
             }
         });
-
+        console.log('candidateItems', candidateItems.length)
+        debugger
+        return candidateItems
     }, {
         productPageSelector: productPageSelector.join(', '),
         productItemSelector: productItemSelector.join(', '),
@@ -234,6 +238,6 @@ export default async function scrapeData({ page, siteUrls }) {
             priceValid: item.productNotInStock ? true : priceValid,
         };
     });
-
+    debugger
     return validData;
 }

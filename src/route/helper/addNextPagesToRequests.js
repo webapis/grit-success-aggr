@@ -27,9 +27,9 @@ if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
         paginationPostfix.every(sub => !url.includes(sub))
     ) {
 
-        const foundpaginationPostfix = paginationPostfix.find(sub => !url.includes(sub))
+       // const foundpaginationPostfix = paginationPostfix.find(sub => !url.includes(sub))
         debugger
-        const nextPages = await getNextPaginationUrls(page, url, siteUrls.funcPageSelector, foundpaginationPostfix);
+        const nextPages = await getNextPaginationUrls(page, url, siteUrls.funcPageSelector, siteUrls.paginationPostfix);
 
 
         debugger;
