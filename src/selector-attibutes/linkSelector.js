@@ -1,5 +1,5 @@
 export default [
-    'spa-list-item a',
+    '.product-item a',
     '.product-card__link',
     '.product-tile-info__link',
     'a.carousel-item-container',
