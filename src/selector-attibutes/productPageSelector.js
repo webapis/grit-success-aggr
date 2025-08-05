@@ -1,4 +1,5 @@
 export default [
+    '.list-product.js-list-products',
     '.product-list-wrapper',
     'ol.products-grid',
     '.category-page #catalog-products',
