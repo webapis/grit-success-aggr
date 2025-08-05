@@ -1,4 +1,5 @@
 export default [
+    '.product-item-content__info h3',
     '.plp-card-title',
     '.js-aa-pdp-href.aa-pdp-href',
     '.entry-title.qode-pli-title a',
