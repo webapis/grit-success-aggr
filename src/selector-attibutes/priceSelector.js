@@ -1,4 +1,5 @@
 export default [
+    'spa-product-price .price',
     '.product-card__price--new',
     '.p-price .one-price',
     'span.value.item-price',
