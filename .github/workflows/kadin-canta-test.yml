@@ -1,10 +1,10 @@
+# https://claude.ai/chat/e31defb6-2da1-408c-a94e-1c914be205ac
 name: kadin-canta-test-1
 on:
    workflow_dispatch:  # Allows manual triggering
    schedule:
      - cron: '0 5 * * 1'  # Runs at 5:00 AM UTC on Monday 
     #  - cron: '0 14 * * *'  # Runs at 2:00 PM UTC daily
-
 env:
   MONGODB_URL: ${{secrets.MONGODB_URL}}
   GH_TOKEN: ${{secrets.GH_TOKEN}}
@@ -20,22 +20,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Setup Node.js with caching
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  # Updated to Node 20
-          cache: 'npm'
-      
-      - name: Cache Google APIs
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-googleapis-${{ hashFiles('**/package*.json') }}
-          restore-keys: |
-            ${{ runner.os }}-googleapis-
+          node-version: '18'
       
       - name: Install dependencies
-        run: npm install --prefer-offline googleapis
+        run: npm install googleapis
+      
+      - name: Create package.json for CommonJS
+        run: |
+          cat > package.json << 'EOF'
+          {
+            "type": "commonjs"
+          }
+          EOF
       
       - name: Fetch sites from Google Sheets
         id: set-sites
@@ -70,35 +69,26 @@ jobs:
                 throw new Error('Failed to parse decoded credentials as JSON: ' + jsonError.message);
               }
               
-              // Create auth client with timeout
+              // Create auth client
               const auth = new google.auth.GoogleAuth({
                 credentials: credentials,
                 scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
               });
               
-              const sheets = google.sheets({ 
-                version: 'v4', 
-                auth,
-                timeout: 30000  // 30 second timeout
-              });
-              
-              console.log('Fetching data from Google Sheets...');
+              const sheets = google.sheets({ version: 'v4', auth });
               
               // Fetch data from the sheet - skip header row
               const response = await sheets.spreadsheets.values.get({
                 spreadsheetId: process.env.GOOGLE_SHEET_ID,
-                range: 'wbags!A2:F', // Get all relevant columns at once
+                range: 'wbags!A2:A', // Start from A2 to skip the header
               });
               
               const rows = response.data.values;
               if (!rows || rows.length === 0) {
-                console.log('No data found in sheet');
                 return [];
               }
               
-              console.log(`Found ${rows.length} rows in sheet`);
-              
-              // Extract site names from column A (index 0) where column F (index 5) is not "TRUE"
+              // Extract site names from column A (index 0) where column E (index 4) is not "TRUE"
               const sites = rows
                 .filter(row => {
                   const brandName = row[0]; // Column A
@@ -112,29 +102,20 @@ jobs:
                 })
                 .map(row => row[0].trim()); // Get the brand name and trim whitespace
               
-              console.log(`Filtered to ${sites.length} active sites:`, sites);
               return sites;
-              
             } catch (error) {
               console.error('Error fetching data from Google Sheets:', error.message);
-              
-              // Return empty array instead of exiting - allows workflow to continue
-              console.log('Returning empty array due to error');
-              return [];
+              process.exit(1);
             }
           }
           
           fetchSites().then(sites => {
-            if (sites.length === 0) {
-              console.log('No sites to process');
-            }
-            
             const sitesArray = JSON.stringify(sites);
+            // Only output the required format for GitHub Actions
             console.log(`sites=${sitesArray}`);
           }).catch(error => {
             console.error('Promise Error:', error.message);
-            // Output empty array instead of failing
-            console.log('sites=[]');
+            process.exit(1);
           });
           EOF
           
@@ -142,11 +123,8 @@ jobs:
 
   dizitv_job:
     needs: prepare_matrix
-    # Only run if there are sites to process
-    if: ${{ fromJSON(needs.prepare_matrix.outputs.sites)[0] }}
     strategy:
       fail-fast: false
-      max-parallel: 3  # Limit concurrent jobs to avoid rate limits
       matrix:
         site: ${{ fromJSON(needs.prepare_matrix.outputs.sites) }}
     uses: ./.github/workflows/reusableProdPuppeteer.yml
