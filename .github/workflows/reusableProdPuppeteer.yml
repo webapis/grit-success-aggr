@@ -22,28 +22,18 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - name: Install Node.js
+      uses: actions/setup-node@v3
       with:
         node-version: '20'
-        cache: 'npm'
-
-    - name: Cache APT packages
-      uses: actions/cache@v4
-      id: cache-apt
-      with:
-        path: /var/cache/apt/archives
-        key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/packages.list') }}
-        restore-keys: |
-          ${{ runner.os }}-apt-
 
     - name: Install system dependencies
-      if: steps.cache-apt.outputs.cache-hit != 'true'
       run: |
-        sudo apt-get update -qq
-        sudo apt-get install -y --no-install-recommends \
+        set -e
+        sudo apt-get update
+        sudo apt-get install -y \
           ca-certificates \
           fonts-liberation \
           libappindicator3-1 \
@@ -54,6 +44,7 @@ jobs:
           libexpat1 \
           libfontconfig1 \
           libgbm1 \
+          libgcc1 \
           libglib2.0-0 \
           libgtk-3-0 \
           libnspr4 \
@@ -75,35 +66,38 @@ jobs:
           lsb-release \
           wget \
           xdg-utils \
-          chromium-browser \
+          chromium-browser
+
+    - name: Install Chrome dependencies
+      run: |
+        # Attempt to install missing dependencies
+        sudo apt-get install -y --no-install-recommends \
+          libglib2.0-0 \
+          libnss3 \
+          libnspr4 \
           libatk1.0-0 \
           libatk-bridge2.0-0 \
+          libcups2 \
+          libdbus-1-3 \
           libdrm2 \
           libxcb-dri3-0 \
           libxcb-present0 \
-          libxshmfence1
+          libxshmfence1 \
+          libx11-xcb1 \
+          libxcomposite1 \
+          libxdamage1 \
+          libxext6 \
+          libxfixes3 \
+          libxrandr2 \
+          libgbm1 \
+          libc6
 
-    - name: Cache Puppeteer browsers
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/puppeteer
-        key: ${{ runner.os }}-puppeteer-${{ hashFiles('package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-puppeteer-
 
-    - name: Install Node.js dependencies
-      run: npm ci --prefer-offline --no-audit
-
-    - name: Install Puppeteer browsers (if not cached)
+    - name: Install dependencies
       run: |
-        if [ ! -d ~/.cache/puppeteer ]; then
-          echo "Installing Puppeteer browsers..."
-          npx puppeteer browsers install chrome
-        else
-          echo "Puppeteer browsers found in cache, skipping installation"
-        fi
-
-    - name: Run data aggregation
+        npm install
+        
+    - name: Run data agr
       run: node prodCrawlerPuppeteer.js
 
     - name: Run data upload

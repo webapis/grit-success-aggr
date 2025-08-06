@@ -20,31 +20,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Setup Node.js with caching
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
-          
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package*.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          node-version: '18'
       
       - name: Install dependencies
-        run: |
-          if [ ! -d "node_modules" ]; then
-            npm install googleapis --production --no-audit --prefer-offline
-          else
-            echo "Dependencies found in cache, skipping installation"
-          fi
+        run: npm install googleapis
       
-      - name: Create optimized package.json
+      - name: Create package.json for CommonJS
         run: |
-          echo '{"type": "commonjs"}' > package.json
+          cat > package.json << 'EOF'
+          {
+            "type": "commonjs"
+          }
+          EOF
       
       - name: Fetch sites from Google Sheets
         id: set-sites
@@ -54,67 +44,78 @@ jobs:
           
           async function fetchSites() {
             try {
-              // Environment validation
-              const requiredEnvVars = ['GOOGLE_SERVICE_ACCOUNT_CREDENTIALS', 'GOOGLE_SHEET_ID'];
-              for (const envVar of requiredEnvVars) {
-                if (!process.env[envVar]) {
-                  throw new Error(`${envVar} environment variable is not set`);
-                }
+              // Check if environment variables exist
+              if (!process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS) {
+                throw new Error('GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable is not set');
               }
               
-              // Decode and parse credentials
-              const decodedCredentials = Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf8');
-              const credentials = JSON.parse(decodedCredentials);
+              if (!process.env.GOOGLE_SHEET_ID) {
+                throw new Error('GOOGLE_SHEET_ID environment variable is not set');
+              }
               
-              // Create optimized auth client
+              // Decode base64 credentials
+              let decodedCredentials;
+              try {
+                decodedCredentials = Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf8');
+              } catch (decodeError) {
+                throw new Error('Failed to decode base64 GOOGLE_SERVICE_ACCOUNT_CREDENTIALS: ' + decodeError.message);
+              }
+              
+              // Parse the service account credentials
+              let credentials;
+              try {
+                credentials = JSON.parse(decodedCredentials);
+              } catch (jsonError) {
+                throw new Error('Failed to parse decoded credentials as JSON: ' + jsonError.message);
+              }
+              
+              // Create auth client
               const auth = new google.auth.GoogleAuth({
-                credentials,
+                credentials: credentials,
                 scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
               });
               
               const sheets = google.sheets({ version: 'v4', auth });
               
-              // Fetch data with optimized range
+              // Fetch data from the sheet - skip header row
               const response = await sheets.spreadsheets.values.get({
                 spreadsheetId: process.env.GOOGLE_SHEET_ID,
-                range: 'wbags!A2:F', // Fetch all needed columns in one request
-                majorDimension: 'ROWS'
+                range: 'wbags!A2:A', // Start from A2 to skip the header
               });
               
-              const rows = response.data.values || [];
+              const rows = response.data.values;
+              if (!rows || rows.length === 0) {
+                return [];
+              }
               
-              // Process sites efficiently
+              // Extract site names from column A (index 0) where column E (index 4) is not "TRUE"
               const sites = rows
                 .filter(row => {
-                  if (!row || row.length === 0) return false;
+                  const brandName = row[0]; // Column A
+                  const isPaused = row[5]; // Column F (paused)
                   
-                  const brandName = row[0]?.trim();
-                  const isPaused = row[5]; // Column F
-                  
+                  // Include only if brand name exists, is not empty, and is not paused
                   return brandName && 
-                         brandName !== '' && 
+                         brandName.trim() !== '' && 
                          brandName.toLowerCase() !== 'brands' &&
                          isPaused !== 'TRUE';
                 })
-                .map(row => row[0].trim());
+                .map(row => row[0].trim()); // Get the brand name and trim whitespace
               
-              console.log(`Found ${sites.length} active sites`);
               return sites;
-              
             } catch (error) {
-              console.error('Error:', error.message);
-              // Return empty array instead of exiting to prevent workflow failure
-              return [];
+              console.error('Error fetching data from Google Sheets:', error.message);
+              process.exit(1);
             }
           }
           
           fetchSites().then(sites => {
             const sitesArray = JSON.stringify(sites);
+            // Only output the required format for GitHub Actions
             console.log(`sites=${sitesArray}`);
           }).catch(error => {
             console.error('Promise Error:', error.message);
-            // Output empty array on error
-            console.log('sites=[]');
+            process.exit(1);
           });
           EOF
           
@@ -122,11 +123,8 @@ jobs:
 
   dizitv_job:
     needs: prepare_matrix
-    # Skip job if no sites found
-    if: ${{ fromJSON(needs.prepare_matrix.outputs.sites)[0] != null }}
     strategy:
       fail-fast: false
-      max-parallel: 3  # Limit concurrent jobs to prevent rate limiting
       matrix:
         site: ${{ fromJSON(needs.prepare_matrix.outputs.sites) }}
     uses: ./.github/workflows/reusableProdPuppeteer.yml
