@@ -1,32 +1,32 @@
 {
-  "targetSite": "gustoeshop",
+  "targetSite": "brooksbrothers",
   "urls": [
-    "https://gustoeshop.com/kadin-ust-giyim"
+    "https://www.brooksbrothers.com.tr/kadin-c"
   ],
   "totalUrls": 1,
   "paused": false,
   "pausedReason": "",
   "configurations": [
     {
-      "brand": "gustoeshop",
+      "brand": "brooksbrothers",
       "funcPageSelector": [
-        ".text-center.text-gray.mb-2",
-        24
+        "span.text-primary",
+        12
       ],
       "isAutoScroll": false,
       "urls": [
-        "https://gustoeshop.com/kadin-ust-giyim"
+        "https://www.brooksbrothers.com.tr/kadin-c"
       ],
-      "paginationPostfix": "?ps=",
+      "paginationPostfix": "?p=",
       "paused": false,
       "pausedReason": "",
-      "rowIndex": 13
+      "rowIndex": 21
     }
   ],
   "funcPageSelector": [
-    ".text-center.text-gray.mb-2",
-    24
+    "span.text-primary",
+    12
   ],
   "isAutoScroll": false,
-  "paginationPostfix": "?ps="
+  "paginationPostfix": "?p="
 }

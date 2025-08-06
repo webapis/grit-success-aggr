@@ -1,4 +1,5 @@
 export default [
+    '.infinite-scroll-component  .max-w-xl',
     '.p-item.col-6',
     'article.product-card',
     '.p-item.col',
