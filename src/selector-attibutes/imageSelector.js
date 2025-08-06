@@ -1,6 +1,7 @@
 export default [
+  'span.lazy-load-image-background',
   '.product-grid__image',//guess
-'img.productSliderImage',
+  'img.productSliderImage',
   '[imagetype="PRODUCT_IMAGE"]',
   'img.image-responsive',
   'picture.media-carousel-container__media source',

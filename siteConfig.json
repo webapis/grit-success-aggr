@@ -1,32 +1,32 @@
 {
-  "targetSite": "brooksbrothers",
+  "targetSite": "colins",
   "urls": [
-    "https://www.brooksbrothers.com.tr/kadin-c"
+    "https://www.colins.com.tr/c/erkek-giyim-modelleri-2"
   ],
   "totalUrls": 1,
   "paused": false,
   "pausedReason": "",
   "configurations": [
     {
-      "brand": "brooksbrothers",
+      "brand": "colins",
       "funcPageSelector": [
-        "span.text-primary",
-        12
+        ".product-count-text",
+        48
       ],
       "isAutoScroll": false,
       "urls": [
-        "https://www.brooksbrothers.com.tr/kadin-c"
+        "https://www.colins.com.tr/c/erkek-giyim-modelleri-2"
       ],
-      "paginationPostfix": "?p=",
+      "paginationPostfix": "?page=",
       "paused": false,
       "pausedReason": "",
-      "rowIndex": 21
+      "rowIndex": 22
     }
   ],
   "funcPageSelector": [
-    "span.text-primary",
-    12
+    ".product-count-text",
+    48
   ],
   "isAutoScroll": false,
-  "paginationPostfix": "?p="
+  "paginationPostfix": "?page="
 }
