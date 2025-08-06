@@ -49,13 +49,13 @@ const invalidItems = data.filter(item =>
     !item.priceValid
 );
 let JSONErrorDrive = null;
-let JSONErrorGit=null;
+let JSONErrorGit = null;
 if (invalidItems.length > 0) {
-debugger;
+    debugger;
 
-const jsonBuffer = Buffer.from(JSON.stringify(invalidItems.filter((f, i) => i < 5), null, 2), 'utf-8');
+    const jsonBuffer = Buffer.from(JSON.stringify(invalidItems.filter((f, i) => i < 5), null, 2), 'utf-8');
 
-     JSONErrorDrive = await uploadJSONToGoogleDrive({
+    JSONErrorDrive = await uploadJSONToGoogleDrive({
         buffer: jsonBuffer,
         fileName: `${site}-error.json`,
         mimeType: 'application/json',
@@ -68,13 +68,13 @@ const jsonBuffer = Buffer.from(JSON.stringify(invalidItems.filter((f, i) => i < 
     console.log(`Uploaded invalid items to Google Drive: ${JSONErrorDrive.webViewLink}`);
     debugger;
 
-     JSONErrorGit = await uploadCollection({
+    JSONErrorGit = await uploadCollection({
         fileName: site,
-        data:invalidItems.filter((f, i) => i < 5),
+        data: invalidItems.filter((f, i) => i < 5),
         gitFolder: "ErrorSample",
-        compress:false
+        compress: false
     });
-   
+
 }
 debugger
 console.log('dataWithoutError.length', dataWithoutError.filter((f, i) => i < 5).length, dataWithoutError.filter((f, i) => i < 5));
@@ -92,14 +92,21 @@ const JSONDataDrive = await uploadJSONToGoogleDrive({
 });
 console.log('✅ JSON file uploaded to Google Drive:', JSONDataDrive.webViewLink);
 
-    const JSONDataGit = await uploadCollection({
-        fileName: site,
-        data:dataWithoutError.filter((f, i) => i < 5),
-        gitFolder: "validSample",
-        compress:false
-    });
+const JSONDataGit = await uploadCollection({
+    fileName: site,
+    data: dataWithoutError.filter((f, i) => i < 5),
+    gitFolder: "validSample",
+    compress: false
+});
 debugger
-
+if (dublicateURLs.length > 1) {
+    const JSONDublicateUrlDataGit = await uploadCollection({
+        fileName: site,
+        data: dataWithoutError.filter((f, i) => i < 5),
+        gitFolder: "dublicateUrl",
+        compress: false
+    });
+}
 const baseRowData = {
     Site: site,
     'Total Objects': dataWithoutError.length,
@@ -124,6 +131,8 @@ const baseRowData = {
     'Unique Page URLs': uniquePageURLs.length,
     'AutoScroll': siteUrls.isAutoScroll ? 'true' : 'false',
     'productItemSelector': dataWithoutError.length > 0 ? dataWithoutError[0].matchedInfo?.matchedProductItemSelectorManual : 'N/A',
+    'JSONDublicateUrlDataGit': JSONDublicateUrlDataGit ? JSONDublicateUrlDataGit.url : 'N/A'
+
 };
 
 
