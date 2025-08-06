@@ -22,7 +22,7 @@ debugger
 
         console.log(`Fetching configuration for site: ${site}`);
         const siteConfig = await getSiteConfig(site, true);
-        debugger
+  
 
         if (!siteConfig) {
             console.error(`Could not retrieve configuration for site: ${site}. Exiting.`);

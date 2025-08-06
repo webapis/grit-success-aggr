@@ -191,7 +191,7 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
         // Determine overall paused status (if ANY matching row is paused, consider the site paused)
         const isPaused = siteConfigurations.some(config => config.paused);
         const pausedReason = siteConfigurations.find(config => config.paused)?.pausedReason || '';
-        debugger
+debugger
         const finalConfig = {
             targetSite: targetSite,
             urls: allUrls,

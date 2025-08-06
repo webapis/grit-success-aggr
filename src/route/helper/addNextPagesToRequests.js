@@ -1,8 +1,4 @@
 import dotenv from "dotenv";
-
-import commonExcludedPatterns from "../../selector-attibutes/commonExcludedPatterns.js";
-import paginationPostfix from "../../selector-attibutes/paginationPostfix.js";
-
 import getNextPaginationUrls from "../../scrape-helpers/getNextPaginationUrls.js";
 import continueIfProductPage from "./continueIfProductPage.js";
 
@@ -17,27 +13,23 @@ export default async function addNextPagesToRequests({ page, addRequests, siteUr
 const shouldContinue = await continueIfProductPage({ page, siteUrls });
 if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
 
-
     const url = await page.url();
-
 
     if (
         siteUrls.funcPageSelector &&
-        url.length > 0 &&
-        paginationPostfix.every(sub => !url.includes(sub))
+        url.length > 0 
+        &&
+        !url.includes(siteUrls.paginationPostfix)
     ) {
 
-       // const foundpaginationPostfix = paginationPostfix.find(sub => !url.includes(sub))
+
         debugger
         const nextPages = await getNextPaginationUrls(page, url, siteUrls.funcPageSelector, siteUrls.paginationPostfix);
 
 
-        debugger;
-
         if (nextPages.length > 0) {
 
-            const cleanedPatterns =  commonExcludedPatterns
-            debugger
+  
             const filtered = nextPages
            
                 .map(url => ({ url: url.replace('??', '?'), label: 'second' }));

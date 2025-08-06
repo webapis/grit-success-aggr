@@ -34,6 +34,7 @@ debugger
         }
         return urls;
       } else if (selectors.length === 2) {
+        debugger
         // Type 2: total count / items per page
         const totalCountSelector = selectors[0];
         const itemsPerPage = parseInt(selectors[1], 10);
