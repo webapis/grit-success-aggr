@@ -1,5 +1,5 @@
 export default [
-  'span.lazy-load-image-background',
+  '[id^="product_image"] .lazy-image img',
   '.product-grid__image',//guess
   'img.productSliderImage',
   '[imagetype="PRODUCT_IMAGE"]',

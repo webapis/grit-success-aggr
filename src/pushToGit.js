@@ -50,6 +50,7 @@ const invalidItems = data.filter(item =>
 );
 let JSONErrorDrive = null;
 let JSONErrorGit = null;
+let JSONDublicateUrlDataGit = null;
 if (invalidItems.length > 0) {
     debugger;
 
@@ -100,7 +101,7 @@ const JSONDataGit = await uploadCollection({
 });
 debugger
 if (dublicateURLs.length > 1) {
-    const JSONDublicateUrlDataGit = await uploadCollection({
+     JSONDublicateUrlDataGit = await uploadCollection({
         fileName: site,
         data: dataWithoutError.filter((f, i) => i < 5),
         gitFolder: "dublicateUrl",
