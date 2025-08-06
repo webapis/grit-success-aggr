@@ -103,7 +103,7 @@ debugger
 if (dublicateURLs.length > 1) {
      JSONDublicateUrlDataGit = await uploadCollection({
         fileName: site,
-        data: dataWithoutError.filter((f, i) => i < 5),
+        data: dublicateURLs.filter((f, i) => i < 5),
         gitFolder: "dublicateUrl",
         compress: false
     });
