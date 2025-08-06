@@ -10,6 +10,7 @@ import { emitAsync } from "./events.js";
 import './listeners.js'; // ← This registers event handlers
 import uploadJSONToGoogleDrive from "./drive/uploadJSONToGoogleDrive.js";
 import { getCachedSiteConfigFromFile } from './helper/siteConfig.js';
+import findDuplicatesByLink from './helper/findDuplicatesByLink.js';
 dotenv.config({ silent: true });
 
 const URL_CATEGORIES = process.env.URL_CATEGORIES;
@@ -32,6 +33,8 @@ const validPrice = countByField(data, 'priceValid');
 const unsetPrice = countByField(data, 'priceisUnset', true);
 const priceScrapeError = countByField(data, 'priceScrapeError', true);
 const totalNotAvailable = countByField(data, 'productNotInStock', true);
+const dublicateURLs = findDuplicatesByLink(data)
+debugger
 debugger
 
 

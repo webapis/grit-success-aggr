@@ -1,4 +1,5 @@
 export default [
+    '.lazy-image.product-name.track-link',
     '.p-image a',
     ".product-item a:not([href*='login'])",//
     '.product-card__link',
