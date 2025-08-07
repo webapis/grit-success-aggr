@@ -29,7 +29,7 @@ debugger
 
         const maxPage = Math.max(...pageNumbers, 1);
         const urls = [];
-        for (let i = 2; i <= maxPage; i++) {
+        for (let i = 1; i <= maxPage; i++) {
           urls.push(`${baseUrl}${postfix}${i}`);
         }
         return urls;
