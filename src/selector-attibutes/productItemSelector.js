@@ -1,4 +1,5 @@
 export default [
+    '.product_box.sm-product-list',
     '.infinite-scroll-component  .max-w-xl',
     '.p-item.col-6',
     'article.product-card',
