@@ -1,4 +1,6 @@
 export default [
+    '.product_box.sm-product-list',
+    '.message_box',
     '.list-product.js-list-products',
     '.product-list-wrapper',
     'ol.products-grid',
