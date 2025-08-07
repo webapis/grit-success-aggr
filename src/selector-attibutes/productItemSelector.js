@@ -1,4 +1,5 @@
 export default [
+    'article.product-tile-core',
     '.product_box.sm-product-list',
     '.infinite-scroll-component  .max-w-xl',
     '.p-item.col-6',
