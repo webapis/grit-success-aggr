@@ -45,7 +45,7 @@ debugger
         if (!isNaN(totalCount) && totalCount > itemsPerPage) {
           const totalPages = Math.ceil(totalCount / itemsPerPage);
           const urls = [];
-          for (let i = 2; i <= totalPages; i++) {
+          for (let i = 1; i <= totalPages; i++) {
             urls.push(`${baseUrl}${postfix}${i}`);
           }
           return urls;
