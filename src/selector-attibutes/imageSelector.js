@@ -1,4 +1,5 @@
 export default [
+  "[data-testid='next-image'] img",
   '[id^="product_image"] .lazy-image img',
   '.product-grid__image',//guess
   'img.productSliderImage',
