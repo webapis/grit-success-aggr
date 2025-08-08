@@ -39,7 +39,7 @@ function parseScrollBehavior(value) {
     }
 
     const trimmedValue = value.trim();
-    
+
     // Handle empty string
     if (!trimmedValue) {
         return '';
@@ -63,9 +63,9 @@ function parseScrollBehavior(value) {
                 // Validate array format
                 if (parsed.length === 1 && parsed[0] === true) {
                     return [true];
-                } else if (parsed.length === 2 && 
-                          typeof parsed[0] === 'string' && 
-                          typeof parsed[1] === 'boolean') {
+                } else if (parsed.length === 2 &&
+                    typeof parsed[0] === 'string' &&
+                    typeof parsed[1] === 'boolean') {
                     return parsed;
                 }
             }
@@ -202,7 +202,7 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
                     // Parse scrollBehavior from column C (index 2)
                     const scrollBehavior = parseScrollBehavior(row[2]);
                     console.log(`   Parsed scrollBehavior: ${JSON.stringify(scrollBehavior)}`);
-
+                    debugger
                     // Create configuration object for this row
                     const rowConfig = {
                         brand: row[0] ? row[0].trim() : '',
