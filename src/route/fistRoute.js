@@ -20,7 +20,7 @@ export default async function first({ page, addRequests, siteUrls }) {
 
     console.log('inside first route')
 
-debugger
+    debugger
     const shouldContinue = await continueIfProductPage({ page, siteUrls });
     if (shouldContinue) {
         debugger
@@ -50,28 +50,30 @@ debugger
         console.log('Direct link:', result.downloadUrl)
         const baseRowData = {
             Site: site,
-            'Total Objects': 0,
-            'Invalid Titles': 0,
-            'Invalid Page Titles': 0,
-            'Invalid Links': 0,
-            'Invalid Images': 0,
-            'Invalid Prices': 0,
-            'Unset Prices': 0,
-            'Price Scrape Errors': 0,
-            'Product Not Available': 0,
-            'Total Unique Objects (by link)': 0,
-            'Error Objects': 0,
-            "JSONErrorGit": 'N/A',
-            "JSONErrorDrive": 'N/A',
-            "JSONDataGit": 'N/A',
-            "JSONDataDrive": 'N/A',
-            'Start Time': 0,
-            'End Time': 0,
-            'Span (min)': 0,
-            'Total Pages': 0,
-            'Unique Page URLs': 0,
-            'AutoScroll': '',
-            'productItemSelector': 'N/A',
+            'Notes': 'firstRoute shouldContinue is false look into screenshots',
+            'Total Objects': 'Not Reached',
+            'Invalid Titles': 'Not Reached',
+            'Invalid Page Titles': 'Not Reached',
+            'Invalid Links': 'Not Reached',
+            'Invalid Images': 'Not Reached',
+            'Invalid Prices': 'Not Reached',
+            'Unset Prices': 'Not Reached',
+            'Price Scrape Errors': 'Not Reached',
+            'Product Not Available': 'Not Reached',
+            'Total Unique Objects (by link)': 'Not Reached',
+            'Error Objects': 'Not Reached',
+            "JSONErrorGit": 'Not Reached',
+            "JSONErrorDrive": 'Not Reached',
+            "JSONDataGit": 'Not Reached',
+            "JSONDataDrive": 'Not Reached',
+            'Start Time': 'Not Reached',
+            'End Time': 'Not Reached',
+            'Span (min)': 'Not Reached',
+            'Total Pages': 'Not Reached',
+            'Unique Page URLs': 'Not Reached',
+            'AutoScroll': 'Not Reached',
+            'productPageSelector': 'Not Reached',
+            'productItemSelector': 'Not Reached',
             'ScreenshotGit': result.url
 
         };
