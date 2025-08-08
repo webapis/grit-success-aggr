@@ -1,4 +1,5 @@
 export default [
+    '.ProductCard.mb-2.w-full',
     '.boost-sd__product-item',
     'article.product-tile-core',
     '.product_box.sm-product-list',
