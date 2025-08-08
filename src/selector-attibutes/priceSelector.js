@@ -1,4 +1,5 @@
 export default [
+    '.boost-sd__product-price--sale .boost-sd__format-currency',
     '.product_box .price',
     '.product-item-info-prices .product-sale-price',
     'spa-product-price .price',

@@ -1,4 +1,5 @@
 export default [
+    '.boost-sd__product-title',
     'h3.product-card__name',
     '.product-item-content__info h3',
     '.plp-card-title',
