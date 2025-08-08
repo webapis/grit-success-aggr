@@ -38,6 +38,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         
         return true;
     } else {
+
         console.log('No product items found on the page');
         return false;
     }

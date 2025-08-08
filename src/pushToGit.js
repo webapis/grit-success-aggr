@@ -131,6 +131,7 @@ const baseRowData = {
     'Total Pages': totalPages.count,
     'Unique Page URLs': uniquePageURLs.length,
     'AutoScroll': siteUrls.isAutoScroll ? 'true' : 'false',
+    'productPageSelector': dataWithoutError.length > 0 ? dataWithoutError[0].matchedInfo?.matchedPageSelector : 'N/A',
     'productItemSelector': dataWithoutError.length > 0 ? dataWithoutError[0].matchedInfo?.matchedProductItemSelectorManual : 'N/A',
     'JSONDublicateUrlDataGit': JSONDublicateUrlDataGit ? JSONDublicateUrlDataGit.url : 'N/A'
 
