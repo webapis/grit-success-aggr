@@ -1,4 +1,5 @@
 export default [
+    '.product-grid-item__price__new',//derimod
     '.ProductCard.mb-2.w-full',
     '.boost-sd__product-item',
     'article.product-tile-core',
