@@ -20,11 +20,7 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
     const productItemsCount = await page.$$eval(productPageSelector.join(', '), elements => elements.length);
     debugger
     if (productItemsCount > 0) {
-        if (waitForSeconds > 0) {
-            await page.evaluate(async (seconds) => {
-                await new Promise(resolve => setTimeout(resolve, seconds * 1000)); // Fixed: multiply by 1000 for milliseconds
-            }, waitForSeconds);
-        }
+
 
         // Handle different scrollBehavior formats
         if (Array.isArray(scrollBehavior)) {
