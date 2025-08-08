@@ -39,7 +39,7 @@ let baseRowData = {
     'AutoScroll': 'Not Reached',
     'productPageSelector': 'Not Reached',
     'productItemSelector': 'Not Reached',
-    'ScreenshotGit': result.url
+    'ScreenshotGit': 'Not Reached'
 
 };
 export default async function first({ page, addRequests, siteUrls }) {
