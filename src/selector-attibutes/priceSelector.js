@@ -1,4 +1,5 @@
 export default [
+    '.product-grid-item__price__new',//derimod
     '.boost-sd__format-currency',
     '.boost-sd__product-price--sale .boost-sd__format-currency',
     '.product_box .price',
