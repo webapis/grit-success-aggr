@@ -1,4 +1,5 @@
 export default [
+    '.boost-sd__product-link',
     '.lazy-image.product-name.track-link',
     '.p-image a',
     ".product-item a:not([href*='login'])",//
