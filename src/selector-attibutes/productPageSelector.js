@@ -69,7 +69,7 @@ export default [
     ".kategoriUrunler.productList",
     "[class^='ant-row ProductList_']",
     '.productList .product-list',
-    'section.plp-products',
+    ///'section.plp-products',jackjones
     ".main-products-wrapper",
     ".js-product-list",
     // ".product-list",
