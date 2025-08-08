@@ -8,7 +8,7 @@ export default [
     '.product-list.js-customize',
     '.aa-product-tile__list',
     '#productList',
-    '.product-list.plp-products',
+    ////'.product-list.plp-products', jackjones
     '.yCmsComponent.product-grid',//ltbjeans
     '.list-container__products',//edwards
     '.wpb_column.vc_column_container .vc_column-inner .wpb_wrapper',
