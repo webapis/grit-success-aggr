@@ -167,7 +167,8 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
     maxAttempts = 50,
     waitAfterClick = 2000,
     maxConsecutiveBottomReached = 5,
-    buttonClickDelay = 500
+    buttonClickDelay = 500,
+    enableScrolling = true // New option to control scrolling behavior
   } = options;
 
   page.on("console", (message) => {
@@ -179,7 +180,8 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
       _maxAttempts,
       _waitAfterClick,
       _maxConsecutiveBottomReached,
-      _buttonClickDelay
+      _buttonClickDelay,
+      _enableScrolling
     } = _options;
 
     await new Promise((resolve, reject) => {
@@ -189,33 +191,41 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
       let attemptCount = 0;
       let consecutiveBottomReached = 0;
       let isWaitingForContent = false;
+      let buttonClickCount = 0;
       
       var timer = setInterval(async () => {
         try {
           // Skip scrolling if we're waiting for content to load
           if (isWaitingForContent) {
-            console.log("Waiting for content to load, skipping scroll...");
+            console.log("Waiting for content to load, skipping cycle...");
             return;
           }
 
           var scrollHeight = document.body.scrollHeight;
+          let isAtBottom = false;
           
-          // Scroll down
-          window.scrollBy(0, distance);
-          totalHeight += distance;
-          scrollCount++;
+          if (_enableScrolling) {
+            // Scroll down only if scrolling is enabled
+            window.scrollBy(0, distance);
+            totalHeight += distance;
+            scrollCount++;
+            console.log(`Scroll: ${scrollCount}, Attempt: ${attemptCount}, Height: ${totalHeight}/${scrollHeight}`);
+            
+            // Check if we've reached the bottom
+            isAtBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100;
+          } else {
+            // If scrolling is disabled, we're always "at bottom" to trigger button search
+            isAtBottom = true;
+            console.log(`No-scroll mode: Attempt ${attemptCount}, looking for button...`);
+          }
+          
           attemptCount++;
-          
-          console.log(`Scroll: ${scrollCount}, Attempt: ${attemptCount}, Height: ${totalHeight}/${scrollHeight}`);
-          
-          // Check if we've reached the bottom
-          const isAtBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100;
           
           if (isAtBottom) {
             consecutiveBottomReached++;
-            console.log(`At bottom (${consecutiveBottomReached}/${_maxConsecutiveBottomReached}), looking for show more button...`);
+            console.log(`${_enableScrolling ? `At bottom (${consecutiveBottomReached}/${_maxConsecutiveBottomReached})` : `Attempt ${consecutiveBottomReached}/${_maxConsecutiveBottomReached}`}, looking for show more button...`);
             
-            // Look for show more button with multiple strategies
+            // Look for show more button
             let showMoreButton = document.querySelector(_showMoreSelector);
             
             // Additional checks for button visibility and interactability
@@ -226,9 +236,10 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
               getComputedStyle(showMoreButton).display !== 'none';
             
             if (isButtonVisible) {
-              console.log("Found visible show more button, preparing to click...");
+              buttonClickCount++;
+              console.log(`Found visible show more button (click #${buttonClickCount}), preparing to click...`);
               
-              // Scroll button into view
+              // Scroll button into view (works in both modes)
               showMoreButton.scrollIntoView({ 
                 behavior: 'smooth', 
                 block: 'center',
@@ -262,7 +273,7 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
                   // Wait for content to load
                   setTimeout(() => {
                     isWaitingForContent = false;
-                    console.log("Ready to continue scrolling...");
+                    console.log("Ready to continue...");
                   }, _waitAfterClick);
                   
                 } catch (clickError) {
@@ -276,7 +287,7 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
               
               // If no button found for several consecutive attempts, stop
               if (consecutiveBottomReached >= _maxConsecutiveBottomReached) {
-                console.log("No more content to load, stopping...");
+                console.log(`${_enableScrolling ? 'No more content to load' : 'No show more button found after max attempts'}, stopping...`);
                 clearInterval(timer);
                 resolve();
               }
@@ -299,33 +310,14 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
           reject(error);
         }
         
-      }, _scrollSpeed);
+      }, _enableScrolling ? _scrollSpeed : _scrollSpeed * 2); // Slower interval when not scrolling
     });
   }, scrollSpeed, showMoreSelector, {
     _maxAttempts: maxAttempts,
     _waitAfterClick: waitAfterClick,
     _maxConsecutiveBottomReached: maxConsecutiveBottomReached,
-    _buttonClickDelay: buttonClickDelay
+    _buttonClickDelay: buttonClickDelay,
+    _enableScrolling: enableScrolling
   });
 }
 
-// Usage examples:
-/*
-// Basic usage
-await scrollWithShowMore(page, 1000, 'button[data-testid="show-more"]');
-
-// Advanced usage with custom options
-await scrollWithShowMoreAdvanced(page, 800, '.load-more-btn', {
-  maxAttempts: 100,
-  waitAfterClick: 3000,
-  maxConsecutiveBottomReached: 3,
-  buttonClickDelay: 1000
-});
-
-// Common selectors for show more buttons:
-// 'button:contains("Show More")'           // Button with text
-// '[data-testid="load-more"]'              // Data attribute
-// '.load-more-button'                      // Class name
-// '#show-more-btn'                         // ID
-// 'button[aria-label="Load more"]'         // Aria label
-*/
