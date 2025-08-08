@@ -1,4 +1,5 @@
 export default [
+    '.boost-sd__product-item',
     'article.product-tile-core',
     '.product_box.sm-product-list',
     '.infinite-scroll-component  .max-w-xl',
