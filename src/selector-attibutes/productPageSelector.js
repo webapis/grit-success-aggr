@@ -8,7 +8,7 @@ export default [
     '.product-list.js-customize',
     '.aa-product-tile__list',
     '#productList',
-    ////'.product-list.plp-products', jackjones
+    '.product-list.plp-products',
     '.yCmsComponent.product-grid',//ltbjeans
     '.list-container__products',//edwards
     '.wpb_column.vc_column_container .vc_column-inner .wpb_wrapper',
@@ -69,7 +69,7 @@ export default [
     ".kategoriUrunler.productList",
     "[class^='ant-row ProductList_']",
     '.productList .product-list',
-    ///'section.plp-products',jackjones
+    'section.plp-products',
     ".main-products-wrapper",
     ".js-product-list",
     // ".product-list",

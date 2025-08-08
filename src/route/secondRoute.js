@@ -12,7 +12,7 @@ export default async function second({
     addRequests,
     siteUrls
 }) {
-debugger
+
     await addNextPagesToRequests({ page, addRequests,siteUrls });
 
     const data = await scrapeData({ page,siteUrls })
