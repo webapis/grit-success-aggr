@@ -3,15 +3,17 @@ import scroller, { autoScroll, scrollWithShowMoreAdvanced } from "../../scrape-h
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 
 dotenv.config({ silent: true });export default async function continueIfProductPage({ page, siteUrls }) {
+
+    debugger
     page.on("console", (message) => {
         console.log("Message from Puppeteer page:", message.text());
     });
 
     const scrollBehavior = siteUrls?.scrollBehavior;
     const waitForSeconds = siteUrls?.waitForSeconds || 0;
-    
-    const productItemsCount = await page.$eval(productPageSelector.join(', '), elements => elements.length);
-    
+    debugger
+  const productItemsCount = await page.$$eval(productPageSelector.join(', '), elements => elements.length);
+    debugger    
     if (productItemsCount > 0) {
         if (waitForSeconds > 0) {
             await page.evaluate(async (seconds) => {
@@ -45,6 +47,7 @@ dotenv.config({ silent: true });export default async function continueIfProductP
         
         return true;
     } else {
+        debugger
         console.log('No product items found on the page');
         return false;
     }

@@ -1,32 +1,32 @@
 {
-  "targetSite": "colins",
+  "targetSite": "silkandcashmere",
   "urls": [
-    "https://www.colins.com.tr/c/erkek-giyim-modelleri-2"
+    "https://silkandcashmere.com/collections/ev-yasam?filter.v.availability=1"
   ],
   "totalUrls": 1,
   "paused": false,
   "pausedReason": "",
   "configurations": [
     {
-      "brand": "colins",
-      "funcPageSelector": [
-        ".product-count-text",
-        48
+      "brand": "silkandcashmere",
+      "funcPageSelector": "",
+      "scrollBehavior": [
+        "a.btn.btn--secondary.no-transition",
+        false
       ],
-      "isAutoScroll": false,
       "urls": [
-        "https://www.colins.com.tr/c/erkek-giyim-modelleri-2"
+        "https://silkandcashmere.com/collections/ev-yasam?filter.v.availability=1"
       ],
-      "paginationPostfix": "?page=",
+      "paginationPostfix": "",
       "paused": false,
       "pausedReason": "",
-      "rowIndex": 22
+      "rowIndex": 45
     }
   ],
-  "funcPageSelector": [
-    ".product-count-text",
-    48
+  "funcPageSelector": "",
+  "scrollBehavior": [
+    "a.btn.btn--secondary.no-transition",
+    false
   ],
-  "isAutoScroll": false,
-  "paginationPostfix": "?page="
+  "paginationPostfix": ""
 }
