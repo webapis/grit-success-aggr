@@ -12,6 +12,36 @@ import '../listeners.js'; // ← This registers event handlers
 dotenv.config({ silent: true });
 
 const site = process.env.site;
+
+let baseRowData = {
+    Site: site,
+    'Notes': 'firstRoute shouldContinue is false look into screenshots',
+    'Total Objects': 'Not Reached',
+    'Invalid Titles': 'Not Reached',
+    'Invalid Page Titles': 'Not Reached',
+    'Invalid Links': 'Not Reached',
+    'Invalid Images': 'Not Reached',
+    'Invalid Prices': 'Not Reached',
+    'Unset Prices': 'Not Reached',
+    'Price Scrape Errors': 'Not Reached',
+    'Product Not Available': 'Not Reached',
+    'Total Unique Objects (by link)': 'Not Reached',
+    'Error Objects': 'Not Reached',
+    "JSONErrorGit": 'Not Reached',
+    "JSONErrorDrive": 'Not Reached',
+    "JSONDataGit": 'Not Reached',
+    "JSONDataDrive": 'Not Reached',
+    'Start Time': 'Not Reached',
+    'End Time': 'Not Reached',
+    'Span (min)': 'Not Reached',
+    'Total Pages': 'Not Reached',
+    'Unique Page URLs': 'Not Reached',
+    'AutoScroll': 'Not Reached',
+    'productPageSelector': 'Not Reached',
+    'productItemSelector': 'Not Reached',
+    'ScreenshotGit': result.url
+
+};
 export default async function first({ page, addRequests, siteUrls }) {
 
     await page.evaluate(() => {
@@ -26,7 +56,17 @@ export default async function first({ page, addRequests, siteUrls }) {
         debugger
         await addNextPagesToRequests({ page, addRequests, siteUrls });
         debugger
-        return await scrapeData({ page, siteUrls })
+        const data = await scrapeData({ page, siteUrls })
+        if (data.length === 0) {
+
+            await emitAsync('log-to-sheet', {
+                sheetTitle: 'Crawl Logs(success)',
+                message: console.log(`Site ${site} is logging data to Google Sheet.`),
+                rowData: { ...baseRowData, Notes: 'no productItemSelector is provided :firstRoute' }
+            });
+        }
+        debugger
+        return data
     } else {
         //take screenshot if initial pages could not be retrieved.
         const screenshotBuffer = await page.screenshot({ fullPage: true });
@@ -48,35 +88,7 @@ export default async function first({ page, addRequests, siteUrls }) {
         console.log('Screenshot uploaded!')
         console.log('View at:', result.url)
         console.log('Direct link:', result.downloadUrl)
-        const baseRowData = {
-            Site: site,
-            'Notes': 'firstRoute shouldContinue is false look into screenshots',
-            'Total Objects': 'Not Reached',
-            'Invalid Titles': 'Not Reached',
-            'Invalid Page Titles': 'Not Reached',
-            'Invalid Links': 'Not Reached',
-            'Invalid Images': 'Not Reached',
-            'Invalid Prices': 'Not Reached',
-            'Unset Prices': 'Not Reached',
-            'Price Scrape Errors': 'Not Reached',
-            'Product Not Available': 'Not Reached',
-            'Total Unique Objects (by link)': 'Not Reached',
-            'Error Objects': 'Not Reached',
-            "JSONErrorGit": 'Not Reached',
-            "JSONErrorDrive": 'Not Reached',
-            "JSONDataGit": 'Not Reached',
-            "JSONDataDrive": 'Not Reached',
-            'Start Time': 'Not Reached',
-            'End Time': 'Not Reached',
-            'Span (min)': 'Not Reached',
-            'Total Pages': 'Not Reached',
-            'Unique Page URLs': 'Not Reached',
-            'AutoScroll': 'Not Reached',
-            'productPageSelector': 'Not Reached',
-            'productItemSelector': 'Not Reached',
-            'ScreenshotGit': result.url
 
-        };
         await emitAsync('log-to-sheet', {
             sheetTitle: 'Crawl Logs(success)',
             message: console.log(`Site ${site} is logging data to Google Sheet.`),
