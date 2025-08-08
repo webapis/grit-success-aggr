@@ -1,4 +1,5 @@
 export default [
+    '.grid#AjaxinateLoop',
     '.boost-sd__product-list',
     '.message_box',
     '.list-product.js-list-products',
