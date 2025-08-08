@@ -10,7 +10,7 @@ dotenv.config({ silent: true });export default async function continueIfProductP
     });
 
     const scrollBehavior = siteUrls?.scrollBehavior;
-    const waitForSeconds = siteUrls?.waitForSeconds || 0;
+    const waitForSeconds = siteUrls?.waitForSeconds || 3;
     debugger
   const productItemsCount = await page.$$eval(productPageSelector.join(', '), elements => elements.length);
     debugger    
