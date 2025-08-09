@@ -39,7 +39,13 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
             } else if (scrollBehavior.length === 1 && scrollBehavior[0] === true) {
                 // Format: [true]
                 console.log('Running basic auto scroll');
-                await autoScroll(page, 150);
+                await autoScroll(page, {
+                    scrollSpeed: 500,
+                    scrollDistance: 300,
+                    waitForNetworkIdle: 1500,
+                    maxScrollAttempts: 500,
+                    enableLogging: true
+                });
             }
         } else if (scrollBehavior === '' || !scrollBehavior) {
             // No scrolling
