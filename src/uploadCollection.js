@@ -199,6 +199,13 @@ async function ensureBranchExists(branchName) {
 
             if (!createBranchResponse.ok) {
                 const errorBody = await createBranchResponse.text()
+                
+                // Handle the case where branch was created between our check and create attempt
+                if (createBranchResponse.status === 422 && errorBody.includes('Reference already exists')) {
+                    console.log(`Branch ${branchName} was created by another process, continuing...`)
+                    return
+                }
+                
                 throw new Error(`Failed to create branch ${branchName}: ${createBranchResponse.status} ${createBranchResponse.statusText} - ${errorBody}`)
             }
 
