@@ -35,7 +35,7 @@ export default async function scroller(page, scrollSpeed, scrollTimes = 50) {
     }, scrollSpeed, scrollTimes);
   }
 
-  
+  //https://claude.ai/chat/e48d8dea-5a3b-424e-addd-ef88e130b713
 export async function autoScroll(page, options = {}) {
   // Default configuration
   const config = {
