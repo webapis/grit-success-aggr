@@ -18,8 +18,9 @@ const site = process.env.site;
 const siteUrls = await getCachedSiteConfigFromFile()//urls.find(f => getMainDomainPart(f.urls[0]) === site)
 debugger;
 const dataset = await Dataset.open(site);
+const datasetTotalItemsToBeCallected = await Dataset.open('totalItemsToBeCallected');
 const { items: data } = await dataset.getData();
-
+const { items: totalItemsToCallect } = await datasetTotalItemsToBeCallected.getData();
 const dataWithoutError = data.filter(f => !f.error);
 const dataWithError = data.filter(f => f.error);
 const { oldestTimestamp, newestTimestamp, minutesSpan } = getAggrTimeSpan({ data });
@@ -34,8 +35,9 @@ const unsetPrice = countByField(data, 'priceisUnset', true);
 const priceScrapeError = countByField(data, 'priceScrapeError', true);
 const totalNotAvailable = countByField(data, 'productNotInStock', true);
 const dublicateURLs = findDuplicatesByLink(data)
+const totalItemsToBeCallected = totalItemsToCallect.length > 0 ? totalItemsToCallect[0].totalItemsToBeCallected : 0;
 debugger
-debugger
+
 
 
 const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
@@ -101,7 +103,7 @@ const JSONDataGit = await uploadCollection({
 });
 debugger
 if (dublicateURLs.length > 1) {
-     JSONDublicateUrlDataGit = await uploadCollection({
+    JSONDublicateUrlDataGit = await uploadCollection({
         fileName: site,
         data: dublicateURLs.filter((f, i) => i < 5),
         gitFolder: "dublicateUrl",
@@ -119,6 +121,7 @@ const baseRowData = {
     'Unset Prices': unsetPrice,
     'Price Scrape Errors': priceScrapeError,
     'Product Not Available': totalNotAvailable,
+    'TotalItemsToBeCallected': totalItemsToBeCallected,
     'Total Unique Objects (by link)': totalUniqueObjects.count,
     'Error Objects': dataWithError.length,
     "JSONErrorGit": JSONErrorGit ? JSONErrorGit.url : 'N/A',

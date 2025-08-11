@@ -2,6 +2,7 @@
 
 
 import dotenv from "dotenv";
+import { createPuppeteerRouter, Dataset } from "crawlee";
 import { uploadToGoogleDrive } from '../sheet/uploadToGoogleDrive.js';
 import scrapeData from "./helper/scrapeData.js";
 import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
@@ -54,6 +55,24 @@ export default async function first({ page, addRequests, siteUrls }) {
     const shouldContinue = await continueIfProductPage({ page, siteUrls });
     if (shouldContinue) {
         debugger
+
+        const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
+            const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
+            const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
+            return totalCount
+
+        }, siteUrls?.totalProductCounterSelector)
+
+        if (totalItemsToBeCallected > 0) {
+            const productsDataset = await Dataset.open('totalItemsToBeCallected');
+            await productsDataset.pushData({ totalItemsToBeCallected });
+        }
+            
+        
+
+        debugger
+
+
         await addNextPagesToRequests({ page, addRequests, siteUrls });
         debugger
         const data = await scrapeData({ page, siteUrls })
