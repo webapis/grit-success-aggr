@@ -50,6 +50,46 @@ function parseScrollable(value) {
 }
 
 /**
+ * Parses items per page from the sheet value
+ * @param {string} value - The raw value from the sheet
+ * @returns {number|null} Parsed items per page value or null if not set
+ */
+function parseItemsPerPage(value) {
+    if (!value || typeof value !== 'string') {
+        return null;
+    }
+
+    const trimmedValue = value.trim();
+    
+    // Try to parse as integer
+    const parsed = parseInt(trimmedValue, 10);
+    
+    // Return parsed number if valid, null otherwise
+    return isNaN(parsed) ? null : parsed;
+}
+
+/**
+ * Parses filtering needed boolean from the sheet value
+ * @param {string} value - The raw value from the sheet
+ * @returns {boolean} Parsed filtering needed value
+ */
+function parseFilteringNeeded(value) {
+    if (!value || typeof value !== 'string') {
+        return false;
+    }
+
+    const trimmedValue = value.trim();
+    
+    // Handle boolean true (case-insensitive)
+    if (trimmedValue.toLowerCase() === 'true') {
+        return true;
+    }
+
+    // Handle boolean false (case-insensitive) or empty
+    return false;
+}
+
+/**
  * Fetches site URLs and configuration from a Google Sheet.
  * @param {string} targetSite - The site name to look for in the sheet.
  * @returns {Promise<Object|null>} An object containing site configuration, or null if not found.
@@ -89,10 +129,10 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
 
         const sheets = google.sheets({ version: 'v4', auth });
 
-        // Fetch data from the sheet, columns A to L (updated range)
+        // Fetch data from the sheet, columns A to K (updated range to include new columns)
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId: GOOGLE_SHEET_ID,
-            range: `${GOOGLE_SHEET_NAME}!A:L`,
+            range: `${GOOGLE_SHEET_NAME}!A:K`,
         });
 
         const rows = response.data.values;
@@ -111,34 +151,35 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
         const headerRow = rows[0];
         const expectedHeaders = [
             'brands', 
-            'pagination element (css)', 
-            'pagination parameter', 
+            'pagination selector (css)', 
+            'pagination parameter name', 
             'scrollable(boolean)', 
-            'show more button (css)', 
-            'product counter (css)', 
+            'show more button selector (css)', 
+            'total product counter selector (css)', 
+            'items per page',
             'urls', 
             'paused', 
-            'pausedReason'
+            'pausedReason',
+            'filtering needed'
         ];
 
         // Log header validation
-        if (headerRow && headerRow.length >= 7) {
+        if (headerRow && headerRow.length >= 8) {
             console.log('Sheet headers detected:', headerRow);
         }
 
-        // Expected columns based on your new sheet structure:
+        // Updated column mapping:
         // A: brands
-        // B: pagination element (css) 
-        // C: pagination parameter
+        // B: pagination selector (css) 
+        // C: pagination parameter name
         // D: scrollable(boolean)
-        // E: show more button (css)
-        // F: product counter (css)  
-        // G: urls
-        // H: (empty in your sheet)
-        // I: (empty in your sheet)
-        // J: (empty in your sheet) 
-        // K: paused
-        // L: pausedReason
+        // E: show more button selector (css)
+        // F: total product counter selector (css)
+        // G: items per page
+        // H: urls
+        // I: paused
+        // J: pausedReason
+        // K: filtering needed
 
         const dataRows = rows.slice(1); // Skip header row
 
@@ -156,7 +197,7 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
             console.log(`\nProcessing Row ${index + 2}:`);
             console.log(`   Raw row data:`, JSON.stringify(row));
 
-            const urlsString = row[7] || ''; // URLs are now in column G (index 6)
+            const urlsString = row[7] || ''; // URLs are in column H (index 7)
             
             console.log(`   URLs string: "${urlsString}"`);
 
@@ -197,17 +238,27 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
                     const scrollable = parseScrollable(row[3]);
                     console.log(`   Parsed scrollable: ${scrollable}`);
 
-                    // Create configuration object for this row with new structure
+                    // Parse items per page from column G (index 6)
+                    const itemsPerPage = parseItemsPerPage(row[6]);
+                    console.log(`   Parsed items per page: ${itemsPerPage}`);
+
+                    // Parse filtering needed from column K (index 10)
+                    const filteringNeeded = parseFilteringNeeded(row[10]);
+                    console.log(`   Parsed filtering needed: ${filteringNeeded}`);
+
+                    // Create configuration object for this row with updated structure
                     const rowConfig = {
                         brand: row[0] ? row[0].trim() : '',
-                        paginationElement: row[1] ? row[1].trim() : '', // pagination element (css)
-                        paginationParameter: row[2] ? row[2].trim() : '', // pagination parameter
+                        paginationSelector: row[1] ? row[1].trim() : '', // pagination selector (css)
+                        paginationParameterName: row[2] ? row[2].trim() : '', // pagination parameter name
                         scrollable: scrollable, // scrollable(boolean)
-                        showMoreButton: row[4] ? row[4].trim() : '', // show more button (css)
-                        productCounter: row[5] ? row[5].trim() : '', // product counter (css)
+                        showMoreButtonSelector: row[4] ? row[4].trim() : '', // show more button selector (css)
+                        totalProductCounterSelector: row[5] ? row[5].trim() : '', // total product counter selector (css)
+                        itemsPerPage: itemsPerPage, // items per page
                         urls: matchingUrls,
-                        paused: row[10] ? row[10].trim().toLowerCase() === 'true' : false, // column K
-                        pausedReason: row[11] ? row[11].trim() : '', // column L
+                        paused: row[8] ? row[8].trim().toLowerCase() === 'true' : false, // column I
+                        pausedReason: row[9] ? row[9].trim() : '', // column J
+                        filteringNeeded: filteringNeeded, // column K
                         rowIndex: index + 2 // For reference
                     };
 
@@ -236,19 +287,24 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
         const isPaused = siteConfigurations.some(config => config.paused);
         const pausedReason = siteConfigurations.find(config => config.paused)?.pausedReason || '';
 
+        // Determine overall filtering needed status (if ANY matching row needs filtering, consider filtering needed)
+        const isFilteringNeeded = siteConfigurations.some(config => config.filteringNeeded);
+
         const finalConfig = {
             targetSite: targetSite,
             urls: allUrls,
             totalUrls: allUrls.length,
             paused: isPaused,
             pausedReason: pausedReason,
+            filteringNeeded: isFilteringNeeded,
             configurations: siteConfigurations, // All matching row configurations
             // Convenience properties (from first matching configuration)
-            paginationElement: siteConfigurations[0]?.paginationElement || '',
-            paginationParameter: siteConfigurations[0]?.paginationParameter || '',
+            paginationSelector: siteConfigurations[0]?.paginationSelector || '',
+            paginationParameterName: siteConfigurations[0]?.paginationParameterName || '',
             scrollable: siteConfigurations[0]?.scrollable || false,
-            showMoreButton: siteConfigurations[0]?.showMoreButton || '',
-            productCounter: siteConfigurations[0]?.productCounter || '',
+            showMoreButtonSelector: siteConfigurations[0]?.showMoreButtonSelector || '',
+            totalProductCounterSelector: siteConfigurations[0]?.totalProductCounterSelector || '',
+            itemsPerPage: siteConfigurations[0]?.itemsPerPage || null,
         };
 
         console.log(`Found configuration for site "${targetSite}":`, finalConfig);

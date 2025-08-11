@@ -11,13 +11,13 @@
 export default async function getNextPaginationUrls(page, url, siteUrls) {
   debugger
 
-  const paginationSelector = siteUrls?.paginationElement
-  const paginationParameter = siteUrls?.paginationParameter
-
-  const postfix = paginationPostfix; // Support only first for now
-
-  if (paginationElement && paginationParameter) {
-    return await page.evaluate((paginationSelector, baseUrl, paginationParameter) => {
+  const paginationSelector = siteUrls?.paginationSelector
+  const paginationParameterName = siteUrls?.paginationParameterName
+  const itemsPerPage = siteUrls?.itemsPerPage
+  const totalProductCounterSelector = siteUrls?.totalProductCounterSelector 
+  debugger
+  if (paginationSelector && paginationParameterName) {
+    return await page.evaluate((paginationSelector, baseUrl, paginationParameterName) => {
       debugger
       try {
 
@@ -30,7 +30,7 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
         const maxPage = Math.max(...pageNumbers, 1);
         const urls = [];
         for (let i = 1; i <= maxPage; i++) {
-          urls.push(`${baseUrl}${paginationParameter}${i}`);
+          urls.push(`${baseUrl}${ paginationParameterName}${i}`);
         }
         return urls;
 
@@ -38,57 +38,28 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
         console.error('Pagination eval error:', error);
         return [];
       }
-    }, paginationSelector, url, paginationParameter);
+    }, paginationSelector, url, paginationParameterName);
 
-  } else if (paginationParameter ){
-    
-  }
+  } else if (itemsPerPage && paginationParameterName && totalProductCounterSelector) {
 
-
-
-  debugger
-  return await page.evaluate((selectors, baseUrl, postfix) => {
-    debugger
-    try {
-      if (selectors.length === 1) {
-        // Type 1: Page number buttons (like 1, 2, 3, ...)
-        const paginationSelector = selectors[0];
-        const pageNumbers = [...document.querySelectorAll(paginationSelector)]
-          .map(el => el.innerText.trim())
-          .filter(text => /^\d+$/.test(text))
-          .map(num => parseInt(num, 10));
-
-        const maxPage = Math.max(...pageNumbers, 1);
+    const nextUrls = await page.evaluate((baseUrl, itemsPerPage, paginationParameterName, totalProductCounterSelector) => {
+        const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
+        const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
+      if (!isNaN(totalCount) && totalCount > itemsPerPage) {
+        const totalPages = Math.ceil(totalCount / itemsPerPage);
         const urls = [];
-        for (let i = 1; i <= maxPage; i++) {
-          urls.push(`${baseUrl}${postfix}${i}`);
+        for (let i = 1; i <= totalPages; i++) {
+          urls.push(`${baseUrl}${paginationParameterName}${i}`);
         }
         return urls;
-      } else if (selectors.length === 2) {
-        debugger
-        // Type 2: total count / items per page
-        const totalCountSelector = selectors[0];
-        const itemsPerPage = parseInt(selectors[1], 10);
-
-        const totalCountText = document.querySelector(totalCountSelector)?.innerText || '';
-        const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
-
-        if (!isNaN(totalCount) && totalCount > itemsPerPage) {
-          const totalPages = Math.ceil(totalCount / itemsPerPage);
-          const urls = [];
-          for (let i = 1; i <= totalPages; i++) {
-            urls.push(`${baseUrl}${postfix}${i}`);
-          }
-          return urls;
-        } else {
-          return [];
-        }
       } else {
         return [];
       }
-    } catch (error) {
-      console.error('Pagination eval error:', error);
-      return [];
-    }
-  }, funcPageSelector, url, postfix);
+    }, url, itemsPerPage, paginationParameterName,  totalProductCounterSelector);
+
+    debugger
+    return nextUrls;
+  }
+
+  debugger
 }
