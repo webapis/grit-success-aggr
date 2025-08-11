@@ -1,26 +1,30 @@
 {
-  "targetSite": "derimod",
+  "targetSite": "koton",
   "urls": [
-    "https://derimod.com.tr/collections/kadin-canta?filter.v.availability=1"
+    "https://www.koton.com/kadin-canta/"
   ],
   "totalUrls": 1,
   "paused": false,
   "pausedReason": "",
   "configurations": [
     {
-      "brand": "derimod",
-      "funcPageSelector": "",
-      "scrollBehavior": "",
+      "brand": "koton",
+      "paginationElement": ".pz-pagination-link",
+      "paginationParameter": "?page=",
+      "scrollable": true,
+      "showMoreButton": ".js-loadmore-products",
+      "productCounter": ".js-result-count",
       "urls": [
-        "https://derimod.com.tr/collections/kadin-canta?filter.v.availability=1"
+        "https://www.koton.com/kadin-canta/"
       ],
-      "paginationPostfix": "",
       "paused": false,
-      "pausedReason": "",
-      "rowIndex": 58
+      "pausedReason": "[\".pz-pagination-link\"]",
+      "rowIndex": 2
     }
   ],
-  "funcPageSelector": "",
-  "scrollBehavior": "",
-  "paginationPostfix": ""
+  "paginationElement": ".pz-pagination-link",
+  "paginationParameter": "?page=",
+  "scrollable": true,
+  "showMoreButton": ".js-loadmore-products",
+  "productCounter": ".js-result-count"
 }

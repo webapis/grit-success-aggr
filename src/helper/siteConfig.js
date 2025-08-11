@@ -7,7 +7,7 @@ import getMainDomainPart from './getMainDomainPart.js';
 // Environment variables for Google Sheets access
 const GOOGLE_SERVICE_ACCOUNT_CREDENTIALS = process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS;
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
-
+const GOOGLE_SHEET_NAME = process.env.GOOGLE_SHEET_NAME || 'wbags'; // Default sheet name if not set
 // Define a path for the local cache file
 const LOCAL_CACHE_FILE = path.resolve(process.cwd(), 'siteConfig.json');
 
@@ -29,62 +29,33 @@ function isValidUrl(string) {
 }
 
 /**
- * Parses scrollBehavior from the sheet value
+ * Parses scrollable(boolean) from the sheet value
  * @param {string} value - The raw value from the sheet
- * @returns {string|Array|boolean} Parsed scrollBehavior value
+ * @returns {boolean} Parsed scrollable value
  */
-function parseScrollBehavior(value) {
+function parseScrollable(value) {
     if (!value || typeof value !== 'string') {
-        return '';
+        return false;
     }
 
     const trimmedValue = value.trim();
-
-    // Handle empty string
-    if (!trimmedValue) {
-        return '';
-    }
-
+    
     // Handle boolean true (case-insensitive)
     if (trimmedValue.toLowerCase() === 'true') {
-        return [true];
+        return true;
     }
 
-    // Handle boolean false (case-insensitive)
-    if (trimmedValue.toLowerCase() === 'false') {
-        return '';
-    }
-
-    // Try to parse as JSON array
-    if (trimmedValue.startsWith('[') && trimmedValue.endsWith(']')) {
-        try {
-            const parsed = JSON.parse(trimmedValue);
-            if (Array.isArray(parsed)) {
-                // Validate array format
-                if (parsed.length === 1 && parsed[0] === true) {
-                    return [true];
-                } else if (parsed.length === 2 &&
-                    typeof parsed[0] === 'string' &&
-                    typeof parsed[1] === 'boolean') {
-                    return parsed;
-                }
-            }
-        } catch (error) {
-            console.warn(`Failed to parse scrollBehavior as JSON array: ${trimmedValue}`, error.message);
-        }
-    }
-
-    // If it's not a recognized format, treat as empty (no scrolling)
-    console.warn(`Unrecognized scrollBehavior format: "${trimmedValue}", treating as no scrolling`);
-    return '';
+    // Handle boolean false (case-insensitive) or empty
+    return false;
 }
 
 /**
- * Fetches site URLs and pause status from a Google Sheet.
+ * Fetches site URLs and configuration from a Google Sheet.
  * @param {string} targetSite - The site name to look for in the sheet.
- * @returns {Promise<Object|null>} An object containing site URLs, paused status, and reason, or null if not found.
+ * @returns {Promise<Object|null>} An object containing site configuration, or null if not found.
  */
 async function fetchSiteUrlsFromGoogleSheet(targetSite) {
+    
     // Validate required environment variables
     if (!GOOGLE_SERVICE_ACCOUNT_CREDENTIALS) {
         console.error('Error: GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable is not set.');
@@ -118,10 +89,10 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
 
         const sheets = google.sheets({ version: 'v4', auth });
 
-        // Fetch data from the 'wbags' sheet, columns A to G
+        // Fetch data from the sheet, columns A to L (updated range)
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId: GOOGLE_SHEET_ID,
-            range: 'wbags!A:G',
+            range: `${GOOGLE_SHEET_NAME}!A:L`,
         });
 
         const rows = response.data.values;
@@ -138,15 +109,37 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
 
         // Validate header structure (optional but recommended)
         const headerRow = rows[0];
-        const expectedHeaders = ['brands', 'funcPageSelector', 'scrollBehavior', 'urls', 'paginationPostfix', 'paused', 'pausedReason'];
+        const expectedHeaders = [
+            'brands', 
+            'pagination element (css)', 
+            'pagination parameter', 
+            'scrollable(boolean)', 
+            'show more button (css)', 
+            'product counter (css)', 
+            'urls', 
+            'paused', 
+            'pausedReason'
+        ];
 
-        // Log header validation (optional - can be removed in production)
-        if (headerRow && headerRow.length >= 4) {
+        // Log header validation
+        if (headerRow && headerRow.length >= 7) {
             console.log('Sheet headers detected:', headerRow);
         }
 
-        // Expected columns based on your sheet:
-        // A: brands, B: funcPageSelector, C: scrollBehavior, D: urls, E: paginationPostfix, F: paused, G: pausedReason
+        // Expected columns based on your new sheet structure:
+        // A: brands
+        // B: pagination element (css) 
+        // C: pagination parameter
+        // D: scrollable(boolean)
+        // E: show more button (css)
+        // F: product counter (css)  
+        // G: urls
+        // H: (empty in your sheet)
+        // I: (empty in your sheet)
+        // J: (empty in your sheet) 
+        // K: paused
+        // L: pausedReason
+
         const dataRows = rows.slice(1); // Skip header row
 
         let allUrls = [];
@@ -163,7 +156,8 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
             console.log(`\nProcessing Row ${index + 2}:`);
             console.log(`   Raw row data:`, JSON.stringify(row));
 
-            const urlsString = row[3] || ''; // URLs are in column D (index 3)
+            const urlsString = row[7] || ''; // URLs are now in column G (index 6)
+            
             console.log(`   URLs string: "${urlsString}"`);
 
             if (urlsString.trim()) {
@@ -199,19 +193,21 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
                     console.log(`   ✓ Found ${matchingUrls.length} matching URLs in row ${index + 2}`);
                     foundBrand = true;
 
-                    // Parse scrollBehavior from column C (index 2)
-                    const scrollBehavior = parseScrollBehavior(row[2]);
-                    console.log(`   Parsed scrollBehavior: ${JSON.stringify(scrollBehavior)}`);
-                    debugger
-                    // Create configuration object for this row
+                    // Parse scrollable boolean from column D (index 3)
+                    const scrollable = parseScrollable(row[3]);
+                    console.log(`   Parsed scrollable: ${scrollable}`);
+
+                    // Create configuration object for this row with new structure
                     const rowConfig = {
                         brand: row[0] ? row[0].trim() : '',
-                        funcPageSelector: row[1] ? JSON.parse(row[1].trim()) : '',
-                        scrollBehavior: scrollBehavior,
+                        paginationElement: row[1] ? row[1].trim() : '', // pagination element (css)
+                        paginationParameter: row[2] ? row[2].trim() : '', // pagination parameter
+                        scrollable: scrollable, // scrollable(boolean)
+                        showMoreButton: row[4] ? row[4].trim() : '', // show more button (css)
+                        productCounter: row[5] ? row[5].trim() : '', // product counter (css)
                         urls: matchingUrls,
-                        paginationPostfix: row[4] ? row[4].trim() : '',
-                        paused: row[5] ? row[5].trim().toLowerCase() === 'true' : false,
-                        pausedReason: row[6] ? row[6].trim() : '',
+                        paused: row[10] ? row[10].trim().toLowerCase() === 'true' : false, // column K
+                        pausedReason: row[11] ? row[11].trim() : '', // column L
                         rowIndex: index + 2 // For reference
                     };
 
@@ -248,9 +244,11 @@ async function fetchSiteUrlsFromGoogleSheet(targetSite) {
             pausedReason: pausedReason,
             configurations: siteConfigurations, // All matching row configurations
             // Convenience properties (from first matching configuration)
-            funcPageSelector: siteConfigurations[0]?.funcPageSelector || '',
-            scrollBehavior: siteConfigurations[0]?.scrollBehavior || '',
-            paginationPostfix: siteConfigurations[0]?.paginationPostfix || '',
+            paginationElement: siteConfigurations[0]?.paginationElement || '',
+            paginationParameter: siteConfigurations[0]?.paginationParameter || '',
+            scrollable: siteConfigurations[0]?.scrollable || false,
+            showMoreButton: siteConfigurations[0]?.showMoreButton || '',
+            productCounter: siteConfigurations[0]?.productCounter || '',
         };
 
         console.log(`Found configuration for site "${targetSite}":`, finalConfig);
@@ -304,6 +302,7 @@ async function loadSiteConfigFromFile() {
  * @returns {Promise<Object|null>} Site configuration object
  */
 async function getSiteConfig(targetSite, forceRefresh = false) {
+    
     // Return cached in-memory config if available and not forcing refresh
     if (global.siteConfigCache && !forceRefresh) {
         console.log(`Using in-memory cached configuration for site: ${targetSite}`);
@@ -357,7 +356,7 @@ async function clearSiteConfigCache() {
  * This function will always attempt to read from the file.
  * @returns {Promise<Object|null>} The site configuration object from the file or null if not found/error.
  */
-async function getCachedSiteConfigFromFile() { // Renamed for clarity
+async function getCachedSiteConfigFromFile() {
     console.log(`Attempting to retrieve configuration directly from local file: ${LOCAL_CACHE_FILE}`);
     return await loadSiteConfigFromFile();
 }
@@ -367,10 +366,7 @@ export {
     getSiteConfig,
     fetchSiteUrlsFromGoogleSheet,
     clearSiteConfigCache,
-    // Export the new function that explicitly reads from the file
     getCachedSiteConfigFromFile,
-    // You can keep the old one if needed, but it's less direct now
-    // getCachedSiteConfig: () => global.siteConfigCache,
     saveSiteConfigToFile,
     loadSiteConfigFromFile
 };

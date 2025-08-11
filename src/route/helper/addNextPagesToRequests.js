@@ -10,21 +10,20 @@ dotenv.config({ silent: true });
 export default async function addNextPagesToRequests({ page, addRequests, siteUrls }) {
     //next pages
 
-const shouldContinue = await continueIfProductPage({ page, siteUrls });
-if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
+// const shouldContinue = await continueIfProductPage({ page, siteUrls });
+// if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
 
     const url = await page.url();
 
     if (
-        siteUrls.funcPageSelector &&
+ 
         url.length > 0 
-        &&
-        !url.includes(siteUrls.paginationPostfix)
+    
     ) {
 
 
         debugger
-        const nextPages = await getNextPaginationUrls(page, url, siteUrls.funcPageSelector, siteUrls.paginationPostfix);
+        const nextPages = await getNextPaginationUrls(page, url, siteUrls);
 
 
         if (nextPages.length > 0) {

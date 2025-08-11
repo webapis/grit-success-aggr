@@ -19,7 +19,7 @@ debugger
             console.error('Error: site environment variable is not set.');
             process.exit(1);
         }
-
+debugger
         console.log(`Fetching configuration for site: ${site}`);
         const siteConfig = await getSiteConfig(site, true);
   
