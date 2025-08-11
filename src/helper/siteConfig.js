@@ -7,7 +7,7 @@ import getMainDomainPart from './getMainDomainPart.js';
 // Environment variables for Google Sheets access
 const GOOGLE_SERVICE_ACCOUNT_CREDENTIALS = process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS;
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID;
-const GOOGLE_SHEET_NAME = process.env.GOOGLE_SHEET_NAME || 'wbags'; // Default sheet name if not set
+const GOOGLE_SHEET_NAME = process.env.GOOGLE_SHEET_NAME ||'wbags-scroll' //'wbags'; // Default sheet name if not set
 // Define a path for the local cache file
 const LOCAL_CACHE_FILE = path.resolve(process.cwd(), 'siteConfig.json');
 
