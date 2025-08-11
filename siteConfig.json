@@ -1,7 +1,7 @@
 {
   "targetSite": "brooksbrothers",
   "urls": [
-    "https://www.brooksbrothers.com.tr/kadin-ceket-c"
+    "https://www.brooksbrothers.com.tr/kadin-canta-c"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -11,13 +11,13 @@
     {
       "brand": "brooksbrothers",
       "paginationSelector": "",
-      "paginationParameterName": "?p=",
+      "paginationParameterName": "",
       "scrollable": true,
       "showMoreButtonSelector": "",
       "totalProductCounterSelector": "span.text-primary",
       "itemsPerPage": 12,
       "urls": [
-        "https://www.brooksbrothers.com.tr/kadin-ceket-c"
+        "https://www.brooksbrothers.com.tr/kadin-canta-c"
       ],
       "paused": false,
       "pausedReason": "",
@@ -26,7 +26,7 @@
     }
   ],
   "paginationSelector": "",
-  "paginationParameterName": "?p=",
+  "paginationParameterName": "",
   "scrollable": true,
   "showMoreButtonSelector": "",
   "totalProductCounterSelector": "span.text-primary",

@@ -53,7 +53,7 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
                     elementCounts[selector] = count;
                 }
             }
-debugger;
+            debugger;
             console.log('Matched selectors:', matchedSelectors);
             console.log('Element counts:', elementCounts);
             await autoScrollUntilCount(page, matchedSelectors[0], elementCounts[matchedSelectors[0]])
