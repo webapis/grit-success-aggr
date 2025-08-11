@@ -79,7 +79,7 @@ export default async function first({ page, addRequests, siteUrls }) {
                 message: console.log(`Site ${site} is logging data to Google Sheet.`),
                 rowData: { ...baseRowData, Notes: 'no productItemSelector is provided :firstRoute' }
             });
-        }
+        } 
         debugger
         return data
     } else {

@@ -1,7 +1,7 @@
 {
-  "targetSite": "oxxo",
+  "targetSite": "brooksbrothers",
   "urls": [
-    "https://www.oxxo.com.tr/tr/aksesuarlar/cantalar/"
+    "https://www.brooksbrothers.com.tr/kadin-ceket-c"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,26 +9,26 @@
   "filteringNeeded": false,
   "configurations": [
     {
-      "brand": "oxxo",
+      "brand": "brooksbrothers",
       "paginationSelector": "",
-      "paginationParameterName": "",
+      "paginationParameterName": "?p=",
       "scrollable": true,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": "",
-      "itemsPerPage": null,
+      "totalProductCounterSelector": "span.text-primary",
+      "itemsPerPage": 12,
       "urls": [
-        "https://www.oxxo.com.tr/tr/aksesuarlar/cantalar/"
+        "https://www.brooksbrothers.com.tr/kadin-ceket-c"
       ],
       "paused": false,
       "pausedReason": "",
       "filteringNeeded": false,
-      "rowIndex": 16
+      "rowIndex": 21
     }
   ],
   "paginationSelector": "",
-  "paginationParameterName": "",
+  "paginationParameterName": "?p=",
   "scrollable": true,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": "",
-  "itemsPerPage": null
+  "totalProductCounterSelector": "span.text-primary",
+  "itemsPerPage": 12
 }

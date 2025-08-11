@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
-import scroller, { autoScroll, scrollWithShowMoreAdvanced } from "../../scrape-helpers/scroller.js";
+import scroller, { autoScroll, scrollWithShowMoreAdvanced, autoScrollUntilCount } from "../../scrape-helpers/scroller.js";
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
-
+import productItemSelector from "../../selector-attibutes/productItemSelector.js";
 dotenv.config({ silent: true }); export default async function continueIfProductPage({ page, siteUrls }) {
 
     debugger
@@ -27,7 +27,11 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
     debugger
     if (productItemsCount > 0) {
 
-        if (scrollable && !paginationSelector && !showMoreButtonSelector && !totalProductCounterSelector) {
+        debugger
+
+
+        debugger
+        if (scrollable && !showMoreButtonSelector && !totalProductCounterSelector) {
 
             debugger
             await autoScroll(page, {
@@ -37,6 +41,28 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
                 maxScrollAttempts: 500,
                 enableLogging: true
             });
+        } else if (scrollable && !showMoreButtonSelector && totalProductCounterSelector) {
+
+            const matchedSelectors = [];
+            const elementCounts = {};
+
+            for (const selector of productItemSelector) {
+                const count = await page.$$eval(selector, elements => elements.length);
+                if (count > 0) {
+                    matchedSelectors.push(selector);
+                    elementCounts[selector] = count;
+                }
+            }
+debugger;
+            console.log('Matched selectors:', matchedSelectors);
+            console.log('Element counts:', elementCounts);
+            await autoScrollUntilCount(page, matchedSelectors[0], elementCounts[matchedSelectors[0]])
+
+
+
+
+
+
         }
 
         // Handle different scrollBehavior formats
@@ -64,7 +90,7 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
                     enableLogging: true
                 });
             }
-        } 
+        }
 
         return true;
     } else {
