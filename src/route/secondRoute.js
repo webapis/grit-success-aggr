@@ -4,7 +4,7 @@
 
 
 import scrapeData from "./helper/scrapeData.js";
-import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
+//import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
 
 export default async function second({
     page,
@@ -13,7 +13,7 @@ export default async function second({
     siteUrls
 }) {
 
-    await addNextPagesToRequests({ page, addRequests,siteUrls });
+  //  await addNextPagesToRequests({ page, addRequests,siteUrls });
 
     const data = await scrapeData({ page,siteUrls })
 
