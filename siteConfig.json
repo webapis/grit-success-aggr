@@ -1,7 +1,7 @@
 {
-  "targetSite": "koton",
+  "targetSite": "oxxo",
   "urls": [
-    "https://www.koton.com/kadin-canta/"
+    "https://www.oxxo.com.tr/tr/aksesuarlar/cantalar/"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,26 +9,26 @@
   "filteringNeeded": false,
   "configurations": [
     {
-      "brand": "koton",
-      "paginationSelector": ".pz-pagination-link",
-      "paginationParameterName": "?page=",
+      "brand": "oxxo",
+      "paginationSelector": "",
+      "paginationParameterName": "",
       "scrollable": true,
-      "showMoreButtonSelector": ".js-loadmore-products",
-      "totalProductCounterSelector": ".js-result-count",
+      "showMoreButtonSelector": "",
+      "totalProductCounterSelector": "",
       "itemsPerPage": null,
       "urls": [
-        "https://www.koton.com/kadin-canta/"
+        "https://www.oxxo.com.tr/tr/aksesuarlar/cantalar/"
       ],
       "paused": false,
       "pausedReason": "",
       "filteringNeeded": false,
-      "rowIndex": 2
+      "rowIndex": 16
     }
   ],
-  "paginationSelector": ".pz-pagination-link",
-  "paginationParameterName": "?page=",
+  "paginationSelector": "",
+  "paginationParameterName": "",
   "scrollable": true,
-  "showMoreButtonSelector": ".js-loadmore-products",
-  "totalProductCounterSelector": ".js-result-count",
+  "showMoreButtonSelector": "",
+  "totalProductCounterSelector": "",
   "itemsPerPage": null
 }

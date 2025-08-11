@@ -55,23 +55,19 @@ export default async function first({ page, addRequests, siteUrls }) {
     const shouldContinue = await continueIfProductPage({ page, siteUrls });
     if (shouldContinue) {
         debugger
+        if (siteUrls?.totalProductCounterSelector) {
+            const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
+                const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
+                const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
+                return totalCount
 
-        const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
-            const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
-            const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
-            return totalCount
+            }, siteUrls?.totalProductCounterSelector)
 
-        }, siteUrls?.totalProductCounterSelector)
-
-        if (totalItemsToBeCallected > 0) {
-            const productsDataset = await Dataset.open('totalItemsToBeCallected');
-            await productsDataset.pushData({ totalItemsToBeCallected });
+            if (totalItemsToBeCallected > 0) {
+                const productsDataset = await Dataset.open('totalItemsToBeCallected');
+                await productsDataset.pushData({ totalItemsToBeCallected });
+            }
         }
-            
-        
-
-        debugger
-
 
         await addNextPagesToRequests({ page, addRequests, siteUrls });
         debugger

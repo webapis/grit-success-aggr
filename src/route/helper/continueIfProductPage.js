@@ -11,6 +11,12 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
 
     const scrollBehavior = siteUrls?.scrollBehavior;
     const waitForSeconds = siteUrls?.waitForSeconds || 3;
+
+    const paginationSelector = siteUrls?.paginationSelector;
+    const scrollable = siteUrls?.scrollable || false;
+    const showMoreButtonSelector = siteUrls?.showMoreButtonSelector || '';
+    const totalProductCounterSelector = siteUrls?.totalProductCounterSelector || '';
+
     debugger
     if (waitForSeconds > 0) {
         await page.evaluate(async (seconds) => {
@@ -21,9 +27,20 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
     debugger
     if (productItemsCount > 0) {
 
+        if (scrollable && !paginationSelector && !showMoreButtonSelector && !totalProductCounterSelector) {
+
+            debugger
+            await autoScroll(page, {
+                scrollSpeed: 500,
+                scrollDistance: 300,
+                waitForNetworkIdle: 1500,
+                maxScrollAttempts: 500,
+                enableLogging: true
+            });
+        }
 
         // Handle different scrollBehavior formats
-        if (Array.isArray(scrollBehavior)) {
+        if (false) {
             if (scrollBehavior.length === 2) {
                 // Format: ['css selector', true/false]
                 const [selector, shouldScroll] = scrollBehavior;
@@ -47,10 +64,7 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
                     enableLogging: true
                 });
             }
-        } else if (scrollBehavior === '' || !scrollBehavior) {
-            // No scrolling
-            console.log('No scrolling configured');
-        }
+        } 
 
         return true;
     } else {
