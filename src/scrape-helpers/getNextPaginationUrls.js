@@ -59,6 +59,8 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
 
     debugger
     return nextUrls;
+  }else{
+    return []
   }
 
   debugger
