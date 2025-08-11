@@ -704,44 +704,43 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
           try {
             const currentElementCount = getCurrentElementCount();
             
-            // Check if we've reached the target count
-            if (currentElementCount >= targetElementCount) {
-              clearTimeout(timeoutId);
-              console.log(`Scroll completed: target count (${targetElementCount}) reached. Found ${currentElementCount} elements.`);
-              resolve({ 
-                success: true, 
-                finalCount: currentElementCount, 
-                targetCount: targetElementCount,
-                scrollAttempts: scrollAttempts
-              });
-              return;
-            }
+            // Track if we've reached the target count (but don't stop yet)
+            const targetReached = currentElementCount >= targetElementCount;
             
             // Check if we've exceeded max scroll attempts
             if (scrollAttempts >= scrollConfig.maxScrollAttempts) {
               clearTimeout(timeoutId);
-              console.log(`Scroll completed: max attempts (${scrollConfig.maxScrollAttempts}) reached. Found ${currentElementCount}/${targetElementCount} elements.`);
+              const targetReached = currentElementCount >= targetElementCount;
+              const reason = targetReached ? 'max_attempts_target_met' : 'max_attempts_target_not_met';
+              
+              console.log(`Scroll completed: max attempts (${scrollConfig.maxScrollAttempts}) reached. Found ${currentElementCount}/${targetElementCount} elements. Target ${targetReached ? 'achieved' : 'not achieved'}.`);
               resolve({ 
-                success: false, 
+                success: targetReached, 
                 finalCount: currentElementCount, 
                 targetCount: targetElementCount,
                 scrollAttempts: scrollAttempts,
-                reason: 'max_attempts'
+                reason: reason,
+                targetReached: targetReached
               });
               return;
             }
 
             // Log progress periodically
             if (scrollConfig.enableLogging && scrollAttempts % scrollConfig.checkInterval === 0) {
-              console.log(`Scroll progress: ${currentElementCount}/${targetElementCount} elements found (attempt ${scrollAttempts})`);
+              const status = targetReached ? '✓ TARGET REACHED, continuing to bottom' : 'searching';
+              console.log(`Scroll progress: ${currentElementCount}/${targetElementCount} elements found (attempt ${scrollAttempts}) - ${status}`);
             }
 
             // Check if we're at the bottom
             if (isAtBottom()) {
               if (!isWaitingForContent) {
                 isWaitingForContent = true;
+                const statusMsg = targetReached 
+                  ? `Reached bottom with target achieved (${currentElementCount}/${targetElementCount} elements), checking for more content...`
+                  : `Reached bottom with ${currentElementCount}/${targetElementCount} elements, waiting for new content...`;
+                
                 if (scrollConfig.enableLogging) {
-                  console.log(`Reached bottom with ${currentElementCount}/${targetElementCount} elements, waiting for new content...`);
+                  console.log(statusMsg);
                 }
                 
                 // Wait for potential new content
@@ -750,13 +749,17 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
                 
                 if (!hasNewContent) {
                   clearTimeout(timeoutId);
-                  console.log(`Scroll completed: no new content after waiting. Found ${currentElementCount}/${targetElementCount} elements.`);
+                  const successStatus = targetReached;
+                  const reason = targetReached ? 'bottom_reached_target_met' : 'bottom_reached_target_not_met';
+                  
+                  console.log(`Scroll completed: reached bottom. Found ${currentElementCount}/${targetElementCount} elements. Target ${targetReached ? 'achieved' : 'not achieved'}.`);
                   resolve({ 
-                    success: false, 
+                    success: successStatus, 
                     finalCount: currentElementCount, 
                     targetCount: targetElementCount,
                     scrollAttempts: scrollAttempts,
-                    reason: 'no_new_content'
+                    reason: reason,
+                    targetReached: targetReached
                   });
                   return;
                 }
@@ -792,17 +795,11 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
           console.log(`Initial count: ${lastElementCount} elements found`);
         }
         
-        // Check if we already have enough elements
+        // Check if we already have enough elements (but still need to scroll to bottom)
         if (lastElementCount >= targetElementCount) {
-          clearTimeout(timeoutId);
-          console.log(`Target already reached: ${lastElementCount}/${targetElementCount} elements found`);
-          resolve({ 
-            success: true, 
-            finalCount: lastElementCount, 
-            targetCount: targetElementCount,
-            scrollAttempts: 0
-          });
-          return;
+          if (scrollConfig.enableLogging) {
+            console.log(`Target already reached: ${lastElementCount}/${targetElementCount} elements found, but continuing to scroll to bottom...`);
+          }
         }
         
         // Start scrolling
