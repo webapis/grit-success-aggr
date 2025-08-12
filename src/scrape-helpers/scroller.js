@@ -567,13 +567,13 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
 export async function autoScrollUntilCount(page, selector, targetCount, options = {}) {
   // Default configuration
   const config = {
-    scrollSpeed: options.scrollSpeed || 100,
-    scrollDistance: options.scrollDistance || 100,
+    scrollSpeed: options.scrollSpeed || 200,//100,
+    scrollDistance: options.scrollDistance || 50,//100,
     maxScrollAttempts: options.maxScrollAttempts || 500,
     timeout: options.timeout || 120000, // 2 minutes for network-heavy pages
-    waitForNetworkIdle: options.waitForNetworkIdle || 2000, // Wait 2s after network idle
-    waitForContentChange: options.waitForContentChange || 3000, // Wait 3s for content changes
-    networkIdleTimeout: options.networkIdleTimeout || 500, // Consider network idle after 500ms
+    waitForNetworkIdle: options.waitForNetworkIdle || 5000,//2000, // Wait 2s after network idle
+    waitForContentChange: options.waitForContentChange || 5000, // Wait 3s for content changes
+    networkIdleTimeout: options.networkIdleTimeout || 5000, // Consider network idle after 500ms
     maxWaitCycles: options.maxWaitCycles || 5, // Max cycles to wait for new content
     enableLogging: options.enableLogging || false,
     checkInterval: options.checkInterval || 10, // Check element count every N scrolls

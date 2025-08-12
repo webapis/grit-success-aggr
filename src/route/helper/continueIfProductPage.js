@@ -65,12 +65,7 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
             console.log('scroller', 'autoScrollUntilCount--------------------')
             await autoScrollUntilCount(page, targetElementSelector, totalItemsToBeCallected, {
                 enableLogging: true,
-                scrollSpeed: 100,
-                scrollDistance: 300,
-                maxScrollAttempts: 1000,
-                timeout: 300000, // 5 minutes
-                staleScrollThreshold: 30, // Stop if no new elements for 30 scrolls
-                waitForContentChange: 5000
+    
             })
 
 
