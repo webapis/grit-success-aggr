@@ -77,7 +77,7 @@ debugger
             requestHandler: router,
             maxConcurrency: 1,
             preNavigationHooks,
-            navigationTimeoutSecs: 300,
+            navigationTimeoutSecs: 120,
             headless: HEADLESS === "false" ? false : true,
             requestHandlerTimeoutSecs: 600000,
             // maxRequestsPerCrawl: 50
