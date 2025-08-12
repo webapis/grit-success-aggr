@@ -77,11 +77,11 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
                     elementCounts[selector] = count;
                 }
             }
-            const targetProductCount = elementCounts[matchedSelectors[0]];
+            const targetElementSelector = matchedSelectors[0];
             debugger
             await scrollWithShowMoreUntilCount(
                 page,
-                targetProductCount,        // Elements to count
+                targetElementSelector,        // Elements to count
                 totalItemsToBeCallected,                     // Target: 50 products
                 showMoreButtonSelector       // Show more button selector
             );
