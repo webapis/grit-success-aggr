@@ -570,7 +570,7 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
     scrollSpeed: options.scrollSpeed || 200,//100,
     scrollDistance: options.scrollDistance || 50,//100,
     maxScrollAttempts: options.maxScrollAttempts || 500,
-    timeout: options.timeout || 120000, // 2 minutes for network-heavy pages
+    timeout: options.timeout || 300000, // 2 minutes for network-heavy pages
     waitForNetworkIdle: options.waitForNetworkIdle || 5000,//2000, // Wait 2s after network idle
     waitForContentChange: options.waitForContentChange || 5000, // Wait 3s for content changes
     networkIdleTimeout: options.networkIdleTimeout || 5000, // Consider network idle after 500ms
