@@ -1,7 +1,7 @@
 {
-  "targetSite": "derimod",
+  "targetSite": "silkandcashmere",
   "urls": [
-    "https://derimod.com.tr/collections/kadin-canta?filter.v.availability=1"
+    "https://silkandcashmere.com/collections/ev-yasam?filter.v.availability=1"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,26 +9,26 @@
   "filteringNeeded": false,
   "configurations": [
     {
-      "brand": "derimod",
+      "brand": "silkandcashmere",
       "paginationSelector": "",
       "paginationParameterName": "",
-      "scrollable": true,
-      "showMoreButtonSelector": "",
-      "totalProductCounterSelector": ".collection__products-count",
+      "scrollable": false,
+      "showMoreButtonSelector": "a.btn.btn--secondary.no-transition",
+      "totalProductCounterSelector": "",
       "itemsPerPage": null,
       "urls": [
-        "https://derimod.com.tr/collections/kadin-canta?filter.v.availability=1"
+        "https://silkandcashmere.com/collections/ev-yasam?filter.v.availability=1"
       ],
       "paused": false,
       "pausedReason": "",
       "filteringNeeded": false,
-      "rowIndex": 58
+      "rowIndex": 45
     }
   ],
   "paginationSelector": "",
   "paginationParameterName": "",
-  "scrollable": true,
-  "showMoreButtonSelector": "",
-  "totalProductCounterSelector": ".collection__products-count",
+  "scrollable": false,
+  "showMoreButtonSelector": "a.btn.btn--secondary.no-transition",
+  "totalProductCounterSelector": "",
   "itemsPerPage": null
 }

@@ -1,4 +1,5 @@
 export default [
+    '.link.link__element',
     '.boost-sd__product-link',
     '.lazy-image.product-name.track-link',
     '.p-image a',
