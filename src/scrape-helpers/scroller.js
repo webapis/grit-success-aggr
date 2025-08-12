@@ -835,3 +835,372 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
     throw error;
   }
 }
+
+export async function scrollWithShowMoreUntilCount(page, selector, targetCount, showMoreSelector, options = {}) {
+  // Default configuration combining both functions
+  const config = {
+    scrollSpeed: options.scrollSpeed || 100,
+    scrollDistance: options.scrollDistance || 100,
+    maxScrollAttempts: options.maxScrollAttempts || 500,
+    timeout: options.timeout || 120000, // 2 minutes
+    waitAfterClick: options.waitAfterClick || 2000,
+    buttonClickDelay: options.buttonClickDelay || 500,
+    maxConsecutiveBottomReached: options.maxConsecutiveBottomReached || 5,
+    maxWaitCycles: options.maxWaitCycles || 5,
+    waitForContentChange: options.waitForContentChange || 3000,
+    enableLogging: options.enableLogging || false,
+    checkInterval: options.checkInterval || 10,
+    enableScrolling: options.enableScrolling !== false, // Default to true
+    prioritizeButtons: options.prioritizeButtons || true, // Prioritize clicking over scrolling
+    ...options
+  };
+
+  // Validate inputs
+  if (!selector || typeof selector !== 'string') {
+    throw new Error('Selector must be a non-empty string');
+  }
+  if (!targetCount || targetCount <= 0) {
+    throw new Error('Target count must be a positive number');
+  }
+  if (!showMoreSelector || typeof showMoreSelector !== 'string') {
+    throw new Error('Show more selector must be a non-empty string');
+  }
+
+  // Set up console logging if needed
+  if (config.enableLogging) {
+    page.on("console", (message) => {
+      console.log("Page console:", message.text());
+    });
+  }
+
+  // Track network requests for better timing
+  let pendingRequests = new Set();
+  let lastNetworkActivity = Date.now();
+
+  page.on('request', (request) => {
+    if (['xhr', 'fetch', 'document'].includes(request.resourceType())) {
+      pendingRequests.add(request.url());
+      lastNetworkActivity = Date.now();
+    }
+  });
+
+  page.on('response', (response) => {
+    if (['xhr', 'fetch', 'document'].includes(response.request().resourceType())) {
+      pendingRequests.delete(response.url());
+      lastNetworkActivity = Date.now();
+    }
+  });
+
+  page.on('requestfailed', (request) => {
+    if (['xhr', 'fetch', 'document'].includes(request.resourceType())) {
+      pendingRequests.delete(request.url());
+    }
+  });
+
+  try {
+    const result = await page.evaluate(async (scrollConfig, elementSelector, targetElementCount, showMoreSel) => {
+      return new Promise((resolve, reject) => {
+        let scrollAttempts = 0;
+        let lastElementCount = 0;
+        let consecutiveBottomReached = 0;
+        let isWaitingForContent = false;
+        let buttonClickCount = 0;
+        let waitCycles = 0;
+        
+        // Set up timeout
+        const timeoutId = setTimeout(() => {
+          reject(new Error(`Combined scroll timeout after ${scrollConfig.timeout}ms`));
+        }, scrollConfig.timeout);
+
+        // Helper function to get current element count
+        const getCurrentElementCount = () => {
+          try {
+            return document.querySelectorAll(elementSelector).length;
+          } catch (error) {
+            console.error('Error querying selector:', error);
+            return 0;
+          }
+        };
+
+        // Helper function to check if we're at the bottom
+        const isAtBottom = () => {
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const windowHeight = window.innerHeight;
+          const docHeight = Math.max(
+            document.body.scrollHeight,
+            document.body.offsetHeight,
+            document.documentElement.clientHeight,
+            document.documentElement.scrollHeight,
+            document.documentElement.offsetHeight
+          );
+          return scrollTop + windowHeight >= docHeight - 50;
+        };
+
+        // Helper function to find and check show more button
+        const findShowMoreButton = () => {
+          const button = document.querySelector(showMoreSel);
+          if (!button) return null;
+          
+          const isVisible = button.offsetParent !== null && 
+            !button.disabled &&
+            !button.classList.contains('disabled') &&
+            getComputedStyle(button).display !== 'none' &&
+            getComputedStyle(button).visibility !== 'hidden';
+            
+          return isVisible ? button : null;
+        };
+
+        // Function to click show more button
+        const clickShowMoreButton = (button) => {
+          return new Promise((resolveClick) => {
+            buttonClickCount++;
+            console.log(`Found show more button (click #${buttonClickCount}), clicking...`);
+            
+            // Scroll button into view
+            button.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center',
+              inline: 'center'
+            });
+            
+            setTimeout(() => {
+              try {
+                // Try multiple click methods
+                if (button.click) {
+                  button.click();
+                } else {
+                  const clickEvent = new MouseEvent('click', {
+                    view: window,
+                    bubbles: true,
+                    cancelable: true
+                  });
+                  button.dispatchEvent(clickEvent);
+                }
+                
+                console.log("Successfully clicked show more button");
+                consecutiveBottomReached = 0; // Reset counter
+                
+                // Wait for content to load
+                setTimeout(() => {
+                  resolveClick(true);
+                }, scrollConfig.waitAfterClick);
+                
+              } catch (clickError) {
+                console.error("Error clicking button:", clickError);
+                resolveClick(false);
+              }
+            }, scrollConfig.buttonClickDelay);
+          });
+        };
+
+        // Function to wait for new content
+        const waitForNewContent = () => {
+          return new Promise((resolveWait) => {
+            const startCount = getCurrentElementCount();
+            const checkForChanges = () => {
+              const currentCount = getCurrentElementCount();
+              
+              if (currentCount > startCount) {
+                if (scrollConfig.enableLogging) {
+                  console.log(`New elements detected: ${startCount} -> ${currentCount}`);
+                }
+                waitCycles = 0;
+                resolveWait(true);
+                return;
+              }
+              
+              waitCycles++;
+              if (waitCycles >= scrollConfig.maxWaitCycles) {
+                if (scrollConfig.enableLogging) {
+                  console.log(`Max wait cycles reached, no new content`);
+                }
+                resolveWait(false);
+                return;
+              }
+              
+              setTimeout(checkForChanges, scrollConfig.waitForContentChange / scrollConfig.maxWaitCycles);
+            };
+            
+            checkForChanges();
+          });
+        };
+
+        // Main scroll and action logic
+        const performScrollCycle = async () => {
+          try {
+            const currentElementCount = getCurrentElementCount();
+            const targetReached = currentElementCount >= targetElementCount;
+            
+            // Check if max attempts reached
+            if (scrollAttempts >= scrollConfig.maxScrollAttempts) {
+              clearTimeout(timeoutId);
+              const reason = targetReached ? 'max_attempts_target_met' : 'max_attempts_target_not_met';
+              console.log(`Completed: Max attempts (${scrollConfig.maxScrollAttempts}) reached. Found ${currentElementCount}/${targetElementCount} elements.`);
+              
+              resolve({
+                success: targetReached,
+                finalCount: currentElementCount,
+                targetCount: targetElementCount,
+                scrollAttempts: scrollAttempts,
+                buttonClicks: buttonClickCount,
+                reason: reason,
+                targetReached: targetReached
+              });
+              return;
+            }
+
+            // Log progress
+            if (scrollConfig.enableLogging && scrollAttempts % scrollConfig.checkInterval === 0) {
+              const status = targetReached ? '✓ TARGET REACHED, continuing' : 'searching';
+              console.log(`Progress: ${currentElementCount}/${targetElementCount} elements (attempt ${scrollAttempts}, ${buttonClickCount} button clicks) - ${status}`);
+            }
+
+            // Check if we're at bottom or should look for buttons
+            const atBottom = isAtBottom();
+            
+            if (atBottom || scrollConfig.prioritizeButtons) {
+              consecutiveBottomReached++;
+              
+              // Look for show more button first
+              const showMoreButton = findShowMoreButton();
+              
+              if (showMoreButton) {
+                isWaitingForContent = true;
+                const clickSuccess = await clickShowMoreButton(showMoreButton);
+                isWaitingForContent = false;
+                
+                if (clickSuccess) {
+                  // Update element count after click
+                  const newCount = getCurrentElementCount();
+                  if (newCount > lastElementCount) {
+                    lastElementCount = newCount;
+                    consecutiveBottomReached = 0;
+                  }
+                  
+                  // Check if target reached after button click
+                  if (newCount >= targetElementCount) {
+                    clearTimeout(timeoutId);
+                    console.log(`Target reached after button click: ${newCount}/${targetElementCount} elements`);
+                    resolve({
+                      success: true,
+                      finalCount: newCount,
+                      targetCount: targetElementCount,
+                      scrollAttempts: scrollAttempts,
+                      buttonClicks: buttonClickCount,
+                      reason: 'target_reached_via_button',
+                      targetReached: true
+                    });
+                    return;
+                  }
+                }
+              } else if (atBottom) {
+                // No button found and at bottom
+                if (consecutiveBottomReached >= scrollConfig.maxConsecutiveBottomReached) {
+                  // Wait for potential new content one last time
+                  const hasNewContent = await waitForNewContent();
+                  
+                  if (!hasNewContent) {
+                    clearTimeout(timeoutId);
+                    const finalCount = getCurrentElementCount();
+                    const success = finalCount >= targetElementCount;
+                    const reason = success ? 'bottom_reached_target_met' : 'bottom_reached_target_not_met';
+                    
+                    console.log(`Completed: Reached bottom. Found ${finalCount}/${targetElementCount} elements. Target ${success ? 'achieved' : 'not achieved'}.`);
+                    resolve({
+                      success: success,
+                      finalCount: finalCount,
+                      targetCount: targetElementCount,
+                      scrollAttempts: scrollAttempts,
+                      buttonClicks: buttonClickCount,
+                      reason: reason,
+                      targetReached: success
+                    });
+                    return;
+                  }
+                }
+              }
+            } else {
+              consecutiveBottomReached = 0;
+            }
+
+            // Update tracking
+            if (currentElementCount > lastElementCount) {
+              lastElementCount = currentElementCount;
+            }
+
+            // Perform scroll if enabled and not waiting
+            if (scrollConfig.enableScrolling && !isWaitingForContent) {
+              window.scrollBy(0, scrollConfig.scrollDistance);
+            }
+            
+            scrollAttempts++;
+
+            // Schedule next cycle
+            setTimeout(() => performScrollCycle(), scrollConfig.scrollSpeed);
+            
+          } catch (error) {
+            clearTimeout(timeoutId);
+            reject(error);
+          }
+        };
+
+        // Initialize
+        lastElementCount = getCurrentElementCount();
+        
+        if (scrollConfig.enableLogging) {
+          console.log(`Starting combined scroll: looking for ${targetElementCount} elements with selector "${elementSelector}"`);
+          console.log(`Show more button selector: "${showMoreSel}"`);
+          console.log(`Initial count: ${lastElementCount} elements found`);
+        }
+        
+        // Check if target already reached
+        if (lastElementCount >= targetElementCount) {
+          if (scrollConfig.enableLogging) {
+            console.log(`Target already reached: ${lastElementCount}/${targetElementCount} elements found!`);
+          }
+          clearTimeout(timeoutId);
+          resolve({
+            success: true,
+            finalCount: lastElementCount,
+            targetCount: targetElementCount,
+            scrollAttempts: 0,
+            buttonClicks: 0,
+            reason: 'target_already_met',
+            targetReached: true
+          });
+          return;
+        }
+        
+        // Start the process
+        performScrollCycle();
+      });
+    }, config, selector, targetCount, showMoreSelector);
+
+    // Wait for any remaining network requests
+    if (pendingRequests.size > 0) {
+      if (config.enableLogging) {
+        console.log('Waiting for final network requests...');
+      }
+      
+      await new Promise((resolve) => {
+        const checkNetworkIdle = () => {
+          if (pendingRequests.size === 0) {
+            resolve();
+          } else {
+            setTimeout(checkNetworkIdle, 100);
+          }
+        };
+        setTimeout(checkNetworkIdle, 1000);
+      });
+    }
+    
+    console.log('Combined scroll with show more completed successfully');
+    console.log(`Final result: ${result.success ? 'SUCCESS' : 'INCOMPLETE'} - Found ${result.finalCount}/${result.targetCount} elements with ${result.buttonClicks} button clicks`);
+    
+    return result;
+    
+  } catch (error) {
+    console.error('Combined scroll with show more failed:', error.message);
+    throw error;
+  }
+}

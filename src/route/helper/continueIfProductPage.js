@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import scroller, { autoScroll, scrollWithShowMoreAdvanced, autoScrollUntilCount } from "../../scrape-helpers/scroller.js";
+import scroller, { autoScroll, scrollWithShowMoreAdvanced, autoScrollUntilCount,scrollWithShowMoreUntilCount } from "../../scrape-helpers/scroller.js";
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 import productItemSelector from "../../selector-attibutes/productItemSelector.js";
 dotenv.config({ silent: true }); export default async function continueIfProductPage({ page, siteUrls }) {
@@ -60,12 +60,24 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
 
 
         } else if (scrollable && showMoreButtonSelector && totalProductCounterSelector) {
-            console.log('scroller', 'scrollWithShowMoreAdvanced--------------------')
-            await scrollWithShowMoreAdvanced(page, 500, showMoreButtonSelector, {
-                waitAfterClick: 3000,
-                maxConsecutiveBottomReached: 3,
-                enableScrolling: shouldScroll
-            });
+            console.log('scroller', 'scrollWithShowMoreUntilCount--------------------')
+            debugger;
+            const matchedSelectors = [];
+            const elementCounts = {};
+
+            for (const selector of productItemSelector) {
+                const count = await page.$$eval(selector, elements => elements.length);
+                if (count > 0) {
+                    matchedSelectors.push(selector);
+                    elementCounts[selector] = count;
+                }
+            }
+            await scrollWithShowMoreUntilCount(
+                page,
+                matchedSelectors[0],        // Elements to count
+                elementCounts[matchedSelectors[0]],                     // Target: 50 products
+                showMoreButtonSelector       // Show more button selector
+            );
         }
 
         // Handle different scrollBehavior formats

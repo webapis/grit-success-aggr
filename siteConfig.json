@@ -1,7 +1,7 @@
 {
-  "targetSite": "brooksbrothers",
+  "targetSite": "converse",
   "urls": [
-    "https://www.brooksbrothers.com.tr/kadin-canta-c"
+    "https://www.converse.com.tr/kadin-canta/"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,26 +9,26 @@
   "filteringNeeded": false,
   "configurations": [
     {
-      "brand": "brooksbrothers",
+      "brand": "converse",
       "paginationSelector": "",
-      "paginationParameterName": "",
+      "paginationParameterName": "?page=",
       "scrollable": true,
-      "showMoreButtonSelector": "",
-      "totalProductCounterSelector": "span.text-primary",
-      "itemsPerPage": 12,
+      "showMoreButtonSelector": ".js-load-more.products-load-more-button",
+      "totalProductCounterSelector": ".products-listed",
+      "itemsPerPage": null,
       "urls": [
-        "https://www.brooksbrothers.com.tr/kadin-canta-c"
+        "https://www.converse.com.tr/kadin-canta/"
       ],
       "paused": false,
       "pausedReason": "",
       "filteringNeeded": false,
-      "rowIndex": 21
+      "rowIndex": 30
     }
   ],
   "paginationSelector": "",
-  "paginationParameterName": "",
+  "paginationParameterName": "?page=",
   "scrollable": true,
-  "showMoreButtonSelector": "",
-  "totalProductCounterSelector": "span.text-primary",
-  "itemsPerPage": 12
+  "showMoreButtonSelector": ".js-load-more.products-load-more-button",
+  "totalProductCounterSelector": ".products-listed",
+  "itemsPerPage": null
 }
