@@ -34,6 +34,7 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
         if (scrollable && !showMoreButtonSelector && !totalProductCounterSelector) {
 
             debugger
+            console.log('scroller', 'autoScroll--------------------')
             await autoScroll(page, {
                 scrollSpeed: 500,
                 scrollDistance: 300,
@@ -54,15 +55,17 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
                 }
             }
             debugger;
-            console.log('Matched selectors:', matchedSelectors);
-            console.log('Element counts:', elementCounts);
+            console.log('scroller', 'autoScrollUntilCount--------------------')
             await autoScrollUntilCount(page, matchedSelectors[0], elementCounts[matchedSelectors[0]])
 
 
-
-
-
-
+        } else if (scrollable && showMoreButtonSelector && totalProductCounterSelector) {
+            console.log('scroller', 'scrollWithShowMoreAdvanced--------------------')
+            await scrollWithShowMoreAdvanced(page, 500, showMoreButtonSelector, {
+                waitAfterClick: 3000,
+                maxConsecutiveBottomReached: 3,
+                enableScrolling: shouldScroll
+            });
         }
 
         // Handle different scrollBehavior formats
