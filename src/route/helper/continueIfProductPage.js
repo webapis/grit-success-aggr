@@ -87,13 +87,13 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
             );
             debugger
         } else if (scrollable && showMoreButtonSelector && !totalProductCounterSelector) {
-            await scrollWithShowMoreAdvanced(page, 500, selector, {
+            await scrollWithShowMoreAdvanced(page, 500, showMoreButtonSelector, {
                 waitAfterClick: 3000,
                 maxConsecutiveBottomReached: 3,
                 enableScrolling: true
             });
         } else if (!scrollable && showMoreButtonSelector && !totalProductCounterSelector) {
-            await scrollWithShowMoreAdvanced(page, 500, selector, {
+            await scrollWithShowMoreAdvanced(page, 500, showMoreButtonSelector, {
                 waitAfterClick: 3000,
                 maxConsecutiveBottomReached: 3,
                 enableScrolling: false
