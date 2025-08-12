@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import scroller, { autoScroll, scrollWithShowMoreAdvanced, autoScrollUntilCount,scrollWithShowMoreUntilCount } from "../../scrape-helpers/scroller.js";
+import scroller, { autoScroll, scrollWithShowMoreAdvanced, autoScrollUntilCount, scrollWithShowMoreUntilCount } from "../../scrape-helpers/scroller.js";
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 import productItemSelector from "../../selector-attibutes/productItemSelector.js";
 dotenv.config({ silent: true }); export default async function continueIfProductPage({ page, siteUrls }) {
@@ -29,8 +29,6 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
 
         debugger
 
-
-        debugger
         if (scrollable && !showMoreButtonSelector && !totalProductCounterSelector) {
 
             debugger
@@ -61,6 +59,13 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
 
         } else if (scrollable && showMoreButtonSelector && totalProductCounterSelector) {
             console.log('scroller', 'scrollWithShowMoreUntilCount--------------------')
+
+            const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
+                const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
+                const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
+                return totalCount
+
+            }, totalProductCounterSelector)
             debugger;
             const matchedSelectors = [];
             const elementCounts = {};
@@ -72,12 +77,15 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
                     elementCounts[selector] = count;
                 }
             }
+            const targetProductCount = elementCounts[matchedSelectors[0]];
+            debugger
             await scrollWithShowMoreUntilCount(
                 page,
-                matchedSelectors[0],        // Elements to count
-                elementCounts[matchedSelectors[0]],                     // Target: 50 products
+                targetProductCount,        // Elements to count
+                totalItemsToBeCallected,                     // Target: 50 products
                 showMoreButtonSelector       // Show more button selector
             );
+            debugger
         }
 
         // Handle different scrollBehavior formats
