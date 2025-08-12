@@ -86,39 +86,26 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
                 showMoreButtonSelector       // Show more button selector
             );
             debugger
-        }
-
-        // Handle different scrollBehavior formats
-        if (false) {
-            if (scrollBehavior.length === 2) {
-                // Format: ['css selector', true/false]
-                const [selector, shouldScroll] = scrollBehavior;
-
-                if (typeof selector === 'string' && typeof shouldScroll === 'boolean') {
-                    console.log(`Running advanced scroll with selector: ${selector}, scrolling: ${shouldScroll}`);
-                    await scrollWithShowMoreAdvanced(page, 500, selector, {
-                        waitAfterClick: 3000,
-                        maxConsecutiveBottomReached: 3,
-                        enableScrolling: shouldScroll
-                    });
-                }
-            } else if (scrollBehavior.length === 1 && scrollBehavior[0] === true) {
-                // Format: [true]
-                console.log('Running basic auto scroll');
-                await autoScroll(page, {
-                    scrollSpeed: 500,
-                    scrollDistance: 300,
-                    waitForNetworkIdle: 1500,
-                    maxScrollAttempts: 500,
-                    enableLogging: true
-                });
+        } else if (scrollable && showMoreButtonSelector && !totalProductCounterSelector) {
+            await scrollWithShowMoreAdvanced(page, 500, selector, {
+                waitAfterClick: 3000,
+                maxConsecutiveBottomReached: 3,
+                enableScrolling: true
+            });
+        } else if (!scrollable && showMoreButtonSelector && !totalProductCounterSelector) {
+            await scrollWithShowMoreAdvanced(page, 500, selector, {
+                waitAfterClick: 3000,
+                maxConsecutiveBottomReached: 3,
+                enableScrolling: false
+            });
+           
+                
             }
-        }
 
-        return true;
-    } else {
-        debugger
-        console.log('No product items found on the page');
-        return false;
+            return true;
+        } else {
+            debugger
+            console.log('No product items found on the page');
+            return false;
+        }
     }
-}
