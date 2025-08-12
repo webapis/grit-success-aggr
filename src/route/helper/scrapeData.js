@@ -16,15 +16,14 @@ import videoAttributes from "../../selector-attibutes/videoAttributes.js";
 import videoSelectors from "../../selector-attibutes/videoSelectors.js";
 import productNotAvailable from "../../selector-attibutes/productNotAvailable.js";
 import priceParser from "../../scrape-helpers/priceParcer.js";
-import continueIfProductPage from "./continueIfProductPage.js";
+
 
 dotenv.config({ silent: true });
 
 export default async function scrapeData({ page, siteUrls }) {
     debugger
 
-    const shouldContinue = await continueIfProductPage({ page, siteUrls });
-    if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
+
     const data = await page.evaluate((params) => {
         const pageTitle = document.title;
         const pageURL = document.URL;
