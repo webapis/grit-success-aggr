@@ -80,7 +80,7 @@ jobs:
               // Fetch data from the sheet - skip header row
               const response = await sheets.spreadsheets.values.get({
                 spreadsheetId: process.env.GOOGLE_SHEET_ID,
-                range: 'wbags!A2:A', // Start from A2 to skip the header
+                range: 'wbags-scroll!A2:A', // Start from A2 to skip the header
               });
               
               const rows = response.data.values;
