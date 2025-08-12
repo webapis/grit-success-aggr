@@ -53,17 +53,25 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
                 }
             }
 
-                        const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
+            const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
                 const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
                 const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
                 return totalCount
 
             }, totalProductCounterSelector)
 
-              const targetElementSelector = matchedSelectors[0];
+            const targetElementSelector = matchedSelectors[0];
             debugger;
             console.log('scroller', 'autoScrollUntilCount--------------------')
-            await autoScrollUntilCount(page, targetElementSelector, totalItemsToBeCallected)
+            await autoScrollUntilCount(page, targetElementSelector, totalItemsToBeCallected, {
+                enableLogging: true,
+                scrollSpeed: 100,
+                scrollDistance: 300,
+                maxScrollAttempts: 1000,
+                timeout: 300000, // 5 minutes
+                staleScrollThreshold: 30, // Stop if no new elements for 30 scrolls
+                waitForContentChange: 5000
+            })
 
 
         } else if (scrollable && showMoreButtonSelector && totalProductCounterSelector) {
@@ -107,14 +115,14 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
                 maxConsecutiveBottomReached: 3,
                 enableScrolling: false
             });
-           
-                
-            }
 
-            return true;
-        } else {
-            debugger
-            console.log('No product items found on the page');
-            return false;
+
         }
+
+        return true;
+    } else {
+        debugger
+        console.log('No product items found on the page');
+        return false;
     }
+}
