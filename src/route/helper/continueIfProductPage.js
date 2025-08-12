@@ -52,9 +52,18 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
                     elementCounts[selector] = count;
                 }
             }
+
+                        const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
+                const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
+                const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
+                return totalCount
+
+            }, totalProductCounterSelector)
+
+              const targetElementSelector = matchedSelectors[0];
             debugger;
             console.log('scroller', 'autoScrollUntilCount--------------------')
-            await autoScrollUntilCount(page, matchedSelectors[0], elementCounts[matchedSelectors[0]])
+            await autoScrollUntilCount(page, targetElementSelector, totalItemsToBeCallected)
 
 
         } else if (scrollable && showMoreButtonSelector && totalProductCounterSelector) {

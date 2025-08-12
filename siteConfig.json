@@ -1,7 +1,7 @@
 {
-  "targetSite": "converse",
+  "targetSite": "derimod",
   "urls": [
-    "https://www.converse.com.tr/kadin-tum-ayakkabilar/"
+    "https://derimod.com.tr/collections/kadin-canta?filter.v.availability=1"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,26 +9,26 @@
   "filteringNeeded": false,
   "configurations": [
     {
-      "brand": "converse",
+      "brand": "derimod",
       "paginationSelector": "",
-      "paginationParameterName": "?page=",
+      "paginationParameterName": "",
       "scrollable": true,
-      "showMoreButtonSelector": ".js-load-more.products-load-more-button",
-      "totalProductCounterSelector": ".products-listed",
+      "showMoreButtonSelector": "",
+      "totalProductCounterSelector": ".collection__products-count",
       "itemsPerPage": null,
       "urls": [
-        "https://www.converse.com.tr/kadin-tum-ayakkabilar/"
+        "https://derimod.com.tr/collections/kadin-canta?filter.v.availability=1"
       ],
       "paused": false,
       "pausedReason": "",
       "filteringNeeded": false,
-      "rowIndex": 30
+      "rowIndex": 58
     }
   ],
   "paginationSelector": "",
-  "paginationParameterName": "?page=",
+  "paginationParameterName": "",
   "scrollable": true,
-  "showMoreButtonSelector": ".js-load-more.products-load-more-button",
-  "totalProductCounterSelector": ".products-listed",
+  "showMoreButtonSelector": "",
+  "totalProductCounterSelector": ".collection__products-count",
   "itemsPerPage": null
 }
