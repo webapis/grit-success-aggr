@@ -1,5 +1,5 @@
 export default [
-    '#ProductListMainContainer',
+    '.ProductListContent',
     '.grid#AjaxinateLoop',
     '.boost-sd__product-list',
     '.message_box',
