@@ -1,5 +1,6 @@
 export default [
-    '.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-6',
+    '.p-item-inside',
+    '.test.MuiBox-root',
     '.ProductCard.mb-2.w-full',
     '.boost-sd__product-item',
     'article.product-tile-core',
