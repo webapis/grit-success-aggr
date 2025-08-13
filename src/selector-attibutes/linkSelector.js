@@ -1,4 +1,5 @@
 export default [
+    '.p-name a',
     'a.product-content',
     '.link.link__element',
     '.boost-sd__product-link',
