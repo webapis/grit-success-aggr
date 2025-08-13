@@ -1,4 +1,5 @@
 export default [
+    '.MuiGrid-root.MuiGrid-container',
     '.ProductListContent',
     '.grid#AjaxinateLoop',
     '.boost-sd__product-list',
