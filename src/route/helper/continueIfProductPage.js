@@ -46,7 +46,7 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
             await autoScroll(page, {
                 showMoreSelector: showMoreButtonSelector,
                 scrollSpeed: 500,
-                scrollDistance: 300,
+                scrollDistance: 100,
                 waitForNetworkIdle: 1500,
                 maxScrollAttempts: 500,
                 enableLogging: true
