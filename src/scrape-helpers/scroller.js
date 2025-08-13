@@ -40,13 +40,10 @@ export async function autoScroll(page, options = {}) {
   // Default configuration
   const config = {
     scrollSpeed: options.scrollSpeed || 100,
-    scrollDistance: options.scrollDistance || 100,
-    maxScrollAttempts: options.maxScrollAttempts || 200,
-    timeout: options.timeout || 60000, // 60 seconds for network-heavy pages
-    waitForNetworkIdle: options.waitForNetworkIdle || 2000, // Wait 2s after network idle
-    waitForContentChange: options.waitForContentChange || 3000, // Wait 3s for content changes
-    networkIdleTimeout: options.networkIdleTimeout || 500, // Consider network idle after 500ms
-    maxWaitCycles: options.maxWaitCycles || 5, // Max cycles to wait for new content
+    scrollDistance: options.scrollDistance || 200,
+    maxScrollAttempts: options.maxScrollAttempts || 100,
+    waitForContentChange: options.waitForContentChange || 2000,
+    maxWaitCycles: options.maxWaitCycles || 3,
     ...options
   };
 
@@ -57,41 +54,6 @@ export async function autoScroll(page, options = {}) {
     });
   }
 
-  // Track network requests
-  let pendingRequests = new Set();
-  let lastNetworkActivity = Date.now();
-
-  // Monitor network requests
-  page.on('request', (request) => {
-    // Only track XHR, fetch, and document requests that might load content
-    if (['xhr', 'fetch', 'document'].includes(request.resourceType())) {
-      pendingRequests.add(request.url());
-      lastNetworkActivity = Date.now();
-      if (config.enableLogging) {
-        console.log(`Network request started: ${request.url()}`);
-      }
-    }
-  });
-
-  page.on('response', (response) => {
-    if (['xhr', 'fetch', 'document'].includes(response.request().resourceType())) {
-      pendingRequests.delete(response.url());
-      lastNetworkActivity = Date.now();
-      if (config.enableLogging) {
-        console.log(`Network request completed: ${response.url()}`);
-      }
-    }
-  });
-
-  page.on('requestfailed', (request) => {
-    if (['xhr', 'fetch', 'document'].includes(request.resourceType())) {
-      pendingRequests.delete(request.url());
-      if (config.enableLogging) {
-        console.log(`Network request failed: ${request.url()}`);
-      }
-    }
-  });
-
   try {
     await page.evaluate(async (scrollConfig) => {
       return new Promise((resolve, reject) => {
@@ -100,11 +62,6 @@ export async function autoScroll(page, options = {}) {
         let lastContentHash = '';
         let waitCycles = 0;
         let isWaitingForContent = false;
-        
-        // Set up timeout
-        const timeoutId = setTimeout(() => {
-          reject(new Error(`Auto-scroll timeout after ${scrollConfig.timeout}ms`));
-        }, scrollConfig.timeout);
 
         // Helper function to generate a simple hash of visible content
         const getContentHash = () => {
@@ -128,6 +85,9 @@ export async function autoScroll(page, options = {}) {
 
         const waitForNewContent = () => {
           return new Promise((resolveWait) => {
+            const contentWaitStart = Date.now();
+            const maxContentWaitTime = scrollConfig.waitForContentChange;
+            
             const checkForChanges = () => {
               const currentScrollHeight = Math.max(
                 document.body.scrollHeight,
@@ -137,6 +97,7 @@ export async function autoScroll(page, options = {}) {
                 document.documentElement.offsetHeight
               );
               const currentContentHash = getContentHash();
+              const totalWaitTime = Date.now() - contentWaitStart;
               
               // Check if content has changed
               if (currentScrollHeight > lastScrollHeight || currentContentHash !== lastContentHash) {
@@ -147,6 +108,15 @@ export async function autoScroll(page, options = {}) {
                 lastContentHash = currentContentHash;
                 waitCycles = 0;
                 resolveWait(true); // Content changed
+                return;
+              }
+              
+              // Exit if we've waited too long
+              if (totalWaitTime >= maxContentWaitTime) {
+                if (scrollConfig.enableLogging) {
+                  console.log(`Content wait timeout reached after ${totalWaitTime}ms`);
+                }
+                resolveWait(false); // Timeout reached
                 return;
               }
               
@@ -179,7 +149,6 @@ export async function autoScroll(page, options = {}) {
             
             // Check if we've exceeded max scroll attempts
             if (scrollAttempts >= scrollConfig.maxScrollAttempts) {
-              clearTimeout(timeoutId);
               console.log(`Scroll completed: max attempts (${scrollConfig.maxScrollAttempts}) reached`);
               resolve();
               return;
@@ -198,7 +167,6 @@ export async function autoScroll(page, options = {}) {
                 isWaitingForContent = false;
                 
                 if (!hasNewContent) {
-                  clearTimeout(timeoutId);
                   console.log(`Scroll completed: no new content after waiting`);
                   resolve();
                   return;
@@ -221,7 +189,6 @@ export async function autoScroll(page, options = {}) {
             setTimeout(() => scroll(), scrollConfig.scrollSpeed);
             
           } catch (error) {
-            clearTimeout(timeoutId);
             reject(error);
           }
         };
@@ -240,27 +207,6 @@ export async function autoScroll(page, options = {}) {
         scroll();
       });
     }, config);
-
-    // Wait for any remaining network requests to complete
-    if (pendingRequests.size > 0 || (Date.now() - lastNetworkActivity) < config.networkIdleTimeout) {
-      if (config.enableLogging) {
-        console.log('Waiting for network requests to complete...');
-      }
-      
-      await new Promise((resolve) => {
-        const checkNetworkIdle = () => {
-          const timeSinceLastActivity = Date.now() - lastNetworkActivity;
-          
-          if (pendingRequests.size === 0 && timeSinceLastActivity >= config.networkIdleTimeout) {
-            resolve();
-          } else {
-            setTimeout(checkNetworkIdle, 100);
-          }
-        };
-        
-        setTimeout(checkNetworkIdle, config.waitForNetworkIdle);
-      });
-    }
     
     console.log('Auto-scroll completed successfully');
     
