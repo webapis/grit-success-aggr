@@ -1,34 +1,51 @@
 {
-  "targetSite": "manuka",
+  "targetSite": "prada",
   "urls": [
-    "https://www.manuka.com.tr/canta"
+    "https://www.prada.com/tr/tr/womens/ready-to-wear/c/10048TR",
+    "https://www.prada.com/tr/tr/womens/ready-to-wear/c/10048TR/page/2"
   ],
-  "totalUrls": 1,
+  "totalUrls": 2,
   "paused": false,
   "pausedReason": "",
   "filteringNeeded": false,
   "configurations": [
     {
-      "brand": "manuka",
+      "brand": "prada",
       "paginationSelector": "",
-      "paginationParameterName": "",
-      "scrollable": true,
+      "paginationParameterName": "/",
+      "scrollable": false,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": "",
-      "itemsPerPage": null,
+      "totalProductCounterSelector": "[data-element='plp-product-count']",
+      "itemsPerPage": 24,
       "urls": [
-        "https://www.manuka.com.tr/canta"
+        "https://www.prada.com/tr/tr/womens/ready-to-wear/c/10048TR"
       ],
       "paused": false,
       "pausedReason": "",
       "filteringNeeded": false,
-      "rowIndex": 61
+      "rowIndex": 52
+    },
+    {
+      "brand": "",
+      "paginationSelector": "",
+      "paginationParameterName": "",
+      "scrollable": false,
+      "showMoreButtonSelector": "",
+      "totalProductCounterSelector": "",
+      "itemsPerPage": null,
+      "urls": [
+        "https://www.prada.com/tr/tr/womens/ready-to-wear/c/10048TR/page/2"
+      ],
+      "paused": false,
+      "pausedReason": "",
+      "filteringNeeded": false,
+      "rowIndex": 53
     }
   ],
   "paginationSelector": "",
-  "paginationParameterName": "",
-  "scrollable": true,
+  "paginationParameterName": "/",
+  "scrollable": false,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": "",
-  "itemsPerPage": null
+  "totalProductCounterSelector": "[data-element='plp-product-count']",
+  "itemsPerPage": 24
 }
