@@ -23,10 +23,55 @@ dotenv.config({ silent: true });
 export default async function scrapeData({ page, siteUrls }) {
     debugger
 
-
     const data = await page.evaluate((params) => {
         const pageTitle = document.title;
         const pageURL = document.URL;
+
+        // Shadow DOM accessor function
+        function accessShadowElement(hostSelector, shadowSelector) {
+            try {
+                const hostElement = document.querySelector(hostSelector);
+                if (!hostElement || !hostElement.shadowRoot) {
+                    return null;
+                }
+                return hostElement.shadowRoot.querySelector(shadowSelector);
+            } catch (error) {
+                return null;
+            }
+        }
+
+        // Enhanced query function that can handle shadow DOM
+        function queryElement(container, selector) {
+            // Try normal query first
+            const normalResult = container.querySelector(selector);
+            if (normalResult) return normalResult;
+
+            // If not found and selector contains shadow syntax (e.g., "host-element::shadow::.price")
+            if (selector.includes('::shadow::')) {
+                const [hostSelector, shadowSelector] = selector.split('::shadow::');
+                return accessShadowElement(hostSelector.trim(), shadowSelector.trim());
+            }
+
+            return null;
+        }
+
+        // Enhanced query all function that can handle shadow DOM
+        function queryAllElements(container, selector) {
+            // Try normal query first
+            const normalResults = Array.from(container.querySelectorAll(selector));
+            if (normalResults.length > 0) return normalResults;
+
+            // If not found and selector contains shadow syntax
+            if (selector.includes('::shadow::')) {
+                const [hostSelector, shadowSelector] = selector.split('::shadow::');
+                const hostElement = document.querySelector(hostSelector.trim());
+                if (hostElement && hostElement.shadowRoot) {
+                    return Array.from(hostElement.shadowRoot.querySelectorAll(shadowSelector.trim()));
+                }
+            }
+
+            return [];
+        }
 
         const pageSelectors = params.productPageSelector.split(',').map(s => s.trim());
         let matchedDocument = null;
@@ -50,11 +95,11 @@ export default async function scrapeData({ page, siteUrls }) {
             const videoSelectors = params.videoSelector.split(',').map(s => s.trim());
             const videoAttrList = params.videoAttribute.split(',').map(attr => attr.trim());
 
-            const titleElement = titleSelectors.map(sel => m.querySelector(sel)).find(Boolean);
-            const linkElement = linkSelectors.map(sel => m.querySelector(sel)).find(Boolean);
+            const titleElement = titleSelectors.map(sel => queryElement(m, sel)).find(Boolean);
+            const linkElement = linkSelectors.map(sel => queryElement(m, sel)).find(Boolean);
 
-            const imgElements = imageSelectors.flatMap(sel => Array.from(m.querySelectorAll(sel)));
-            const productNotInStock = m.querySelector(params.productNotAvailable) ? true : false;
+            const imgElements = imageSelectors.flatMap(sel => queryAllElements(m, sel));
+            const productNotInStock = queryElement(m, params.productNotAvailable) ? true : false;
 
             const imgUrls = imgElements.flatMap(el =>
                 params.imageAttributes
@@ -77,12 +122,23 @@ export default async function scrapeData({ page, siteUrls }) {
             const primaryImg = allImgs[0] || null;
 
             const titleSelectorMatched = titleElement
-                ? titleSelectors.find(sel => titleElement.matches(sel))
+                ? titleSelectors.find(sel => {
+                    // Handle shadow selectors
+                    if (sel.includes('::shadow::')) {
+                        return sel; // Return the full shadow selector
+                    }
+                    return titleElement.matches(sel) ? sel : null;
+                })
                 : null;
 
             const firstImgElement = imgElements[0];
             const imgSelectorMatched = firstImgElement
-                ? imageSelectors.find(sel => firstImgElement.matches(sel))
+                ? imageSelectors.find(sel => {
+                    if (sel.includes('::shadow::')) {
+                        return sel;
+                    }
+                    return firstImgElement.matches(sel) ? sel : null;
+                })
                 : null;
 
             const title = titleElement &&
@@ -93,12 +149,20 @@ export default async function scrapeData({ page, siteUrls }) {
 
             const priceInfo = [];
             const priceSelectorsMatched = new Set();
+
+            // Enhanced price element matching with shadow DOM support
             const matchedPriceElements = priceSelectors
-                .flatMap(sel => Array.from(m.querySelectorAll(sel)))
+                .flatMap(sel => queryAllElements(m, sel))
                 .filter(Boolean);
 
             for (const priceEl of matchedPriceElements) {
-                const matchedSelector = priceSelectors.find(sel => priceEl.matches(sel));
+                const matchedSelector = priceSelectors.find(sel => {
+                    if (sel.includes('::shadow::')) {
+                        return sel; // Return shadow selector as-is
+                    }
+                    return priceEl.matches(sel) ? sel : null;
+                });
+
                 if (matchedSelector) {
                     priceSelectorsMatched.add(matchedSelector);
                 }
@@ -117,7 +181,7 @@ export default async function scrapeData({ page, siteUrls }) {
                 }
             }
 
-            const videoElements = videoSelectors.flatMap(sel => Array.from(m.querySelectorAll(sel)));
+            const videoElements = videoSelectors.flatMap(sel => queryAllElements(m, sel));
             const videoUrls = videoElements
                 .flatMap(el =>
                     videoAttrList
@@ -128,7 +192,12 @@ export default async function scrapeData({ page, siteUrls }) {
             const allVideos = [...new Set(videoUrls)];
             const firstVideoElement = videoElements[0];
             const videoSelectorMatched = firstVideoElement
-                ? videoSelectors.find(sel => firstVideoElement.matches(sel))
+                ? videoSelectors.find(sel => {
+                    if (sel.includes('::shadow::')) {
+                        return sel;
+                    }
+                    return firstVideoElement.matches(sel) ? sel : null;
+                })
                 : null;
 
             let link = null;
@@ -138,7 +207,12 @@ export default async function scrapeData({ page, siteUrls }) {
                 link = titleElement.href;
                 linkSource = `titleElement (matched: ${titleSelectorMatched})`;
             } else if (linkElement?.href) {
-                const linkSelectorMatched = linkSelectors.find(sel => linkElement.matches(sel));
+                const linkSelectorMatched = linkSelectors.find(sel => {
+                    if (sel.includes('::shadow::')) {
+                        return sel;
+                    }
+                    return linkElement.matches(sel) ? sel : null;
+                });
                 link = linkElement.href;
                 linkSource = `linkElement (matched: ${linkSelectorMatched})`;
             } else if (m?.href) {
@@ -155,7 +229,6 @@ export default async function scrapeData({ page, siteUrls }) {
                 .find(selector => m.matches(selector));
 
             try {
-
                 debugger
                 return {
                     title,
@@ -172,14 +245,13 @@ export default async function scrapeData({ page, siteUrls }) {
                         titleSelectorMatched,
                         imgSelectorMatched,
                         videoSelectorMatched,
-                        priceSelectorsMatched: Array.from(priceSelectorsMatched), // ✅ ALL matched selectors
+                        priceSelectorsMatched: Array.from(priceSelectorsMatched),
                         usedFallbackDocument,
                         matchedPageSelector
                     },
                     pageTitle,
                     pageURL,
                     timestamp: new Date().toISOString(),
-                    // m: m.innerHTML
                 };
             } catch (error) {
                 debugger
@@ -196,6 +268,7 @@ export default async function scrapeData({ page, siteUrls }) {
                 };
             }
         });
+
         console.log('candidateItems', candidateItems.length)
         debugger
         return candidateItems
@@ -214,7 +287,6 @@ export default async function scrapeData({ page, siteUrls }) {
         videoSelector: videoSelectors.join(', '),
         videoAttribute: videoAttributes.join(', ')
     });
-
     const validData = data.map(item => {
         const processedImgs = (item.img || [])
             .map(m => getMiddleImageUrl(m, siteUrls.imageCDN || siteUrls.urls[0]))
