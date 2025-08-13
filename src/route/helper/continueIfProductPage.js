@@ -40,6 +40,17 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
                 maxScrollAttempts: 500,
                 enableLogging: true
             });
+        }
+        else if (scrollable && showMoreButtonSelector) {
+            console.log('scroller', 'autoScroll---showMoreButtonSelector-----------------')
+            await autoScroll(page, {
+                showMoreSelector: showMoreButtonSelector,
+                scrollSpeed: 500,
+                scrollDistance: 300,
+                waitForNetworkIdle: 1500,
+                maxScrollAttempts: 500,
+                enableLogging: true
+            });
         } else if (scrollable && !showMoreButtonSelector && totalProductCounterSelector) {
 
             const matchedSelectors = [];
@@ -65,7 +76,7 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
             console.log('scroller', 'autoScrollUntilCount--------------------')
             await autoScrollUntilCount(page, targetElementSelector, totalItemsToBeCallected, {
                 enableLogging: true,
-    
+
             })
 
 
