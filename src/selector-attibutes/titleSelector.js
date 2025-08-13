@@ -1,4 +1,5 @@
 export default [
+    '.product-content-name',
     '.product-grid-item__title',
     '.boost-sd__product-title',
     'h3.product-card__name',
