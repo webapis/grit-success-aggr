@@ -44,6 +44,9 @@ export async function autoScroll(page, options = {}) {
     maxScrollAttempts: options.maxScrollAttempts || 100,
     waitForContentChange: options.waitForContentChange || 2000,
     maxWaitCycles: options.maxWaitCycles || 3,
+    showMoreSelector: options.showMoreSelector || null, // CSS selector for "show more" button
+    showMoreClickDelay: options.showMoreClickDelay || 1000, // Delay after clicking show more button
+    maxShowMoreClicks: options.maxShowMoreClicks || 10, // Max number of times to click show more
     ...options
   };
 
@@ -62,6 +65,7 @@ export async function autoScroll(page, options = {}) {
         let lastContentHash = '';
         let waitCycles = 0;
         let isWaitingForContent = false;
+        let showMoreClicks = 0;
 
         // Helper function to generate a simple hash of visible content
         const getContentHash = () => {
@@ -81,6 +85,52 @@ export async function autoScroll(page, options = {}) {
             document.documentElement.offsetHeight
           );
           return scrollTop + windowHeight >= docHeight - 50; // 50px buffer
+        };
+
+        // Helper function to find and click "show more" button
+        const tryClickShowMore = () => {
+          if (!scrollConfig.showMoreSelector) {
+            return false;
+          }
+
+          try {
+            const showMoreButton = document.querySelector(scrollConfig.showMoreSelector);
+            
+            if (showMoreButton && showMoreClicks < scrollConfig.maxShowMoreClicks) {
+              // Check if button is visible and clickable
+              const rect = showMoreButton.getBoundingClientRect();
+              const isVisible = rect.width > 0 && rect.height > 0 && 
+                              rect.top >= 0 && rect.left >= 0 && 
+                              rect.bottom <= window.innerHeight && 
+                              rect.right <= window.innerWidth;
+              
+              const isClickable = !showMoreButton.disabled && 
+                                showMoreButton.style.display !== 'none' &&
+                                window.getComputedStyle(showMoreButton).display !== 'none' &&
+                                window.getComputedStyle(showMoreButton).visibility !== 'hidden';
+              
+              if (isVisible && isClickable) {
+                if (scrollConfig.enableLogging) {
+                  console.log(`Clicking "show more" button (attempt ${showMoreClicks + 1})`);
+                }
+                
+                // Scroll the button into view if needed
+                showMoreButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Click the button
+                showMoreButton.click();
+                showMoreClicks++;
+                
+                return true;
+              }
+            }
+          } catch (error) {
+            if (scrollConfig.enableLogging) {
+              console.log(`Error clicking show more button: ${error.message}`);
+            }
+          }
+          
+          return false;
         };
 
         const waitForNewContent = () => {
@@ -159,15 +209,27 @@ export async function autoScroll(page, options = {}) {
               if (!isWaitingForContent) {
                 isWaitingForContent = true;
                 if (scrollConfig.enableLogging) {
-                  console.log('Reached bottom, waiting for new content...');
+                  console.log('Reached bottom, checking for show more button or waiting for new content...');
                 }
                 
-                // Wait for potential new content
+                // Try to click "show more" button first
+                const clickedShowMore = tryClickShowMore();
+                
+                if (clickedShowMore) {
+                  // Wait a bit after clicking show more
+                  await new Promise(resolve => setTimeout(resolve, scrollConfig.showMoreClickDelay));
+                  isWaitingForContent = false;
+                  // Continue scrolling after clicking show more
+                  setTimeout(() => scroll(), scrollConfig.scrollSpeed);
+                  return;
+                }
+                
+                // If no show more button, wait for potential new content
                 const hasNewContent = await waitForNewContent();
                 isWaitingForContent = false;
                 
                 if (!hasNewContent) {
-                  console.log(`Scroll completed: no new content after waiting`);
+                  console.log(`Scroll completed: no new content after waiting and no more "show more" buttons`);
                   resolve();
                   return;
                 }
@@ -175,6 +237,11 @@ export async function autoScroll(page, options = {}) {
             } else {
               isWaitingForContent = false;
               waitCycles = 0;
+              
+              // Also check for show more buttons while scrolling (not just at bottom)
+              if (scrollConfig.showMoreSelector && Math.random() < 0.1) { // Check occasionally while scrolling
+                tryClickShowMore();
+              }
             }
 
             // Perform scroll
