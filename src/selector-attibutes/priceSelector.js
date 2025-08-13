@@ -1,4 +1,5 @@
 export default [
+    'formatted-price-detail div div',
     "price-element::shadow::.price",
     '.product-grid-item__price .h-11',//derimod
     '.product-grid-item__price__new',//derimod

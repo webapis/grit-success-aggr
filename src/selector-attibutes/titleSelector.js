@@ -1,4 +1,5 @@
 export default [
+    '.product-title span',
     '.p-name a',
     '.product-content-name',
     '.product-grid-item__title',

@@ -1,4 +1,5 @@
 export default [
+    '.product-card-figure a',
     '.p-name a',
     'a.product-content',
     '.link.link__element',
