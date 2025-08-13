@@ -1,4 +1,5 @@
 export default [
+    '.category-grid-container',
     '.MuiContainer-root.MuiContainer-maxWidthXl',
     '.ProductListContent',
     '.grid#AjaxinateLoop',

@@ -1,4 +1,5 @@
 export default [
+    '.content-product-card',
     '.p-item-inside',
     '.test.MuiBox-root',
     '.ProductCard.mb-2.w-full',
