@@ -45,10 +45,9 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
             console.log('scroller', 'autoScroll---showMoreButtonSelector-----------------')
             await autoScroll(page, {
                 showMoreSelector: showMoreButtonSelector,
-                scrollSpeed: 500,
-                scrollDistance: 100,
-                waitForNetworkIdle: 1500,
-                maxScrollAttempts: 500,
+                scrollSpeed: 1000,       // 1 second between scrolls
+                scrollDistance: 100,     // Very small steps
+                waitForContentChange: 10000, // Wait up to 10 seconds
                 enableLogging: true
             });
         } else if (scrollable && !showMoreButtonSelector && totalProductCounterSelector) {
