@@ -1,7 +1,7 @@
 {
-  "targetSite": "shulebags",
+  "targetSite": "manuka",
   "urls": [
-    "https://www.shulebags.com/kadin-canta"
+    "https://www.manuka.com.tr/canta"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,26 +9,26 @@
   "filteringNeeded": false,
   "configurations": [
     {
-      "brand": "shulebags",
+      "brand": "manuka",
       "paginationSelector": "",
-      "paginationParameterName": "?sayfa=",
-      "scrollable": false,
+      "paginationParameterName": "",
+      "scrollable": true,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": ".appliedFilter.FiltrelemeUrunAdet span",
-      "itemsPerPage": 12,
+      "totalProductCounterSelector": "",
+      "itemsPerPage": null,
       "urls": [
-        "https://www.shulebags.com/kadin-canta"
+        "https://www.manuka.com.tr/canta"
       ],
       "paused": false,
       "pausedReason": "",
       "filteringNeeded": false,
-      "rowIndex": 60
+      "rowIndex": 61
     }
   ],
   "paginationSelector": "",
-  "paginationParameterName": "?sayfa=",
-  "scrollable": false,
+  "paginationParameterName": "",
+  "scrollable": true,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": ".appliedFilter.FiltrelemeUrunAdet span",
-  "itemsPerPage": 12
+  "totalProductCounterSelector": "",
+  "itemsPerPage": null
 }

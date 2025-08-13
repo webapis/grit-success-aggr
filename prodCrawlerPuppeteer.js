@@ -19,10 +19,10 @@ debugger
             console.error('Error: site environment variable is not set.');
             process.exit(1);
         }
-debugger
+        debugger
         console.log(`Fetching configuration for site: ${site}`);
         const siteConfig = await getSiteConfig(site, true);
-  
+
 
         if (!siteConfig) {
             console.error(`Could not retrieve configuration for site: ${site}. Exiting.`);
@@ -71,7 +71,8 @@ debugger
                         '--disable-dev-shm-usage',
                         '--disable-gpu',
                         '--window-size=1920,1080'
-                    ]
+                    ],
+                    protocolTimeout: 300000,
                 }
             },
             requestHandler: router,
