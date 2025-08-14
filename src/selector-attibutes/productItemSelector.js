@@ -1,5 +1,5 @@
 export default [
-    "[data-testid='product-box']"
+    "[data-testid='product-box']",
     '.grid-product-list--4B .content-product-card',
     '.p-item-inside',
     '.test.MuiBox-root',
