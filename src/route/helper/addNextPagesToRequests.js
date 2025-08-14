@@ -1,19 +1,15 @@
 import dotenv from "dotenv";
 import getNextPaginationUrls from "../../scrape-helpers/getNextPaginationUrls.js";
-import continueIfProductPage from "./continueIfProductPage.js";
+
 
 dotenv.config({ silent: true });
 
 
 
 
-export default async function addNextPagesToRequests({ page, addRequests, siteUrls }) {
-    //next pages
+export default async function addNextPagesToRequests({ page, addRequests, siteUrls,url }) {
 
-// const shouldContinue = await continueIfProductPage({ page, siteUrls });
-// if (!shouldContinue) return []; // 🛑 Don't proceed if no product items
-
-    const url = await page.url();
+  
 
     if (
  

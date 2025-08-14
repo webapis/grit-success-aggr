@@ -5,7 +5,7 @@ import { PuppeteerCrawler } from "crawlee";
 import { createRouter } from "./prodRoutesPuppeteer.js"; // Import factory function
 import preNavigationHooks from "./crawler-helper/preNavigationHooksProd2.js";
 import puppeteer from './crawler-helper/puppeteer-stealth.js';
-import { getSiteConfig } from './src/helper/siteConfig.js';
+import { getSiteConfig, getCachedSiteConfigFromFile } from './src/helper/siteConfig.js';
 
 const site = process.env.site;
 const local = process.env.local;
@@ -21,8 +21,8 @@ debugger
         }
         debugger
         console.log(`Fetching configuration for site: ${site}`);
-        const siteConfig = await getSiteConfig(site, true);
-
+        const siteConfig = process.env.GET_LOCAL_SITE_CONF==='TRUE' ? await getCachedSiteConfigFromFile() : getSiteConfig(site, true);
+        debugger
 
         if (!siteConfig) {
             console.error(`Could not retrieve configuration for site: ${site}. Exiting.`);

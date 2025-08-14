@@ -1,7 +1,7 @@
 {
-  "targetSite": "hotic",
+  "targetSite": "defacto",
   "urls": [
-    "https://www.hotic.com.tr/cantaaksesuar-kadin-cantaaksesuar"
+    "https://www.defacto.com.tr/kadin-canta"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -11,13 +11,13 @@
     {
       "brand": "hotic",
       "paginationSelector": "",
-      "paginationParameterName": "",
+      "paginationParameterName": "?page=",
       "scrollable": true,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": "",
-      "itemsPerPage": null,
+      "totalProductCounterSelector": ".catalog__meta--product-count span",
+      "itemsPerPage": 24,
       "urls": [
-        "https://www.hotic.com.tr/cantaaksesuar-kadin-cantaaksesuar"
+        "https://www.defacto.com.tr/kadin-canta"
       ],
       "paused": false,
       "pausedReason": "",
@@ -26,9 +26,9 @@
     }
   ],
   "paginationSelector": "",
-  "paginationParameterName": "",
+  "paginationParameterName": "?page=",
   "scrollable": true,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": "",
-  "itemsPerPage": null
+  "totalProductCounterSelector":  ".catalog__meta--product-count span",
+  "itemsPerPage": 24
 }

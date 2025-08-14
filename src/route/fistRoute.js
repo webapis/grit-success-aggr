@@ -44,8 +44,9 @@ let baseRowData = {
     'ScreenshotGit': 'Not Reached'
 
 };
-export default async function first({ page, addRequests, siteUrls }) {
-
+export default async function first(props) {
+const { page, addRequests, siteUrls, request:{url} }=props
+debugger
     await page.evaluate(() => {
         return new Promise(resolve => setTimeout(resolve, 10000));
     });
@@ -71,7 +72,7 @@ export default async function first({ page, addRequests, siteUrls }) {
             }
         }
         await scrollPageIfRequired(page, siteUrls)
-        await addNextPagesToRequests({ page, addRequests, siteUrls });
+        await addNextPagesToRequests({ page, addRequests, siteUrls, url });
         debugger
         const data = await scrapeData({ page, siteUrls })
         if (data.length === 0) {
