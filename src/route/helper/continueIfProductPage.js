@@ -1,21 +1,51 @@
 import dotenv from "dotenv";
-import scroller, { autoScroll, scrollWithShowMoreAdvanced, autoScrollUntilCount, scrollWithShowMoreUntilCount } from "../../scrape-helpers/scroller.js";
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 import productItemSelector from "../../selector-attibutes/productItemSelector.js";
-dotenv.config({ silent: true }); export default async function continueIfProductPage({ page, siteUrls }) {
+import { emitAsync } from "../../events.js";
+
+import '../../listeners.js'; // ← This registers event handlers
+ dotenv.config({ silent: true });
+const site = process.env.site;
+// 
+let baseRowData = {
+    Site: site,
+    'Notes': 'firstRoute shouldContinue is false look into screenshots',
+    'Total Objects': 'Not Reached',
+    'Invalid Titles': 'Not Reached',
+    'Invalid Page Titles': 'Not Reached',
+    'Invalid Links': 'Not Reached',
+    'Invalid Images': 'Not Reached',
+    'Invalid Prices': 'Not Reached',
+    'Unset Prices': 'Not Reached',
+    'Price Scrape Errors': 'Not Reached',
+    'Product Not Available': 'Not Reached',
+    'Total Unique Objects (by link)': 'Not Reached',
+    'Error Objects': 'Not Reached',
+    "JSONErrorGit": 'Not Reached',
+    "JSONErrorDrive": 'Not Reached',
+    "JSONDataGit": 'Not Reached',
+    "JSONDataDrive": 'Not Reached',
+    'Start Time': 'Not Reached',
+    'End Time': 'Not Reached',
+    'Span (min)': 'Not Reached',
+    'Total Pages': 'Not Reached',
+    'Unique Page URLs': 'Not Reached',
+    'AutoScroll': 'Not Reached',
+    'productPageSelector': 'Not Reached',
+    'productItemSelector': 'Not Reached',
+    'ScreenshotGit': 'Not Reached'
+
+};
+
+export default async function continueIfProductPage({ page, siteUrls }) {
 
     debugger
     page.on("console", (message) => {
         console.log("Message from Puppeteer page:", message.text());
     });
 
-    const scrollBehavior = siteUrls?.scrollBehavior;
-    const waitForSeconds = siteUrls?.waitForSeconds || 3;
 
-    const paginationSelector = siteUrls?.paginationSelector;
-    const scrollable = siteUrls?.scrollable || false;
-    const showMoreButtonSelector = siteUrls?.showMoreButtonSelector || '';
-    const totalProductCounterSelector = siteUrls?.totalProductCounterSelector || '';
+    const waitForSeconds = siteUrls?.waitForSeconds || 3;
 
     debugger
     if (waitForSeconds > 0) {
@@ -27,106 +57,27 @@ dotenv.config({ silent: true }); export default async function continueIfProduct
     debugger
     if (productItemsCount > 0) {
 
-        debugger
-
-        if (scrollable && !showMoreButtonSelector && !totalProductCounterSelector) {
-
-            debugger
-            console.log('scroller', 'autoScroll--------------------')
-            await autoScroll(page, {
-                scrollSpeed: 500,
-                scrollDistance: 300,
-                waitForNetworkIdle: 1500,
-                maxScrollAttempts: 500,
-                enableLogging: true
-            });
-        }
-        else if (scrollable && showMoreButtonSelector) {
-            console.log('scroller', 'autoScroll---showMoreButtonSelector-----------------')
-            await autoScroll(page, {
-                showMoreSelector: showMoreButtonSelector,
-                scrollSpeed: 1000,       // 1 second between scrolls
-                scrollDistance: 100,     // Very small steps
-                waitForContentChange: 10000, // Wait up to 10 seconds
-                enableLogging: true
-            });
-        } else if (scrollable && !showMoreButtonSelector && totalProductCounterSelector) {
-
-            const matchedSelectors = [];
-            const elementCounts = {};
-
-            for (const selector of productItemSelector) {
-                const count = await page.$$eval(selector, elements => elements.length);
-                if (count > 0) {
-                    matchedSelectors.push(selector);
-                    elementCounts[selector] = count;
-                }
-            }
-
-            const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
-                const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
-                const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
-                return totalCount
-
-            }, totalProductCounterSelector)
-
-            const targetElementSelector = matchedSelectors[0];
-            debugger;
-            console.log('scroller', 'autoScrollUntilCount--------------------')
-            await autoScrollUntilCount(page, targetElementSelector, totalItemsToBeCallected, {
-                enableLogging: true,
-
-            })
-
-
-        } else if (scrollable && showMoreButtonSelector && totalProductCounterSelector) {
-            console.log('scroller', 'scrollWithShowMoreUntilCount--------------------')
-
-            const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
-                const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
-                const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
-                return totalCount
-
-            }, totalProductCounterSelector)
-            debugger;
-            const matchedSelectors = [];
-            const elementCounts = {};
-
-            for (const selector of productItemSelector) {
-                const count = await page.$$eval(selector, elements => elements.length);
-                if (count > 0) {
-                    matchedSelectors.push(selector);
-                    elementCounts[selector] = count;
-                }
-            }
-            const targetElementSelector = matchedSelectors[0];
-            debugger
-            await scrollWithShowMoreUntilCount(
-                page,
-                targetElementSelector,        // Elements to count
-                totalItemsToBeCallected,                     // Target: 50 products
-                showMoreButtonSelector       // Show more button selector
-            );
-            debugger
-        } else if (scrollable && showMoreButtonSelector && !totalProductCounterSelector) {
-            await scrollWithShowMoreAdvanced(page, 500, showMoreButtonSelector, {
-                waitAfterClick: 3000,
-                maxConsecutiveBottomReached: 3,
-                enableScrolling: true
-            });
-        } else if (!scrollable && showMoreButtonSelector && !totalProductCounterSelector) {
-            await scrollWithShowMoreAdvanced(page, 500, showMoreButtonSelector, {
-                waitAfterClick: 3000,
-                maxConsecutiveBottomReached: 3,
-                enableScrolling: false
-            });
-
-
-        }
-
         return true;
     } else {
-        debugger
+        //take screenshot if initial pages could not be retrieved.
+        const screenshotBuffer = await page.screenshot({ fullPage: true });
+
+
+        // Upload directly to GitHub
+        const result = await uploadImage({
+            fileName: `${site}-${Date.now()}.png`,  // Will become 'webpage-screenshot.png'
+            imageBuffer: screenshotBuffer,   // Pass the buffer directly
+            gitFolder: 'screenshots'
+        })
+        console.log('Screenshot uploaded!')
+        console.log('View at:', result.url)
+        console.log('Direct link:', result.downloadUrl)
+
+        await emitAsync('log-to-sheet', {
+            sheetTitle: 'Crawl Logs(success)',
+            message: console.log(`Site ${site} is logging data to Google Sheet.`),
+            rowData: baseRowData
+        });
         console.log('No product items found on the page');
         return false;
     }

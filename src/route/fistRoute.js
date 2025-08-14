@@ -9,6 +9,7 @@ import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
 import continueIfProductPage from "./helper/continueIfProductPage.js";
 import { uploadImage } from "../git/uploadImage.js";
 import { emitAsync } from "../events.js";
+import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
 import '../listeners.js'; // ← This registers event handlers
 dotenv.config({ silent: true });
 
@@ -54,6 +55,7 @@ export default async function first({ page, addRequests, siteUrls }) {
     debugger
     const shouldContinue = await continueIfProductPage({ page, siteUrls });
     if (shouldContinue) {
+
         debugger
         if (siteUrls?.totalProductCounterSelector) {
             const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
@@ -68,7 +70,7 @@ export default async function first({ page, addRequests, siteUrls }) {
                 await productsDataset.pushData({ totalItemsToBeCallected });
             }
         }
-
+        await scrollPageIfRequired(page, siteUrls)
         await addNextPagesToRequests({ page, addRequests, siteUrls });
         debugger
         const data = await scrapeData({ page, siteUrls })
@@ -79,36 +81,11 @@ export default async function first({ page, addRequests, siteUrls }) {
                 message: console.log(`Site ${site} is logging data to Google Sheet.`),
                 rowData: { ...baseRowData, Notes: 'no productItemSelector is provided :firstRoute' }
             });
-        } 
+        }
         debugger
         return data
     } else {
-        //take screenshot if initial pages could not be retrieved.
-        const screenshotBuffer = await page.screenshot({ fullPage: true });
-
-        // const uploadResult = await uploadToGoogleDrive({
-        //     buffer: screenshotBuffer,
-        //     fileName: `screenshot-${site}-${Date.now()}.png`,
-        //     folderId: process.env.GOOGLE_DRIVE_FOLDER_ID_SNAPSHOT,
-        //     serviceAccountCredentials: JSON.parse(Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')),
-        // });
-        // console.log('📸 Screenshot uploaded:', uploadResult.webViewLink);
-
-        // Upload directly to GitHub
-        const result = await uploadImage({
-            fileName: `${site}-${Date.now()}.png`,  // Will become 'webpage-screenshot.png'
-            imageBuffer: screenshotBuffer,   // Pass the buffer directly
-            gitFolder: 'screenshots'
-        })
-        console.log('Screenshot uploaded!')
-        console.log('View at:', result.url)
-        console.log('Direct link:', result.downloadUrl)
-
-        await emitAsync('log-to-sheet', {
-            sheetTitle: 'Crawl Logs(success)',
-            message: console.log(`Site ${site} is logging data to Google Sheet.`),
-            rowData: baseRowData
-        });
+     
         return []
     }
 

@@ -4,19 +4,18 @@
 
 
 import scrapeData from "./helper/scrapeData.js";
-//import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
+import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
 
 export default async function second({
-    page,
+  page,
 
-    addRequests,
-    siteUrls
+  addRequests,
+  siteUrls
 }) {
 
-  //  await addNextPagesToRequests({ page, addRequests,siteUrls });
+  await scrollPageIfRequired(page, siteUrls)
+  const data = await scrapeData({ page, siteUrls })
 
-    const data = await scrapeData({ page,siteUrls })
-
-    return data
+  return data
 
 }
