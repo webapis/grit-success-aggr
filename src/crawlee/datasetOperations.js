@@ -9,3 +9,9 @@ export async function getDatasetData(datasetName) {
     const { items } = await dataset.getData();
     return items?.[0]?.[datasetName];
 }
+
+export async function getDatasetItems(datasetName) {
+    const dataset = await Dataset.open(datasetName);
+    const { items } = await dataset.getData();
+    return items || [];
+}

@@ -10,13 +10,15 @@ import './listeners.js'; // ← This registers event handlers
 import uploadJSONToGoogleDrive from "./drive/uploadJSONToGoogleDrive.js";
 import { getCachedSiteConfigFromFile } from './helper/siteConfig.js';
 import findDuplicatesByLink from './helper/findDuplicatesByLink.js';
-import { getDatasetData } from './crawlee/datasetOperations.js';
+import { getDatasetData,getDatasetItems } from './crawlee/datasetOperations.js';
 dotenv.config({ silent: true });
 
 const URL_CATEGORIES = process.env.URL_CATEGORIES;
 const site = process.env.site;
 const siteUrls = await getCachedSiteConfigFromFile()//urls.find(f => getMainDomainPart(f.urls[0]) === site)
 debugger;
+
+const data = await getDatasetItems(site);
 const totalItemsPerPage = await getDatasetData('totalItemsPerPage')
 const totalItemsToCallect = await getDatasetData('totalItemsToBeCallected');
 debugger
