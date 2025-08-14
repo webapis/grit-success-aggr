@@ -1,4 +1,3 @@
-
 import { emitAsync } from './src/events.js';
 import './src/listeners.js'; // ← This registers event handlers
 import { PuppeteerCrawler } from "crawlee";
@@ -83,13 +82,73 @@ debugger
             headless: HEADLESS === "false" ? false : true,
             requestHandlerTimeoutSecs: 600000,
             // maxRequestsPerCrawl: 50
+            
+            // OPTION 1: Handle failed requests with errorHandler
+            errorHandler: async ({ request, error }) => {
+                console.error(`❌ Request failed for URL: ${request.url}`);
+                console.error(`Error: ${error.message}`);
+                
+                // Check if it's a 403 error specifically
+                if (error.message.includes('403 status code')) {
+                    console.log('🚫 Detected 403 Forbidden error - possible anti-bot protection');
+                    
+                }
+                
+                // You can also handle other specific errors here
+                if (error.message.includes('timeout')) {
+                    console.log('⏰ Request timeout detected');
+                }
+            },
+            
+            // OPTION 2: Handle failed requests that exceed retry limit
+            failedRequestHandler: async ({ request, error }) => {
+                console.error(`💀 Request permanently failed after all retries: ${request.url}`);
+                console.error(`Final error: ${error.message}`);
+                
+            },
+            
+            // OPTION 3: Custom retry condition to handle 403 differently
+            retryOnBlocked: false, // Disable default retry on blocked requests
+            reclaim: true, // Allow reclaiming failed requests
+            
+            // OPTION 4: Custom request retry logic
+            maxRequestRetries: 2, // Reduce retries for blocked requests
+            
         });
 
-        await crawler.run(siteConfig.urls);
-        console.log(`Crawler completed for site: ${site}`);
+        // OPTION 5: Listen to crawler events for more granular control
+        crawler.on('requestFailed', ({ request, error }) => {
+            console.log(`🔄 Request failed event: ${request.url} - ${error.message}`);
+        });
+
+        crawler.on('requestRetry', ({ request, error }) => {
+            console.log(`🔄 Retrying request: ${request.url} (attempt ${request.retryCount + 1})`);
+        });
+
+        // Run crawler with error handling
+        try {
+            await crawler.run(siteConfig.urls);
+            console.log(`✅ Crawler completed for site: ${site}`);
+            
+            // OPTION 6: Check crawler statistics for errors
+            const stats = await crawler.stats;
+            if (stats.requestsFailed > 0) {
+                console.log(`⚠️  Crawler completed with ${stats.requestsFailed} failed requests`);
+                
+        
+            }
+            
+        } catch (crawlerError) {
+            console.error('❌ Crawler execution failed:', crawlerError);
+        
+        }
 
     } catch (error) {
-        console.error('Fatal error in main execution:', error);
+        console.error('💥 Fatal error in main execution:', error);
+
+        
+    
+        
         process.exit(1);
     }
 })();
