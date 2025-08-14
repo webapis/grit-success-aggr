@@ -8,13 +8,20 @@
  * @param {Array<string>} paginationPostfix - URL postfix(es) like ['?page=']
  * @returns {Promise<string[]>} Array of next page URLs
  */
+
+import { Dataset } from 'crawlee';
 export default async function getNextPaginationUrls(page, url, siteUrls) {
   debugger
+  const totalItemsPerPageDataset = await Dataset.open('totalItemsPerPage');
+  const { items } = await totalItemsPerPageDataset.getData();
 
+  const itemsPerPage = items?.[0]?.totalItemsPerPage
+
+  debugger
   const paginationSelector = siteUrls?.paginationSelector
   const paginationParameterName = siteUrls?.paginationParameterName
-  const itemsPerPage = siteUrls?.itemsPerPage
-  const totalProductCounterSelector = siteUrls?.totalProductCounterSelector 
+  //const itemsPerPage = siteUrls?.itemsPerPage
+  const totalProductCounterSelector = siteUrls?.totalProductCounterSelector
   debugger
   if (paginationSelector && paginationParameterName) {
     return await page.evaluate((paginationSelector, baseUrl, paginationParameterName) => {
@@ -30,7 +37,7 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
         const maxPage = Math.max(...pageNumbers, 1);
         const urls = [];
         for (let i = 1; i <= maxPage; i++) {
-          urls.push(`${baseUrl}${ paginationParameterName}${i}`);
+          urls.push(`${baseUrl}${paginationParameterName}${i}`);
         }
         return urls;
 
@@ -43,8 +50,8 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
   } else if (itemsPerPage && paginationParameterName && totalProductCounterSelector) {
 
     const nextUrls = await page.evaluate((baseUrl, itemsPerPage, paginationParameterName, totalProductCounterSelector) => {
-        const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
-        const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
+      const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
+      const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
       if (!isNaN(totalCount) && totalCount > itemsPerPage) {
         const totalPages = Math.ceil(totalCount / itemsPerPage);
         const urls = [];
@@ -55,13 +62,11 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
       } else {
         return [];
       }
-    }, url, itemsPerPage, paginationParameterName,  totalProductCounterSelector);
+    }, url, itemsPerPage, paginationParameterName, totalProductCounterSelector);
 
     debugger
     return nextUrls;
-  }else{
+  } else {
     return []
   }
-
-  debugger
 }

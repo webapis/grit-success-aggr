@@ -11,6 +11,7 @@ import { uploadImage } from "../git/uploadImage.js";
 import { emitAsync } from "../events.js";
 import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
 import '../listeners.js'; // ← This registers event handlers
+import productItemSelector from "../selector-attibutes/productItemSelector.js";
 dotenv.config({ silent: true });
 
 const site = process.env.site;
@@ -45,8 +46,8 @@ let baseRowData = {
 
 };
 export default async function first(props) {
-const { page, addRequests, siteUrls, request:{url} }=props
-debugger
+    const { page, addRequests, siteUrls, request: { url } } = props
+    debugger
     await page.evaluate(() => {
         return new Promise(resolve => setTimeout(resolve, 10000));
     });
@@ -59,6 +60,7 @@ debugger
 
         debugger
         if (siteUrls?.totalProductCounterSelector) {
+            debugger
             const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
                 const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
                 const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
@@ -71,6 +73,21 @@ debugger
                 await productsDataset.pushData({ totalItemsToBeCallected });
             }
         }
+        const matchedSelectors = [];
+        const totalItemsPerPage = {};
+
+        for (const selector of productItemSelector) {
+            const count = await page.$$eval(selector, elements => elements.length);
+            if (count > 0) {
+                matchedSelectors.push(selector);
+                totalItemsPerPage[selector] = count;
+            }
+        }
+
+        const totalItemsPerPageDataset = await Dataset.open('totalItemsPerPage');
+        await totalItemsPerPageDataset.pushData({ totalItemsPerPage: totalItemsPerPage[matchedSelectors[0]] });
+        debugger
+
         await scrollPageIfRequired(page, siteUrls)
         await addNextPagesToRequests({ page, addRequests, siteUrls, url });
         debugger
@@ -86,7 +103,7 @@ debugger
         debugger
         return data
     } else {
-     
+
         return []
     }
 

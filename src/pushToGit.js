@@ -21,6 +21,8 @@ const dataset = await Dataset.open(site);
 const datasetTotalItemsToBeCallected = await Dataset.open('totalItemsToBeCallected');
 const { items: data } = await dataset.getData();
 const { items: totalItemsToCallect } = await datasetTotalItemsToBeCallected.getData();
+const totalItemsPerPageDataset = await Dataset.open('totalItemsPerPage');
+const { items: totalItemsPerPage } = await totalItemsPerPageDataset.getData();
 const dataWithoutError = data.filter(f => !f.error);
 const dataWithError = data.filter(f => f.error);
 const { oldestTimestamp, newestTimestamp, minutesSpan } = getAggrTimeSpan({ data });
@@ -122,6 +124,7 @@ const baseRowData = {
     'Price Scrape Errors': priceScrapeError,
     'Product Not Available': totalNotAvailable,
     'TotalItemsToBeCallected': totalItemsToBeCallected,
+    'TotalItemsPerPage': totalItemsPerPage,
     'Total Unique Objects (by link)': totalUniqueObjects.count,
     'Error Objects': dataWithError.length,
     "JSONErrorGit": JSONErrorGit ? JSONErrorGit.url : 'N/A',
