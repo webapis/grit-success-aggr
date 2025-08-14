@@ -120,7 +120,6 @@ debugger
 
             // OPTION 3: Custom retry condition to handle 403 differently
             retryOnBlocked: false, // Disable default retry on blocked requests
-            reclaim: true, // Allow reclaiming failed requests
 
             // OPTION 4: Custom request retry logic
             maxRequestRetries: 2, // Reduce retries for blocked requests
