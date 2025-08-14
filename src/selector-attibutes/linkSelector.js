@@ -1,4 +1,5 @@
 export default [
+    '.image-box a',
     '.product-card-figure a',
     '.p-name a',
     'a.product-content',
