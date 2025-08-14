@@ -126,14 +126,6 @@ debugger
 
         });
 
-        // OPTION 5: Listen to crawler events for more granular control
-        crawler.on('requestFailed', ({ request, error }) => {
-            console.log(`🔄 Request failed event: ${request.url} - ${error.message}`);
-        });
-
-        crawler.on('requestRetry', ({ request, error }) => {
-            console.log(`🔄 Retrying request: ${request.url} (attempt ${request.retryCount + 1})`);
-        });
 
         // Run crawler with error handling
         try {
