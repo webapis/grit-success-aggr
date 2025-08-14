@@ -21,7 +21,8 @@ debugger
         }
         debugger
         console.log(`Fetching configuration for site: ${site}`);
-        const siteConfig = process.env.GET_LOCAL_SITE_CONF==='TRUE' ? await getCachedSiteConfigFromFile() : getSiteConfig(site, true);
+        const siteConfig = getSiteConfig(site, true);
+       // const siteConfig = process.env.GET_LOCAL_SITE_CONF==='TRUE' ? await getCachedSiteConfigFromFile() : getSiteConfig(site, true);
         debugger
 
         if (!siteConfig) {
