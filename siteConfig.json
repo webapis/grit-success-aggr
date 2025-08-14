@@ -9,10 +9,10 @@
   "filteringNeeded": false,
   "configurations": [
     {
-      "brand": "hotic",
+      "brand": "defacto",
       "paginationSelector": "",
       "paginationParameterName": "?page=",
-      "scrollable": true,
+      "scrollable": false,
       "showMoreButtonSelector": "",
       "totalProductCounterSelector": ".catalog__meta--product-count span",
       "itemsPerPage": 24,
@@ -22,13 +22,13 @@
       "paused": false,
       "pausedReason": "",
       "filteringNeeded": false,
-      "rowIndex": 67
+      "rowIndex": 3
     }
   ],
   "paginationSelector": "",
   "paginationParameterName": "?page=",
-  "scrollable": true,
+  "scrollable": false,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector":  ".catalog__meta--product-count span",
+  "totalProductCounterSelector": ".catalog__meta--product-count span",
   "itemsPerPage": 24
 }
