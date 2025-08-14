@@ -21,9 +21,11 @@ const dataset = await Dataset.open(site);
 const datasetTotalItemsToBeCallected = await Dataset.open('totalItemsToBeCallected');
 const { items: data } = await dataset.getData();
 const { items: totalItemsToCallect } = await datasetTotalItemsToBeCallected.getData();
-const { items } = await totalItemsPerPageDataset.getData();
 
+const totalItemsPerPageDataset = await Dataset.open('totalItemsPerPage');
+const { items } = await totalItemsPerPageDataset.getData();
 const totalItemsPerPage = items?.[0]?.totalItemsPerPage
+
 const dataWithoutError = data.filter(f => !f.error);
 const dataWithError = data.filter(f => f.error);
 const { oldestTimestamp, newestTimestamp, minutesSpan } = getAggrTimeSpan({ data });
