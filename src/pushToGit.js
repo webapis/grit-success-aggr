@@ -1,7 +1,6 @@
 import { Readable } from 'stream';
 import { uploadCollection } from "./uploadCollection.js";
 import dotenv from 'dotenv';
-import { Dataset } from 'crawlee';
 import getAggrTimeSpan from "./sheet/getAggrTimeSpan.js";
 import countUnique from "./sheet/countUnique.js";
 import countByField from "./scrape-helpers/countByField.js";
@@ -11,21 +10,16 @@ import './listeners.js'; // ← This registers event handlers
 import uploadJSONToGoogleDrive from "./drive/uploadJSONToGoogleDrive.js";
 import { getCachedSiteConfigFromFile } from './helper/siteConfig.js';
 import findDuplicatesByLink from './helper/findDuplicatesByLink.js';
+import { getDatasetData } from './crawlee/datasetOperations.js';
 dotenv.config({ silent: true });
 
 const URL_CATEGORIES = process.env.URL_CATEGORIES;
 const site = process.env.site;
 const siteUrls = await getCachedSiteConfigFromFile()//urls.find(f => getMainDomainPart(f.urls[0]) === site)
 debugger;
-const dataset = await Dataset.open(site);
-const datasetTotalItemsToBeCallected = await Dataset.open('totalItemsToBeCallected');
-const { items: data } = await dataset.getData();
-const { items: totalItemsToCallect } = await datasetTotalItemsToBeCallected.getData();
-
-const totalItemsPerPageDataset = await Dataset.open('totalItemsPerPage');
-const { items } = await totalItemsPerPageDataset.getData();
-const totalItemsPerPage = items?.[0]?.totalItemsPerPage
-
+const totalItemsPerPage = await getDatasetData('totalItemsPerPage')
+const totalItemsToCallect = await getDatasetData('totalItemsToBeCallected');
+debugger
 const dataWithoutError = data.filter(f => !f.error);
 const dataWithError = data.filter(f => f.error);
 const { oldestTimestamp, newestTimestamp, minutesSpan } = getAggrTimeSpan({ data });
@@ -40,13 +34,10 @@ const unsetPrice = countByField(data, 'priceisUnset', true);
 const priceScrapeError = countByField(data, 'priceScrapeError', true);
 const totalNotAvailable = countByField(data, 'productNotInStock', true);
 const dublicateURLs = findDuplicatesByLink(data)
-const totalItemsToBeCallected = totalItemsToCallect.length > 0 ? totalItemsToCallect[0].totalItemsToBeCallected : 0;
+const totalItemsToBeCallected = totalItemsToCallect || 0;
 debugger
 
-
-
 const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
-
 
 const invalidItems = data.filter(item =>
     !item.imgValid ||

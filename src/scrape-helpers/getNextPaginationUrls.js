@@ -1,21 +1,9 @@
-/**
- * Generates next pagination URLs from the current page
- * based on provided selectors and rules.
- * 
- * @param {import('puppeteer').Page} page - Puppeteer page object
- * @param {string} url - Current page URL
- * @param {Array<string>} funcPageSelector - Pagination strategy selectors
- * @param {Array<string>} paginationPostfix - URL postfix(es) like ['?page=']
- * @returns {Promise<string[]>} Array of next page URLs
- */
 
-import { Dataset } from 'crawlee';
+import { getDatasetData } from '../crawlee/datasetOperations';
 export default async function getNextPaginationUrls(page, url, siteUrls) {
   debugger
-  const totalItemsPerPageDataset = await Dataset.open('totalItemsPerPage');
-  const { items } = await totalItemsPerPageDataset.getData();
-
-  const itemsPerPage = items?.[0]?.totalItemsPerPage
+ 
+  const itemsPerPage = await getDatasetData('totalItemsPerPage');
 
   debugger
   const paginationSelector = siteUrls?.paginationSelector
