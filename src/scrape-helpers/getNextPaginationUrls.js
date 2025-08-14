@@ -1,5 +1,5 @@
 
-import { getDatasetData } from '../crawlee/datasetOperations';
+import { getDatasetData } from '../crawlee/datasetOperations.js';
 export default async function getNextPaginationUrls(page, url, siteUrls) {
   debugger
  
