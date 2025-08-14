@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 import productItemSelector from "../../selector-attibutes/productItemSelector.js";
 import { emitAsync } from "../../events.js";
-
+import { uploadImage } from "../../git/uploadImage.js";
 import '../../listeners.js'; // ← This registers event handlers
  dotenv.config({ silent: true });
 const site = process.env.site;
