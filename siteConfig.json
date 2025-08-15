@@ -11,10 +11,10 @@
     {
       "brand": "lacoste",
       "paginationSelector": "li a",
-      "paginationParameterName": "",
+      "paginationParameterName": "?page=",
       "scrollable": false,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": "",
+      "totalProductCounterSelector": "[data-testid='list-count']",
       "itemsPerPage": null,
       "urls": [
         "https://www.lacoste.com.tr/kadin-canta/"
@@ -26,9 +26,9 @@
     }
   ],
   "paginationSelector": "li a",
-  "paginationParameterName": "",
+  "paginationParameterName": "?page=",
   "scrollable": false,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": "",
+  "totalProductCounterSelector": "[data-testid='list-count']",
   "itemsPerPage": null
 }
