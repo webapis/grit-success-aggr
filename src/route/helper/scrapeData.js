@@ -23,7 +23,7 @@ dotenv.config({ silent: true });
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
     debugger
 
- const data = await page.evaluate((params) => {
+const data = await page.evaluate((params) => {
     const pageTitle = document.title;
     const pageURL = document.URL;
 
@@ -68,10 +68,10 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         return Array.from(container.querySelectorAll(selector));
     }
 
-    const pageSelectors = params.productPageSelector.split(',').map(s => s.trim());
+    // Now params.productPageSelector is already an array, no need to split
     let matchedDocument = null;
     let matchedPageSelector = null;
-    for (const sel of pageSelectors) {
+    for (const sel of params.productPageSelector) {
         const el = document.querySelector(sel);
         if (el) {
             matchedDocument = el;
@@ -82,23 +82,25 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
     const usedFallbackDocument = !matchedDocument;
     const selectedDocument = matchedDocument || document;
-    const candidateItems = Array.from(selectedDocument.querySelectorAll(params.productItemSelector)).map(m => {
-        const titleSelectors = params.titleSelector.split(',').map(s => s.trim());
-        const imageSelectors = params.imageSelector.split(',').map(s => s.trim());
-        const linkSelectors = params.linkSelector.split(',').map(s => s.trim());
-        const priceSelectors = params.priceSelector.split(',').map(s => s.trim());
-        const videoSelectors = params.videoSelector.split(',').map(s => s.trim());
-        const videoAttrList = params.videoAttribute.split(',').map(attr => attr.trim());
+    
+    // params.productItemSelector is already an array
+    const candidateItems = Array.from(selectedDocument.querySelectorAll(params.productItemSelector.join(', '))).map(m => {
+        // All these are now arrays, no need to split
+        const titleSelectors = params.titleSelector;
+        const imageSelectors = params.imageSelector;
+        const linkSelectors = params.linkSelector;
+        const priceSelectors = params.priceSelector;
+        const videoSelectors = params.videoSelector;
+        const videoAttrList = params.videoAttribute;
 
         const titleElement = titleSelectors.map(sel => queryElement(m, sel)).find(Boolean);
         const linkElement = linkSelectors.map(sel => queryElement(m, sel)).find(Boolean);
 
         const imgElements = imageSelectors.flatMap(sel => queryAllElements(m, sel));
-        const productNotInStock = queryElement(m, params.productNotAvailable) ? true : false;
+        const productNotInStock = queryElement(m, params.productNotAvailable.join(', ')) ? true : false;
 
         const imgUrls = imgElements.flatMap(el =>
             params.imageAttributes
-                .split(',')
                 .map(attr => el?.getAttribute(attr?.replaceAll(" ", "")))
                 .filter(Boolean)
         );
@@ -138,7 +140,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
         const title = titleElement &&
             params.titleAttribute
-                .split(',')
                 .map(attr => titleElement[attr?.replaceAll(" ", "")])
                 .find(Boolean);
 
@@ -162,7 +163,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                 priceSelectorsMatched.add(matchedSelector);
             }
 
-            const priceAttrList = params.priceAttribute.split(',').map(attr => attr.trim());
+            const priceAttrList = params.priceAttribute;
             for (const attr of priceAttrList) {
                 let value = priceEl[attr]?.trim();
                 if (value) {
@@ -216,11 +217,8 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         }
 
         const matchedSelector = params.productItemSelector
-            .split(',')
-            .map(s => s.trim())
             .find(selector => m.matches(selector));
-        const matchedProductItemSelectorManual = params.productItemSelectorManual.split(',')
-            .map(s => s.trim())
+        const matchedProductItemSelectorManual = params.productItemSelectorManual
             .find(selector => m.matches(selector));
 
         try {
@@ -268,19 +266,20 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
     debugger
     return candidateItems
 }, {
-    productPageSelector: productPageSelector.join(', '),
-    productItemSelector: productItemSelector.join(', '),
-    productItemSelectorManual: productItemSelector.join(', '),
-    titleSelector: titleSelector.join(', '),
-    titleAttribute: titleAttribute.join(', '),
-    imageSelector: imageSelectors.join(', '),
-    imageAttributes: imageAttributes.join(', '),
-    linkSelector: linkSelectors.join(', '),
-    priceSelector: priceSelector.join(', '),
-    priceAttribute: priceAttribute.join(', '),
-    productNotAvailable: productNotAvailable.join(', '),
-    videoSelector: videoSelectors.join(', '),
-    videoAttribute: videoAttributes.join(', ')
+    // Pass arrays directly instead of joining them
+    productPageSelector: productPageSelector,
+    productItemSelector: productItemSelector,
+    productItemSelectorManual: productItemSelector,
+    titleSelector: titleSelector,
+    titleAttribute: titleAttribute,
+    imageSelector: imageSelectors,
+    imageAttributes: imageAttributes,
+    linkSelector: linkSelectors,
+    priceSelector: priceSelector,
+    priceAttribute: priceAttribute,
+    productNotAvailable: productNotAvailable,
+    videoSelector: videoSelectors,
+    videoAttribute: videoAttributes
 });
     const validData = data.map(item => {
         const processedImgs = (item.img || [])
