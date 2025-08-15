@@ -12,7 +12,7 @@ import { emitAsync } from "../events.js";
 import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
 import '../listeners.js'; // ← This registers event handlers
 import productItemSelector from "../selector-attibutes/productItemSelector.js";
-import { uploadImage } from "../../git/uploadImage.js";
+import { uploadImage } from "../git/uploadImage.js";
 dotenv.config({ silent: true });
 
 const site = process.env.site;
