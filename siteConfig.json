@@ -1,34 +1,34 @@
 {
-  "targetSite": "lacoste",
+  "targetSite": "rivus",
   "urls": [
-    "https://www.lacoste.com.tr/kadin-canta/"
+    "https://rivus.com.tr/dis-giyim"
   ],
   "totalUrls": 1,
   "paused": false,
   "pausedReason": "",
-  "filteringNeeded": false,
+  "filteringNeeded": true,
   "configurations": [
     {
-      "brand": "lacoste",
-      "paginationSelector": "li a",
-      "paginationParameterName": "?page=",
-      "scrollable": false,
+      "brand": "rivus",
+      "paginationSelector": "",
+      "paginationParameterName": "?sayfa=",
+      "scrollable": true,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": "[data-testid='list-count']",
-      "itemsPerPage": null,
+      "totalProductCounterSelector": ".appliedFilter.FiltrelemeUrunAdet span",
+      "itemsPerPage": 32,
       "urls": [
-        "https://www.lacoste.com.tr/kadin-canta/"
+        "https://rivus.com.tr/dis-giyim"
       ],
       "paused": false,
-      "pausedReason": "",
-      "filteringNeeded": false,
-      "rowIndex": 72
+      "pausedReason": "Request blocked - received 403 status code.",
+      "filteringNeeded": true,
+      "rowIndex": 41
     }
   ],
-  "paginationSelector": "li a",
-  "paginationParameterName": "?page=",
-  "scrollable": false,
+  "paginationSelector": "",
+  "paginationParameterName": "?sayfa=",
+  "scrollable": true,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": "[data-testid='list-count']",
-  "itemsPerPage": null
+  "totalProductCounterSelector": ".appliedFilter.FiltrelemeUrunAdet span",
+  "itemsPerPage": 32
 }

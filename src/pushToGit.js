@@ -120,7 +120,7 @@ const baseRowData = {
     'Price Scrape Errors': priceScrapeError,
     'Product Not Available': totalNotAvailable,
     'TotalItemsToBeCallected': totalItemsToBeCallected,
-    'TotalItemsPerPage': totalItemsPerPage,
+    'TotalItemsPerPage': totalItemsPerPage||0,
     'Total Unique Objects (by link)': totalUniqueObjects.count,
     'Error Objects': dataWithError.length,
     "JSONErrorGit": JSONErrorGit ? JSONErrorGit.url : 'N/A',
@@ -162,11 +162,11 @@ if (!siteUrls.paused && dataWithoutError.length > 0) {
     debugger
     console.warn('⚠️ No valid data collected.');
 
-    await emitAsync('log-to-sheet', {
-        sheetTitle: 'Crawl Logs(failed)',
-        message: console.log(`Site ${site} is logging data to Google Sheet.`),
-        rowData: baseRowData
-    });
+    // await emitAsync('log-to-sheet', {
+    //     sheetTitle: 'Crawl Logs(failed)',
+    //     message: console.log(`Site ${site} is logging data to Google Sheet.`),
+    //     rowData: baseRowData
+    // });
 
     if (dataWithError.length > 0) {
         console.warn('First error sample:', dataWithError[0]);

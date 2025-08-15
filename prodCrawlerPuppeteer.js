@@ -5,7 +5,7 @@ import { createRouter } from "./prodRoutesPuppeteer.js"; // Import factory funct
 import preNavigationHooks from "./crawler-helper/preNavigationHooksProd2.js";
 import puppeteer from './crawler-helper/puppeteer-stealth.js';
 import { getSiteConfig, getCachedSiteConfigFromFile } from './src/helper/siteConfig.js';
-
+import baseRowData from './src/route/micro/baseRowData.js';
 const site = process.env.site;
 const local = process.env.local;
 const HEADLESS = process.env.HEADLESS;
@@ -103,10 +103,21 @@ debugger
                 if (error.message.includes('403 status code')) {
                     console.log('🚫 Detected 403 Forbidden error - possible anti-bot protection');
 
+                    await emitAsync('log-to-sheet', {
+                        sheetTitle: 'Crawl Logs(success)',
+                        message: console.log(`Site ${site} is logging data to Google Sheet.`),
+                        rowData: { ...baseRowData, Site: site, Notes: 'Detected 403 Forbidden error - possible anti-bot protection' }
+                    });
+
                 }
 
                 // You can also handle other specific errors here
                 if (error.message.includes('timeout')) {
+                    await emitAsync('log-to-sheet', {
+                        sheetTitle: 'Crawl Logs(success)',
+                        message: console.log(`Site ${site} is logging data to Google Sheet.`),
+                        rowData: { ...baseRowData, Site: site, Notes: 'Request timeout detected' }
+                    });
                     console.log('⏰ Request timeout detected');
                 }
             },
@@ -116,6 +127,11 @@ debugger
                 console.error(`💀 Request permanently failed after all retries: ${request.url}`);
                 console.error(`Final error: ${error.message}`);
 
+                await emitAsync('log-to-sheet', {
+                    sheetTitle: 'Crawl Logs(success)',
+                    message: console.log(`Site ${site} is logging data to Google Sheet.`),
+                    rowData: { ...baseRowData, Site: site, Notes: `Request permanently failed after all retries: ${request.url}` }
+                });
             },
 
             // OPTION 3: Custom retry condition to handle 403 differently
