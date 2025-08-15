@@ -19,7 +19,7 @@ export default [
     '[data-testid][class^="product_card_product_card"]',
     '.product-item',
     '.c-tiles-column',
-    //'[data-testid="product-box"]',
+    '[data-testid="product-box"]',
     '.js-product-list-item',
     '.list-content-product-item:has(.product-name a)',
     '.ant-col.grid-item',

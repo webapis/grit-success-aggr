@@ -1,4 +1,5 @@
 export default [
+    'h3 .block.text-primary.text-xs',
     '.image-box a',
     '.product-card-figure a',
     '.p-name a',
