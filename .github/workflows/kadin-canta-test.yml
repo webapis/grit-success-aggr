@@ -1,10 +1,9 @@
-# https://claude.ai/chat/e31defb6-2da1-408c-a94e-1c914be205ac
 name: kadin-canta-test-1
 on:
-   workflow_dispatch:  # Allows manual triggering
+   workflow_dispatch:
    schedule:
-     - cron: '0 5 * * 1'  # Runs at 5:00 AM UTC on Monday 
-    #  - cron: '0 14 * * *'  # Runs at 2:00 PM UTC daily
+     - cron: '0 5 * * 1'
+
 env:
   MONGODB_URL: ${{secrets.MONGODB_URL}}
   GH_TOKEN: ${{secrets.GH_TOKEN}}
@@ -16,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sites: ${{ steps.set-sites.outputs.sites }}
+      sheet-data: ${{ steps.fetch-data.outputs.sheet-data }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -36,15 +36,16 @@ jobs:
           }
           EOF
       
-      - name: Fetch sites from Google Sheets
-        id: set-sites
+      # Fetch ALL sheet data once and cache it
+      - name: Fetch sheet data
+        id: fetch-data
         run: |
-          cat > fetch_sites.js << 'EOF'
+          cat > fetch_data.js << 'EOF'
           const { google } = require('googleapis');
+          const fs = require('fs');
           
-          async function fetchSites() {
+          async function fetchAllSheetData() {
             try {
-              // Check if environment variables exist
               if (!process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS) {
                 throw new Error('GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable is not set');
               }
@@ -53,23 +54,9 @@ jobs:
                 throw new Error('GOOGLE_SHEET_ID environment variable is not set');
               }
               
-              // Decode base64 credentials
-              let decodedCredentials;
-              try {
-                decodedCredentials = Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf8');
-              } catch (decodeError) {
-                throw new Error('Failed to decode base64 GOOGLE_SERVICE_ACCOUNT_CREDENTIALS: ' + decodeError.message);
-              }
+              const decodedCredentials = Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf8');
+              const credentials = JSON.parse(decodedCredentials);
               
-              // Parse the service account credentials
-              let credentials;
-              try {
-                credentials = JSON.parse(decodedCredentials);
-              } catch (jsonError) {
-                throw new Error('Failed to parse decoded credentials as JSON: ' + jsonError.message);
-              }
-              
-              // Create auth client
               const auth = new google.auth.GoogleAuth({
                 credentials: credentials,
                 scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
@@ -77,49 +64,73 @@ jobs:
               
               const sheets = google.sheets({ version: 'v4', auth });
               
-              // Fetch data from the sheet - skip header row
+              // Fetch ALL data from the sheet (A:K columns)
               const response = await sheets.spreadsheets.values.get({
                 spreadsheetId: process.env.GOOGLE_SHEET_ID,
-                range: 'wbags-scroll!A2:A', // Start from A2 to skip the header
+                range: 'wbags-scroll!A:K',
               });
               
               const rows = response.data.values;
               if (!rows || rows.length === 0) {
-                return [];
+                return { sites: [], sheetData: null };
               }
               
-              // Extract site names from column A (index 0) where column E (index 4) is not "TRUE"
-              const sites = rows
+              // Extract sites (skip header, get non-paused sites)
+              const dataRows = rows.slice(1);
+              const sites = dataRows
                 .filter(row => {
-                  const brandName = row[0]; // Column A
-                  const isPaused = row[5]; // Column F (paused)
+                  const brandName = row[0];
+                  const isPaused = row[8]; // Column I (paused)
                   
-                  // Include only if brand name exists, is not empty, and is not paused
                   return brandName && 
                          brandName.trim() !== '' && 
                          brandName.toLowerCase() !== 'brands' &&
                          isPaused !== 'TRUE';
                 })
-                .map(row => row[0].trim()); // Get the brand name and trim whitespace
+                .map(row => row[0].trim());
               
-              return sites;
+              // Prepare sheet data for sharing
+              const sheetData = {
+                timestamp: new Date().toISOString(),
+                runId: process.env.GITHUB_RUN_ID || 'local',
+                data: rows
+              };
+              
+              // Save to file for artifact upload
+              fs.writeFileSync('sheet-data.json', JSON.stringify(sheetData, null, 2));
+              
+              return { sites, sheetData };
             } catch (error) {
               console.error('Error fetching data from Google Sheets:', error.message);
               process.exit(1);
             }
           }
           
-          fetchSites().then(sites => {
-            const sitesArray = JSON.stringify(sites);
-            // Only output the required format for GitHub Actions
-            console.log(`sites=${sitesArray}`);
+          fetchAllSheetData().then(result => {
+            // Output sites for matrix
+            console.log(`sites=${JSON.stringify(result.sites)}`);
+            // Save sheet data as base64 for output (GitHub Actions has size limits)
+            const sheetDataB64 = Buffer.from(JSON.stringify(result.sheetData)).toString('base64');
+            console.log(`sheet-data=${sheetDataB64}`);
           }).catch(error => {
             console.error('Promise Error:', error.message);
             process.exit(1);
           });
           EOF
           
-          node fetch_sites.js >> $GITHUB_OUTPUT
+          node fetch_data.js >> $GITHUB_OUTPUT
+
+      # Upload sheet data as artifact for other jobs to download
+      - name: Upload sheet data artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sheet-data
+          path: sheet-data.json
+          retention-days: 1
+
+      - name: Set sites output
+        id: set-sites
+        run: echo "Sites prepared for matrix execution"
 
   dizitv_job:
     needs: prepare_matrix
@@ -130,4 +141,5 @@ jobs:
     uses: ./.github/workflows/reusableProdPuppeteer.yml
     with:
       site: ${{ matrix.site }}
+      sheet-data: ${{ needs.prepare_matrix.outputs.sheet-data }}
     secrets: inherit

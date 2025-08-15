@@ -6,6 +6,7 @@ import preNavigationHooks from "./crawler-helper/preNavigationHooksProd2.js";
 import puppeteer from './crawler-helper/puppeteer-stealth.js';
 import { getSiteConfig, getCachedSiteConfigFromFile } from './src/helper/siteConfig.js';
 import baseRowData from './src/route/micro/baseRowData.js';
+
 const site = process.env.site;
 const local = process.env.local;
 const HEADLESS = process.env.HEADLESS;
@@ -18,16 +19,52 @@ debugger
             console.error('Error: site environment variable is not set.');
             process.exit(1);
         }
+        
         debugger
         console.log(`Fetching configuration for site: ${site}`);
-        //  const siteConfig =await getSiteConfig(site, true);
-        const siteConfig = process.env.GET_LOCAL_SITE_CONF === 'TRUE' ? await getCachedSiteConfigFromFile() : await getSiteConfig(site, true);
+        
+        // Enhanced configuration retrieval logic
+        let siteConfig = null;
+        
+        // Strategy 1: Use cached file data (prioritized in GitHub Actions)
+        if (process.env.GET_LOCAL_SITE_CONF === 'TRUE' || process.env.GITHUB_ACTIONS) {
+            console.log('Attempting to use cached site configuration...');
+            siteConfig = await getCachedSiteConfigFromFile();
+            
+            if (siteConfig) {
+                console.log('✅ Successfully loaded cached site configuration');
+                // If cached data contains raw sheet data, process it for the specific site
+                if (siteConfig.data && !siteConfig.targetSite) {
+                    console.log('Processing raw sheet data for specific site...');
+                    // Import the processing function
+                    const { processCachedSheetData } = await import('./src/helper/siteConfig.js');
+                    siteConfig = processCachedSheetData(siteConfig, site);
+                }
+            } else {
+                console.log('⚠️  No cached configuration found, will fetch from Google Sheets');
+            }
+        }
+        
+        // Strategy 2: Fallback to direct Google Sheets API call
+        if (!siteConfig) {
+            console.log('Fetching fresh configuration from Google Sheets API...');
+            siteConfig = await getSiteConfig(site, true);
+        }
+        
         debugger
 
         if (!siteConfig) {
             console.error(`Could not retrieve configuration for site: ${site}. Exiting.`);
             process.exit(1);
         }
+
+        console.log(`Configuration loaded for site: ${site}`, {
+            totalUrls: siteConfig.totalUrls || siteConfig.urls?.length,
+            paused: siteConfig.paused,
+            scrollable: siteConfig.scrollable,
+            itemsPerPage: siteConfig.itemsPerPage,
+            cachedAt: siteConfig.cachedAt || 'not cached'
+        });
 
         // Check if site is paused
         if (siteConfig.paused) {
@@ -55,6 +92,12 @@ debugger
 
         console.log(`Starting crawler for site: ${site} with ${siteConfig.urls.length} URLs`);
         console.log('URLs to crawl:', siteConfig.urls);
+        console.log('Site configuration:', {
+            paginationSelector: siteConfig.paginationSelector,
+            scrollable: siteConfig.scrollable,
+            itemsPerPage: siteConfig.itemsPerPage,
+            filteringNeeded: siteConfig.filteringNeeded
+        });
 
         // Create router with siteConfig
         const router = await createRouter(siteConfig);
@@ -106,20 +149,28 @@ debugger
                     await emitAsync('log-to-sheet', {
                         sheetTitle: 'Crawl Logs(success)',
                         message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                        rowData: { ...baseRowData, Site: site, Notes: 'Detected 403 Forbidden error - possible anti-bot protection' }
+                        rowData: { 
+                            ...baseRowData, 
+                            Site: site, 
+                            Notes: 'Detected 403 Forbidden error - possible anti-bot protection',
+                            ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API'
+                        }
                     });
 
-                } else
-
-                    // You can also handle other specific errors here
-                    if (error.message.includes('timeout')) {
-                        await emitAsync('log-to-sheet', {
-                            sheetTitle: 'Crawl Logs(success)',
-                            message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                            rowData: { ...baseRowData, Site: site, Notes: 'Request timeout detected' }
-                        });
-                        console.log('⏰ Request timeout detected');
-                    }
+                } else if (error.message.includes('timeout')) {
+                    // Handle timeout errors
+                    await emitAsync('log-to-sheet', {
+                        sheetTitle: 'Crawl Logs(success)',
+                        message: console.log(`Site ${site} is logging data to Google Sheet.`),
+                        rowData: { 
+                            ...baseRowData, 
+                            Site: site, 
+                            Notes: 'Request timeout detected',
+                            ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API'
+                        }
+                    });
+                    console.log('⏰ Request timeout detected');
+                }
             },
 
             // OPTION 2: Handle failed requests that exceed retry limit
@@ -127,42 +178,105 @@ debugger
                 console.error(`💀 Request permanently failed after all retries: ${request.url}`);
                 console.error(`Final error: ${error.message}`);
 
+                // Log permanent failures if needed
                 // await emitAsync('log-to-sheet', {
-                //     sheetTitle: 'Crawl Logs(success)',
-                //     message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                //     rowData: { ...baseRowData, Site: site, Notes: `Request permanently failed after all retries: ${request.url}` }
+                //     sheetTitle: 'Crawl Logs(failed)',
+                //     message: `Permanent failure for ${site}`,
+                //     rowData: { 
+                //         ...baseRowData, 
+                //         Site: site, 
+                //         Notes: `Request permanently failed: ${request.url}`,
+                //         ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API'
+                //     }
                 // });
             },
 
-            // OPTION 3: Custom retry condition to handle 403 differently
-            retryOnBlocked: false, // Disable default retry on blocked requests
-
-            // OPTION 4: Custom request retry logic
-            maxRequestRetries: 2, // Reduce retries for blocked requests
-
+            // Custom retry logic
+            retryOnBlocked: false,
+            maxRequestRetries: 2,
         });
-
 
         // Run crawler with error handling
         try {
+            const startTime = Date.now();
             await crawler.run(siteConfig.urls);
-            console.log(`✅ Crawler completed for site: ${site}`);
+            const endTime = Date.now();
+            const duration = Math.round((endTime - startTime) / 1000);
+            
+            console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
 
-            // OPTION 6: Check crawler statistics for errors
+            // Log successful completion
+            await emitAsync('log-to-sheet', {
+                sheetTitle: 'Crawl Logs(success)',
+                message: `Site ${site} crawling completed successfully`,
+                rowData: {
+                    ...baseRowData,
+                    Site: site,
+                    Status: 'Completed',
+                    Duration: `${duration}s`,
+                    URLsProcessed: siteConfig.urls.length,
+                    ConfigSource: siteConfig.cachedAt ? `Cached (${siteConfig.cachedAt})` : 'Fresh API',
+                    Notes: `Successfully processed ${siteConfig.urls.length} URLs`
+                }
+            });
+
+            // Check crawler statistics for errors
             const stats = await crawler.stats;
             if (stats.requestsFailed > 0) {
                 console.log(`⚠️  Crawler completed with ${stats.requestsFailed} failed requests`);
-
-
+                
+                await emitAsync('log-to-sheet', {
+                    sheetTitle: 'Crawl Logs(success)',
+                    message: `Site ${site} completed with some failures`,
+                    rowData: {
+                        ...baseRowData,
+                        Site: site,
+                        Status: 'Completed with failures',
+                        FailedRequests: stats.requestsFailed,
+                        ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
+                        Notes: `${stats.requestsFailed} requests failed out of ${siteConfig.urls.length} total`
+                    }
+                });
             }
 
         } catch (crawlerError) {
             console.error('❌ Crawler execution failed:', crawlerError);
-
+            
+            await emitAsync('log-to-sheet', {
+                sheetTitle: 'Crawl Logs(failed)',
+                message: `Site ${site} crawler execution failed`,
+                rowData: {
+                    ...baseRowData,
+                    Site: site,
+                    Status: 'Failed',
+                    Error: crawlerError.message,
+                    ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
+                    Notes: 'Crawler execution failed with error'
+                }
+            });
+            
+            throw crawlerError; // Re-throw to maintain error handling behavior
         }
 
     } catch (error) {
         console.error('💥 Fatal error in main execution:', error);
+        
+        // Log fatal errors
+        try {
+            await emitAsync('log-to-sheet', {
+                sheetTitle: 'Crawl Logs(failed)',
+                message: `Site ${site} fatal error`,
+                rowData: {
+                    ...baseRowData,
+                    Site: site,
+                    Status: 'Fatal Error',
+                    Error: error.message,
+                    Notes: 'Fatal error in main execution'
+                }
+            });
+        } catch (logError) {
+            console.error('Failed to log fatal error:', logError);
+        }
 
         process.exit(1);
     }

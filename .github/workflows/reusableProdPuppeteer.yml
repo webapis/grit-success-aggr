@@ -7,6 +7,10 @@ on:
         description: 'site'
         required: true
         type: string
+      sheet-data:
+        description: 'Base64 encoded sheet data'
+        required: false
+        type: string
 
 env:
   site: ${{inputs.site}}
@@ -23,6 +27,30 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    # Download shared sheet data
+    - name: Download sheet data artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: sheet-data
+      continue-on-error: true
+
+    # Create sheet data from input if artifact download failed
+    - name: Create sheet data from input
+      if: inputs.sheet-data != ''
+      run: |
+        echo '${{ inputs.sheet-data }}' | base64 -d > sheet-data.json
+
+    # Move sheet data to expected location
+    - name: Setup cached sheet data
+      run: |
+        if [ -f sheet-data.json ]; then
+          cp sheet-data.json siteConfig.json
+          echo "Sheet data prepared for use"
+          cat siteConfig.json | head -10  # Debug: show first few lines
+        else
+          echo "No sheet data available, will fetch from API"
+        fi
 
     - name: Setup Node.js with caching
       uses: actions/setup-node@v4
