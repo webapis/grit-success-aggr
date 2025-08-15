@@ -12,6 +12,7 @@ import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
 import '../listeners.js'; // ← This registers event handlers
 import productItemSelector from "../selector-attibutes/productItemSelector.js";
 import { uploadImage } from "../git/uploadImage.js";
+
 dotenv.config({ silent: true });
 
 const site = process.env.site;
@@ -55,47 +56,18 @@ export default async function first(props) {
     console.log('inside first route')
 
     debugger
-    const shouldContinue = await continueIfProductPage({ page, siteUrls });
-    if (shouldContinue) {
+    const { success, productItemSelector } = await continueIfProductPage({ page, siteUrls });
+    if (success) {
 
         debugger
-        if (siteUrls?.totalProductCounterSelector) {
-            debugger
-            const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
-                const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
-                const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
-                return totalCount
-
-            }, siteUrls?.totalProductCounterSelector)
-
-            if (totalItemsToBeCallected > 0) {
-                const productsDataset = await Dataset.open('totalItemsToBeCallected');
-                await productsDataset.pushData({ totalItemsToBeCallected });
-            }
-        }
-        const matchedSelectors = [];
-        const totalItemsPerPage = {};
-
-        for (const selector of productItemSelector) {
-            const count = await page.$$eval(selector, elements => elements.length);
-            if (count > 0) {
-                matchedSelectors.push(selector);
-                totalItemsPerPage[selector] = count;
-            }
-        }
-
-        const totalItemsPerPageDataset = await Dataset.open('totalItemsPerPage');
-        await totalItemsPerPageDataset.pushData({ totalItemsPerPage: totalItemsPerPage[matchedSelectors[0]] });
-        debugger
-
         await scrollPageIfRequired(page, siteUrls)
         await addNextPagesToRequests({ page, addRequests, siteUrls, url });
         debugger
-        const data = await scrapeData({ page, siteUrls })
+        const data = await scrapeData({ page, siteUrls, productItemSelector })
+
         if (data.length === 0) {
 
             const screenshotBuffer = await page.screenshot({ fullPage: true });
-
 
             // Upload directly to GitHub
             const result = await uploadImage({
@@ -109,11 +81,12 @@ export default async function first(props) {
             await emitAsync('log-to-sheet', {
                 sheetTitle: 'Crawl Logs(success)',
                 message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                rowData: { ...baseRowData, Notes: 'fistRoute.js > data.length ===0', ScreenshotGit: result.url }
+                rowData: { ...baseRowData, Notes: 'fistRoute.js > data.length ===0', ScreenshotGit: result.url, 'productItemSelector': productItemSelector }
             });
+
+            debugger
+            return data
         }
-        debugger
-        return data
     } else {
 
         return []

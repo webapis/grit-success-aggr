@@ -1,12 +1,17 @@
 import dotenv from "dotenv";
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 import productItemSelector from "../../selector-attibutes/productItemSelector.js";
+import getMatchedSelector from "../micro/getMatchedSelector.js";
 import { emitAsync } from "../../events.js";
 import { uploadImage } from "../../git/uploadImage.js";
 import '../../listeners.js'; // ← This registers event handlers
- dotenv.config({ silent: true });
+import { pushDataToDataset } from "../../crawlee/datasetOperations.js";
+import getMatchedSelector from "../micro/getMatchedSelector.js";
+import getTotalItemsCount from "../micro/getTotalItemsCount.js";
+
+dotenv.config({ silent: true });
 const site = process.env.site;
-// 
+
 let baseRowData = {
     Site: site,
     'Notes': 'firstRoute shouldContinue is false look into screenshots',
@@ -58,7 +63,19 @@ export default async function continueIfProductPage({ page, siteUrls }) {
     debugger
     if (productItemsCount > 0) {
 
-        return true;
+        if (siteUrls?.totalProductCounterSelector) {
+            debugger
+            const totalItemsToBeCallected = await getTotalItemsCount(page, siteUrls.totalProductCounterSelector);
+
+            if (totalItemsToBeCallected > 0) {
+                await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected });
+            }
+        }
+
+        const { matchedSelectors, elementCounts: totalItemsPerPage } = await getMatchedSelector({ page, productItemSelector });
+        await pushDataToDataset('totalItemsPerPage', { totalItemsPerPage: totalItemsPerPage[matchedSelectors[0]] });
+        await pushDataToDataset("matchedSelectors", { matchedSelectors });
+        return { success: true, productItemSelector: matchedSelectors };
     } else {
         //take screenshot if initial pages could not be retrieved.
         const screenshotBuffer = await page.screenshot({ fullPage: true });
@@ -80,6 +97,6 @@ export default async function continueIfProductPage({ page, siteUrls }) {
             rowData: { ...baseRowData, ScreenshotGit: result.url, Notes: 'continueIfProductPage.js > productItemsCount === 0', }
         });
         console.log('No product items found on the page');
-        return false;
+        return { success: false, productItemSelector: '' };
     }
 }

@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import isValidImageURL from "../../scrape-helpers/isValidImageURL.js";
 import isValidURL from "../../scrape-helpers/isValidURL.js";
 import isValidText from "../../scrape-helpers/isValidText.js";
-import productItemSelector from '../../selector-attibutes/productItemSelector.js';
+
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 import titleSelector from "../../selector-attibutes/titleSelector.js";
 import imageSelectors from "../../selector-attibutes/imageSelector.js";
@@ -20,7 +20,7 @@ import priceParser from "../../scrape-helpers/priceParcer.js";
 
 dotenv.config({ silent: true });
 
-export default async function scrapeData({ page, siteUrls }) {
+export default async function scrapeData({ page, siteUrls, productItemSelector }) {
     debugger
 
  const data = await page.evaluate((params) => {
