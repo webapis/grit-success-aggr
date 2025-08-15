@@ -8,39 +8,9 @@ import '../../listeners.js'; // ← This registers event handlers
 import { pushDataToDataset } from "../../crawlee/datasetOperations.js";
 import getMatchedSelector from "../micro/getMatchedSelector.js";
 import getTotalItemsCount from "../micro/getTotalItemsCount.js";
-
+import baseRowData from "../micro/baseRowData.js";
 dotenv.config({ silent: true });
 const site = process.env.site;
-
-let baseRowData = {
-    Site: site,
-    'Notes': 'firstRoute shouldContinue is false look into screenshots',
-    'Total Objects': 'Not Reached',
-    'Invalid Titles': 'Not Reached',
-    'Invalid Page Titles': 'Not Reached',
-    'Invalid Links': 'Not Reached',
-    'Invalid Images': 'Not Reached',
-    'Invalid Prices': 'Not Reached',
-    'Unset Prices': 'Not Reached',
-    'Price Scrape Errors': 'Not Reached',
-    'Product Not Available': 'Not Reached',
-    'Total Unique Objects (by link)': 'Not Reached',
-    'Error Objects': 'Not Reached',
-    "JSONErrorGit": 'Not Reached',
-    "JSONErrorDrive": 'Not Reached',
-    "JSONDataGit": 'Not Reached',
-    "JSONDataDrive": 'Not Reached',
-    'Start Time': 'Not Reached',
-    'End Time': 'Not Reached',
-    'Span (min)': 'Not Reached',
-    'Total Pages': 'Not Reached',
-    'Unique Page URLs': 'Not Reached',
-    'AutoScroll': 'Not Reached',
-    'productPageSelector': 'Not Reached',
-    'productItemSelector': 'Not Reached',
-    'ScreenshotGit': 'Not Reached'
-
-};
 
 export default async function continueIfProductPage({ page, siteUrls }) {
 
@@ -101,7 +71,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         await emitAsync('log-to-sheet', {
             sheetTitle: 'Crawl Logs(success)',
             message: console.log(`Site ${site} is logging data to Google Sheet.`),
-            rowData: { ...baseRowData, ScreenshotGit: result.url, Notes: `continueIfProductPage.js >`, productItemSelector: matchedproductItemSelectors.join(','), productPageSelector: matchedPageSelectors.join(',') }
+            rowData: { ...baseRowData,Site:site, ScreenshotGit: result.url, Notes: `continueIfProductPage.js >`, productItemSelector: matchedproductItemSelectors.join(','), productPageSelector: matchedPageSelectors.join(',') }
         });
         console.log('No product items found on the page');
         return { success: false, productItemSelector: matchedproductItemSelectors, productPageSelector: matchedPageSelectors, totalItemsPerPage, totalPageContainer };
