@@ -7,7 +7,6 @@ import { uploadToGoogleDrive } from '../sheet/uploadToGoogleDrive.js';
 import scrapeData from "./helper/scrapeData.js";
 import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
 import continueIfProductPage from "./helper/continueIfProductPage.js";
-import { uploadImage } from "../git/uploadImage.js";
 import { emitAsync } from "../events.js";
 import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
 import '../listeners.js'; // ← This registers event handlers
