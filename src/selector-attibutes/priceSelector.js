@@ -1,4 +1,5 @@
 export default [
+    '[data-testid="product-price"]',
     'formatted-price-detail div div',
     "price-element::shadow::.price",
     '.product-grid-item__price .h-11',//derimod

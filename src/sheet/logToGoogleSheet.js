@@ -16,7 +16,7 @@ export async function logToGoogleSheet({
   serviceAccountCredentials,
   rowData
 }) {
-    debugger
+
   try {
     const jwtClient = new JWT({
       email: serviceAccountCredentials.client_email,
@@ -34,16 +34,16 @@ export async function logToGoogleSheet({
     }
 
     await sheet.loadHeaderRow();
-debugger
+
     // Set header row if missing
     const currentHeaders = sheet.headerValues || [];
     const newHeaders = Object.keys(rowData);
 
     if (currentHeaders.length === 0) {
-        debugger
+        
       await sheet.setHeaderRow(newHeaders);
     } else {
-        debugger
+        
       // Update headers if any are missing
       const missingHeaders = newHeaders.filter(h => !currentHeaders.includes(h));
       if (missingHeaders.length > 0) {
@@ -58,7 +58,7 @@ debugger
   } catch (error) {
     console.error('Error logging to Google Sheet:', error);
     if (error.response) {
-        debugger
+        
       console.error('Response data:', error.response.data);
       console.error('Response status:', error.response.status);
       console.error('Response headers:', error.response.headers);

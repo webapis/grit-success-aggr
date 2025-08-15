@@ -2,49 +2,17 @@
 
 
 import dotenv from "dotenv";
-import { createPuppeteerRouter, Dataset } from "crawlee";
-import { uploadToGoogleDrive } from '../sheet/uploadToGoogleDrive.js';
 import scrapeData from "./helper/scrapeData.js";
 import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
 import continueIfProductPage from "./helper/continueIfProductPage.js";
-import { uploadImage } from "../git/uploadImage.js";
-import { emitAsync } from "../events.js";
 import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
-import '../listeners.js'; // ← This registers event handlers
-import productItemSelector from "../selector-attibutes/productItemSelector.js";
+
+
+
 dotenv.config({ silent: true });
 
 const site = process.env.site;
 
-let baseRowData = {
-    Site: site,
-    'Notes': 'firstRoute shouldContinue is false look into screenshots',
-    'Total Objects': 'Not Reached',
-    'Invalid Titles': 'Not Reached',
-    'Invalid Page Titles': 'Not Reached',
-    'Invalid Links': 'Not Reached',
-    'Invalid Images': 'Not Reached',
-    'Invalid Prices': 'Not Reached',
-    'Unset Prices': 'Not Reached',
-    'Price Scrape Errors': 'Not Reached',
-    'Product Not Available': 'Not Reached',
-    'Total Unique Objects (by link)': 'Not Reached',
-    'Error Objects': 'Not Reached',
-    "JSONErrorGit": 'Not Reached',
-    "JSONErrorDrive": 'Not Reached',
-    "JSONDataGit": 'Not Reached',
-    "JSONDataDrive": 'Not Reached',
-    'Start Time': 'Not Reached',
-    'End Time': 'Not Reached',
-    'Span (min)': 'Not Reached',
-    'Total Pages': 'Not Reached',
-    'Unique Page URLs': 'Not Reached',
-    'AutoScroll': 'Not Reached',
-    'productPageSelector': 'Not Reached',
-    'productItemSelector': 'Not Reached',
-    'ScreenshotGit': 'Not Reached'
-
-};
 export default async function first(props) {
     const { page, addRequests, siteUrls, request: { url } } = props
     debugger
@@ -55,52 +23,13 @@ export default async function first(props) {
     console.log('inside first route')
 
     debugger
-    const shouldContinue = await continueIfProductPage({ page, siteUrls });
-    if (shouldContinue) {
+    const { success, productItemSelector } = await continueIfProductPage({ page, siteUrls });
+    if (success) {
 
-        debugger
-        if (siteUrls?.totalProductCounterSelector) {
-            debugger
-            const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
-                const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
-                const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
-                return totalCount
-
-            }, siteUrls?.totalProductCounterSelector)
-
-            if (totalItemsToBeCallected > 0) {
-                const productsDataset = await Dataset.open('totalItemsToBeCallected');
-                await productsDataset.pushData({ totalItemsToBeCallected });
-            }
-        }
-        const matchedSelectors = [];
-        const totalItemsPerPage = {};
-
-        for (const selector of productItemSelector) {
-            const count = await page.$$eval(selector, elements => elements.length);
-            if (count > 0) {
-                matchedSelectors.push(selector);
-                totalItemsPerPage[selector] = count;
-            }
-        }
-
-        const totalItemsPerPageDataset = await Dataset.open('totalItemsPerPage');
-        await totalItemsPerPageDataset.pushData({ totalItemsPerPage: totalItemsPerPage[matchedSelectors[0]] });
-        debugger
 
         await scrollPageIfRequired(page, siteUrls)
         await addNextPagesToRequests({ page, addRequests, siteUrls, url });
-        debugger
-        const data = await scrapeData({ page, siteUrls })
-        if (data.length === 0) {
-
-            await emitAsync('log-to-sheet', {
-                sheetTitle: 'Crawl Logs(success)',
-                message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                rowData: { ...baseRowData, Notes: 'no productItemSelector is provided :firstRoute' }
-            });
-        }
-        debugger
+        const data = await scrapeData({ page, siteUrls, productItemSelector })
         return data
     } else {
 

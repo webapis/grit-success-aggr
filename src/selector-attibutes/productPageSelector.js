@@ -1,4 +1,5 @@
 export default [
+    'div.grid',//lacoste
     '.category-grid-container',
     '.MuiContainer-root.MuiContainer-maxWidthXl',
     '.ProductListContent',

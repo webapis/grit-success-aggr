@@ -1,12 +1,17 @@
 import dotenv from "dotenv";
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 import productItemSelector from "../../selector-attibutes/productItemSelector.js";
+
 import { emitAsync } from "../../events.js";
 import { uploadImage } from "../../git/uploadImage.js";
 import '../../listeners.js'; // ← This registers event handlers
- dotenv.config({ silent: true });
+import { pushDataToDataset } from "../../crawlee/datasetOperations.js";
+import getMatchedSelector from "../micro/getMatchedSelector.js";
+import getTotalItemsCount from "../micro/getTotalItemsCount.js";
+
+dotenv.config({ silent: true });
 const site = process.env.site;
-// 
+
 let baseRowData = {
     Site: site,
     'Notes': 'firstRoute shouldContinue is false look into screenshots',
@@ -53,11 +58,31 @@ export default async function continueIfProductPage({ page, siteUrls }) {
             await new Promise(resolve => setTimeout(resolve, seconds * 1000)); // Fixed: multiply by 1000 for milliseconds
         }, waitForSeconds);
     }
-    const productItemsCount = await page.$$eval(productPageSelector.join(', '), elements => elements.length);
     debugger
-    if (productItemsCount > 0) {
+    const { matchedSelectors: matchedproductItemSelectors, elementCounts: totalItemsPerPage } = await getMatchedSelector({ page, selector: productItemSelector });
+    const { matchedSelectors: matchedPageSelectors, elementCounts: totalPageContainer } = await getMatchedSelector({ page, selector: productPageSelector });
 
-        return true;
+    debugger
+    if (matchedproductItemSelectors.length > 0 && matchedPageSelectors.length > 0) {
+        debugger
+        try {
+            if (siteUrls?.totalProductCounterSelector) {
+                debugger
+                const totalItemsToBeCallected = await getTotalItemsCount(page, siteUrls.totalProductCounterSelector);
+
+                if (totalItemsToBeCallected > 0) {
+                    await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected });
+                }
+            }
+
+            await pushDataToDataset('totalItemsPerPage', { totalItemsPerPage: totalItemsPerPage[matchedproductItemSelectors[0]] });
+            await pushDataToDataset("matchedproductItemSelectors", { matchedproductItemSelectors });
+            return { success: true, productItemSelector: matchedproductItemSelectors, productPageSelector: matchedPageSelectors, totalItemsPerPage, totalPageContainer };
+        } catch (error) {
+            debugger
+        }
+        debugger
+
     } else {
         //take screenshot if initial pages could not be retrieved.
         const screenshotBuffer = await page.screenshot({ fullPage: true });
@@ -76,9 +101,9 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         await emitAsync('log-to-sheet', {
             sheetTitle: 'Crawl Logs(success)',
             message: console.log(`Site ${site} is logging data to Google Sheet.`),
-            rowData: baseRowData
+            rowData: { ...baseRowData, ScreenshotGit: result.url, Notes: `continueIfProductPage.js >`, productItemSelector: matchedproductItemSelectors.join(','), productPageSelector: matchedPageSelectors.join(',') }
         });
         console.log('No product items found on the page');
-        return false;
+        return { success: false, productItemSelector: matchedproductItemSelectors, productPageSelector: matchedPageSelectors, totalItemsPerPage, totalPageContainer };
     }
 }

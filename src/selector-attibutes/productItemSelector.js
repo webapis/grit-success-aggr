@@ -1,4 +1,5 @@
 export default [
+    '.text-sm.text-left.flex.flex-col',
     '.grid-product-list--4B .content-product-card',
     '.p-item-inside',
     '.test.MuiBox-root',
@@ -69,7 +70,7 @@ export default [
     // ".grid [data-id]",
     ".js-product-item",
     ".product",
-    "[data-testid='product-box']",
+    //"[data-testid='product-box']",
     ".scroll-product-item",
     "ac-product-card",
     ".products-list__item",
