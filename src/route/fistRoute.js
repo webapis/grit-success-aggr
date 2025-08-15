@@ -65,8 +65,8 @@ export default async function first(props) {
         debugger
         const data = await scrapeData({ page, siteUrls, productItemSelector })
 
-        if (data.length === 0) {
-
+        if (true) {
+debugger
             const screenshotBuffer = await page.screenshot({ fullPage: true });
 
             // Upload directly to GitHub
@@ -81,7 +81,7 @@ export default async function first(props) {
             await emitAsync('log-to-sheet', {
                 sheetTitle: 'Crawl Logs(success)',
                 message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                rowData: { ...baseRowData, Notes: 'fistRoute.js > data.length ===0', ScreenshotGit: result.url, 'productItemSelector': productItemSelector, 'productPageSelector': productPageSelector }
+                rowData: { ...baseRowData, Notes: 'fistRoute.js > data.length ===0', ScreenshotGit: result.url, 'productItemSelector': productItemSelector?.join(','), 'productPageSelector': productPageSelector?.join(',') }
             });
 
             debugger

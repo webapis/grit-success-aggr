@@ -5,12 +5,16 @@ import { Dataset } from 'crawlee';
  */
 
 export async function getDatasetData(datasetName) {
+    debugger
     const dataset = await Dataset.open(datasetName);
+    debugger
     const { items } = await dataset.getData();
-    return items?.[0]?.[datasetName];
+    debugger
+   return items?.[0]?.[datasetName];
 }
 
 export async function getDatasetItems(datasetName) {
+    debugger
     const dataset = await Dataset.open(datasetName);
     const { items } = await dataset.getData();
     return items || [];

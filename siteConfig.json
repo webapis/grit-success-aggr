@@ -1,7 +1,7 @@
 {
-  "targetSite": "defacto",
+  "targetSite": "koton",
   "urls": [
-    "https://www.defacto.com.tr/kadin-canta"
+    "https://www.koton.com/kadin-canta/"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,26 +9,26 @@
   "filteringNeeded": false,
   "configurations": [
     {
-      "brand": "defacto",
-      "paginationSelector": "",
+      "brand": "koton",
+      "paginationSelector": ".pz-pagination-link",
       "paginationParameterName": "?page=",
-      "scrollable": false,
-      "showMoreButtonSelector": "",
-      "totalProductCounterSelector": ".catalog__meta--product-count span",
-      "itemsPerPage": 24,
+      "scrollable": true,
+      "showMoreButtonSelector": ".js-loadmore-products",
+      "totalProductCounterSelector": ".js-result-count",
+      "itemsPerPage": null,
       "urls": [
-        "https://www.defacto.com.tr/kadin-canta"
+        "https://www.koton.com/kadin-canta/"
       ],
       "paused": false,
       "pausedReason": "",
       "filteringNeeded": false,
-      "rowIndex": 3
+      "rowIndex": 2
     }
   ],
-  "paginationSelector": "",
+  "paginationSelector": ".pz-pagination-link",
   "paginationParameterName": "?page=",
-  "scrollable": false,
-  "showMoreButtonSelector": "",
-  "totalProductCounterSelector": ".catalog__meta--product-count span",
-  "itemsPerPage": 24
+  "scrollable": true,
+  "showMoreButtonSelector": ".js-loadmore-products",
+  "totalProductCounterSelector": ".js-result-count",
+  "itemsPerPage": null
 }
