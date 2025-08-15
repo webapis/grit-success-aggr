@@ -82,7 +82,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
     const usedFallbackDocument = !matchedDocument;
     const selectedDocument = matchedDocument || document;
-    const candidateItems = Array.from(selectedDocument.querySelectorAll(params.productItemSelector.join(','))).map(m => {
+    const candidateItems = Array.from(selectedDocument.querySelectorAll(params.productItemSelector)).map(m => {
         const titleSelectors = params.titleSelector.split(',').map(s => s.trim());
         const imageSelectors = params.imageSelector.split(',').map(s => s.trim());
         const linkSelectors = params.linkSelector.split(',').map(s => s.trim());
