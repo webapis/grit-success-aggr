@@ -81,7 +81,7 @@ export default async function first(props) {
             await emitAsync('log-to-sheet', {
                 sheetTitle: 'Crawl Logs(success)',
                 message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                rowData: { ...baseRowData, Notes: 'fistRoute.js > data.length ===0', ScreenshotGit: result.url, 'productItemSelector': productItemSelector,'productPageSelector':productPageSelector }
+                rowData: { ...baseRowData, Notes: 'fistRoute.js > data.length ===0', ScreenshotGit: result.url, 'productItemSelector': productItemSelector, 'productPageSelector': productPageSelector }
             });
 
             debugger
