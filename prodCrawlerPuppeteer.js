@@ -109,17 +109,17 @@ debugger
                         rowData: { ...baseRowData, Site: site, Notes: 'Detected 403 Forbidden error - possible anti-bot protection' }
                     });
 
-                }
+                } else
 
-                // You can also handle other specific errors here
-                if (error.message.includes('timeout')) {
-                    await emitAsync('log-to-sheet', {
-                        sheetTitle: 'Crawl Logs(success)',
-                        message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                        rowData: { ...baseRowData, Site: site, Notes: 'Request timeout detected' }
-                    });
-                    console.log('⏰ Request timeout detected');
-                }
+                    // You can also handle other specific errors here
+                    if (error.message.includes('timeout')) {
+                        await emitAsync('log-to-sheet', {
+                            sheetTitle: 'Crawl Logs(success)',
+                            message: console.log(`Site ${site} is logging data to Google Sheet.`),
+                            rowData: { ...baseRowData, Site: site, Notes: 'Request timeout detected' }
+                        });
+                        console.log('⏰ Request timeout detected');
+                    }
             },
 
             // OPTION 2: Handle failed requests that exceed retry limit
@@ -127,11 +127,11 @@ debugger
                 console.error(`💀 Request permanently failed after all retries: ${request.url}`);
                 console.error(`Final error: ${error.message}`);
 
-                await emitAsync('log-to-sheet', {
-                    sheetTitle: 'Crawl Logs(success)',
-                    message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                    rowData: { ...baseRowData, Site: site, Notes: `Request permanently failed after all retries: ${request.url}` }
-                });
+                // await emitAsync('log-to-sheet', {
+                //     sheetTitle: 'Crawl Logs(success)',
+                //     message: console.log(`Site ${site} is logging data to Google Sheet.`),
+                //     rowData: { ...baseRowData, Site: site, Notes: `Request permanently failed after all retries: ${request.url}` }
+                // });
             },
 
             // OPTION 3: Custom retry condition to handle 403 differently
