@@ -1,4 +1,5 @@
 export default [
+    'h2.product-name',
     '.card-information__text.h4',
     '.product-title span',
     '.p-name a',
