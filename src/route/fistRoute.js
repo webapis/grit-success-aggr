@@ -64,9 +64,9 @@ export default async function first(props) {
         await addNextPagesToRequests({ page, addRequests, siteUrls, url });
         debugger
         const data = await scrapeData({ page, siteUrls, productItemSelector })
-
-        if (data.length=== 0) {
-debugger
+        debugger
+        if (data.length === 0) {
+            debugger
             const screenshotBuffer = await page.screenshot({ fullPage: true });
 
             // Upload directly to GitHub
@@ -85,8 +85,10 @@ debugger
             });
 
             debugger
-            return data
+
         }
+
+        return data
     } else {
 
         return []
