@@ -65,7 +65,7 @@ export default async function first(props) {
         debugger
         const data = await scrapeData({ page, siteUrls, productItemSelector })
 
-        if (true) {
+        if (data.length=== 0) {
 debugger
             const screenshotBuffer = await page.screenshot({ fullPage: true });
 
