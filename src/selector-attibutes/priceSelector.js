@@ -1,4 +1,6 @@
 export default [
+    '.product-pricing .price',
+    '.product-pricing .nodiscount-price',
     '[data-testid="product-price"]',
     'formatted-price-detail div div',
     "price-element::shadow::.price",
