@@ -76,7 +76,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         await emitAsync('log-to-sheet', {
             sheetTitle: 'Crawl Logs(success)',
             message: console.log(`Site ${site} is logging data to Google Sheet.`),
-            rowData: baseRowData
+            rowData: { ...baseRowData, ScreenshotGit: result.url, Notes: 'continueIfProductPage.js > productItemsCount === 0', }
         });
         console.log('No product items found on the page');
         return false;

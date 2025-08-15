@@ -12,6 +12,7 @@ import { emitAsync } from "../events.js";
 import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
 import '../listeners.js'; // ← This registers event handlers
 import productItemSelector from "../selector-attibutes/productItemSelector.js";
+import { uploadImage } from "../../git/uploadImage.js";
 dotenv.config({ silent: true });
 
 const site = process.env.site;
@@ -94,10 +95,22 @@ export default async function first(props) {
         const data = await scrapeData({ page, siteUrls })
         if (data.length === 0) {
 
+            const screenshotBuffer = await page.screenshot({ fullPage: true });
+
+
+            // Upload directly to GitHub
+            const result = await uploadImage({
+                fileName: `${site}-${Date.now()}.png`,  // Will become 'webpage-screenshot.png'
+                imageBuffer: screenshotBuffer,   // Pass the buffer directly
+                gitFolder: 'screenshots'
+            })
+            console.log('Screenshot uploaded!')
+            console.log('View at:', result.url)
+            console.log('Direct link:', result.downloadUrl)
             await emitAsync('log-to-sheet', {
                 sheetTitle: 'Crawl Logs(success)',
                 message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                rowData: { ...baseRowData, Notes: 'no productItemSelector is provided :firstRoute' }
+                rowData: { ...baseRowData, Notes: 'fistRoute.js > data.length ===0', ScreenshotGit: result.url }
             });
         }
         debugger
