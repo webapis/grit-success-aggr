@@ -58,25 +58,31 @@ export default async function continueIfProductPage({ page, siteUrls }) {
             await new Promise(resolve => setTimeout(resolve, seconds * 1000)); // Fixed: multiply by 1000 for milliseconds
         }, waitForSeconds);
     }
-
-    const { matchedSelectors: matchedproductItemSelectors, elementCounts: totalItemsPerPage } = await getMatchedSelector({ page, productItemSelector });
-    const { matchedSelectors: matchedPageSelectors, elementCounts: totalPageContainer } = await getMatchedSelector({ page, productPageSelector });
+    debugger
+    const { matchedSelectors: matchedproductItemSelectors, elementCounts: totalItemsPerPage } = await getMatchedSelector({ page, selector: productItemSelector });
+    const { matchedSelectors: matchedPageSelectors, elementCounts: totalPageContainer } = await getMatchedSelector({ page, selector: productPageSelector });
 
     debugger
-    if (totalItemsPerPage > 0 && totalPageContainer > 0) {
+    if (matchedproductItemSelectors.length > 0 && matchedPageSelectors.length > 0) {
+        debugger
+        try {
+            if (siteUrls?.totalProductCounterSelector) {
+                debugger
+                const totalItemsToBeCallected = await getTotalItemsCount(page, siteUrls.totalProductCounterSelector);
 
-        if (siteUrls?.totalProductCounterSelector) {
-            debugger
-            const totalItemsToBeCallected = await getTotalItemsCount(page, siteUrls.totalProductCounterSelector);
-
-            if (totalItemsToBeCallected > 0) {
-                await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected });
+                if (totalItemsToBeCallected > 0) {
+                    await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected });
+                }
             }
-        }
 
-        await pushDataToDataset('totalItemsPerPage', { totalItemsPerPage: totalItemsPerPage[matchedSelectors[0]] });
-        await pushDataToDataset("matchedproductItemSelectors", { matchedproductItemSelectors });
-        return { success: true, productItemSelector: matchedproductItemSelectors, productPageSelector: matchedPageSelectors, totalItemsPerPage, totalPageContainer };
+            await pushDataToDataset('totalItemsPerPage', { totalItemsPerPage: totalItemsPerPage[matchedproductItemSelectors[0]] });
+            await pushDataToDataset("matchedproductItemSelectors", { matchedproductItemSelectors });
+            return { success: true, productItemSelector: matchedproductItemSelectors, productPageSelector: matchedPageSelectors, totalItemsPerPage, totalPageContainer };
+        } catch (error) {
+            debugger
+        }
+        debugger
+
     } else {
         //take screenshot if initial pages could not be retrieved.
         const screenshotBuffer = await page.screenshot({ fullPage: true });
@@ -95,9 +101,9 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         await emitAsync('log-to-sheet', {
             sheetTitle: 'Crawl Logs(success)',
             message: console.log(`Site ${site} is logging data to Google Sheet.`),
-            rowData: { ...baseRowData, ScreenshotGit: result.url, Notes: 'continueIfProductPage.js > productItemsCount === 0', }
+            rowData: { ...baseRowData, ScreenshotGit: result.url, Notes: `continueIfProductPage.js >`, productItemSelector: matchedproductItemSelectors.join(','), productPageSelector: matchedPageSelectors.join(',') }
         });
         console.log('No product items found on the page');
-    return { success: false, productItemSelector: matchedproductItemSelectors, productPageSelector: matchedPageSelectors, totalItemsPerPage, totalPageContainer };
+        return { success: false, productItemSelector: matchedproductItemSelectors, productPageSelector: matchedPageSelectors, totalItemsPerPage, totalPageContainer };
     }
 }

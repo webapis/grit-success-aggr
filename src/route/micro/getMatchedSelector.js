@@ -1,13 +1,22 @@
-export default async function getMatchedSelector({ page, productItemSelector }) {
-     const matchedSelectors = [];
-        const elementCounts = {};
+export default async function getMatchedSelector({ page, selector }) {
+    // ✅ Add this validation
+    if (!selector) {
+        throw new Error('selector is required');
+    }
+    
+    if (!Array.isArray(selector)) {
+        throw new Error('selector must be an array');
+    }
+    
+    const matchedSelectors = [];
+    const elementCounts = {};
 
-        for (const selector of productItemSelector) {
-            const count = await page.$$eval(selector, elements => elements.length);
-            if (count > 0) {
-                matchedSelectors.push(selector);
-                elementCounts[selector] = count;
-            }
+    for (const currentSelector of selector) { // Now safe
+        const count = await page.$$eval(currentSelector, elements => elements.length);
+        if (count > 0) {
+            matchedSelectors.push(currentSelector);
+            elementCounts[currentSelector] = count;
         }
+    }
     return { matchedSelectors, elementCounts };
 }
