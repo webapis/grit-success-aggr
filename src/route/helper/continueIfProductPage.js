@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 import productItemSelector from "../../selector-attibutes/productItemSelector.js";
-import getMatchedSelector from "../micro/getMatchedSelector.js";
+
 import { emitAsync } from "../../events.js";
 import { uploadImage } from "../../git/uploadImage.js";
 import '../../listeners.js'; // ← This registers event handlers
@@ -58,10 +58,12 @@ export default async function continueIfProductPage({ page, siteUrls }) {
             await new Promise(resolve => setTimeout(resolve, seconds * 1000)); // Fixed: multiply by 1000 for milliseconds
         }, waitForSeconds);
     }
-    const productItemsCount = await page.$$eval(productItemSelector.join(', '), elements => elements.length);
-    console.log('Product items count:==================================================', productItemsCount);
+
+    const { matchedSelectors: matchedproductItemSelectors, elementCounts: totalItemsPerPage } = await getMatchedSelector({ page, productItemSelector });
+    const { matchedSelectors: matchedPageSelectors, elementCounts: totalPageContainer } = await getMatchedSelector({ page, productPageSelector });
+
     debugger
-    if (productItemsCount > 0) {
+    if (totalItemsPerPage > 0 && totalPageContainer > 0) {
 
         if (siteUrls?.totalProductCounterSelector) {
             debugger
@@ -72,10 +74,9 @@ export default async function continueIfProductPage({ page, siteUrls }) {
             }
         }
 
-        const { matchedSelectors, elementCounts: totalItemsPerPage } = await getMatchedSelector({ page, productItemSelector });
         await pushDataToDataset('totalItemsPerPage', { totalItemsPerPage: totalItemsPerPage[matchedSelectors[0]] });
-        await pushDataToDataset("matchedSelectors", { matchedSelectors });
-        return { success: true, productItemSelector: matchedSelectors };
+        await pushDataToDataset("matchedproductItemSelectors", { matchedproductItemSelectors });
+        return { success: true, productItemSelector: matchedproductItemSelectors, productPageSelector: matchedPageSelectors, totalItemsPerPage, totalPageContainer };
     } else {
         //take screenshot if initial pages could not be retrieved.
         const screenshotBuffer = await page.screenshot({ fullPage: true });
@@ -97,6 +98,6 @@ export default async function continueIfProductPage({ page, siteUrls }) {
             rowData: { ...baseRowData, ScreenshotGit: result.url, Notes: 'continueIfProductPage.js > productItemsCount === 0', }
         });
         console.log('No product items found on the page');
-        return { success: false, productItemSelector: '' };
+    return { success: false, productItemSelector: matchedproductItemSelectors, productPageSelector: matchedPageSelectors, totalItemsPerPage, totalPageContainer };
     }
 }

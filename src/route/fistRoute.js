@@ -10,7 +10,7 @@ import continueIfProductPage from "./helper/continueIfProductPage.js";
 import { emitAsync } from "../events.js";
 import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
 import '../listeners.js'; // ← This registers event handlers
-import productItemSelector from "../selector-attibutes/productItemSelector.js";
+
 import { uploadImage } from "../git/uploadImage.js";
 
 dotenv.config({ silent: true });
@@ -56,7 +56,7 @@ export default async function first(props) {
     console.log('inside first route')
 
     debugger
-    const { success, productItemSelector } = await continueIfProductPage({ page, siteUrls });
+    const { success, productItemSelector, productPageSelector } = await continueIfProductPage({ page, siteUrls });
     if (success) {
 
         debugger
@@ -81,7 +81,7 @@ export default async function first(props) {
             await emitAsync('log-to-sheet', {
                 sheetTitle: 'Crawl Logs(success)',
                 message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                rowData: { ...baseRowData, Notes: 'fistRoute.js > data.length ===0', ScreenshotGit: result.url, 'productItemSelector': productItemSelector }
+                rowData: { ...baseRowData, Notes: 'fistRoute.js > data.length ===0', ScreenshotGit: result.url, 'productItemSelector': productItemSelector,'productPageSelector':productPageSelector }
             });
 
             debugger
