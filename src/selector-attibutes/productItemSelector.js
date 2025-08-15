@@ -1,5 +1,5 @@
 export default [
-    "[data-testid='product-box']",
+    '.text-sm.text-left.flex.flex-col',
     '.grid-product-list--4B .content-product-card',
     '.p-item-inside',
     '.test.MuiBox-root',
