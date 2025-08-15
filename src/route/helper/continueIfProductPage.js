@@ -53,7 +53,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
             await new Promise(resolve => setTimeout(resolve, seconds * 1000)); // Fixed: multiply by 1000 for milliseconds
         }, waitForSeconds);
     }
-    const productItemsCount = await page.$$eval(productPageSelector.join(', '), elements => elements.length);
+    const productItemsCount = await page.$$eval(productItemSelector.join(', '), elements => elements.length);
     debugger
     if (productItemsCount > 0) {
 
