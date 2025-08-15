@@ -33,7 +33,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
     const { matchedSelectors: matchedPageSelectors, elementCounts: totalPageContainer } = await getMatchedSelector({ page, selector: productPageSelector });
 
     debugger
-    if (matchedproductItemSelectors.length > 0 && matchedPageSelectors.length > 0) {
+    if (matchedproductItemSelectors.length > 0) {
         debugger
         try {
             if (siteUrls?.totalProductCounterSelector) {
