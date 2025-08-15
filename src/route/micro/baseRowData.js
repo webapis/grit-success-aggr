@@ -1,5 +1,5 @@
 export default {
-    Site: site,
+    'Site': 'Not Set',
     'Notes': 'Not Set',
     'Total Objects': 'Not Set',
     'Invalid Titles': 'Not Set',
