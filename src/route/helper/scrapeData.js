@@ -84,7 +84,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         const selectedDocument = matchedDocument || document;
 
         // params.productItemSelector is already an array
-        const candidateItems = Array.from(selectedDocument.querySelectorAll(params.productItemSelector.join(', '))).map(m => {
+        const candidateItems = Array.from(document.querySelectorAll(params.productItemSelector.join(', '))).map(m => {
             // All these are now arrays, no need to split
             const titleSelectors = params.titleSelector;
             const imageSelectors = params.imageSelector;

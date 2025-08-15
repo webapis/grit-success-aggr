@@ -1,7 +1,7 @@
 {
-  "targetSite": "koton",
+  "targetSite": "lacoste",
   "urls": [
-    "https://www.koton.com/kadin-canta/"
+    "https://www.lacoste.com.tr/kadin-canta/"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,26 +9,26 @@
   "filteringNeeded": false,
   "configurations": [
     {
-      "brand": "koton",
-      "paginationSelector": ".pz-pagination-link",
-      "paginationParameterName": "?page=",
-      "scrollable": true,
-      "showMoreButtonSelector": ".js-loadmore-products",
-      "totalProductCounterSelector": ".js-result-count",
+      "brand": "lacoste",
+      "paginationSelector": "li a",
+      "paginationParameterName": "",
+      "scrollable": false,
+      "showMoreButtonSelector": "",
+      "totalProductCounterSelector": "",
       "itemsPerPage": null,
       "urls": [
-        "https://www.koton.com/kadin-canta/"
+        "https://www.lacoste.com.tr/kadin-canta/"
       ],
       "paused": false,
       "pausedReason": "",
       "filteringNeeded": false,
-      "rowIndex": 2
+      "rowIndex": 72
     }
   ],
-  "paginationSelector": ".pz-pagination-link",
-  "paginationParameterName": "?page=",
-  "scrollable": true,
-  "showMoreButtonSelector": ".js-loadmore-products",
-  "totalProductCounterSelector": ".js-result-count",
+  "paginationSelector": "li a",
+  "paginationParameterName": "",
+  "scrollable": false,
+  "showMoreButtonSelector": "",
+  "totalProductCounterSelector": "",
   "itemsPerPage": null
 }
