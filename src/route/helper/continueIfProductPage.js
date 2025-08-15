@@ -54,6 +54,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         }, waitForSeconds);
     }
     const productItemsCount = await page.$$eval(productItemSelector.join(', '), elements => elements.length);
+    console.log('Product items count:==================================================', productItemsCount);
     debugger
     if (productItemsCount > 0) {
 
