@@ -180,7 +180,7 @@ debugger
                 sheetTitle: isSuccess ? 'Crawl Logs(success)' : 'Crawl Logs(error)',
                 message: `Site ${site} crawling completed`,
                 rowData: {
-                    ...result,
+                   // ...result,
                     Site: site,
                     Status: isSuccess ? 'Success' : 'Partial Success',
                     TotalURLs: totalRequests,
