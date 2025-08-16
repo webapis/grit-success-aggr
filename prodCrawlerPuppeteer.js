@@ -182,17 +182,17 @@ debugger
                 message: `Site ${site} crawling completed`,
                 rowData: {
                     ...result,
-                    Site: site,
-                    Status: isSuccess ? 'Success' : 'Partial Success',
-                    TotalURLs: totalRequests,
-                    SuccessfulURLs: successfulRequests,
-                    FailedURLs: stats.requestsFailed,
+                  //  Site: site,
+                 //   Status: isSuccess ? 'Success' : 'Partial Success',
+                 //   TotalURLs: totalRequests,
+                  //SuccessfulURLs: successfulRequests,
+                  //  FailedURLs: stats.requestsFailed,
                     Duration: `${duration}s`,
-                    Notes: isSuccess
-                        ? 'All URLs processed successfully'
-                        : `${stats.requestsFailed} URLs failed out of ${totalRequests}`,
-                    ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
-                    Timestamp: new Date().toISOString()
+                    // Notes: isSuccess
+                    //     ? 'All URLs processed successfully'
+                    //     : `${stats.requestsFailed} URLs failed out of ${totalRequests}`,
+                   // ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
+                  //  Timestamp: new Date().toISOString()
                 }
             });
 
