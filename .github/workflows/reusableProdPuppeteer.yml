@@ -118,7 +118,7 @@ jobs:
         
         node prodCrawlerPuppeteer.js
 
-    - name: Upload results
-      run: |
-        echo "📤 Uploading results..."
-        node src/pushToGit.js
+    # - name: Upload results
+    #   run: |
+    #     echo "📤 Uploading results..."
+    #     node src/pushToGit.js
