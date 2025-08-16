@@ -7,7 +7,7 @@ import preNavigationHooks from "./crawler-helper/preNavigationHooksProd2.js";
 import puppeteer from './crawler-helper/puppeteer-stealth.js';
 import { getSiteConfig, getCachedSiteConfigFromFile } from './src/helper/siteConfig.js';
 import baseRowData from './src/route/micro/baseRowData.js';
-
+import { processScrapedData } from './src/pushToGit.js';
 const site = process.env.site;
 const local = process.env.local;
 const HEADLESS = process.env.HEADLESS;
@@ -20,18 +20,18 @@ debugger
             console.error('Error: site environment variable is not set.');
             process.exit(1);
         }
-        
+
         debugger
         console.log(`Fetching configuration for site: ${site}`);
-        
+
         // Enhanced configuration retrieval logic
         let siteConfig = null;
-        
+
         // Strategy 1: Use cached file data (prioritized in GitHub Actions)
         if (process.env.GET_LOCAL_SITE_CONF === 'TRUE' || process.env.GITHUB_ACTIONS) {
             console.log('Attempting to use cached site configuration...');
             siteConfig = await getCachedSiteConfigFromFile();
-            
+
             if (siteConfig) {
                 console.log('✅ Successfully loaded cached site configuration');
                 // If cached data contains raw sheet data, process it for the specific site
@@ -45,13 +45,13 @@ debugger
                 console.log('⚠️  No cached configuration found, will fetch from Google Sheets');
             }
         }
-        
+
         // Strategy 2: Fallback to direct Google Sheets API call
         if (!siteConfig) {
             console.log('Fetching fresh configuration from Google Sheets API...');
             siteConfig = await getSiteConfig(site, true);
         }
-        
+
         debugger
 
         if (!siteConfig) {
@@ -138,81 +138,100 @@ debugger
             requestHandlerTimeoutSecs: 600000,
             // maxRequestsPerCrawl: 50
 
-            // OPTION 1: Handle failed requests with errorHandler
+            // Minimal error logging for debugging (no sheet logging)
             errorHandler: async ({ request, error }) => {
-                console.error(`❌ Request failed for URL: ${request.url}`);
-                console.error(`Error: ${error.message}`);
+                console.error(`❌ Request failed: ${request.url} - ${error.message}`);
 
-                // Check if it's a 403 error specifically
+                // Log specific error types for debugging
                 if (error.message.includes('403 status code')) {
                     console.log('🚫 Detected 403 Forbidden error - possible anti-bot protection');
-
-                    await emitAsync('log-to-sheet', {
-                        sheetTitle: 'Crawl Logs(success)',
-                        message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                        rowData: { 
-                            ...baseRowData, 
-                            Site: site, 
-                            Notes: 'Detected 403 Forbidden error - possible anti-bot protection',
-                            ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API'
-                        }
-                    });
-
                 } else if (error.message.includes('timeout')) {
-                    // Handle timeout errors
-                    await emitAsync('log-to-sheet', {
-                        sheetTitle: 'Crawl Logs(success)',
-                        message: console.log(`Site ${site} is logging data to Google Sheet.`),
-                        rowData: { 
-                            ...baseRowData, 
-                            Site: site, 
-                            Notes: 'Request timeout detected',
-                            ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API'
-                        }
-                    });
                     console.log('⏰ Request timeout detected');
                 }
             },
 
-            // OPTION 2: Handle failed requests that exceed retry limit
+            // Minimal permanent failure logging for debugging
             failedRequestHandler: async ({ request, error }) => {
-                console.error(`💀 Request permanently failed after all retries: ${request.url}`);
-                console.error(`Final error: ${error.message}`);
-
+                console.error(`💀 Permanently failed: ${request.url} - ${error.message}`);
             },
 
-            // Custom retry logic
             retryOnBlocked: false,
             maxRequestRetries: 2,
         });
 
-        // Run crawler with error handling
+        // Run crawler with comprehensive end-of-task logging
         try {
             const startTime = Date.now();
             await crawler.run(siteConfig.urls);
             const endTime = Date.now();
             const duration = Math.round((endTime - startTime) / 1000);
-            
-            console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
 
-            // Log successful completion
-
-
-            // Check crawler statistics for errors
+            // Get crawler statistics
             const stats = await crawler.stats;
-            if (stats.requestsFailed > 0) {
-                console.log(`⚠️  Crawler completed with ${stats.requestsFailed} failed requests`);
-   
-            }
+            const totalRequests = stats.requestsTotal;
+            const successfulRequests = totalRequests - stats.requestsFailed;
+            const isSuccess = stats.requestsFailed === 0;
+
+            console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
+            console.log(`Stats: ${successfulRequests}/${totalRequests} successful, ${stats.requestsFailed} failed`);
+            const result = await processScrapedData(site);
+            // Single comprehensive log entry with complete summary
+            await emitAsync('log-to-sheet', {
+                sheetTitle: isSuccess ? 'Crawl Logs(success)' : 'Crawl Logs(error)',
+                message: `Site ${site} crawling completed`,
+                rowData: {
+                    ...result,
+                    Site: site,
+                    Status: isSuccess ? 'Success' : 'Partial Success',
+                    TotalURLs: totalRequests,
+                    SuccessfulURLs: successfulRequests,
+                    FailedURLs: stats.requestsFailed,
+                    Duration: `${duration}s`,
+                    Notes: isSuccess
+                        ? 'All URLs processed successfully'
+                        : `${stats.requestsFailed} URLs failed out of ${totalRequests}`,
+                    ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
+                    Timestamp: new Date().toISOString()
+                }
+            });
 
         } catch (crawlerError) {
             console.error('❌ Crawler execution failed:', crawlerError);
-            
+
+            // Log fatal crawler error.
+            await emitAsync('log-to-sheet', {
+                sheetTitle: 'Crawl Logs(error)',
+                message: `Site ${site} crawler failed fatally`,
+                rowData: {
+                    ...baseRowData,
+                    Site: site,
+                    Status: 'Fatal Error',
+                    Notes: `Crawler crashed: ${crawlerError.message}`,
+                    ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
+                    Timestamp: new Date().toISOString()
+                }
+            });
+
             throw crawlerError; // Re-throw to maintain error handling behavior
         }
 
     } catch (error) {
         console.error('💥 Fatal error in main execution:', error);
+
+        // Log fatal main execution error
+        await emitAsync('log-to-sheet', {
+            sheetTitle: 'Crawl Logs(error)',
+            message: `Site ${site} main execution failed`,
+            rowData: {
+                ...baseRowData,
+                Site: site,
+                Status: 'Fatal Error',
+                Notes: `Main execution failed: ${error.message}`,
+                ConfigSource: 'Unknown',
+                Timestamp: new Date().toISOString()
+            }
+        });
+
         process.exit(1);
     }
 })();
