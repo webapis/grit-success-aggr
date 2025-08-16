@@ -34,6 +34,7 @@ jobs:
         cache-dependency-path: '**/package-lock.json'
 
     - name: Download sheet data artifact
+      id: download-artifact
       uses: actions/download-artifact@v4
       with:
         name: sheet-data
@@ -42,15 +43,52 @@ jobs:
 
     - name: Setup cached sheet data
       run: |
+        CACHE_STATUS="none"
+        
         if [ -f sheet-data.json ]; then
-          echo "✅ Found cached sheet data"
-          cp sheet-data.json siteConfig.json
-          echo "📊 Sheet data info:"
-          echo "  Timestamp: $(cat siteConfig.json | jq -r '.timestamp // "Unknown"')"
-          echo "  Rows: $(cat siteConfig.json | jq '.data | length' 2>/dev/null || echo 'Unknown')"
+          # Validate JSON structure
+          if jq empty sheet-data.json 2>/dev/null; then
+            cp sheet-data.json siteConfig.json
+            echo "✅ Found and validated cached sheet data"
+            echo "📊 Sheet data info:"
+            echo "  Timestamp: $(cat siteConfig.json | jq -r '.timestamp // "Unknown"')"
+            echo "  Rows: $(cat siteConfig.json | jq '.data | length' 2>/dev/null || echo 'Unknown')"
+            echo "  Source: Artifact cache"
+            CACHE_STATUS="artifact"
+          else
+            echo "⚠️  Found sheet-data.json but it's invalid JSON"
+            rm -f sheet-data.json siteConfig.json
+            CACHE_STATUS="invalid"
+          fi
         else
-          echo "ℹ️  No cached data found, will use API calls"
+          echo "ℹ️  No cached data artifact found"
+          
+          # Check if there's already a siteConfig.json (from previous run or manual setup)
+          if [ -f siteConfig.json ]; then
+            if jq empty siteConfig.json 2>/dev/null; then
+              echo "✅ Found existing siteConfig.json"
+              echo "  Source: Pre-existing file"
+              CACHE_STATUS="existing"
+            else
+              echo "⚠️  Found siteConfig.json but it's invalid"
+              rm -f siteConfig.json
+              CACHE_STATUS="invalid"
+            fi
+          else
+            CACHE_STATUS="none"
+          fi
         fi
+        
+        case $CACHE_STATUS in
+          "artifact"|"existing")
+            echo "🚀 Will use cached configuration data"
+            ;;
+          "none"|"invalid")
+            echo "🌐 Will fetch fresh data from Google Sheets API"
+            ;;
+        esac
+        
+        echo "CACHE_STATUS=$CACHE_STATUS" >> $GITHUB_ENV
 
     - name: Cache Puppeteer browsers
       uses: actions/cache@v4
@@ -70,6 +108,14 @@ jobs:
     - name: Run crawler
       run: |
         echo "🚀 Starting crawler for site: ${{ inputs.site }}"
+        echo "📊 Cache status: $CACHE_STATUS"
+        
+        if [ "$CACHE_STATUS" = "artifact" ] || [ "$CACHE_STATUS" = "existing" ]; then
+          echo "📁 Using cached Google Sheets data"
+        else
+          echo "🌐 Will fetch fresh data from Google Sheets API"
+        fi
+        
         node prodCrawlerPuppeteer.js
 
     - name: Upload results
