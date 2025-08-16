@@ -1,16 +1,129 @@
 name: sponsorProdManualAggregPuppeteer
-on:
-   workflow_dispatch:
-    inputs:
-      site:
-        description: 'site'
-        required: true
-        type: string
-env:
-  MONGODB_URL: ${{secrets.MONGODB_URL}}
+
+on:    
+  workflow_dispatch:     
+    inputs:       
+      site:         
+        description: 'site'         
+        required: true         
+        type: string 
+
+env:   
+  MONGODB_URL: ${{secrets.MONGODB_URL}}   
   GH_TOKEN: ${{secrets.GH_TOKEN}}
+  GOOGLE_SERVICE_ACCOUNT_CREDENTIALS: ${{secrets.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS}}
+  GOOGLE_SHEET_ID: ${{secrets.GOOGLE_SHEET_ID}}
+
 jobs:
+  prepare_sheet_data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm install googleapis
+      
+      - name: Create package.json for CommonJS
+        run: |
+          cat > package.json << 'EOF'
+          {
+            "type": "commonjs"
+          }
+          EOF
+      
+      # Fetch ALL sheet data once and cache it
+      - name: Fetch sheet data and create artifact
+        run: |
+          cat > fetch_data.js << 'EOF'
+          const { google } = require('googleapis');
+          const fs = require('fs');
+          
+          async function fetchAllSheetData() {
+            try {
+              console.log('🔍 Starting Google Sheets data fetch...');
+              
+              if (!process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS) {
+                throw new Error('GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable is not set');
+              }
+              
+              if (!process.env.GOOGLE_SHEET_ID) {
+                throw new Error('GOOGLE_SHEET_ID environment variable is not set');
+              }
+              
+              console.log('🔑 Decoding credentials...');
+              const decodedCredentials = Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf8');
+              const credentials = JSON.parse(decodedCredentials);
+              
+              console.log('🔐 Authenticating with Google Sheets API...');
+              const auth = new google.auth.GoogleAuth({
+                credentials: credentials,
+                scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+              });
+              
+              const sheets = google.sheets({ version: 'v4', auth });
+              
+              console.log('📊 Fetching data from sheet...');
+              // Fetch ALL data from the sheet (A:K columns)
+              const response = await sheets.spreadsheets.values.get({
+                spreadsheetId: process.env.GOOGLE_SHEET_ID,
+                range: 'wbags-scroll!A:K',
+              });
+              
+              const rows = response.data.values;
+              console.log(`📝 Retrieved ${rows ? rows.length : 0} rows from sheet`);
+              
+              if (!rows || rows.length === 0) {
+                console.log('⚠️  No data found in sheet');
+                return { sheetData: { timestamp: new Date().toISOString(), runId: process.env.GITHUB_RUN_ID || 'local', data: [] } };
+              }
+              
+              console.log(`🔍 Processing ${rows.length} total rows...`);
+              
+              // Prepare sheet data for sharing
+              const sheetData = {
+                timestamp: new Date().toISOString(),
+                runId: process.env.GITHUB_RUN_ID || 'local',
+                data: rows
+              };
+              
+              // Save to file for artifact upload
+              fs.writeFileSync('sheet-data.json', JSON.stringify(sheetData, null, 2));
+              console.log('💾 Sheet data saved to file');
+              
+              return { sheetData };
+            } catch (error) {
+              console.error('❌ Error fetching data from Google Sheets:', error.message);
+              console.error('Full error:', error);
+              process.exit(1);
+            }
+          }
+          
+          fetchAllSheetData().then(result => {
+            console.log('✅ Sheet data fetch completed successfully');
+          }).catch(error => {
+            console.error('❌ Promise Error:', error.message);
+            process.exit(1);
+          });
+          EOF
+          
+          node fetch_data.js
+
+      # Upload sheet data as artifact for the reusable workflow to download
+      - name: Upload sheet data artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sheet-data
+          path: sheet-data.json
+          retention-days: 1
+
   dizitv_job:
+    needs: prepare_sheet_data
     uses: ./.github/workflows/reusableProdPuppeteer.yml
     with:
       site: ${{inputs.site}}
