@@ -175,7 +175,6 @@ debugger
             console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
             console.log(`Stats: ${successfulRequests}/${totalRequests} successful, ${stats.requestsFailed} failed`);
             const result = await processScrapedData(site);
-           console.log('result:',  result);
             // Single comprehensive log entry with complete summary
             await emitAsync('log-to-sheet', {
                 sheetTitle: isSuccess ? 'Crawl Logs(success)' : 'Crawl Logs(success)',
