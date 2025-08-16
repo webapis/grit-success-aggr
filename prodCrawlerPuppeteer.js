@@ -179,17 +179,6 @@ debugger
                 console.error(`💀 Request permanently failed after all retries: ${request.url}`);
                 console.error(`Final error: ${error.message}`);
 
-                // Log permanent failures if needed
-                // await emitAsync('log-to-sheet', {
-                //     sheetTitle: 'Crawl Logs(failed)',
-                //     message: `Permanent failure for ${site}`,
-                //     rowData: { 
-                //         ...baseRowData, 
-                //         Site: site, 
-                //         Notes: `Request permanently failed: ${request.url}`,
-                //         ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API'
-                //     }
-                // });
             },
 
             // Custom retry logic
@@ -207,78 +196,23 @@ debugger
             console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
 
             // Log successful completion
-            await emitAsync('log-to-sheet', {
-                sheetTitle: 'Crawl Logs(success)',
-                message: `Site ${site} crawling completed successfully`,
-                rowData: {
-                    ...baseRowData,
-                    Site: site,
-                    Status: 'Completed',
-                    Duration: `${duration}s`,
-                    URLsProcessed: siteConfig.urls.length,
-                    ConfigSource: siteConfig.cachedAt ? `Cached (${siteConfig.cachedAt})` : 'Fresh API',
-                    Notes: `Successfully processed ${siteConfig.urls.length} URLs`
-                }
-            });
+
 
             // Check crawler statistics for errors
             const stats = await crawler.stats;
             if (stats.requestsFailed > 0) {
                 console.log(`⚠️  Crawler completed with ${stats.requestsFailed} failed requests`);
-                
-                await emitAsync('log-to-sheet', {
-                    sheetTitle: 'Crawl Logs(success)',
-                    message: `Site ${site} completed with some failures`,
-                    rowData: {
-                        ...baseRowData,
-                        Site: site,
-                        Status: 'Completed with failures',
-                        FailedRequests: stats.requestsFailed,
-                        ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
-                        Notes: `${stats.requestsFailed} requests failed out of ${siteConfig.urls.length} total`
-                    }
-                });
+   
             }
 
         } catch (crawlerError) {
             console.error('❌ Crawler execution failed:', crawlerError);
-            
-            await emitAsync('log-to-sheet', {
-                sheetTitle: 'Crawl Logs(failed)',
-                message: `Site ${site} crawler execution failed`,
-                rowData: {
-                    ...baseRowData,
-                    Site: site,
-                    Status: 'Failed',
-                    Error: crawlerError.message,
-                    ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
-                    Notes: 'Crawler execution failed with error'
-                }
-            });
             
             throw crawlerError; // Re-throw to maintain error handling behavior
         }
 
     } catch (error) {
         console.error('💥 Fatal error in main execution:', error);
-        
-        // Log fatal errors
-        try {
-            await emitAsync('log-to-sheet', {
-                sheetTitle: 'Crawl Logs(failed)',
-                message: `Site ${site} fatal error`,
-                rowData: {
-                    ...baseRowData,
-                    Site: site,
-                    Status: 'Fatal Error',
-                    Error: error.message,
-                    Notes: 'Fatal error in main execution'
-                }
-            });
-        } catch (logError) {
-            console.error('Failed to log fatal error:', logError);
-        }
-
         process.exit(1);
     }
 })();
