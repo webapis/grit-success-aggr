@@ -4,12 +4,8 @@ on:
   workflow_call:
     inputs:
       site:
-        description: 'site'
+        description: 'Site name to crawl'
         required: true
-        type: string
-      sheet-data:
-        description: 'Base64 encoded sheet data'
-        required: false
         type: string
 
 env:
@@ -19,38 +15,16 @@ env:
   GOOGLE_SERVICE_ACCOUNT_CREDENTIALS: ${{secrets.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS}}
   GOOGLE_SHEET_ID: ${{secrets.GOOGLE_SHEET_ID}}
   GOOGLE_DRIVE_FOLDER_ID: ${{secrets.GOOGLE_DRIVE_FOLDER_ID}}
+  GET_LOCAL_SITE_CONF: 'TRUE'
 
 jobs:
-  playwright-test:
+  crawler-job:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    # Download shared sheet data
-    - name: Download sheet data artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: sheet-data
-      continue-on-error: true
-
-    # Create sheet data from input if artifact download failed
-    - name: Create sheet data from input
-      if: inputs.sheet-data != ''
-      run: |
-        echo '${{ inputs.sheet-data }}' | base64 -d > sheet-data.json
-
-    # Move sheet data to expected location
-    - name: Setup cached sheet data
-      run: |
-        if [ -f sheet-data.json ]; then
-          cp sheet-data.json siteConfig.json
-          echo "Sheet data prepared for use"
-          cat siteConfig.json | head -10  # Debug: show first few lines
-        else
-          echo "No sheet data available, will fetch from API"
-        fi
 
     - name: Setup Node.js with caching
       uses: actions/setup-node@v4
@@ -58,6 +32,25 @@ jobs:
         node-version: '20'
         cache: 'npm'
         cache-dependency-path: '**/package-lock.json'
+
+    - name: Download sheet data artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: sheet-data
+        path: .
+      continue-on-error: true
+
+    - name: Setup cached sheet data
+      run: |
+        if [ -f sheet-data.json ]; then
+          echo "✅ Found cached sheet data"
+          cp sheet-data.json siteConfig.json
+          echo "📊 Sheet data info:"
+          echo "  Timestamp: $(cat siteConfig.json | jq -r '.timestamp // "Unknown"')"
+          echo "  Rows: $(cat siteConfig.json | jq '.data | length' 2>/dev/null || echo 'Unknown')"
+        else
+          echo "ℹ️  No cached data found, will use API calls"
+        fi
 
     - name: Cache Puppeteer browsers
       uses: actions/cache@v4
@@ -73,9 +66,13 @@ jobs:
     - name: Install dependencies
       run: |
         npm ci --prefer-offline --no-audit
-        
-    - name: Run data agr
-      run: node prodCrawlerPuppeteer.js
 
-    - name: Run data upload
-      run: node src/pushToGit.js
+    - name: Run crawler
+      run: |
+        echo "🚀 Starting crawler for site: ${{ inputs.site }}"
+        node prodCrawlerPuppeteer.js
+
+    - name: Upload results
+      run: |
+        echo "📤 Uploading results..."
+        node src/pushToGit.js

@@ -14,8 +14,8 @@ jobs:
   prepare_matrix:
     runs-on: ubuntu-latest
     outputs:
-      sites: ${{ steps.set-sites.outputs.sites }}
-      sheet-data: ${{ steps.fetch-data.outputs.sheet-data }}
+      sites: ${{ steps.set-matrix.outputs.sites }}
+      has-sites: ${{ steps.set-matrix.outputs.has-sites }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -37,8 +37,8 @@ jobs:
           EOF
       
       # Fetch ALL sheet data once and cache it
-      - name: Fetch sheet data
-        id: fetch-data
+      - name: Fetch sheet data and prepare matrix
+        id: set-matrix
         run: |
           cat > fetch_data.js << 'EOF'
           const { google } = require('googleapis');
@@ -46,6 +46,8 @@ jobs:
           
           async function fetchAllSheetData() {
             try {
+              console.log('🔍 Starting Google Sheets data fetch...');
+              
               if (!process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS) {
                 throw new Error('GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable is not set');
               }
@@ -54,9 +56,11 @@ jobs:
                 throw new Error('GOOGLE_SHEET_ID environment variable is not set');
               }
               
+              console.log('🔑 Decoding credentials...');
               const decodedCredentials = Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf8');
               const credentials = JSON.parse(decodedCredentials);
               
+              console.log('🔐 Authenticating with Google Sheets API...');
               const auth = new google.auth.GoogleAuth({
                 credentials: credentials,
                 scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
@@ -64,6 +68,7 @@ jobs:
               
               const sheets = google.sheets({ version: 'v4', auth });
               
+              console.log('📊 Fetching data from sheet...');
               // Fetch ALL data from the sheet (A:K columns)
               const response = await sheets.spreadsheets.values.get({
                 spreadsheetId: process.env.GOOGLE_SHEET_ID,
@@ -71,23 +76,43 @@ jobs:
               });
               
               const rows = response.data.values;
+              console.log(`📝 Retrieved ${rows ? rows.length : 0} rows from sheet`);
+              
               if (!rows || rows.length === 0) {
+                console.log('⚠️  No data found in sheet');
+                return { sites: [], sheetData: null };
+              }
+              
+              if (rows.length < 2) {
+                console.log('⚠️  Only header row found, no data rows');
                 return { sites: [], sheetData: null };
               }
               
               // Extract sites (skip header, get non-paused sites)
               const dataRows = rows.slice(1);
-              const sites = dataRows
-                .filter(row => {
-                  const brandName = row[0];
-                  const isPaused = row[8]; // Column I (paused)
-                  
-                  return brandName && 
-                         brandName.trim() !== '' && 
-                         brandName.toLowerCase() !== 'brands' &&
-                         isPaused !== 'TRUE';
-                })
-                .map(row => row[0].trim());
+              console.log(`🔍 Processing ${dataRows.length} data rows...`);
+              
+              const sites = [];
+              for (let i = 0; i < dataRows.length; i++) {
+                const row = dataRows[i];
+                const brandName = row[0];
+                const isPaused = row[8]; // Column I (paused)
+                
+                console.log(`Row ${i + 2}: Brand="${brandName}", Paused="${isPaused}"`);
+                
+                if (brandName && 
+                    brandName.trim() !== '' && 
+                    brandName.toLowerCase() !== 'brands' &&
+                    isPaused !== 'TRUE' &&
+                    isPaused !== 'true') {
+                  sites.push(brandName.trim());
+                  console.log(`✅ Added site: ${brandName.trim()}`);
+                } else {
+                  console.log(`❌ Skipped site: ${brandName} (paused or invalid)`);
+                }
+              }
+              
+              console.log(`🎯 Final sites list: ${JSON.stringify(sites)}`);
               
               // Prepare sheet data for sharing
               const sheetData = {
@@ -98,27 +123,38 @@ jobs:
               
               // Save to file for artifact upload
               fs.writeFileSync('sheet-data.json', JSON.stringify(sheetData, null, 2));
+              console.log('💾 Sheet data saved to file');
               
               return { sites, sheetData };
             } catch (error) {
-              console.error('Error fetching data from Google Sheets:', error.message);
+              console.error('❌ Error fetching data from Google Sheets:', error.message);
+              console.error('Full error:', error);
               process.exit(1);
             }
           }
           
           fetchAllSheetData().then(result => {
-            // Output sites for matrix
-            console.log(`sites=${JSON.stringify(result.sites)}`);
-            // Save sheet data as base64 for output (GitHub Actions has size limits)
-            const sheetDataB64 = Buffer.from(JSON.stringify(result.sheetData)).toString('base64');
-            console.log(`sheet-data=${sheetDataB64}`);
+            console.log('📤 Setting GitHub Actions outputs...');
+            
+            const sitesJson = JSON.stringify(result.sites);
+            const hasSites = result.sites.length > 0 ? 'true' : 'false';
+            
+            console.log(`sites=${sitesJson}`);
+            console.log(`has-sites=${hasSites}`);
+            
+            // Write to GITHUB_OUTPUT
+            const fs = require('fs');
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `sites=${sitesJson}\n`);
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `has-sites=${hasSites}\n`);
+            
+            console.log('✅ Outputs set successfully');
           }).catch(error => {
-            console.error('Promise Error:', error.message);
+            console.error('❌ Promise Error:', error.message);
             process.exit(1);
           });
           EOF
           
-          node fetch_data.js >> $GITHUB_OUTPUT
+          node fetch_data.js
 
       # Upload sheet data as artifact for other jobs to download
       - name: Upload sheet data artifact
@@ -128,18 +164,35 @@ jobs:
           path: sheet-data.json
           retention-days: 1
 
-      - name: Set sites output
-        id: set-sites
-        run: echo "Sites prepared for matrix execution"
-
   dizitv_job:
     needs: prepare_matrix
+    # Only run if we have sites to process
+    if: needs.prepare_matrix.outputs.has-sites == 'true'
     strategy:
       fail-fast: false
+      max-parallel: 5  # Limit concurrent jobs to avoid overwhelming resources
       matrix:
         site: ${{ fromJSON(needs.prepare_matrix.outputs.sites) }}
     uses: ./.github/workflows/reusableProdPuppeteer.yml
     with:
       site: ${{ matrix.site }}
-      sheet-data: ${{ needs.prepare_matrix.outputs.sheet-data }}
     secrets: inherit
+
+  # Optional: Summary job to report results
+  summary:
+    needs: [prepare_matrix, dizitv_job]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Job Summary
+        run: |
+          echo "## Workflow Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Sites Found | ${{ needs.prepare_matrix.outputs.has-sites == 'true' && 'Yes' || 'No' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Matrix Job Status | ${{ needs.dizitv_job.result }} |" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ needs.prepare_matrix.outputs.has-sites }}" == "false" ]]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ **No sites were found to process. Check your Google Sheet configuration.**" >> $GITHUB_STEP_SUMMARY
+          fi
