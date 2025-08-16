@@ -178,10 +178,10 @@ debugger
            console.log('result:',  result);
             // Single comprehensive log entry with complete summary
             await emitAsync('log-to-sheet', {
-                sheetTitle: isSuccess ? 'Crawl Logs(success)' : 'Crawl Logs(error)',
+                sheetTitle: isSuccess ? 'Crawl Logs(success)' : 'Crawl Logs(success)',
                 message: `Site ${site} crawling completed`,
                 rowData: {
-                   // ...result,
+                    ...result,
                     Site: site,
                     Status: isSuccess ? 'Success' : 'Partial Success',
                     TotalURLs: totalRequests,

@@ -182,8 +182,6 @@ export async function processScrapedData(siteName) {
             'productPageSelector': dataWithoutError.length > 0 ? dataWithoutError[0].matchedInfo?.matchedPageSelector : 'N/A',
             'productItemSelector': dataWithoutError.length > 0 ? dataWithoutError[0].matchedInfo?.matchedProductItemSelectorManual : 'N/A',
             'JSONDublicateUrlDataGit': JSONDublicateUrlDataGit ? JSONDublicateUrlDataGit.url : 'N/A',
-            'UploadSuccess': uploadSuccess,
-            'ProcessedAt': new Date().toISOString()
         };
 
         console.log(`✅ Data processing completed for site: ${site}`);
