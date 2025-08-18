@@ -1,5 +1,5 @@
 export default [
-    'a.product-item__name',
+    'a.product-item__name',//lcw
     '.product-description.product-card-info__description',
     'h3 a.block.text-primary.text-xs',
     'p.product-name',
