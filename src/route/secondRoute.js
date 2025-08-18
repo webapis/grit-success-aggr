@@ -13,8 +13,8 @@ export default async function second({
   siteUrls
 }) {
 
-  await scrollPageIfRequired(page, siteUrls)
-    const productItemSelector= await getDatasetData('matchedproductItemSelectors');
+  await scrollPageIfRequired({page, siteUrls})
+  const productItemSelector= await getDatasetData('matchedproductItemSelectors');
 debugger
   const data = await scrapeData({ page, siteUrls,productItemSelector })
 
