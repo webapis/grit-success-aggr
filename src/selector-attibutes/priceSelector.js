@@ -1,4 +1,5 @@
 export default [
+    'span.product-price',
     '.product-pricing .price',
     '.product-pricing .nodiscount-price',
     '[data-testid="product-price"]',
