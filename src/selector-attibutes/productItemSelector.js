@@ -58,7 +58,7 @@ export default [
     ".o-productList__itemWrapper",
     ".product-layout",
     ".col-md-3.col-sm-3.col-xs-6.wow",
-    ".product-grid-container .grid__item",
+   // ".product-grid-container .grid__item",//causes problem for also
     ".js-product-list-item",
     ".product-listing-shelf__product-card",
     ".divUrun",
