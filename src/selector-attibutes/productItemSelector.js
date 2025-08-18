@@ -58,7 +58,7 @@ export default [
     ".o-productList__itemWrapper",
     ".product-layout",
     ".col-md-3.col-sm-3.col-xs-6.wow",
-   // ".product-grid-container .grid__item",//causes problem for also
+   // ".product-grid-container .grid__item",//causes problem for aldo
     ".js-product-list-item",
     ".product-listing-shelf__product-card",
     ".divUrun",
@@ -79,7 +79,7 @@ export default [
     ".js-list-content-product-item",
     ".product_item",
     ".relative.flex.h-full.w-full.grow.flex-col",
-    "li.grid__item",
+    //"li.grid__item", causes problem for aldo
 
     ".card-product",
     //"div[data-id]",
