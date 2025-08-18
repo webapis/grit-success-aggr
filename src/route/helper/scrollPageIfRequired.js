@@ -7,12 +7,9 @@ export async function scrollPageIfRequired({ page, siteUrls }) {
 
     const scrollable = siteUrls?.scrollable || false;
     const showMoreButtonSelector = siteUrls?.showMoreButtonSelector || '';
-   // const totalProductCounterSelector = siteUrls?.totalProductCounterSelector || '';
+    // const totalProductCounterSelector = siteUrls?.totalProductCounterSelector || '';
+    console.log('is scrollable', scrollable)
 
-    if (scrollable && !showMoreButtonSelector) {
-
-
-    }
     if (scrollable && showMoreButtonSelector) {
         console.log('scroller', 'autoScroll---showMoreButtonSelector-----------------')
         await autoScroll(page, {
@@ -32,6 +29,9 @@ export async function scrollPageIfRequired({ page, siteUrls }) {
             maxScrollAttempts: 500,
             enableLogging: true
         });
+    } else {
+        console.log('No scrolling is required--------------------------------------------------')
+    }
     //}
     // } else if (scrollable && !showMoreButtonSelector && totalProductCounterSelector) {
 
@@ -105,7 +105,7 @@ export async function scrollPageIfRequired({ page, siteUrls }) {
     //     });
 
 
-}
+
 
 
 
