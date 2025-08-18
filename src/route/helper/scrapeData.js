@@ -24,8 +24,7 @@ dotenv.config({ silent: true });
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
     debugger
 
-    // Get the best selector using the external function
-    const selectorResult = await findBestSelector(page, productItemSelector);
+
 
     const data = await page.evaluate((params) => {
         const pageTitle = document.title;
@@ -76,11 +75,10 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         
 
 
-        // Use the passed selector result
-        const bestSelector = params.selectorResult.bestSelector;
+   
 
         // Use only the best selector to get candidate items
-        const candidateItems = Array.from(document.querySelectorAll(bestSelector.selector)).map(m => {
+        const candidateItems = Array.from(document.querySelectorAll(params.productItemSelector)).map(m => {
             // All these are now arrays, no need to split
             const titleSelectors = params.titleSelector;
             const imageSelectors = params.imageSelector;
@@ -233,7 +231,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             }
 
             // Use the best selector that was actually used
-            const matchedSelector = bestSelector.selector;
+            const matchedSelector = params.productItemSelector
             const matchedProductItemSelectorManual = params.productItemSelectorManual
                 .find(selector => m.matches(selector));
 
@@ -276,7 +274,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         // Pass arrays directly instead of joining them
         productItemSelector: productItemSelector,
         productItemSelectorManual: productItemSelector,
-        selectorResult: selectorResult,  // Pass the selector result
+
         titleSelector: titleSelector,
         titleAttribute: titleAttribute,
         imageSelector: imageSelectors,
