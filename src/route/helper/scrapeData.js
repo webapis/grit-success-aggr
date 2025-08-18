@@ -15,7 +15,7 @@ import videoAttributes from "../../selector-attibutes/videoAttributes.js";
 import videoSelectors from "../../selector-attibutes/videoSelectors.js";
 import productNotAvailable from "../../selector-attibutes/productNotAvailable.js";
 import priceParser from "../../scrape-helpers/priceParcer.js";
-import findBestSelector from "../micro/findBestSelector.js";
+
 dotenv.config({ silent: true });
 // Separate helper function that works with Puppeteer page
 
