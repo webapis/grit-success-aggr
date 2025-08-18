@@ -32,7 +32,7 @@ export async function scrollPageIfRequired({ page, siteUrls }) {
             maxScrollAttempts: 500,
             enableLogging: true
         });
-    }
+    //}
     // } else if (scrollable && !showMoreButtonSelector && totalProductCounterSelector) {
 
     //     const matchedSelectors = [];
