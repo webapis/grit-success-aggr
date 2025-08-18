@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 import productItemSelector from "../../selector-attibutes/productItemSelector.js";
-
+import findBestSelector from "../micro/findBestSelector.js";
 import { emitAsync } from "../../events.js";
 import { uploadImage } from "../../git/uploadImage.js";
 import '../../listeners.js'; // ← This registers event handlers
@@ -14,7 +14,7 @@ const site = process.env.site;
 
 export default async function continueIfProductPage({ page, siteUrls }) {
 
-    debugger
+    
     page.on("console", (message) => {
         console.log("Message from Puppeteer page:", message.text());
     });
@@ -22,36 +22,38 @@ export default async function continueIfProductPage({ page, siteUrls }) {
 
     const waitForSeconds = siteUrls?.waitForSeconds || 3;
 
-    debugger
+    
     if (waitForSeconds > 0) {
         await page.evaluate(async (seconds) => {
             await new Promise(resolve => setTimeout(resolve, seconds * 1000)); // Fixed: multiply by 1000 for milliseconds
         }, waitForSeconds);
     }
-    debugger
-    const { matchedSelectors: matchedproductItemSelectors, elementCounts: totalItemsPerPage } = await getMatchedSelector({ page, selector: productItemSelector });
-    const { matchedSelectors: matchedPageSelectors, elementCounts: totalPageContainer } = await getMatchedSelector({ page, selector: productPageSelector });
+    
+    const { bestSelector } = await findBestSelector(page, productItemSelector);
+    
 
-    debugger
-    if (matchedproductItemSelectors.length > 0) {
-        debugger
+    
+    if (bestSelector.count > 0) {
+        
         try {
             if (siteUrls?.totalProductCounterSelector) {
-                debugger
+                
                 const totalItemsToBeCallected = await getTotalItemsCount(page, siteUrls.totalProductCounterSelector);
-
+                
                 if (totalItemsToBeCallected > 0) {
                     await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected });
                 }
             }
-
-            await pushDataToDataset('totalItemsPerPage', { totalItemsPerPage: totalItemsPerPage[matchedproductItemSelectors[0]] });
+            const totalItemsPerPage = bestSelector['count'];
+            const matchedproductItemSelectors = [bestSelector['selector']]
+            
+            await pushDataToDataset('totalItemsPerPage', { totalItemsPerPage });
             await pushDataToDataset("matchedproductItemSelectors", { matchedproductItemSelectors });
-            return { success: true, productItemSelector: matchedproductItemSelectors, productPageSelector: matchedPageSelectors, totalItemsPerPage, totalPageContainer };
+            return { success: true, productItemSelector: bestSelector.selector, totalItemsPerPage };
         } catch (error) {
-            debugger
+            
         }
-        debugger
+        
 
     } else {
         //take screenshot if initial pages could not be retrieved.
@@ -71,9 +73,9 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         await emitAsync('log-to-sheet', {
             sheetTitle: 'Crawl Logs(success)',
             message: console.log(`Site ${site} is logging data to Google Sheet.`),
-            rowData: { ...baseRowData,Site:site, ScreenshotGit: result.url, Notes: `continueIfProductPage.js >`, productItemSelector: matchedproductItemSelectors.join(','), productPageSelector: matchedPageSelectors.join(',') }
+            rowData: { ...baseRowData, Site: site, ScreenshotGit: result.url, Notes: `continueIfProductPage.js >`, productItemSelector: matchedproductItemSelectors.join(',') }
         });
         console.log('No product items found on the page');
-        return { success: false, productItemSelector: matchedproductItemSelectors, productPageSelector: matchedPageSelectors, totalItemsPerPage, totalPageContainer };
+        return { success: false, productItemSelector: bestSelector.selector, totalItemsPerPage };
     }
 }

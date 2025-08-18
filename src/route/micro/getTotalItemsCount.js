@@ -5,13 +5,14 @@
  * @returns {Promise<number>} - The extracted count as a number, or 0 if not found/invalid
  */
 export default async function getTotalItemsCount(page, selector) {
-    const totalItemsToBeCollected = await page.evaluate((totalProductCounterSelector) => {
-        const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
-        const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
-        return totalCount || 0; // Return 0 if NaN
-    }, selector);
-    
-    return totalItemsToBeCollected;
+    debugger
+    await page.waitForSelector(selector);
+    debugger
+
+    const productCount = await page.$eval(selector, el => el.textContent);
+    const number = parseInt(productCount.match(/\d+/)[0]); // 21
+    debugger
+    return number;
 }
 
 // Usage example:

@@ -1,7 +1,7 @@
 {
-  "targetSite": "hm",
+  "targetSite": "daphmin",
   "urls": [
-    "https://www2.hm.com/tr_tr/kadin/aksesuar/canta.html"
+    "https://www.daphmin.com/collections/kadin-hakiki-deri-cuzdan-ve-canta"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,15 +9,15 @@
   "filteringNeeded": true,
   "configurations": [
     {
-      "brand": "hm",
+      "brand": "daphmin",
       "paginationSelector": "",
       "paginationParameterName": "?page=",
       "scrollable": true,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": "",
-      "itemsPerPage": 32,
+      "totalProductCounterSelector": "span#ProductCount",
+
       "urls": [
-        "https://www2.hm.com/tr_tr/kadin/aksesuar/canta.html"
+        "https://www.daphmin.com/collections/kadin-hakiki-deri-cuzdan-ve-canta"
       ],
       "paused": false,
       "pausedReason": "Request blocked - received 403 status code.",
@@ -29,6 +29,6 @@
   "paginationParameterName": "?page=",
   "scrollable": true,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": "",
-  "itemsPerPage": 32
+  "totalProductCounterSelector": "span#ProductCount"
+
 }
