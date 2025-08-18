@@ -44,7 +44,8 @@ export async function processScrapedData(siteName) {
         const totalPages = countUnique({ data, key: 'pageURL' });
         const totalUniqueObjects = countUnique({ data, key: 'link' });
         const validLinks = countByField(data, 'linkValid');
-        const validimgs = countByField(data, 'imgValid');
+        const validimgs = countByField(data.filter(f=>f.mediaType === 'image'), 'imgValid');
+        const validVideos = countByField(data.filter(f=>f.mediaType === 'video'), 'videoValid');
         const validTitle = countByField(data, 'titleValid');
         const validPageTitle = countByField(data, 'pageTitleValid');
         const validPrice = countByField(data, 'priceValid');
@@ -161,6 +162,7 @@ export async function processScrapedData(siteName) {
             'Invalid Page Titles': validPageTitle,
             'Invalid Links': validLinks,
             'Invalid Images': validimgs,
+            'Invalid Videos': validVideos,
             'Invalid Prices': validPrice,
             'Unset Prices': unsetPrice,
             'Price Scrape Errors': priceScrapeError,

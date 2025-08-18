@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import isValidImageURL from "../../scrape-helpers/isValidImageURL.js";
+import isValidVideoURL from "../../scrape-helpers/isValidVideoURL.js";
 import isValidURL from "../../scrape-helpers/isValidURL.js";
 import isValidText from "../../scrape-helpers/isValidText.js";
 import titleSelector from "../../selector-attibutes/titleSelector.js";
@@ -297,6 +298,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         if (!imgValid) {
             console.log(`Invalid image URLs for item:`, item);
         }
+        const videoValid = item.videos && item.videos.length > 0 && item.videos.every(isValidVideoURL);
         const { parsedPrices, priceValid } = priceParser(item);
 
         return {
@@ -308,6 +310,8 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             titleValid: isValidText(item.title),
             pageTitleValid: isValidText(item.pageTitle),
             priceValid: item.productNotInStock ? true : priceValid,
+            videoValid,
+            mediaType: item.videos && item.videos.length > 0 ? 'video' : 'image'
         };
     });
     debugger
