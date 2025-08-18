@@ -15,11 +15,17 @@ import videoAttributes from "../../selector-attibutes/videoAttributes.js";
 import videoSelectors from "../../selector-attibutes/videoSelectors.js";
 import productNotAvailable from "../../selector-attibutes/productNotAvailable.js";
 import priceParser from "../../scrape-helpers/priceParcer.js";
-
+import findBestSelector from "../micro/findBestSelector";
 dotenv.config({ silent: true });
+// Separate helper function that works with Puppeteer page
 
+
+// Updated scrapeData function
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
     debugger
+
+    // Get the best selector using the external function
+    const selectorResult = await findBestSelector(page, productItemSelector);
 
     const data = await page.evaluate((params) => {
         const pageTitle = document.title;
@@ -66,19 +72,32 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             return Array.from(container.querySelectorAll(selector));
         }
 
-        // Find which individual CSS selector has the most matches
-        const selectorCounts = params.productItemSelector.map(selector => ({
-            selector,
-            count: document.querySelectorAll(selector).length
-        }));
+        // Refactored best selector function (defined inside page.evaluate)
+        function findBestSelector(selectors, containerDocument = document) {
+            // Find which individual CSS selector has the most matches
+            const selectorCounts = selectors.map(selector => ({
+                selector,
+                count: containerDocument.querySelectorAll(selector).length
+            }));
 
-        // Get the selector with the highest count
-        const bestSelector = selectorCounts.reduce((best, current) =>
-            current.count > best.count ? current : best
-        );
+            // Get the selector with the highest count
+            const bestSelector = selectorCounts.reduce((best, current) =>
+                current.count > best.count ? current : best
+            );
 
-        console.log('Selector counts:', selectorCounts);
-        console.log('Using best selector:', bestSelector.selector, 'with', bestSelector.count, 'matches');
+            console.log('Selector counts:', selectorCounts);
+            console.log('Using best selector:', bestSelector.selector, 'with', bestSelector.count, 'matches');
+
+            return {
+                bestSelector,
+                selectorCounts,
+                selector: bestSelector.selector,
+                count: bestSelector.count
+            };
+        }
+
+        // Use the passed selector result
+        const bestSelector = params.selectorResult.bestSelector;
 
         // Use only the best selector to get candidate items
         const candidateItems = Array.from(document.querySelectorAll(bestSelector.selector)).map(m => {
@@ -277,6 +296,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         // Pass arrays directly instead of joining them
         productItemSelector: productItemSelector,
         productItemSelectorManual: productItemSelector,
+        selectorResult: selectorResult,  // Pass the selector result
         titleSelector: titleSelector,
         titleAttribute: titleAttribute,
         imageSelector: imageSelectors,
