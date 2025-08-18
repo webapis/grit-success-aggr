@@ -23,11 +23,11 @@ export default async function first(props) {
     console.log('inside first route')
 
     debugger
-    const { success, productItemSelector } = await continueIfProductPage({ page, siteUrls, routeName:"first" });
+    const { success, productItemSelector } = await continueIfProductPage({ page, siteUrls });
     if (success) {
 
         debugger
-        await scrollPageIfRequired({page, siteUrls})
+        await scrollPageIfRequired({page, siteUrls,routeName:"first"})
         await addNextPagesToRequests({ page, addRequests, siteUrls, url });
         const data = await scrapeData({ page, siteUrls, productItemSelector })
         return data
