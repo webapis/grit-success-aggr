@@ -66,9 +66,6 @@ const data = await page.evaluate((params) => {
         return Array.from(container.querySelectorAll(selector));
     }
 
-    // Now params.productPageSelector is already an array, no need to split
-    let matchedDocument = null;
-
 
     // Find which individual CSS selector has the most matches
     const selectorCounts = params.productItemSelector.map(selector => ({
