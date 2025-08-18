@@ -23,7 +23,7 @@ export default async function first(props) {
     console.log('inside first route')
 
     debugger
-    const { success, productItemSelector } = await continueIfProductPage({ page, siteUrls });
+    const { success, productItemSelector } = await continueIfProductPage({ page, siteUrls, routeName:"first" });
     if (success) {
 
         debugger

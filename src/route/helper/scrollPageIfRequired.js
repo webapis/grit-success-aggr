@@ -3,8 +3,9 @@ import scroller, { autoScroll, scrollWithShowMoreAdvanced, autoScrollUntilCount,
 import productItemSelector from "../../selector-attibutes/productItemSelector.js";
 dotenv.config({ silent: true });
 
-export async function scrollPageIfRequired({ page, siteUrls }) {
+export async function scrollPageIfRequired({ page, siteUrls, routeName }) {
 
+    console.log('inside scrollPageIfRequired', routeName)
     const scrollable = siteUrls?.scrollable || false;
     const showMoreButtonSelector = siteUrls?.showMoreButtonSelector || '';
     // const totalProductCounterSelector = siteUrls?.totalProductCounterSelector || '';

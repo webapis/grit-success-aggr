@@ -12,11 +12,13 @@ export default async function second({
   addRequests,
   siteUrls
 }) {
+  debugger
+  console.log('inside second route')
+  const productItemSelector = await getDatasetData('matchedproductItemSelectors');
+  debugger
 
-  await scrollPageIfRequired({page, siteUrls})
-  const productItemSelector= await getDatasetData('matchedproductItemSelectors');
-debugger
-  const data = await scrapeData({ page, siteUrls,productItemSelector })
+  await scrollPageIfRequired({ page, siteUrls, routeName: "second" })
+  const data = await scrapeData({ page, siteUrls, productItemSelector })
 
   return data
 
