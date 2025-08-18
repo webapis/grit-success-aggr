@@ -1,5 +1,5 @@
 export default [
-    '#ProductPageProductList .productItem',
+    '.grid__item:has(.price)',
     '.text-sm.text-left.flex.flex-col',
     '.grid-product-list--4B .content-product-card',
     '.p-item-inside',
