@@ -1,12 +1,10 @@
 import dotenv from "dotenv";
-import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 import productItemSelector from "../../selector-attibutes/productItemSelector.js";
 import findBestSelector from "../micro/findBestSelector.js";
 import { emitAsync } from "../../events.js";
 import { uploadImage } from "../../git/uploadImage.js";
 import '../../listeners.js'; // ← This registers event handlers
 import { pushDataToDataset } from "../../crawlee/datasetOperations.js";
-import getMatchedSelector from "../micro/getMatchedSelector.js";
 import getTotalItemsCount from "../micro/getTotalItemsCount.js";
 import baseRowData from "../micro/baseRowData.js";
 dotenv.config({ silent: true });
