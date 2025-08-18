@@ -2,8 +2,6 @@ import dotenv from "dotenv";
 import isValidImageURL from "../../scrape-helpers/isValidImageURL.js";
 import isValidURL from "../../scrape-helpers/isValidURL.js";
 import isValidText from "../../scrape-helpers/isValidText.js";
-
-import productPageSelector from "../../selector-attibutes/productPageSelector.js";
 import titleSelector from "../../selector-attibutes/titleSelector.js";
 import imageSelectors from "../../selector-attibutes/imageSelector.js";
 import linkSelectors from "../../selector-attibutes/linkSelector.js";
@@ -70,18 +68,7 @@ const data = await page.evaluate((params) => {
 
     // Now params.productPageSelector is already an array, no need to split
     let matchedDocument = null;
-    let matchedPageSelector = null;
-    for (const sel of params.productPageSelector) {
-        const el = document.querySelector(sel);
-        if (el) {
-            matchedDocument = el;
-            matchedPageSelector = sel;
-            break;
-        }
-    }
 
-    const usedFallbackDocument = !matchedDocument;
-    const selectedDocument = matchedDocument || document;
 
     // Find which individual CSS selector has the most matches
     const selectorCounts = params.productItemSelector.map(selector => ({
@@ -252,8 +239,7 @@ const data = await page.evaluate((params) => {
                     imgSelectorMatched,
                     videoSelectorMatched,
                     priceSelectorsMatched: Array.from(priceSelectorsMatched),
-                    usedFallbackDocument,
-                    matchedPageSelector
+
                 },
                 pageTitle,
                 pageURL,
@@ -266,10 +252,6 @@ const data = await page.evaluate((params) => {
                 content: m.outerHTML,
                 url: document.URL,
                 pageTitle,
-                matchedInfo: {
-                    usedFallbackDocument,
-                    matchedPageSelector
-                }
             };
         }
     });
@@ -278,7 +260,6 @@ const data = await page.evaluate((params) => {
     return candidateItems;
 }, {
     // Pass arrays directly instead of joining them
-    productPageSelector: productPageSelector,
     productItemSelector: productItemSelector,
     productItemSelectorManual: productItemSelector,
     titleSelector: titleSelector,
