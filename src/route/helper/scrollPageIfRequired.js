@@ -3,14 +3,26 @@ import scroller, { autoScroll, scrollWithShowMoreAdvanced, autoScrollUntilCount,
 import productItemSelector from "../../selector-attibutes/productItemSelector.js";
 dotenv.config({ silent: true });
 
-export  async function scrollPageIfRequired({ page, siteUrls }) {
+export async function scrollPageIfRequired({ page, siteUrls }) {
 
     const scrollable = siteUrls?.scrollable || false;
     const showMoreButtonSelector = siteUrls?.showMoreButtonSelector || '';
-    const totalProductCounterSelector = siteUrls?.totalProductCounterSelector || '';
+   // const totalProductCounterSelector = siteUrls?.totalProductCounterSelector || '';
 
-    if (scrollable && !showMoreButtonSelector && !totalProductCounterSelector) {
+    if (scrollable && !showMoreButtonSelector) {
 
+
+    }
+    if (scrollable && showMoreButtonSelector) {
+        console.log('scroller', 'autoScroll---showMoreButtonSelector-----------------')
+        await autoScroll(page, {
+            showMoreSelector: showMoreButtonSelector,
+            scrollSpeed: 1000,       // 1 second between scrolls
+            scrollDistance: 100,     // Very small steps
+            waitForContentChange: 10000, // Wait up to 10 seconds
+            enableLogging: true
+        });
+    } else if (scrollable) {
         debugger
         console.log('scroller', 'autoScroll--------------------')
         await autoScroll(page, {
@@ -21,88 +33,79 @@ export  async function scrollPageIfRequired({ page, siteUrls }) {
             enableLogging: true
         });
     }
-    else if (scrollable && showMoreButtonSelector) {
-        console.log('scroller', 'autoScroll---showMoreButtonSelector-----------------')
-        await autoScroll(page, {
-            showMoreSelector: showMoreButtonSelector,
-            scrollSpeed: 1000,       // 1 second between scrolls
-            scrollDistance: 100,     // Very small steps
-            waitForContentChange: 10000, // Wait up to 10 seconds
-            enableLogging: true
-        });
-    } else if (scrollable && !showMoreButtonSelector && totalProductCounterSelector) {
+    // } else if (scrollable && !showMoreButtonSelector && totalProductCounterSelector) {
 
-        const matchedSelectors = [];
-        const elementCounts = {};
+    //     const matchedSelectors = [];
+    //     const elementCounts = {};
 
-        for (const selector of productItemSelector) {
-            const count = await page.$$eval(selector, elements => elements.length);
-            if (count > 0) {
-                matchedSelectors.push(selector);
-                elementCounts[selector] = count;
-            }
-        }
+    //     for (const selector of productItemSelector) {
+    //         const count = await page.$$eval(selector, elements => elements.length);
+    //         if (count > 0) {
+    //             matchedSelectors.push(selector);
+    //             elementCounts[selector] = count;
+    //         }
+    //     }
 
-        const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
-            const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
-            const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
-            return totalCount
+    //     const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
+    //         const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
+    //         const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
+    //         return totalCount
 
-        }, totalProductCounterSelector)
+    //     }, totalProductCounterSelector)
 
-        const targetElementSelector = matchedSelectors[0];
-        debugger;
-        console.log('scroller', 'autoScrollUntilCount--------------------')
-        await autoScrollUntilCount(page, targetElementSelector, totalItemsToBeCallected, {
-            enableLogging: true,
+    //     const targetElementSelector = matchedSelectors[0];
+    //     debugger;
+    //     console.log('scroller', 'autoScrollUntilCount--------------------')
+    //     await autoScrollUntilCount(page, targetElementSelector, totalItemsToBeCallected, {
+    //         enableLogging: true,
 
-        })
+    //     })
 
 
-    } else if (scrollable && showMoreButtonSelector && totalProductCounterSelector) {
-        console.log('scroller', 'scrollWithShowMoreUntilCount--------------------')
+    // } else if (scrollable && showMoreButtonSelector && totalProductCounterSelector) {
+    //     console.log('scroller', 'scrollWithShowMoreUntilCount--------------------')
 
-        const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
-            const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
-            const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
-            return totalCount
+    //     const totalItemsToBeCallected = await page.evaluate((totalProductCounterSelector) => {
+    //         const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
+    //         const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
+    //         return totalCount
 
-        }, totalProductCounterSelector)
-        debugger;
-        const matchedSelectors = [];
-        const elementCounts = {};
+    //     }, totalProductCounterSelector)
+    //     debugger;
+    //     const matchedSelectors = [];
+    //     const elementCounts = {};
 
-        for (const selector of productItemSelector) {
-            const count = await page.$$eval(selector, elements => elements.length);
-            if (count > 0) {
-                matchedSelectors.push(selector);
-                elementCounts[selector] = count;
-            }
-        }
-        const targetElementSelector = matchedSelectors[0];
-        debugger
-        await scrollWithShowMoreUntilCount(
-            page,
-            targetElementSelector,        // Elements to count
-            totalItemsToBeCallected,                     // Target: 50 products
-            showMoreButtonSelector       // Show more button selector
-        );
-        debugger
-    } else if (scrollable && showMoreButtonSelector && !totalProductCounterSelector) {
-        await scrollWithShowMoreAdvanced(page, 500, showMoreButtonSelector, {
-            waitAfterClick: 3000,
-            maxConsecutiveBottomReached: 3,
-            enableScrolling: true
-        });
-    } else if (!scrollable && showMoreButtonSelector && !totalProductCounterSelector) {
-        await scrollWithShowMoreAdvanced(page, 500, showMoreButtonSelector, {
-            waitAfterClick: 3000,
-            maxConsecutiveBottomReached: 3,
-            enableScrolling: false
-        });
+    //     for (const selector of productItemSelector) {
+    //         const count = await page.$$eval(selector, elements => elements.length);
+    //         if (count > 0) {
+    //             matchedSelectors.push(selector);
+    //             elementCounts[selector] = count;
+    //         }
+    //     }
+    //     const targetElementSelector = matchedSelectors[0];
+    //     debugger
+    //     await scrollWithShowMoreUntilCount(
+    //         page,
+    //         targetElementSelector,        // Elements to count
+    //         totalItemsToBeCallected,                     // Target: 50 products
+    //         showMoreButtonSelector       // Show more button selector
+    //     );
+    //     debugger
+    // } else if (scrollable && showMoreButtonSelector && !totalProductCounterSelector) {
+    //     await scrollWithShowMoreAdvanced(page, 500, showMoreButtonSelector, {
+    //         waitAfterClick: 3000,
+    //         maxConsecutiveBottomReached: 3,
+    //         enableScrolling: true
+    //     });
+    // } else if (!scrollable && showMoreButtonSelector && !totalProductCounterSelector) {
+    //     await scrollWithShowMoreAdvanced(page, 500, showMoreButtonSelector, {
+    //         waitAfterClick: 3000,
+    //         maxConsecutiveBottomReached: 3,
+    //         enableScrolling: false
+    //     });
 
 
-    }
+}
 
 
 
