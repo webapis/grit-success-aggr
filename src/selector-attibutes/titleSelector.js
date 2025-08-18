@@ -1,4 +1,5 @@
 export default [
+    'h3 a.block.text-primary.text-xs',
     'p.product-name',
     'h2.product-name',
     '.card-information__text.h4',
