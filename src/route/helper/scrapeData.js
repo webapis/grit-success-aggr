@@ -83,184 +83,202 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         const usedFallbackDocument = !matchedDocument;
         const selectedDocument = matchedDocument || document;
 
-        // params.productItemSelector is already an array
-        const candidateItems = Array.from(document.querySelectorAll(params.productItemSelector.join(', '))).map(m => {
-            // All these are now arrays, no need to split
-            const titleSelectors = params.titleSelector;
-            const imageSelectors = params.imageSelector;
-            const linkSelectors = params.linkSelector;
-            const priceSelectors = params.priceSelector;
-            const videoSelectors = params.videoSelector;
-            const videoAttrList = params.videoAttribute;
 
-            const titleElement = titleSelectors.map(sel => queryElement(m, sel)).find(Boolean);
-            const linkElement = linkSelectors.map(sel => queryElement(m, sel)).find(Boolean);
 
-            const imgElements = imageSelectors.flatMap(sel => queryAllElements(m, sel));
-            const productNotInStock = queryElement(m, params.productNotAvailable.join(', ')) ? true : false;
+        // Use only the best selector to get candidate items
+        const candidateItems = await page.evaluate((params) => {
+            // Find which individual CSS selector has the most matches
+            const selectorCounts = params.productItemSelector.map(selector => ({
+                selector,
+                count: document.querySelectorAll(selector).length
+            }));
 
-            const imgUrls = imgElements.flatMap(el =>
-                params.imageAttributes
-                    .map(attr => el?.getAttribute(attr?.replaceAll(" ", "")))
-                    .filter(Boolean)
+            // Get the selector with the highest count
+            const bestSelector = selectorCounts.reduce((best, current) =>
+                current.count > best.count ? current : best
             );
 
-            function getBackgroundImageUrl(el) {
-                const bgImage = el?.style.backgroundImage;
-                const urlMatch = bgImage?.match(/url\(["']?(.*?)["']?\)/);
-                return urlMatch ? urlMatch[1] : null;
-            }
+            console.log('Selector counts:', selectorCounts);
+            console.log('Using best selector:', bestSelector.selector, 'with', bestSelector.count, 'matches');
 
-            const bgImgs = imgElements
-                .map(el => getBackgroundImageUrl(el))
-                .filter(Boolean);
+            return Array.from(document.querySelectorAll(bestSelector.selector)).map(m => {
+                // All these are now arrays, no need to split
+                const titleSelectors = params.titleSelector;
+                const imageSelectors = params.imageSelector;
+                const linkSelectors = params.linkSelector;
+                const priceSelectors = params.priceSelector;
+                const videoSelectors = params.videoSelector;
+                const videoAttrList = params.videoAttribute;
 
-            const allImgs = [...new Set([...imgUrls, ...bgImgs])];
-            const primaryImg = allImgs[0] || null;
+                const titleElement = titleSelectors.map(sel => queryElement(m, sel)).find(Boolean);
+                const linkElement = linkSelectors.map(sel => queryElement(m, sel)).find(Boolean);
 
-            const titleSelectorMatched = titleElement
-                ? titleSelectors.find(sel => {
-                    // Handle shadow selectors
-                    if (sel.includes('::shadow::')) {
-                        return sel; // Return the full shadow selector
-                    }
-                    return titleElement.matches(sel) ? sel : null;
-                })
-                : null;
+                const imgElements = imageSelectors.flatMap(sel => queryAllElements(m, sel));
+                const productNotInStock = queryElement(m, params.productNotAvailable.join(', ')) ? true : false;
 
-            const firstImgElement = imgElements[0];
-            const imgSelectorMatched = firstImgElement
-                ? imageSelectors.find(sel => {
-                    if (sel.includes('::shadow::')) {
-                        return sel;
-                    }
-                    return firstImgElement.matches(sel) ? sel : null;
-                })
-                : null;
-
-            const title = titleElement &&
-                params.titleAttribute
-                    .map(attr => titleElement[attr?.replaceAll(" ", "")])
-                    .find(Boolean);
-
-            const priceInfo = [];
-            const priceSelectorsMatched = new Set();
-
-            // Enhanced price element matching with shadow DOM support
-            const matchedPriceElements = priceSelectors
-                .flatMap(sel => queryAllElements(m, sel))
-                .filter(Boolean);
-
-            for (const priceEl of matchedPriceElements) {
-                const matchedSelector = priceSelectors.find(sel => {
-                    if (sel.includes('::shadow::')) {
-                        return sel; // Return shadow selector as-is
-                    }
-                    return priceEl.matches(sel) ? sel : null;
-                });
-
-                if (matchedSelector) {
-                    priceSelectorsMatched.add(matchedSelector);
-                }
-
-                const priceAttrList = params.priceAttribute;
-                for (const attr of priceAttrList) {
-                    let value = priceEl[attr]?.trim();
-                    if (value) {
-                        priceInfo.push({
-                            value,
-                            selector: matchedSelector,
-                            attribute: attr
-                        });
-                        break;
-                    }
-                }
-            }
-
-            const videoElements = videoSelectors.flatMap(sel => queryAllElements(m, sel));
-            const videoUrls = videoElements
-                .flatMap(el =>
-                    videoAttrList
-                        .map(attr => el?.getAttribute(attr))
+                const imgUrls = imgElements.flatMap(el =>
+                    params.imageAttributes
+                        .map(attr => el?.getAttribute(attr?.replaceAll(" ", "")))
                         .filter(Boolean)
                 );
 
-            const allVideos = [...new Set(videoUrls)];
-            const firstVideoElement = videoElements[0];
-            const videoSelectorMatched = firstVideoElement
-                ? videoSelectors.find(sel => {
-                    if (sel.includes('::shadow::')) {
-                        return sel;
+                function getBackgroundImageUrl(el) {
+                    const bgImage = el?.style.backgroundImage;
+                    const urlMatch = bgImage?.match(/url\(["']?(.*?)["']?\)/);
+                    return urlMatch ? urlMatch[1] : null;
+                }
+
+                const bgImgs = imgElements
+                    .map(el => getBackgroundImageUrl(el))
+                    .filter(Boolean);
+
+                const allImgs = [...new Set([...imgUrls, ...bgImgs])];
+                const primaryImg = allImgs[0] || null;
+
+                const titleSelectorMatched = titleElement
+                    ? titleSelectors.find(sel => {
+                        // Handle shadow selectors
+                        if (sel.includes('::shadow::')) {
+                            return sel; // Return the full shadow selector
+                        }
+                        return titleElement.matches(sel) ? sel : null;
+                    })
+                    : null;
+
+                const firstImgElement = imgElements[0];
+                const imgSelectorMatched = firstImgElement
+                    ? imageSelectors.find(sel => {
+                        if (sel.includes('::shadow::')) {
+                            return sel;
+                        }
+                        return firstImgElement.matches(sel) ? sel : null;
+                    })
+                    : null;
+
+                const title = titleElement &&
+                    params.titleAttribute
+                        .map(attr => titleElement[attr?.replaceAll(" ", "")])
+                        .find(Boolean);
+
+                const priceInfo = [];
+                const priceSelectorsMatched = new Set();
+
+                // Enhanced price element matching with shadow DOM support
+                const matchedPriceElements = priceSelectors
+                    .flatMap(sel => queryAllElements(m, sel))
+                    .filter(Boolean);
+
+                for (const priceEl of matchedPriceElements) {
+                    const matchedSelector = priceSelectors.find(sel => {
+                        if (sel.includes('::shadow::')) {
+                            return sel; // Return shadow selector as-is
+                        }
+                        return priceEl.matches(sel) ? sel : null;
+                    });
+
+                    if (matchedSelector) {
+                        priceSelectorsMatched.add(matchedSelector);
                     }
-                    return firstVideoElement.matches(sel) ? sel : null;
-                })
-                : null;
 
-            let link = null;
-            let linkSource = null;
-
-            if (titleElement?.href) {
-                link = titleElement.href;
-                linkSource = `titleElement (matched: ${titleSelectorMatched})`;
-            } else if (linkElement?.href) {
-                const linkSelectorMatched = linkSelectors.find(sel => {
-                    if (sel.includes('::shadow::')) {
-                        return sel;
+                    const priceAttrList = params.priceAttribute;
+                    for (const attr of priceAttrList) {
+                        let value = priceEl[attr]?.trim();
+                        if (value) {
+                            priceInfo.push({
+                                value,
+                                selector: matchedSelector,
+                                attribute: attr
+                            });
+                            break;
+                        }
                     }
-                    return linkElement.matches(sel) ? sel : null;
-                });
-                link = linkElement.href;
-                linkSource = `linkElement (matched: ${linkSelectorMatched})`;
-            } else if (m?.href) {
-                link = m.href;
-                linkSource = 'containerElement (m)';
-            }
+                }
 
-            const matchedSelector = params.productItemSelector
-                .find(selector => m.matches(selector));
-            const matchedProductItemSelectorManual = params.productItemSelectorManual
-                .find(selector => m.matches(selector));
+                const videoElements = videoSelectors.flatMap(sel => queryAllElements(m, sel));
+                const videoUrls = videoElements
+                    .flatMap(el =>
+                        videoAttrList
+                            .map(attr => el?.getAttribute(attr))
+                            .filter(Boolean)
+                    );
 
-            try {
-                debugger
-                return {
-                    title,
-                    img: allImgs,
-                    primaryImg,
-                    link,
-                    price: priceInfo,
-                    videos: allVideos,
-                    productNotInStock,
-                    matchedInfo: {
-                        linkSource,
-                        matchedSelector,
-                        matchedProductItemSelectorManual,
-                        titleSelectorMatched,
-                        imgSelectorMatched,
-                        videoSelectorMatched,
-                        priceSelectorsMatched: Array.from(priceSelectorsMatched),
-                        usedFallbackDocument,
-                        matchedPageSelector
-                    },
-                    pageTitle,
-                    pageURL,
-                    timestamp: new Date().toISOString(),
-                };
-            } catch (error) {
-                debugger
-                return {
-                    error: true,
-                    message: error.message,
-                    content: m.outerHTML,
-                    url: document.URL,
-                    pageTitle,
-                    matchedInfo: {
-                        usedFallbackDocument,
-                        matchedPageSelector
-                    }
-                };
-            }
-        });
+                const allVideos = [...new Set(videoUrls)];
+                const firstVideoElement = videoElements[0];
+                const videoSelectorMatched = firstVideoElement
+                    ? videoSelectors.find(sel => {
+                        if (sel.includes('::shadow::')) {
+                            return sel;
+                        }
+                        return firstVideoElement.matches(sel) ? sel : null;
+                    })
+                    : null;
+
+                let link = null;
+                let linkSource = null;
+
+                if (titleElement?.href) {
+                    link = titleElement.href;
+                    linkSource = `titleElement (matched: ${titleSelectorMatched})`;
+                } else if (linkElement?.href) {
+                    const linkSelectorMatched = linkSelectors.find(sel => {
+                        if (sel.includes('::shadow::')) {
+                            return sel;
+                        }
+                        return linkElement.matches(sel) ? sel : null;
+                    });
+                    link = linkElement.href;
+                    linkSource = `linkElement (matched: ${linkSelectorMatched})`;
+                } else if (m?.href) {
+                    link = m.href;
+                    linkSource = 'containerElement (m)';
+                }
+
+                // Use the best selector that was actually used
+                const matchedSelector = bestSelector.selector;
+                const matchedProductItemSelectorManual = params.productItemSelectorManual
+                    .find(selector => m.matches(selector));
+
+                try {
+                    debugger
+                    return {
+                        title,
+                        img: allImgs,
+                        primaryImg,
+                        link,
+                        price: priceInfo,
+                        videos: allVideos,
+                        productNotInStock,
+                        matchedInfo: {
+                            linkSource,
+                            matchedSelector,
+                            matchedProductItemSelectorManual,
+                            titleSelectorMatched,
+                            imgSelectorMatched,
+                            videoSelectorMatched,
+                            priceSelectorsMatched: Array.from(priceSelectorsMatched),
+                            usedFallbackDocument,
+                            matchedPageSelector
+                        },
+                        pageTitle,
+                        pageURL,
+                        timestamp: new Date().toISOString(),
+                    };
+                } catch (error) {
+                    debugger
+                    return {
+                        error: true,
+                        message: error.message,
+                        content: m.outerHTML,
+                        url: document.URL,
+                        pageTitle,
+                        matchedInfo: {
+                            usedFallbackDocument,
+                            matchedPageSelector
+                        }
+                    };
+                }
+            });
+        }, params);
 
         console.log('candidateItems', candidateItems.length)
         debugger
