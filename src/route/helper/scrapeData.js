@@ -203,7 +203,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                 }
             }
             const videoElements = videoElementsWithSelectors.map(item => item.element);
-            const firstVideoElement = videoElements[0] || null;
+
             const videoSelectorMatched = videoElementsWithSelectors[0]?.selector || null;
 
             const videoUrls = videoElements
@@ -232,9 +232,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
             // Use the best selector that was actually used
             const matchedSelector = params.productItemSelector
-            const matchedProductItemSelectorManual = params.productItemSelectorManual
-                .find(selector => m.matches(selector));
-
+    
             try {
                 return {
                     title,
@@ -247,7 +245,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                     matchedInfo: {
                         linkSource,
                         matchedSelector,
-                        matchedProductItemSelectorManual,
                         titleSelectorMatched,
                         imgSelectorMatched,
                         videoSelectorMatched,
@@ -273,8 +270,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
     }, {
         // Pass arrays directly instead of joining them
         productItemSelector: productItemSelector,
-        productItemSelectorManual: productItemSelector,
-
         titleSelector: titleSelector,
         titleAttribute: titleAttribute,
         imageSelector: imageSelectors,
