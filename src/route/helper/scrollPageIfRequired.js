@@ -8,7 +8,7 @@ export async function scrollPageIfRequired({ page, siteUrls }) {
     const scrollable = siteUrls?.scrollable || false;
     const showMoreButtonSelector = siteUrls?.showMoreButtonSelector || '';
     // const totalProductCounterSelector = siteUrls?.totalProductCounterSelector || '';
-    console.log('is scrollable', scrollable)
+    console.log('is scrollable', siteUrls?.scrollable)
 
     if (scrollable && showMoreButtonSelector) {
         console.log('scroller', 'autoScroll---showMoreButtonSelector-----------------')
