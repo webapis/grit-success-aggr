@@ -44,7 +44,8 @@ export default function isValidVideoURL(value) {
     const streamingPattern = /\.(m3u8|mpd)(\?|$)/i;
 
     // Cloudinary video pattern
-    const cloudinaryVideoPattern = \/video\/upload\/[^/]*\/v\d+\//i;
+ // Cloudinary video pattern
+const cloudinaryVideoPattern = /\/video\/upload\/[^/]*\/v\d+\//i;
 
     const isValid =
       basicPattern.test(value) &&
