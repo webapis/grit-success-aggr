@@ -1,1 +1,1 @@
-export default[".js-list-video.list-video source"]
+export default [".js-list-video.list-video source", ".js-video-play.js-video-play-mobile source"]
