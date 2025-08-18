@@ -12,6 +12,36 @@ const site = process.env.site;
 const local = process.env.local;
 const HEADLESS = process.env.HEADLESS;
 
+// URL validation function
+function validateUrls(urls) {
+    const invalidUrls = [];
+    const validUrls = [];
+
+    for (const url of urls) {
+        try {
+            const urlObj = new URL(url);
+            
+            // Check if URL has a specific path beyond just root
+            // Root paths that should be considered invalid: "/", "", or only query params
+            const path = urlObj.pathname;
+            const hasSpecificPath = path && path !== '/' && path.length > 1;
+            
+            if (hasSpecificPath) {
+                validUrls.push(url);
+                console.log(`✅ Valid URL: ${url} (path: ${path})`);
+            } else {
+                invalidUrls.push(url);
+                console.log(`❌ Invalid URL: ${url} (no specific path, only root: ${path})`);
+            }
+        } catch (error) {
+            invalidUrls.push(url);
+            console.log(`❌ Invalid URL format: ${url} - ${error.message}`);
+        }
+    }
+
+    return { validUrls, invalidUrls };
+}
+
 debugger
 // Main execution block
 (async () => {
@@ -91,8 +121,40 @@ debugger
             process.exit(1);
         }
 
-        console.log(`Starting crawler for site: ${site} with ${siteConfig.urls.length} URLs`);
-        console.log('URLs to crawl:', siteConfig.urls);
+        // NEW: Validate URLs to ensure they have specific paths
+        console.log('🔍 Validating URLs for specific paths...');
+        const { validUrls, invalidUrls } = validateUrls(siteConfig.urls);
+
+        // Log invalid URLs for debugging
+        if (invalidUrls.length > 0) {
+            console.error(`Found ${invalidUrls.length} invalid URLs (root-only paths):`);
+            invalidUrls.forEach(url => console.error(`  - ${url}`));
+            
+            // Log invalid URLs to sheet
+            await emitAsync('log-to-sheet', {
+                sheetTitle: 'Crawl Logs(error)',
+                message: `Site ${site} contains invalid URLs with root-only paths`,
+                rowData: {
+                    ...baseRowData,
+                    Site: site,
+                    Status: 'Validation Error',
+                    Notes: `Found ${invalidUrls.length} invalid URLs: ${invalidUrls.join(', ')}`,
+                    ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
+                    Timestamp: new Date().toISOString()
+                }
+            });
+
+            // Throw error if no valid URLs remain
+            if (validUrls.length === 0) {
+                throw new Error(`All URLs for site ${site} are invalid (contain only root paths). Valid URLs must have specific paths like '/collections/kadin-hakiki-deri-cuzdan-ve-canta'`);
+            }
+        }
+
+        // Use only valid URLs for crawling
+        const urlsToScrape = validUrls;
+        
+        console.log(`Starting crawler for site: ${site} with ${urlsToScrape.length} valid URLs`);
+        console.log('Valid URLs to crawl:', urlsToScrape);
         console.log('Site configuration:', {
             paginationSelector: siteConfig.paginationSelector,
             scrollable: siteConfig.scrollable,
@@ -162,7 +224,7 @@ debugger
         // Run crawler with comprehensive end-of-task logging
         try {
             const startTime = Date.now();
-            await crawler.run(siteConfig.urls);
+            await crawler.run(urlsToScrape); // Use validated URLs instead of siteConfig.urls
             const endTime = Date.now();
             const duration = Math.round((endTime - startTime) / 1000);
 
