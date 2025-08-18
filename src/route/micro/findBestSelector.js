@@ -1,4 +1,5 @@
 export default async function findBestSelector(page, selectors) {
+    console.log('productItemSelector____________________________________________________',selectors)
     const result = await page.evaluate((selectors) => {
         // Find which individual CSS selector has the most matches
         const selectorCounts = selectors.map(selector => ({
