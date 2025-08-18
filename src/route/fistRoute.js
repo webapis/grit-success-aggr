@@ -26,8 +26,8 @@ export default async function first(props) {
     const { success, productItemSelector } = await continueIfProductPage({ page, siteUrls });
     if (success) {
 
-
-        await scrollPageIfRequired(page, siteUrls)
+        debugger
+        await scrollPageIfRequired({page, siteUrls})
         await addNextPagesToRequests({ page, addRequests, siteUrls, url });
         const data = await scrapeData({ page, siteUrls, productItemSelector })
         return data
