@@ -1,4 +1,5 @@
 export default [
+    '.productItem:not(:has(.pw-img-swiper))',// elleshoes
     '.grid__item:has(.price)',
     '.text-sm.text-left.flex.flex-col',
     '.grid-product-list--4B .content-product-card',
@@ -40,7 +41,7 @@ export default [
     "[data-index].product-item",//gustoeshop
     ".product-item-box",
     ".products__item",
-    ".productItem",
+   // ".productItem",//problem for elleshoes
     ".showcase",
     ".Prd",
     ".product-list-item",
