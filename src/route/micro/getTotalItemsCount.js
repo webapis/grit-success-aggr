@@ -7,7 +7,7 @@
 export default async function getTotalItemsCount(page, selector) {
     debugger
     await page.waitForSelector(selector);
-    const resultElement = document.querySelector(selector);
+    const resultElement = await page.$eval(selector, el => el.textContent);
     const number = resultElement.textContent.trim().split(" ").filter(f => Number(f));
 
     console.log('getTotalItemsCount', number)
