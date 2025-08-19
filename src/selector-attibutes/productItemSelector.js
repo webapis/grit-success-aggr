@@ -1,4 +1,5 @@
 export default [
+    '[id*=product-tile-wrapper-]',
     'ozd-custom-product-grid-item',
     '.product--root',
     '.productItem:not(:has(.pw-img-swiper))',// elleshoes //.productItem:not(.prd):not(:has(.pw-img-swiper))

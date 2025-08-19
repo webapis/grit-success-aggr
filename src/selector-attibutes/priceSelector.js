@@ -1,4 +1,5 @@
 export default [
+    '.tp-price-number',
     '.grid-product__price--original',
     'document.querySelector(".grid-product__price").childNodes[5].textContent.trim();',
     '.current-price.promotion-current-price',

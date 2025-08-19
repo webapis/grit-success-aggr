@@ -1,4 +1,5 @@
 export default [
+    'a.product-title-container',
     'a.item-img',
     '.product--root a',
     '.full-unstyled-link',
