@@ -87,6 +87,6 @@ export default [
     // ".product-title",
     // ".PName",
     // ".product-name"
-    "a[title]:not([href='javascript:void(0);'] :not([href='#']):not([href=''])"
+    "a[title]:not([href='javascript:void(0);']):not([href='#']):not([href=''])"
 
 ]

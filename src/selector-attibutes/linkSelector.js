@@ -53,6 +53,6 @@ export default [
     "a.detailLink.detailUrl",
     ".product_image a",
     '[id^="CardLink-template"]',
-    "a:not([href='javascript:void(0);'] :not([href='#']):not([href=''])"
+    "a[title]:not([href='javascript:void(0);']):not([href='#']):not([href=''])"
 
 ]
