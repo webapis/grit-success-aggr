@@ -11,7 +11,7 @@ export default async function getTotalItemsCount(page, selector) {
 
     // const productCount = await page.$eval(selector, el => el.textContent);
     // const number = parseInt(productCount.match(/\d+/)[0]); // 21
-    const resultElement = document.querySelector(selector);
+    const resultElement = await page.$eval(selector, el => el.textContent);
     const text = resultElement.textContent.trim();
     const number = text.split(' ')[0];
     debugger
