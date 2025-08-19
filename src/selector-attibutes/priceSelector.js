@@ -1,5 +1,6 @@
 export default [
     '.pricebox .oneprice',
+    '.pricebox .newprice',
     '.tp-price-number',
     '.grid-product__price--original',
     'document.querySelector(".grid-product__price").childNodes[5].textContent.trim();',
