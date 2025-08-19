@@ -52,6 +52,7 @@ export default [
     "div.product-info a",
     "a.detailLink.detailUrl",
     ".product_image a",
-    '[id^="CardLink-template"]'
+    '[id^="CardLink-template"]',
+    "a[title]:not([href='javascript:void(0);'] :not([href='#']):not([href=''])"
 
 ]
