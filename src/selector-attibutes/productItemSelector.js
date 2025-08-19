@@ -1,4 +1,5 @@
 export default [
+    'ozd-custom-product-grid-item',
     '.product--root',
     '.productItem:not(:has(.pw-img-swiper))',// elleshoes //.productItem:not(.prd):not(:has(.pw-img-swiper))
     '.grid__item:has(.price)',
