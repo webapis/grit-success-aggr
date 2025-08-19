@@ -1,4 +1,5 @@
 export default [
+  '.tp-image img',
   "[data-testid='next-image'] img",
   '[id^="product_image"] .lazy-image img',
   '.product-grid__image',//guess
