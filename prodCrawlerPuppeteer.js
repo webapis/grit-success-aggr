@@ -202,7 +202,8 @@ debugger
                         '--disable-gpu',
                         '--window-size=1920,1080'
                     ],
-                    protocolTimeout: 300000,
+                    protocolTimeout: 600000,
+                    timeout: 120000,
                 }
             },
             requestHandler: router,
