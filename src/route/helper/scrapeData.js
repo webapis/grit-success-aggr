@@ -21,10 +21,9 @@ dotenv.config({ silent: true });
 
 
 // Updated scrapeData function
+// Updated scrapeData function with enhanced price selector support
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
     debugger
-
-
 
     const data = await page.evaluate((params) => {
         const pageTitle = document.title;
@@ -71,11 +70,47 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             return Array.from(container.querySelectorAll(selector));
         }
 
+        // New function to execute JavaScript expressions safely
+        function executeJavaScriptSelector(jsExpression) {
+            try {
+                // Remove trailing semicolon if present
+                const cleanExpression = jsExpression.replace(/;$/, '');
+                // Execute the expression and return the result
+                return eval(cleanExpression);
+            } catch (error) {
+                console.warn('Error executing JavaScript selector:', jsExpression, error);
+                return null;
+            }
+        }
 
-        
-
-
-   
+        // Enhanced function to get price elements with both CSS and JS support
+        function getPriceElements(container, selector) {
+            if (selector.includes('document')) {
+                // This is a JavaScript expression
+                const result = executeJavaScriptSelector(selector);
+                if (result) {
+                    // If the result is a string (textContent), create a fake element
+                    if (typeof result === 'string') {
+                        const fakeElement = document.createElement('span');
+                        fakeElement.textContent = result;
+                        fakeElement.innerText = result;
+                        return [fakeElement];
+                    }
+                    // If it's a DOM element, return as array
+                    if (result.nodeType) {
+                        return [result];
+                    }
+                    // If it's a NodeList or array, convert to array
+                    if (result.length !== undefined) {
+                        return Array.from(result);
+                    }
+                }
+                return [];
+            } else {
+                // This is a CSS selector
+                return queryAllElements(container, selector);
+            }
+        }
 
         // Use only the best selector to get candidate items
         const candidateItems = Array.from(document.querySelectorAll(params.productItemSelector)).map(m => {
@@ -123,7 +158,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                 }
             }
             const imgElements = imgElementsWithSelectors.map(item => item.element);
-            const firstImgElement = imgElements[0] || null;
             const imgSelectorMatched = imgElementsWithSelectors[0]?.selector || null;
 
             const productNotInStock = queryElement(m, params.productNotAvailable.join(', ')) ? true : false;
@@ -152,40 +186,57 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                     .map(attr => titleElement[attr?.replaceAll(" ", "")])
                     .find(Boolean);
 
-            // Price elements matching with proper selector tracking
+            // ENHANCED PRICE HANDLING - Supporting both CSS selectors and JavaScript expressions
             const priceInfo = [];
             const priceSelectorsMatched = new Set();
 
-            // Collect price elements WITH their source selectors
+            // Collect price elements WITH their source selectors (enhanced for JS support)
             const priceElementsWithSelectors = [];
             for (const sel of priceSelectors) {
-                const elements = queryAllElements(m, sel);
+                const elements = getPriceElements(m, sel); // Use enhanced function
                 for (const element of elements) {
                     // Avoid duplicates by checking if this element was already found
                     const alreadyExists = priceElementsWithSelectors.some(item => item.element === element);
                     if (!alreadyExists) {
                         priceElementsWithSelectors.push({ 
                             element, 
-                            selector: sel  // Store the actual selector that found this element
+                            selector: sel,  // Store the actual selector that found this element
+                            isJavaScript: sel.includes('document') // Flag for JavaScript selectors
                         });
                     }
                 }
             }
 
             // Process each element with its correct selector
-            for (const { element: priceEl, selector: matchedSelector } of priceElementsWithSelectors) {
+            for (const { element: priceEl, selector: matchedSelector, isJavaScript } of priceElementsWithSelectors) {
                 priceSelectorsMatched.add(matchedSelector);
 
                 const priceAttrList = params.priceAttribute;
-                for (const attr of priceAttrList) {
-                    let value = priceEl[attr]?.trim();
+                
+                if (isJavaScript && typeof priceEl === 'object' && priceEl.textContent) {
+                    // For JavaScript selectors that return elements, get the text content
+                    const value = priceEl.textContent.trim();
                     if (value) {
                         priceInfo.push({
                             value,
-                            selector: matchedSelector, // This is now the correct selector
-                            attribute: attr
+                            selector: matchedSelector,
+                            attribute: 'textContent',
+                            isJavaScript: true
                         });
-                        break;
+                    }
+                } else {
+                    // For regular CSS selectors, use the original logic
+                    for (const attr of priceAttrList) {
+                        let value = priceEl[attr]?.trim();
+                        if (value) {
+                            priceInfo.push({
+                                value,
+                                selector: matchedSelector,
+                                attribute: attr,
+                                isJavaScript: false
+                            });
+                            break;
+                        }
                     }
                 }
             }
@@ -232,7 +283,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
             // Use the best selector that was actually used
             const matchedSelector = params.productItemSelector
-    
+
             try {
                 return {
                     title,
