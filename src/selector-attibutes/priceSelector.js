@@ -1,5 +1,5 @@
 export default [
-    'document.querySelector(".grid-product__price").childNodes[4].textContent.trim();',
+    'document.querySelector(".grid-product__price").childNodes[5].textContent.trim();',
     '.current-price.promotion-current-price',
     '.price__regular span:nth-child(2)',
     '.product--price .money',
