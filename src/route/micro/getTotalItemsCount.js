@@ -9,12 +9,12 @@ export default async function getTotalItemsCount(page, selector) {
     await page.waitForSelector(selector);
     debugger
 
-    const productCount = await page.$eval(selector, el => el.textContent);
-    const number = parseInt(productCount.match(/\d+/)[0]); // 21
+    // const productCount = await page.$eval(selector, el => el.textContent);
+    // const number = parseInt(productCount.match(/\d+/)[0]); // 21
+    const resultElement = document.querySelector(selector);
+    const text = resultElement.textContent.trim();
+    const number = text.split(' ')[0];
     debugger
     return number;
 }
 
-// Usage example:
-// const totalItems = await getTotalItemsCount(page, '.product-counter');
-// const totalResults = await getTotalItemsCount(page, '#results-count');
