@@ -1,5 +1,5 @@
 export default [
-    '.price__regular span',
+    '.price_regular span:nth-child(2)',
     '.product--price .money',
     '.product-item__price .wd_discount',
     'span.wpDiscountPriceBlock',
