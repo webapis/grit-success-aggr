@@ -126,7 +126,7 @@ export default [
     '.price .price-old',
     '.sepette-indirim .prom-fiyat',
     '.prices  .sale-price.line',
-    '.grid-product__price span',
+    '.grid-product__price > :not(.visually-hidden)',
     '.product-price-wrapper .current-price',
     '.product-discounted-price',
     '.current-price .product-price',
