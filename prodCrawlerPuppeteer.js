@@ -13,21 +13,30 @@ const site = process.env.site;
 const local = process.env.local;
 const HEADLESS = process.env.HEADLESS;
 
-// Function to generate GitHub Actions run URL
-function getGitHubActionsRunUrl() {
+// Function to generate GitHub Actions URLs
+function getGitHubActionsUrls() {
     if (!process.env.GITHUB_ACTIONS) {
-        return null; // Not running in GitHub Actions
+        return { runUrl: null, jobUrl: null }; // Not running in GitHub Actions
     }
     
     const serverUrl = process.env.GITHUB_SERVER_URL || 'https://github.com';
     const repository = process.env.GITHUB_REPOSITORY;
     const runId = process.env.GITHUB_RUN_ID;
+    const job = process.env.GITHUB_JOB;
+    
+    let runUrl = null;
+    let jobUrl = null;
     
     if (repository && runId) {
-        return `${serverUrl}/${repository}/actions/runs/${runId}`;
+        runUrl = `${serverUrl}/${repository}/actions/runs/${runId}`;
+        
+        // For reusable workflows, create a job-specific URL
+        if (job) {
+            jobUrl = `${serverUrl}/${repository}/actions/runs/${runId}/job/${job}`;
+        }
     }
     
-    return null;
+    return { runUrl, jobUrl };
 }
 
 // URL validation function
@@ -63,9 +72,10 @@ function validateUrls(urls) {
 debugger
 // Main execution block
 (async () => {
-    // Get GitHub Actions run URL early for consistent logging
-    const githubRunUrl = getGitHubActionsRunUrl();
-    console.log(githubRunUrl ? `GitHub Actions Run URL: ${githubRunUrl}` : 'Not running in GitHub Actions');
+    // Get GitHub Actions URLs early for consistent logging
+    const { runUrl, jobUrl } = getGitHubActionsUrls();
+    console.log(runUrl ? `GitHub Actions Run URL: ${runUrl}` : 'Not running in GitHub Actions');
+    console.log(jobUrl ? `GitHub Actions Job URL: ${jobUrl}` : 'Job URL not available');
 
     try {
         if (!site) {
@@ -129,7 +139,8 @@ debugger
                     status: 'Paused',
                     pausedReason: siteConfig.pausedReason || 'No reason provided',
                     timestamp: new Date().toISOString(),
-                    githubRunUrl: githubRunUrl // Add GitHub run URL
+                    githubRunUrl: runUrl, // Main workflow run URL
+                    githubJobUrl: jobUrl  // Specific job URL (for reusable workflows)
                 }
             };
 
@@ -164,7 +175,8 @@ debugger
                     Notes: `Found ${invalidUrls.length} invalid URLs: ${invalidUrls.join(', ')}`,
                     ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
                     Timestamp: new Date().toISOString(),
-                    GitHubRunUrl: githubRunUrl // Add GitHub run URL
+                    GitHubRunUrl: runUrl, // Main workflow run URL
+                    GitHubJobUrl: jobUrl  // Specific job URL (for reusable workflows)
                 }
             });
 
@@ -269,7 +281,8 @@ debugger
                 rowData: {
                     ...result,
                     Duration: `${duration}s`,
-                    GitHubRunUrl: githubRunUrl // Add GitHub run URL
+                    GitHubRunUrl: runUrl, // Main workflow run URL
+                    GitHubJobUrl: jobUrl  // Specific job URL (for reusable workflows)
                     //  Site: site,
                     //   Status: isSuccess ? 'Success' : 'Partial Success',
                     //   TotalURLs: totalRequests,
@@ -297,7 +310,8 @@ debugger
                     Notes: `Crawler crashed: ${crawlerError.message}`,
                     ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
                     Timestamp: new Date().toISOString(),
-                    GitHubRunUrl: githubRunUrl // Add GitHub run URL
+                    GitHubRunUrl: runUrl, // Main workflow run URL
+                    GitHubJobUrl: jobUrl  // Specific job URL (for reusable workflows)
                 }
             });
 
@@ -318,7 +332,8 @@ debugger
                 Notes: `Main execution failed: ${error.message}`,
                 ConfigSource: 'Unknown',
                 Timestamp: new Date().toISOString(),
-                GitHubRunUrl: githubRunUrl // Add GitHub run URL
+                GitHubRunUrl: runUrl, // Main workflow run URL
+                GitHubJobUrl: jobUrl  // Specific job URL (for reusable workflows)
             }
         });
 
