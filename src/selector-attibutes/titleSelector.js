@@ -1,4 +1,5 @@
 export default [
+    '.product-card__link',
     'p.product--title',
     '[class*="__product_title_"] p',
     'a.product-item__name',//lcw
