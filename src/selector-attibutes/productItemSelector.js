@@ -41,6 +41,7 @@ export default [
     ".product_box",
     ".MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-6.MuiGrid-grid-sm-6.MuiGrid-grid-md-4.MuiGrid-grid-lg-4", //yargıcı
     ".product-list .pitem",
+    ".item-list .pitem",
     "[data-index].product-item",//gustoeshop
     ".product-item-box",
     ".products__item",
