@@ -1,4 +1,5 @@
 export default [
+    '.product-item-info  p.product-name a',
     '.product-item-info a',
     '.product-card__link',
     'p.product--title',
