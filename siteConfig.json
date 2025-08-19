@@ -1,7 +1,7 @@
 {
-  "targetSite": "daphmin",
+  "targetSite": "lupaprojectistanbul",
   "urls": [
-    "https://www.daphmin.com/collections/kadin-hakiki-deri-cuzdan-ve-canta"
+    "https://lupaprojectistanbul.com/magaza/"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,26 +9,26 @@
   "filteringNeeded": true,
   "configurations": [
     {
-      "brand": "daphmin",
+      "brand": "lupaprojectistanbul",
       "paginationSelector": "",
-      "paginationParameterName": "?page=",
+      "paginationParameterName": "",
       "scrollable": true,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": "span#ProductCount",
+      "totalProductCounterSelector": "",
 
       "urls": [
-        "https://www.daphmin.com/collections/kadin-hakiki-deri-cuzdan-ve-canta"
+        "https://lupaprojectistanbul.com/magaza/"
       ],
       "paused": false,
-      "pausedReason": "Request blocked - received 403 status code.",
-      "filteringNeeded": true,
+      "pausedReason": "",
+      "filteringNeeded": false,
       "rowIndex": 41
     }
   ],
   "paginationSelector": "",
-  "paginationParameterName": "?page=",
+  "paginationParameterName": "",
   "scrollable": true,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": "span#ProductCount"
+  "totalProductCounterSelector": ""
 
 }

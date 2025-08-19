@@ -24,6 +24,7 @@ export default async function first(props) {
 
     debugger
     const { success, productItemSelector } = await continueIfProductPage({ page, siteUrls });
+    debugger
     if (success) {
 
         debugger

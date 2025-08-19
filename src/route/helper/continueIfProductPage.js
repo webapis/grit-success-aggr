@@ -12,7 +12,7 @@ const site = process.env.site;
 
 export default async function continueIfProductPage({ page, siteUrls }) {
 
-    
+    debugger
     page.on("console", (message) => {
         console.log("Message from Puppeteer page:", message.text());
     });
@@ -20,38 +20,36 @@ export default async function continueIfProductPage({ page, siteUrls }) {
 
     const waitForSeconds = siteUrls?.waitForSeconds || 3;
 
-    
+
     if (waitForSeconds > 0) {
         await page.evaluate(async (seconds) => {
             await new Promise(resolve => setTimeout(resolve, seconds * 1000)); // Fixed: multiply by 1000 for milliseconds
         }, waitForSeconds);
     }
-    
-    const { bestSelector } = await findBestSelector(page, productItemSelector);
-    
 
-    
+    const { bestSelector } = await findBestSelector(page, productItemSelector);
+
+
+
     if (bestSelector.count > 0) {
-        
-        try {
-            if (siteUrls?.totalProductCounterSelector) {
-                
-                const totalItemsToBeCallected = await getTotalItemsCount(page, siteUrls.totalProductCounterSelector);
-                
-                if (totalItemsToBeCallected > 0) {
-                    await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected });
-                }
+
+
+        if (siteUrls?.totalProductCounterSelector) {
+
+            const totalItemsToBeCallected = await getTotalItemsCount(page, siteUrls.totalProductCounterSelector);
+
+            if (totalItemsToBeCallected > 0) {
+                await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected });
             }
-            const totalItemsPerPage = bestSelector['count'];
-            const matchedproductItemSelectors = [bestSelector['selector']]
-            
-            await pushDataToDataset('totalItemsPerPage', { totalItemsPerPage });
-            await pushDataToDataset("matchedproductItemSelectors", { matchedproductItemSelectors });
-            return { success: true, productItemSelector: bestSelector.selector, totalItemsPerPage };
-        } catch (error) {
-            
         }
-        
+        const totalItemsPerPage = bestSelector['count'];
+        const matchedproductItemSelectors = [bestSelector['selector']]
+
+        await pushDataToDataset('totalItemsPerPage', { totalItemsPerPage });
+        await pushDataToDataset("matchedproductItemSelectors", { matchedproductItemSelectors });
+        return { success: true, productItemSelector: bestSelector.selector, totalItemsPerPage };
+
+
 
     } else {
         //take screenshot if initial pages could not be retrieved.
