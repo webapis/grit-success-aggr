@@ -1,4 +1,5 @@
 export default [
+    '.product--root',
     '.productItem:not(:has(.pw-img-swiper))',// elleshoes //.productItem:not(.prd):not(:has(.pw-img-swiper))
     '.grid__item:has(.price)',
     '.text-sm.text-left.flex.flex-col',
