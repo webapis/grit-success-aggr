@@ -8,9 +8,27 @@ import puppeteer from './crawler-helper/puppeteer-stealth.js';
 import { getSiteConfig, getCachedSiteConfigFromFile } from './src/helper/siteConfig.js';
 import baseRowData from './src/route/micro/baseRowData.js';
 import { processScrapedData } from './src/pushToGit.js';
+
 const site = process.env.site;
 const local = process.env.local;
 const HEADLESS = process.env.HEADLESS;
+
+// Function to generate GitHub Actions run URL
+function getGitHubActionsRunUrl() {
+    if (!process.env.GITHUB_ACTIONS) {
+        return null; // Not running in GitHub Actions
+    }
+    
+    const serverUrl = process.env.GITHUB_SERVER_URL || 'https://github.com';
+    const repository = process.env.GITHUB_REPOSITORY;
+    const runId = process.env.GITHUB_RUN_ID;
+    
+    if (repository && runId) {
+        return `${serverUrl}/${repository}/actions/runs/${runId}`;
+    }
+    
+    return null;
+}
 
 // URL validation function
 function validateUrls(urls) {
@@ -45,6 +63,10 @@ function validateUrls(urls) {
 debugger
 // Main execution block
 (async () => {
+    // Get GitHub Actions run URL early for consistent logging
+    const githubRunUrl = getGitHubActionsRunUrl();
+    console.log(githubRunUrl ? `GitHub Actions Run URL: ${githubRunUrl}` : 'Not running in GitHub Actions');
+
     try {
         if (!site) {
             console.error('Error: site environment variable is not set.');
@@ -107,6 +129,7 @@ debugger
                     status: 'Paused',
                     pausedReason: siteConfig.pausedReason || 'No reason provided',
                     timestamp: new Date().toISOString(),
+                    githubRunUrl: githubRunUrl // Add GitHub run URL
                 }
             };
 
@@ -140,7 +163,8 @@ debugger
                     Status: 'Validation Error',
                     Notes: `Found ${invalidUrls.length} invalid URLs: ${invalidUrls.join(', ')}`,
                     ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
-                    Timestamp: new Date().toISOString()
+                    Timestamp: new Date().toISOString(),
+                    GitHubRunUrl: githubRunUrl // Add GitHub run URL
                 }
             });
 
@@ -237,23 +261,25 @@ debugger
             console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
             console.log(`Stats: ${successfulRequests}/${totalRequests} successful, ${stats.requestsFailed} failed`);
             const result = await processScrapedData(site);
+            
             // Single comprehensive log entry with complete summary
             await emitAsync('log-to-sheet', {
                 sheetTitle: isSuccess ? 'Crawl Logs(success)' : 'Crawl Logs(success)',
                 message: `Site ${site} crawling completed`,
                 rowData: {
                     ...result,
-                  //  Site: site,
-                 //   Status: isSuccess ? 'Success' : 'Partial Success',
-                 //   TotalURLs: totalRequests,
-                  //SuccessfulURLs: successfulRequests,
-                  //  FailedURLs: stats.requestsFailed,
                     Duration: `${duration}s`,
+                    GitHubRunUrl: githubRunUrl // Add GitHub run URL
+                    //  Site: site,
+                    //   Status: isSuccess ? 'Success' : 'Partial Success',
+                    //   TotalURLs: totalRequests,
+                    //SuccessfulURLs: successfulRequests,
+                    //  FailedURLs: stats.requestsFailed,
                     // Notes: isSuccess
                     //     ? 'All URLs processed successfully'
                     //     : `${stats.requestsFailed} URLs failed out of ${totalRequests}`,
-                   // ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
-                  //  Timestamp: new Date().toISOString()
+                    // ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
+                    //  Timestamp: new Date().toISOString()
                 }
             });
 
@@ -270,7 +296,8 @@ debugger
                     Status: 'Fatal Error',
                     Notes: `Crawler crashed: ${crawlerError.message}`,
                     ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
-                    Timestamp: new Date().toISOString()
+                    Timestamp: new Date().toISOString(),
+                    GitHubRunUrl: githubRunUrl // Add GitHub run URL
                 }
             });
 
@@ -290,7 +317,8 @@ debugger
                 Status: 'Fatal Error',
                 Notes: `Main execution failed: ${error.message}`,
                 ConfigSource: 'Unknown',
-                Timestamp: new Date().toISOString()
+                Timestamp: new Date().toISOString(),
+                GitHubRunUrl: githubRunUrl // Add GitHub run URL
             }
         });
 
