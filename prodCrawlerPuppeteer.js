@@ -16,27 +16,35 @@ const HEADLESS = process.env.HEADLESS;
 // Function to generate GitHub Actions URLs
 function getGitHubActionsUrls() {
     if (!process.env.GITHUB_ACTIONS) {
-        return { runUrl: null, jobUrl: null }; // Not running in GitHub Actions
+        return { runUrl: null, jobUrl: null, workflowUrl: null }; // Not running in GitHub Actions
     }
     
     const serverUrl = process.env.GITHUB_SERVER_URL || 'https://github.com';
     const repository = process.env.GITHUB_REPOSITORY;
     const runId = process.env.GITHUB_RUN_ID;
-    const job = process.env.GITHUB_JOB;
+    const workflow = process.env.GITHUB_WORKFLOW;
+    const jobName = process.env.GITHUB_JOB;
+    const actor = process.env.GITHUB_ACTOR;
     
     let runUrl = null;
     let jobUrl = null;
+    let workflowUrl = null;
     
     if (repository && runId) {
         runUrl = `${serverUrl}/${repository}/actions/runs/${runId}`;
         
-        // For reusable workflows, create a job-specific URL
-        if (job) {
-            jobUrl = `${serverUrl}/${repository}/actions/runs/${runId}/job/${job}`;
+        // For reusable workflows, the job URL is actually just the run URL
+        // GitHub doesn't expose individual job URLs in a predictable way for reusable workflows
+        jobUrl = runUrl;
+        
+        // Workflow URL (all runs of this workflow)
+        if (workflow) {
+            const workflowFileName = workflow.replace(/\s+/g, '%20'); // URL encode spaces
+            workflowUrl = `${serverUrl}/${repository}/actions/workflows/${workflowFileName}`;
         }
     }
     
-    return { runUrl, jobUrl };
+    return { runUrl, jobUrl, workflowUrl };
 }
 
 // URL validation function
@@ -73,9 +81,9 @@ debugger
 // Main execution block
 (async () => {
     // Get GitHub Actions URLs early for consistent logging
-    const { runUrl, jobUrl } = getGitHubActionsUrls();
+    const { runUrl, jobUrl, workflowUrl } = getGitHubActionsUrls();
     console.log(runUrl ? `GitHub Actions Run URL: ${runUrl}` : 'Not running in GitHub Actions');
-    console.log(jobUrl ? `GitHub Actions Job URL: ${jobUrl}` : 'Job URL not available');
+    console.log(workflowUrl ? `GitHub Workflow URL: ${workflowUrl}` : 'Workflow URL not available');
 
     try {
         if (!site) {
@@ -139,8 +147,9 @@ debugger
                     status: 'Paused',
                     pausedReason: siteConfig.pausedReason || 'No reason provided',
                     timestamp: new Date().toISOString(),
-                    githubRunUrl: runUrl, // Main workflow run URL
-                    githubJobUrl: jobUrl  // Specific job URL (for reusable workflows)
+                    githubRunUrl: runUrl, // Workflow run URL
+                    githubWorkflowUrl: workflowUrl, // All runs of this workflow
+                    site: site // Add site identifier for easier filtering
                 }
             };
 
@@ -175,8 +184,8 @@ debugger
                     Notes: `Found ${invalidUrls.length} invalid URLs: ${invalidUrls.join(', ')}`,
                     ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
                     Timestamp: new Date().toISOString(),
-                    GitHubRunUrl: runUrl, // Main workflow run URL
-                    GitHubJobUrl: jobUrl  // Specific job URL (for reusable workflows)
+                    GitHubRunUrl: runUrl, // Workflow run URL
+                    GitHubWorkflowUrl: workflowUrl // All runs of this workflow
                 }
             });
 
@@ -281,8 +290,8 @@ debugger
                 rowData: {
                     ...result,
                     Duration: `${duration}s`,
-                    GitHubRunUrl: runUrl, // Main workflow run URL
-                    GitHubJobUrl: jobUrl  // Specific job URL (for reusable workflows)
+                    GitHubRunUrl: runUrl, // Workflow run URL
+                    GitHubWorkflowUrl: workflowUrl // All runs of this workflow
                     //  Site: site,
                     //   Status: isSuccess ? 'Success' : 'Partial Success',
                     //   TotalURLs: totalRequests,
@@ -310,8 +319,8 @@ debugger
                     Notes: `Crawler crashed: ${crawlerError.message}`,
                     ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
                     Timestamp: new Date().toISOString(),
-                    GitHubRunUrl: runUrl, // Main workflow run URL
-                    GitHubJobUrl: jobUrl  // Specific job URL (for reusable workflows)
+                    GitHubRunUrl: runUrl, // Workflow run URL
+                    GitHubWorkflowUrl: workflowUrl // All runs of this workflow
                 }
             });
 
@@ -332,8 +341,8 @@ debugger
                 Notes: `Main execution failed: ${error.message}`,
                 ConfigSource: 'Unknown',
                 Timestamp: new Date().toISOString(),
-                GitHubRunUrl: runUrl, // Main workflow run URL
-                GitHubJobUrl: jobUrl  // Specific job URL (for reusable workflows)
+                GitHubRunUrl: runUrl, // Workflow run URL
+                GitHubWorkflowUrl: workflowUrl // All runs of this workflow
             }
         });
 
