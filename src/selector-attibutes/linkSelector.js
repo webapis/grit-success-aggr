@@ -1,4 +1,5 @@
 export default [
+    'a.item-img',
     '.product--root a',
     '.full-unstyled-link',
     'h3 .block.text-primary.text-xs',

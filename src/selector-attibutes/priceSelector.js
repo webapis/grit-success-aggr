@@ -1,4 +1,5 @@
 export default [
+    '.current-price.promotion-current-price',
     '.price__regular span:nth-child(2)',
     '.product--price .money',
     '.product-item__price .wd_discount',
