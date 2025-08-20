@@ -33,7 +33,7 @@ debugger
 
     if (bestSelector.count > 0) {
 
-            const totalItemsToBeCallected = await getTotalItemsCount(page, siteUrls.totalProductCounterSelector);
+            const totalItemsToBeCallected = await getTotalItemsCount(page);
 
             if (totalItemsToBeCallected > 0) {
                 await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected });
