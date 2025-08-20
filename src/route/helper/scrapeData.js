@@ -1,3 +1,27 @@
+import dotenv from "dotenv";
+import isValidImageURL from "../../scrape-helpers/isValidImageURL.js";
+import isValidVideoURL from "../../scrape-helpers/isValidVideoURL.js";
+import isValidURL from "../../scrape-helpers/isValidURL.js";
+import isValidText from "../../scrape-helpers/isValidText.js";
+import titleSelector from "../../selector-attibutes/titleSelector.js";
+import imageSelectors from "../../selector-attibutes/imageSelector.js";
+import linkSelectors from "../../selector-attibutes/linkSelector.js";
+import imageAttributes from "../../selector-attibutes/imageAttributes.js";
+import titleAttribute from "../../selector-attibutes/titleAttribute.js";
+import getMiddleImageUrl from "../../scrape-helpers/getMiddleImageUrl.js";
+import priceSelector from "../../selector-attibutes/priceSelector.js";
+import priceAttribute from "../../selector-attibutes/priceAttribute.js";
+import videoAttributes from "../../selector-attibutes/videoAttributes.js";
+import videoSelectors from "../../selector-attibutes/videoSelectors.js";
+import productNotAvailable from "../../selector-attibutes/productNotAvailable.js";
+import priceParser from "../../scrape-helpers/priceParcer.js";
+
+dotenv.config({ silent: true });
+// Separate helper function that works with Puppeteer page
+
+
+// Updated scrapeData function
+// Updated scrapeData function with enhanced price selector support
 // Enhanced scrapeData function with findBestSelector integration
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
     debugger
