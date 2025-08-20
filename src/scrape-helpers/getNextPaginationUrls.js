@@ -2,14 +2,14 @@
 import { getDatasetData } from '../crawlee/datasetOperations.js';
 export default async function getNextPaginationUrls(page, url, siteUrls) {
   debugger
- 
+
   const itemsPerPage = await getDatasetData('totalItemsPerPage');
 
   debugger
   const paginationSelector = siteUrls?.paginationSelector
   const paginationParameterName = siteUrls?.paginationParameterName
   //const itemsPerPage = siteUrls?.itemsPerPage
-  const totalProductCounterSelector = siteUrls?.totalProductCounterSelector
+  const totalItemsToCallect = await getDatasetData('totalItemsToBeCallected');
   debugger
   if (paginationSelector && paginationParameterName) {
     return await page.evaluate((paginationSelector, baseUrl, paginationParameterName) => {
@@ -35,13 +35,13 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
       }
     }, paginationSelector, url, paginationParameterName);
 
-  } else if (itemsPerPage && paginationParameterName && totalProductCounterSelector) {
+  } else if (itemsPerPage && paginationParameterName && totalItemsToCallect > 0) {
 
-    const nextUrls = await page.evaluate((baseUrl, itemsPerPage, paginationParameterName, totalProductCounterSelector) => {
-      const totalCountText = document.querySelector(totalProductCounterSelector)?.innerText || '';
+    const nextUrls = await page.evaluate((baseUrl, itemsPerPage, paginationParameterName, totalItemsToCallect) => {
+
       const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
-      if (!isNaN(totalCount) && totalCount > itemsPerPage) {
-        const totalPages = Math.ceil(totalCount / itemsPerPage);
+      if (!isNaN(totalItemsToCallect) && totalItemsToCallect > itemsPerPage) {
+        const totalPages = Math.ceil(totalItemsToCallect / itemsPerPage);
         const urls = [];
         for (let i = 1; i <= totalPages; i++) {
           urls.push(`${baseUrl}${paginationParameterName}${i}`);
@@ -50,7 +50,7 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
       } else {
         return [];
       }
-    }, url, itemsPerPage, paginationParameterName, totalProductCounterSelector);
+    }, url, itemsPerPage, paginationParameterName, totalItemsToCallect);
 
     debugger
     return nextUrls;

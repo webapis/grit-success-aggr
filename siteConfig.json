@@ -1,7 +1,7 @@
 {
-  "targetSite": "brandys",
+  "targetSite": "defacto",
   "urls": [
-    "https://www.brandys.com.tr/canta-4039"
+    "https://www.defacto.com.tr/kadin-canta"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,15 +9,15 @@
   "filteringNeeded": true,
   "configurations": [
     {
-      "brand": "brandys",
-      "paginationSelector": "",
+      "brand": "defacto",
+      "paginationSelector": "?page=",
       "paginationParameterName": "",
-      "scrollable": true,
+      "scrollable": false,
       "showMoreButtonSelector": "",
       "totalProductCounterSelector": "",
 
       "urls": [
-        "https://www.brandys.com.tr/canta-4039"
+        "https://www.defacto.com.tr/kadin-canta"
       ],
       "paused": false,
       "pausedReason": "",
@@ -25,9 +25,9 @@
       "rowIndex": 41
     }
   ],
-  "paginationSelector": "",
+  "paginationSelector": "?page=",
   "paginationParameterName": "",
-  "scrollable": true,
+  "scrollable": false,
   "showMoreButtonSelector": "",
   "totalProductCounterSelector": ""
 
