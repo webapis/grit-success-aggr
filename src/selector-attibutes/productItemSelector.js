@@ -30,7 +30,7 @@ export default [
     '.ant-col.grid-item',
     '.item-box .product-item',
     '.productItemLayout',
-    // '.react-multi-carousel-item',
+    '.react-multi-carousel-item',
     'article.product-tile__plp',
     '.product-layout',
     "ac-product-card",
@@ -46,7 +46,7 @@ export default [
     "[data-index].product-item",//gustoeshop
     ".product-item-box",
     ".products__item",
-   // ".productItem",//problem for elleshoes
+    ".productItem",
     ".showcase",
     ".Prd",
     ".product-list-item",
@@ -64,32 +64,32 @@ export default [
     ".o-productList__itemWrapper",
     ".product-layout",
     ".col-md-3.col-sm-3.col-xs-6.wow",
-   // ".product-grid-container .grid__item",//causes problem for aldo
+   ".product-grid-container .grid__item",//causes problem for aldo
     ".js-product-list-item",
     ".product-listing-shelf__product-card",
     ".divUrun",
-    //".grid-item",
+    ".grid-item",
     ".js-product-wrapper.product-item",
     ".c-product-grid__item",
     "legacy-product",
     "article[data-category]",
     ".productItemLayout.ViewProduct",
-    // ".grid [data-id]",
+     ".grid [data-id]",
     ".js-product-item",
     ".product",
-    //"[data-testid='product-box']",
+    "[data-testid='product-box']",
     ".scroll-product-item",
     "ac-product-card",
     ".products-list__item",
-    //".item",
+    ".item",
     ".js-list-content-product-item",
     ".product_item",
     ".relative.flex.h-full.w-full.grow.flex-col",
-    //"li.grid__item", causes problem for aldo
+    "li.grid__item", //causes problem for aldo
 
     ".card-product",
-    //"div[data-id]",
-    // "[data-id]",
+    "div[data-id]",
+     "[data-id]",
     ".product-list__item",
 
 ]
