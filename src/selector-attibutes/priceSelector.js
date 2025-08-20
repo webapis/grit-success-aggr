@@ -1,4 +1,5 @@
 export default [
+    'span.product-box-price',
     '[class*="SinglePrice_"]',
     '.pricebox .oneprice',
     '.pricebox .newprice',
