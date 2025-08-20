@@ -12,7 +12,8 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
   const totalItemsToCallect = await getDatasetData('totalItemsToBeCallected');
   debugger
   if (paginationSelector && paginationParameterName) {
-    return await page.evaluate((paginationSelector, baseUrl, paginationParameterName) => {
+
+    const result =  await page.evaluate((paginationSelector, baseUrl, paginationParameterName) => {
       debugger
       try {
 
@@ -34,6 +35,8 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
         return [];
       }
     }, paginationSelector, url, paginationParameterName);
+    debugger
+    return result;
 
   } else if (itemsPerPage && paginationParameterName && totalItemsToCallect > 0) {
 
