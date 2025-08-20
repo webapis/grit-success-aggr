@@ -1,4 +1,5 @@
 export default [
+    '.grid__item.grid-product.medium-up--one-half',
     '[id*=product-tile-wrapper-]',
     'ozd-custom-product-grid-item',
     '.product--root',
