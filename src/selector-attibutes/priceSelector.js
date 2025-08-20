@@ -155,6 +155,7 @@ export default [
     'span.product-item-campaign-price',
     '.product-item-price-wrapper-list .product-item__price.color-primary',
     '.product-item-price-wrapper .color-primary.font-financier-bold',
-    '.product-price-content .product-price'
+    '.product-price-content .product-price',
+    '.price'
 
 ]
