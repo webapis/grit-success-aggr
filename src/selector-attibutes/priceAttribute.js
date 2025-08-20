@@ -1,1 +1,1 @@
-export default ["innerText","innerHTML","textContent"]
+export default ["textContent", "innerText", "innerHTML", "value"];
