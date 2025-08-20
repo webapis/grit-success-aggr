@@ -18,7 +18,7 @@ export default [
     '.product-pricing .nodiscount-price',
     '[data-testid="product-price"]',
     'formatted-price-detail div div',
-    ".product-info price-element::shadow::.price",
+    '.product-info price-element::shadow::.price',
     '.product-grid-item__price .h-11',//derimod
     '.product-grid-item__price__new',//derimod
     '.boost-sd__format-currency',
