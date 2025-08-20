@@ -1,4 +1,6 @@
-export default ['.collection-filter__item--count',
+export default [
+    '.category-product-count.mb-2.d-none.d-md-block',
+    '.collection-filter__item--count',
     '.collection-toolbar__products-count',
     'span.text-primary',
     '.filtreurun b',
