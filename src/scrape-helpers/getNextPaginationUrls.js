@@ -39,7 +39,6 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
 
     const nextUrls = await page.evaluate((baseUrl, itemsPerPage, paginationParameterName, totalItemsToCallect) => {
 
-      const totalCount = parseInt(totalCountText.replace(/\D/g, ''), 10);
       if (!isNaN(totalItemsToCallect) && totalItemsToCallect > itemsPerPage) {
         const totalPages = Math.ceil(totalItemsToCallect / itemsPerPage);
         const urls = [];
