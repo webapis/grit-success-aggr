@@ -1,1 +1,1 @@
-export default ['.appliedFilter .FiltrelemeUrunAdet span']
+export default ['.appliedFilter.FiltrelemeUrunAdet span']
