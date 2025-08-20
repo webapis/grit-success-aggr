@@ -1,33 +1,97 @@
-import dotenv from "dotenv";
-import isValidImageURL from "../../scrape-helpers/isValidImageURL.js";
-import isValidVideoURL from "../../scrape-helpers/isValidVideoURL.js";
-import isValidURL from "../../scrape-helpers/isValidURL.js";
-import isValidText from "../../scrape-helpers/isValidText.js";
-import titleSelector from "../../selector-attibutes/titleSelector.js";
-import imageSelectors from "../../selector-attibutes/imageSelector.js";
-import linkSelectors from "../../selector-attibutes/linkSelector.js";
-import imageAttributes from "../../selector-attibutes/imageAttributes.js";
-import titleAttribute from "../../selector-attibutes/titleAttribute.js";
-import getMiddleImageUrl from "../../scrape-helpers/getMiddleImageUrl.js";
-import priceSelector from "../../selector-attibutes/priceSelector.js";
-import priceAttribute from "../../selector-attibutes/priceAttribute.js";
-import videoAttributes from "../../selector-attibutes/videoAttributes.js";
-import videoSelectors from "../../selector-attibutes/videoSelectors.js";
-import productNotAvailable from "../../selector-attibutes/productNotAvailable.js";
-import priceParser from "../../scrape-helpers/priceParcer.js";
-
-dotenv.config({ silent: true });
-// Separate helper function that works with Puppeteer page
-
-
-// Updated scrapeData function
-// Updated scrapeData function with enhanced price selector support
+// Enhanced scrapeData function with findBestSelector integration
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
     debugger
 
     const data = await page.evaluate((params) => {
         const pageTitle = document.title;
         const pageURL = document.URL;
+
+        // Import the findBestSelector logic directly into the page context
+        function calculateSpecificity(selector) {
+            let score = 0;
+            
+            // Count IDs (#id, [id*=], [id^=], etc.)
+            const idMatches = selector.match(/#[\w-]+|\[id[\*\^$~|]?=/g);
+            score += (idMatches || []).length * 100;
+            
+            // Count classes (.class), attributes ([attr]), and pseudo-classes (:pseudo)
+            const classMatches = selector.match(/\.[\w-]+|\[[\w-]+[\*\^$~|]?=|\:[\w-]+(?:\([^)]*\))?/g);
+            score += (classMatches || []).length * 10;
+            
+            // Count elements (div, span, article, etc.)
+            const elementMatches = selector.match(/(?:^|[\s>+~])([a-zA-Z][\w-]*)/g);
+            score += (elementMatches || []).length * 1;
+            
+            // Bonus for descendant combinators (spaces) - indicates more specific targeting
+            const descendantMatches = selector.match(/\s+(?![>+~])/g);
+            score += (descendantMatches || []).length * 5;
+            
+            // Bonus for direct child combinators (>)
+            const childMatches = selector.match(/>/g);
+            score += (childMatches || []).length * 3;
+            
+            // Bonus for negation selectors (:not()) - they're more specific
+            const notMatches = selector.match(/:not\([^)]+\)/g);
+            score += (notMatches || []).length * 8;
+            
+            // Bonus for :has() selectors - they're very specific
+            const hasMatches = selector.match(/:has\([^)]+\)/g);
+            score += (hasMatches || []).length * 12;
+            
+            // Length bonus - longer selectors are generally more specific
+            score += Math.floor(selector.length / 10);
+            
+            return score;
+        }
+
+        function findBestSelectorInContext(container, selectors) {
+            const validSelectors = selectors
+                .map(selector => {
+                    try {
+                        const elements = container.querySelectorAll(selector);
+                        const count = elements.length;
+                        const specificity = calculateSpecificity(selector);
+                        
+                        // Additional scoring for price-specific criteria
+                        let priceScore = 0;
+                        if (count > 0) {
+                            // Check if elements actually contain price-like content
+                            const hasNumericContent = Array.from(elements).some(el => {
+                                const text = el.textContent || el.innerText || '';
+                                return /[\d.,]+/.test(text);
+                            });
+                            priceScore = hasNumericContent ? 50 : 0;
+                        }
+                        
+                        return {
+                            selector,
+                            count,
+                            specificity,
+                            priceScore,
+                            // Combined score: prioritize specificity, add price relevance bonus
+                            combinedScore: count > 0 ? (specificity * 1000) + count + priceScore : 0
+                        };
+                    } catch (error) {
+                        console.warn(`Invalid selector: ${selector}`, error);
+                        return {
+                            selector,
+                            count: 0,
+                            specificity: 0,
+                            priceScore: 0,
+                            combinedScore: 0
+                        };
+                    }
+                })
+                .filter(item => item.count > 0);
+
+            if (validSelectors.length === 0) {
+                return null;
+            }
+
+            // Sort by combined score
+            validSelectors.sort((a, b) => b.combinedScore - a.combinedScore);
+            return validSelectors[0];
+        }
 
         // Shadow DOM accessor function
         function accessShadowElement(hostSelector, shadowSelector) {
@@ -44,19 +108,15 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
         // Enhanced query function that can handle shadow DOM
         function queryElement(container, selector) {
-            // Check for shadow syntax BEFORE calling querySelector
             if (selector.includes('::shadow::')) {
                 const [hostSelector, shadowSelector] = selector.split('::shadow::');
                 return accessShadowElement(hostSelector.trim(), shadowSelector.trim());
             }
-
-            // Only use normal query for non-shadow selectors
             return container.querySelector(selector);
         }
 
         // Enhanced query all function that can handle shadow DOM
         function queryAllElements(container, selector) {
-            // Check for shadow syntax BEFORE calling querySelectorAll
             if (selector.includes('::shadow::')) {
                 const [hostSelector, shadowSelector] = selector.split('::shadow::');
                 const hostElement = document.querySelector(hostSelector.trim());
@@ -65,17 +125,13 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                 }
                 return [];
             }
-
-            // Only use normal query for non-shadow selectors
             return Array.from(container.querySelectorAll(selector));
         }
 
         // New function to execute JavaScript expressions safely
         function executeJavaScriptSelector(jsExpression) {
             try {
-                // Remove trailing semicolon if present
                 const cleanExpression = jsExpression.replace(/;$/, '');
-                // Execute the expression and return the result
                 return eval(cleanExpression);
             } catch (error) {
                 console.warn('Error executing JavaScript selector:', jsExpression, error);
@@ -83,38 +139,65 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             }
         }
 
-        // Enhanced function to get price elements with both CSS and JS support
-        function getPriceElements(container, selector) {
-            if (selector.includes('document')) {
+        // Enhanced function to get price elements with best selector logic
+        function getPriceElementsWithBestSelector(container, selectors) {
+            // Use findBestSelector to get the optimal selector for this container
+            const bestSelectorInfo = findBestSelectorInContext(container, selectors);
+            
+            if (!bestSelectorInfo) {
+                return { elements: [], bestSelector: null };
+            }
+
+            const bestSelector = bestSelectorInfo.selector;
+            
+            if (bestSelector.includes('document')) {
                 // This is a JavaScript expression
-                const result = executeJavaScriptSelector(selector);
+                const result = executeJavaScriptSelector(bestSelector);
                 if (result) {
-                    // If the result is a string (textContent), create a fake element
                     if (typeof result === 'string') {
                         const fakeElement = document.createElement('span');
                         fakeElement.textContent = result;
                         fakeElement.innerText = result;
-                        return [fakeElement];
+                        return { elements: [fakeElement], bestSelector };
                     }
-                    // If it's a DOM element, return as array
                     if (result.nodeType) {
-                        return [result];
+                        return { elements: [result], bestSelector };
                     }
-                    // If it's a NodeList or array, convert to array
                     if (result.length !== undefined) {
-                        return Array.from(result);
+                        return { elements: Array.from(result), bestSelector };
                     }
                 }
-                return [];
+                return { elements: [], bestSelector };
             } else {
                 // This is a CSS selector
-                return queryAllElements(container, selector);
+                return { 
+                    elements: queryAllElements(container, bestSelector), 
+                    bestSelector 
+                };
             }
+        }
+
+        // Clean price text function
+        function cleanPriceText(text, attribute) {
+            if (!text) return '';
+            
+            let cleaned = text.trim();
+            
+            // Remove common non-price text
+            cleaned = cleaned.replace(/KDV\s+Dahil/gi, '');
+            cleaned = cleaned.replace(/Vergiler\s+Dahil/gi, '');
+            cleaned = cleaned.replace(/Tax\s+Included/gi, '');
+            cleaned = cleaned.replace(/İndirimli\s+Fiyat/gi, '');
+            cleaned = cleaned.replace(/Normal\s+Fiyat/gi, '');
+            
+            // Normalize whitespace
+            cleaned = cleaned.replace(/\s+/g, ' ').trim();
+            
+            return cleaned;
         }
 
         // Use only the best selector to get candidate items
         const candidateItems = Array.from(document.querySelectorAll(params.productItemSelector)).map(m => {
-            // All these are now arrays, no need to split
             const titleSelectors = params.titleSelector;
             const imageSelectors = params.imageSelector;
             const linkSelectors = params.linkSelector;
@@ -128,7 +211,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                 const element = queryElement(m, sel);
                 if (element) {
                     titleElementsWithSelectors.push({ element, selector: sel });
-                    break; // Take first match
+                    break;
                 }
             }
             const titleElement = titleElementsWithSelectors[0]?.element || null;
@@ -140,7 +223,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                 const element = queryElement(m, sel);
                 if (element) {
                     linkElementsWithSelectors.push({ element, selector: sel });
-                    break; // Take first match
+                    break;
                 }
             }
             const linkElement = linkElementsWithSelectors[0]?.element || null;
@@ -150,7 +233,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             for (const sel of imageSelectors) {
                 const elements = queryAllElements(m, sel);
                 for (const element of elements) {
-                    // Avoid duplicates
                     const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
                     if (!alreadyExists) {
                         imgElementsWithSelectors.push({ element, selector: sel });
@@ -186,56 +268,51 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                     .map(attr => titleElement[attr?.replaceAll(" ", "")])
                     .find(Boolean);
 
-            // ENHANCED PRICE HANDLING - Supporting both CSS selectors and JavaScript expressions
+            // ENHANCED PRICE HANDLING WITH BEST SELECTOR
             const priceInfo = [];
-            const priceSelectorsMatched = new Set();
+            
+            // Use the best selector approach for price extraction
+            const { elements: priceElements, bestSelector: bestPriceSelector } = 
+                getPriceElementsWithBestSelector(m, priceSelectors);
 
-            // Collect price elements WITH their source selectors (enhanced for JS support)
-            const priceElementsWithSelectors = [];
-            for (const sel of priceSelectors) {
-                const elements = getPriceElements(m, sel); // Use enhanced function
-                for (const element of elements) {
-                    // Avoid duplicates by checking if this element was already found
-                    const alreadyExists = priceElementsWithSelectors.some(item => item.element === element);
-                    if (!alreadyExists) {
-                        priceElementsWithSelectors.push({ 
-                            element, 
-                            selector: sel,  // Store the actual selector that found this element
-                            isJavaScript: sel.includes('document') // Flag for JavaScript selectors
-                        });
-                    }
-                }
-            }
+            console.log(`Best price selector for this item: ${bestPriceSelector}`);
 
-            // Process each element with its correct selector
-            for (const { element: priceEl, selector: matchedSelector, isJavaScript } of priceElementsWithSelectors) {
-                priceSelectorsMatched.add(matchedSelector);
-
+            if (priceElements.length > 0) {
                 const priceAttrList = params.priceAttribute;
                 
-                if (isJavaScript && typeof priceEl === 'object' && priceEl.textContent) {
-                    // For JavaScript selectors that return elements, get the text content
-                    const value = priceEl.textContent.trim();
-                    if (value) {
-                        priceInfo.push({
-                            value,
-                            selector: matchedSelector,
-                            attribute: 'textContent',
-                            isJavaScript: true
-                        });
-                    }
-                } else {
-                    // For regular CSS selectors, use the original logic
-                    for (const attr of priceAttrList) {
-                        let value = priceEl[attr]?.trim();
-                        if (value) {
+                for (const priceEl of priceElements) {
+                    const isJavaScript = bestPriceSelector && bestPriceSelector.includes('document');
+                    
+                    if (isJavaScript && typeof priceEl === 'object' && priceEl.textContent) {
+                        const value = cleanPriceText(priceEl.textContent, 'textContent');
+                        if (value && /[\d.,]+/.test(value)) {
                             priceInfo.push({
                                 value,
-                                selector: matchedSelector,
-                                attribute: attr,
-                                isJavaScript: false
+                                selector: bestPriceSelector,
+                                attribute: 'textContent',
+                                isJavaScript: true
                             });
-                            break;
+                        }
+                    } else {
+                        // For regular CSS selectors, prioritize textContent over innerText
+                        const prioritizedAttrs = ['textContent', ...priceAttrList.filter(attr => attr !== 'textContent')];
+                        
+                        for (const attr of prioritizedAttrs) {
+                            let value = priceEl[attr]?.trim();
+                            if (value) {
+                                value = cleanPriceText(value, attr);
+                                
+                                // Validate that we have something that looks like a price
+                                if (value && /[\d.,]+/.test(value)) {
+                                    priceInfo.push({
+                                        value,
+                                        selector: bestPriceSelector,
+                                        attribute: attr,
+                                        isJavaScript: false
+                                    });
+                                    break; // Take first valid price from this element
+                                }
+                            }
                         }
                     }
                 }
@@ -246,7 +323,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             for (const sel of videoSelectors) {
                 const elements = queryAllElements(m, sel);
                 for (const element of elements) {
-                    // Avoid duplicates
                     const alreadyExists = videoElementsWithSelectors.some(item => item.element === element);
                     if (!alreadyExists) {
                         videoElementsWithSelectors.push({ element, selector: sel });
@@ -254,7 +330,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                 }
             }
             const videoElements = videoElementsWithSelectors.map(item => item.element);
-
             const videoSelectorMatched = videoElementsWithSelectors[0]?.selector || null;
 
             const videoUrls = videoElements
@@ -281,7 +356,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                 linkSource = 'containerElement (m)';
             }
 
-            // Use the best selector that was actually used
             const matchedSelector = params.productItemSelector
 
             try {
@@ -299,7 +373,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                         titleSelectorMatched,
                         imgSelectorMatched,
                         videoSelectorMatched,
-                        priceSelectorsMatched: Array.from(priceSelectorsMatched),
+                        bestPriceSelector, // Include the best price selector used
                     },
                     pageTitle,
                     pageURL,
@@ -319,7 +393,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         console.log('candidateItems', candidateItems.length);
         return candidateItems;
     }, {
-        // Pass arrays directly instead of joining them
         productItemSelector: productItemSelector,
         titleSelector: titleSelector,
         titleAttribute: titleAttribute,
@@ -333,6 +406,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         videoAttribute: videoAttributes
     });
 
+    // ... rest of your validData processing remains the same
     const validData = data.map(item => {
         const processedImgs = (item.img || [])
             .map(m => getMiddleImageUrl(m, siteUrls.imageCDN || siteUrls.urls[0]))
@@ -358,6 +432,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             mediaType: item.videos && item.videos.length > 0 ? 'video' : 'image'
         };
     });
+    
     debugger
     return validData;
 }
