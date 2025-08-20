@@ -27,9 +27,9 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         }, waitForSeconds);
     }
 
-    const { bestSelector } = await findBestSelector(page, productItemSelector);
+    const  bestSelector  = await findBestSelector(page, productItemSelector);
 
-
+debugger
 
     if (bestSelector.count > 0) {
 

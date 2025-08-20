@@ -3,8 +3,11 @@ import itemCounterSelector from "../../selector-attibutes/itemCounterSelector.js
 import findBestSelector from "./findBestSelector.js";
 export default async function getTotalItemsCount(page) {
     debugger
-   const {bestSelector} = findBestSelector(page, itemCounterSelector);
-   await page.waitForSelector(bestSelector);
+   const result =await findBestSelector(page, itemCounterSelector);
+   debugger
+   const { selector } = await result;
+   debugger
+   await page.waitForSelector(selector);
 
     const resultElement = await page.$eval(selector, el => el.textContent);
     const number = resultElement.trim().split(" ").filter(f => Number(f));
