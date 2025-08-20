@@ -1,7 +1,7 @@
 {
-  "targetSite": "lupaprojectistanbul",
+  "targetSite": "brandys",
   "urls": [
-    "https://lupaprojectistanbul.com/magaza/"
+    "https://www.brandys.com.tr/canta-4039"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,7 +9,7 @@
   "filteringNeeded": true,
   "configurations": [
     {
-      "brand": "lupaprojectistanbul",
+      "brand": "brandys",
       "paginationSelector": "",
       "paginationParameterName": "",
       "scrollable": true,
@@ -17,7 +17,7 @@
       "totalProductCounterSelector": "",
 
       "urls": [
-        "https://lupaprojectistanbul.com/magaza/"
+        "https://www.brandys.com.tr/canta-4039"
       ],
       "paused": false,
       "pausedReason": "",

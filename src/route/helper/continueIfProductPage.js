@@ -33,15 +33,12 @@ export default async function continueIfProductPage({ page, siteUrls }) {
 
     if (bestSelector.count > 0) {
 
-
-        if (siteUrls?.totalProductCounterSelector) {
-
             const totalItemsToBeCallected = await getTotalItemsCount(page, siteUrls.totalProductCounterSelector);
 
             if (totalItemsToBeCallected > 0) {
                 await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected });
             }
-        }
+        
         const totalItemsPerPage = bestSelector['count'];
         const matchedproductItemSelectors = [bestSelector['selector']]
 
