@@ -1,4 +1,3 @@
-//https://claude.ai/chat/c19ca193-9b21-4ea2-85ab-fc3b9f7ff7b6
 export default async function findBestSelector(page, selectors) {
     console.log('productItemSelector____________________________________________________', selectors);
     
@@ -67,11 +66,12 @@ export default async function findBestSelector(page, selectors) {
             })
             .filter(item => item.count > 0); // Only keep selectors that match something
         
+        // FIXED: Return null/empty when no valid selectors found
         if (validSelectors.length === 0) {
             return {
-                bestSelector: { selector: selectors[0], count: 0, specificity: 0 },
+                bestSelector: null,
                 selectorCounts: [],
-                selector: selectors[0],
+                selector: null, // Changed: Don't return invalid selector
                 count: 0,
                 error: 'No valid selectors found'
             };
@@ -104,25 +104,15 @@ export default async function findBestSelector(page, selectors) {
     return result;
 }
 
-// Example usage and explanation:
+// Usage example with proper null checking:
 /*
-Given these selectors:
-- ".pitem" (specificity: 10, matches: 50)
-- ".product-list .pitem" (specificity: 25, matches: 30)
+const result = await findBestSelector(page, selectors);
 
-The function will choose ".product-list .pitem" because:
-- It has higher specificity (25 vs 10)
-- Even though it has fewer matches, the specificity weight makes it win
-- Combined scores: ".pitem" = 10*1000 + 50 = 10,050
-                  ".product-list .pitem" = 25*1000 + 30 = 25,030
-
-Specificity calculation includes:
-- IDs: 100 points each
-- Classes/attributes/pseudo-classes: 10 points each
-- Elements: 1 point each  
-- Descendant combinators: 5 points each
-- Child combinators: 3 points each
-- :not() selectors: 8 points each
-- :has() selectors: 12 points each
-- Length bonus: 1 point per 10 characters
+if (result.selector === null) {
+    console.log('No matching selectors found on the page');
+    // Handle the case where no valid selector exists
+} else {
+    console.log('Best selector:', result.selector);
+    // Proceed with the valid selector
+}
 */
