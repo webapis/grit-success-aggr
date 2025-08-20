@@ -1,12 +1,11 @@
-/**
- * Gets the total count of items from a page element by extracting numbers from its text content
- * @param {Object} page - Puppeteer page object
- * @param {string} selector - CSS selector for the element containing the count
- * @returns {Promise<number>} - The extracted count as a number, or 0 if not found/invalid
- */
-export default async function getTotalItemsCount(page, selector) {
+
+import itemCounterSelector from "../../selector-attibutes/itemCounterSelector.js";
+import findBestSelector from "./findBestSelector.js";
+export default async function getTotalItemsCount(page) {
     debugger
-    await page.waitForSelector(selector);
+   const {bestSelector} = findBestSelector(page, itemCounterSelector);
+   await page.waitForSelector(bestSelector);
+
     const resultElement = await page.$eval(selector, el => el.textContent);
     const number = resultElement.trim().split(" ").filter(f => Number(f));
 
