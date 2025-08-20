@@ -159,6 +159,6 @@ export default [
     '.product-item-price-wrapper-list .product-item__price.color-primary',
     '.product-item-price-wrapper .color-primary.font-financier-bold',
     '.product-price-content .product-price',
-    '.price'
-
+    '.price',
+    '.price-container .price'
 ]
