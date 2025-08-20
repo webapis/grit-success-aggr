@@ -1,4 +1,5 @@
 export default [
+    'li.virtual-item',
     'ozd-custom-product-grid-item .carouselItem',
     '.grid__item.grid-product.medium-up--one-half',
     '[id*=product-tile-wrapper-]',

@@ -1,4 +1,5 @@
 export default [
+    '[class*="SinglePrice_"]',
     '.pricebox .oneprice',
     '.pricebox .newprice',
     '.tp-price-number',

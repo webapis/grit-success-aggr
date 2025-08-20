@@ -1,4 +1,5 @@
 export default [
+    '[class*="ProductTitle_"]',
     '.tp-body.product-title',
     '.product-item-info  p.product-name a',
     '.product-item-info a',

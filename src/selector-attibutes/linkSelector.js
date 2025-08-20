@@ -1,4 +1,5 @@
 export default [
+    '.owl-item .item a',
     '.product-info a',
     'a.product-title-container',
     'a.item-img',
