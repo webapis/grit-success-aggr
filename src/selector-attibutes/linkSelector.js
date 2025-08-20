@@ -1,4 +1,5 @@
 export default [
+    'a[class*="ProductImage_"]',
     '.owl-item .item a',
     '.product-info a',
     'a.product-title-container',
