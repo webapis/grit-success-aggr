@@ -1,4 +1,5 @@
 export default [
+    'span.text-xs.flex.h-5',
     '.product-item-count',
     '.text-base.font-bold.leading-6.text-secondary span',
     '.ITEMCOUNTUP span',
