@@ -1,4 +1,5 @@
 export default [
+    'span.text-sm.font-bold.leading-snug.text-primary',
     '.item-price.textBase',
     // Shadow DOM selectors - highest priority for price-element
     'price-element::shadow::.price-container .price',
