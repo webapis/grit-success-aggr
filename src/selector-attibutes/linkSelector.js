@@ -1,4 +1,5 @@
 export default [
+    'div.text-sm.text-left.flex.flex-col.justify-start a',
     'a[class*="ProductImage_"]',
     '.owl-item .item a',
     '.product-info a',
