@@ -1,5 +1,5 @@
 export default [
-    '.single-banner.mt--20.text-center',
+    '.single-banner',
     '.cat-product article.product-box:has(.product-body)',//
     '.c-tile.c-tile--product',
     '.product-grid-item-container .product-box-container',
