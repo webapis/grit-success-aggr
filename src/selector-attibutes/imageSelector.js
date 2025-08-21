@@ -1,4 +1,5 @@
 export default [
+  'span.teaser img',
   '.tp-image img',
   "[data-testid='next-image'] img",
   '[id^="product_image"] .lazy-image img',
