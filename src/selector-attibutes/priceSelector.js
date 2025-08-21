@@ -1,5 +1,19 @@
 export default [
-    ' document.querySelector("price-element").shadowRoot.querySelector(".container .price");',
+    // Shadow DOM selectors - highest priority for price-element
+    'price-element::shadow::.price-container .price',
+    'price-element::shadow::.price',
+    'price-element::shadow::div.price',
+    'price-element::shadow::.container .price',
+    'document.querySelector("price-element").shadowRoot.querySelector(".price-container .price")',
+    'document.querySelector("price-element").shadowRoot.querySelector(".price")',
+    'document.querySelector("price-element").shadowRoot.querySelector("div.price")',
+    'document.querySelector("price-element").shadowRoot.querySelector(".container .price")',
+    
+    // Existing shadow DOM selectors from your original file
+    'document.querySelector("price-element").shadowRoot.querySelector(".container .price");',
+    '.product-info price-element::shadow::.price',
+    
+    // Your existing regular selectors
     '.product-box-new-price',
     'span.product-box-price',
     '[class*="SinglePrice_"]',
@@ -19,7 +33,6 @@ export default [
     '.product-pricing .nodiscount-price',
     '[data-testid="product-price"]',
     'formatted-price-detail div div',
-    '.product-info price-element::shadow::.price',
     '.product-grid-item__price .h-11',//derimod
     '.product-grid-item__price__new',//derimod
     '.boost-sd__format-currency',
@@ -36,8 +49,6 @@ export default [
     '.price--wrap div.new--price',//ltbjeans
     'span.divUFiyat1',//buenoshoes
     '.mainFiyat .mainFiyat2',
-    //'.product-item__info-price',//causing problem for "gap.com"
-    // '.base-price.campaing-base-price', defacto errored
     '.second-line .base-price:not(.campaing-base-price)',//defacto
     '.first-line .base-price:not(.campaing-base-price)',//defacto
     '.base-price.lined-base-price',
@@ -97,7 +108,6 @@ export default [
     '.product__listing--price del',
     'pz-price',
     '.product-card-v2-price__current',
-    //'[itemprop="priceCurrency"]', causes error for: buenoshoes
     '[itemprop="highPrice"]',
     '[data-ge-price="data-ge-price"]',
     '.product-price .product-sale-price',
@@ -112,7 +122,6 @@ export default [
     '.sell-price',
     '.current-price',
     '.KatSepetFiyat span',
-    // '[data-testid="product-price"]',
     'sale-price',
     '.current-price .product-price',
     '.product-discounted-price',
@@ -124,7 +133,6 @@ export default [
     '.product-card__prices',
     '.product-item__basket-offers-price',
     '.color-primary font-financier-bold',
-    //    '.product-item__price',
     '.p-wrap span.price',
     '.text-sm.font-semibold',
     '.product-item__price .money',

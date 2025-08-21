@@ -18,7 +18,7 @@ import priceParser from "../../scrape-helpers/priceParcer.js";
 
 dotenv.config({ silent: true });
 
-// Updated scrapeData function
+// Updated scrapeData function with enhanced shadow DOM support
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
     debugger
 
@@ -26,9 +26,14 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         const pageTitle = document.title;
         const pageURL = document.URL;
 
-        // Import the findBestSelector logic directly into the page context
+        // Enhanced calculateSpecificity function
         function calculateSpecificity(selector) {
             let score = 0;
+            
+            // Shadow DOM selectors get highest priority
+            if (selector.includes('::shadow') || selector.includes('shadowRoot')) {
+                score += 2000; // Very high bonus for shadow DOM selectors
+            }
             
             // Count IDs (#id, [id*=], [id^=], etc.)
             const idMatches = selector.match(/#[\w-]+|\[id[\*\^$~|]?=/g);
@@ -42,7 +47,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             const elementMatches = selector.match(/(?:^|[\s>+~])([a-zA-Z][\w-]*)/g);
             score += (elementMatches || []).length * 1;
             
-            // Bonus for descendant combinators (spaces) - indicates more specific targeting
+            // Bonus for descendant combinators (spaces)
             const descendantMatches = selector.match(/\s+(?![>+~])/g);
             score += (descendantMatches || []).length * 5;
             
@@ -50,25 +55,169 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             const childMatches = selector.match(/>/g);
             score += (childMatches || []).length * 3;
             
-            // Bonus for negation selectors (:not()) - they're more specific
+            // Bonus for negation selectors (:not())
             const notMatches = selector.match(/:not\([^)]+\)/g);
             score += (notMatches || []).length * 8;
             
-            // Bonus for :has() selectors - they're very specific
+            // Bonus for :has() selectors
             const hasMatches = selector.match(/:has\([^)]+\)/g);
             score += (hasMatches || []).length * 12;
             
-            // Length bonus - longer selectors are generally more specific
+            // Length bonus
             score += Math.floor(selector.length / 10);
             
             return score;
         }
 
+        // Enhanced shadow DOM traversal function
+        function querySelectorAllDeep(rootElement, selector) {
+            const elements = [];
+            
+            // Handle shadow DOM selectors
+            if (selector.includes('::shadow')) {
+                try {
+                    return querySelectorShadowDOM(rootElement, selector);
+                } catch (error) {
+                    console.warn('Shadow DOM CSS selector failed:', selector, error);
+                    return [];
+                }
+            }
+            
+            // Handle JavaScript shadow DOM selectors
+            if (selector.includes('shadowRoot')) {
+                try {
+                    return executeJavaScriptShadowSelector(rootElement, selector);
+                } catch (error) {
+                    console.warn('Shadow DOM JS selector failed:', selector, error);
+                    return [];
+                }
+            }
+            
+            // Regular CSS selector
+            try {
+                return Array.from(rootElement.querySelectorAll(selector));
+            } catch (error) {
+                console.warn('Regular selector failed:', selector, error);
+                return [];
+            }
+        }
+        
+        // Function to handle CSS shadow DOM selectors (::shadow syntax)
+        function querySelectorShadowDOM(rootElement, selector) {
+            const elements = [];
+            
+            if (selector.includes('::shadow::')) {
+                // Format: 'price-element::shadow::.price-container .price'
+                const parts = selector.split('::shadow::');
+                const hostSelector = parts[0].trim();
+                const shadowSelector = parts[1].trim();
+                
+                // Search in root element first, then in document if not found
+                let hostElements = Array.from(rootElement.querySelectorAll(hostSelector));
+                if (hostElements.length === 0 && rootElement !== document) {
+                    hostElements = Array.from(document.querySelectorAll(hostSelector));
+                }
+                
+                for (const host of hostElements) {
+                    if (host.shadowRoot) {
+                        try {
+                            const shadowElements = Array.from(host.shadowRoot.querySelectorAll(shadowSelector));
+                            elements.push(...shadowElements);
+                        } catch (error) {
+                            console.warn('Shadow selector failed:', shadowSelector, error);
+                        }
+                    }
+                }
+            }
+            
+            return elements;
+        }
+        
+        // Function to handle JavaScript shadow DOM selectors
+        function executeJavaScriptShadowSelector(rootElement, selector) {
+            try {
+                const cleanExpression = selector.replace(/;$/, '');
+                
+                // Handle expressions like: document.querySelector("price-element").shadowRoot.querySelector(".price")
+                const shadowMatch = cleanExpression.match(/document\.querySelector\(['"]([^'"]+)['"]\)\.shadowRoot\.querySelector\(['"]([^'"]+)['"]\)/);
+                
+                if (shadowMatch) {
+                    const hostSelector = shadowMatch[1];
+                    const shadowSelector = shadowMatch[2];
+                    
+                    // Try to find in current container first, then document
+                    let hostElement = rootElement.querySelector ? rootElement.querySelector(hostSelector) : null;
+                    if (!hostElement) {
+                        hostElement = document.querySelector(hostSelector);
+                    }
+                    
+                    if (hostElement && hostElement.shadowRoot) {
+                        const result = hostElement.shadowRoot.querySelector(shadowSelector);
+                        return result ? [result] : [];
+                    }
+                    return [];
+                }
+                
+                // Handle querySelectorAll variants
+                const shadowMatchAll = cleanExpression.match(/document\.querySelector\(['"]([^'"]+)['"]\)\.shadowRoot\.querySelectorAll\(['"]([^'"]+)['"]\)/);
+                
+                if (shadowMatchAll) {
+                    const hostSelector = shadowMatchAll[1];
+                    const shadowSelector = shadowMatchAll[2];
+                    
+                    let hostElement = rootElement.querySelector ? rootElement.querySelector(hostSelector) : null;
+                    if (!hostElement) {
+                        hostElement = document.querySelector(hostSelector);
+                    }
+                    
+                    if (hostElement && hostElement.shadowRoot) {
+                        return Array.from(hostElement.shadowRoot.querySelectorAll(shadowSelector));
+                    }
+                    return [];
+                }
+                
+                // Fallback to regular eval for other JavaScript expressions
+                return executeJavaScriptSelector(cleanExpression);
+            } catch (error) {
+                console.warn('Error executing shadow DOM JS selector:', selector, error);
+                return [];
+            }
+        }
+
+        // Enhanced executeJavaScriptSelector function
+        function executeJavaScriptSelector(jsExpression) {
+            try {
+                const cleanExpression = jsExpression.replace(/;$/, '');
+                const result = eval(cleanExpression);
+                
+                if (result) {
+                    if (typeof result === 'string') {
+                        // Create fake element for string results
+                        const fakeElement = document.createElement('span');
+                        fakeElement.textContent = result;
+                        fakeElement.innerText = result;
+                        return [fakeElement];
+                    }
+                    if (result.nodeType) {
+                        return [result];
+                    }
+                    if (result.length !== undefined) {
+                        return Array.from(result);
+                    }
+                }
+                return [];
+            } catch (error) {
+                console.warn('Error executing JavaScript selector:', jsExpression, error);
+                return [];
+            }
+        }
+
+        // Enhanced findBestSelectorInContext function
         function findBestSelectorInContext(container, selectors) {
             const validSelectors = selectors
                 .map(selector => {
                     try {
-                        const elements = container.querySelectorAll(selector);
+                        const elements = querySelectorAllDeep(container, selector);
                         const count = elements.length;
                         const specificity = calculateSpecificity(selector);
                         
@@ -76,15 +225,23 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                         let priceScore = 0;
                         if (count > 0) {
                             // Check if elements actually contain price-like content
-                            const hasNumericContent = Array.from(elements).some(el => {
+                            const hasNumericContent = elements.some(el => {
                                 const text = el.textContent || el.innerText || '';
                                 return /[\d.,]+/.test(text);
                             });
-                            priceScore = hasNumericContent ? 50 : 0;
+                            priceScore = hasNumericContent ? 100 : 0;
+                            
+                            // Bonus for currency symbols
+                            const hasCurrency = elements.some(el => {
+                                const text = el.textContent || el.innerText || '';
+                                return /[₺$€£¥]/.test(text);
+                            });
+                            priceScore += hasCurrency ? 50 : 0;
                         }
                         
                         return {
                             selector,
+                            elements,
                             count,
                             specificity,
                             priceScore,
@@ -95,6 +252,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                         console.warn(`Invalid selector: ${selector}`, error);
                         return {
                             selector,
+                            elements: [],
                             count: 0,
                             specificity: 0,
                             priceScore: 0,
@@ -113,18 +271,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             return validSelectors[0];
         }
 
-        // New function to execute JavaScript expressions safely
-        function executeJavaScriptSelector(jsExpression) {
-            try {
-                const cleanExpression = jsExpression.replace(/;$/, '');
-                return eval(cleanExpression);
-            } catch (error) {
-                console.warn('Error executing JavaScript selector:', jsExpression, error);
-                return null;
-            }
-        }
-
-        // Enhanced function to get price elements with best selector logic
+        // Enhanced function to get price elements with shadow DOM support
         function getPriceElementsWithBestSelector(container, selectors) {
             // Use findBestSelector to get the optimal selector for this container
             const bestSelectorInfo = findBestSelectorInContext(container, selectors);
@@ -135,31 +282,13 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
             const bestSelector = bestSelectorInfo.selector;
             
-            if (bestSelector.includes('document')) {
-                // This is a JavaScript expression
-                const result = executeJavaScriptSelector(bestSelector);
-                if (result) {
-                    if (typeof result === 'string') {
-                        const fakeElement = document.createElement('span');
-                        fakeElement.textContent = result;
-                        fakeElement.innerText = result;
-                        return { elements: [fakeElement], bestSelector };
-                    }
-                    if (result.nodeType) {
-                        return { elements: [result], bestSelector };
-                    }
-                    if (result.length !== undefined) {
-                        return { elements: Array.from(result), bestSelector };
-                    }
-                }
-                return { elements: [], bestSelector };
-            } else {
-                // This is a CSS selector
-                return { 
-                    elements: Array.from(container.querySelectorAll(bestSelector)), 
-                    bestSelector 
-                };
-            }
+            // Log the best selector found for debugging
+            console.log(`Best price selector found: ${bestSelector} (score: ${bestSelectorInfo.combinedScore})`);
+            
+            return { 
+                elements: bestSelectorInfo.elements, 
+                bestSelector 
+            };
         }
 
         // Clean price text function
@@ -253,10 +382,10 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                     .map(attr => titleElement[attr?.replaceAll(" ", "")])
                     .find(Boolean);
 
-            // ENHANCED PRICE HANDLING WITH BEST SELECTOR
+            // ENHANCED PRICE HANDLING WITH SHADOW DOM SUPPORT
             const priceInfo = [];
             
-            // Use the best selector approach for price extraction
+            // Use the enhanced shadow DOM-aware price extraction
             const { elements: priceElements, bestSelector: bestPriceSelector } = 
                 getPriceElementsWithBestSelector(m, priceSelectors);
 
@@ -266,7 +395,8 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                 const priceAttrList = params.priceAttribute;
                 
                 for (const priceEl of priceElements) {
-                    const isJavaScript = bestPriceSelector && bestPriceSelector.includes('document');
+                    const isJavaScript = bestPriceSelector && 
+                        (bestPriceSelector.includes('document') || bestPriceSelector.includes('shadowRoot'));
                     
                     if (isJavaScript && typeof priceEl === 'object' && priceEl.textContent) {
                         const value = cleanPriceText(priceEl.textContent, 'textContent');
@@ -275,11 +405,12 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                                 value,
                                 selector: bestPriceSelector,
                                 attribute: 'textContent',
-                                isJavaScript: true
+                                isJavaScript: true,
+                                isShadowDOM: bestPriceSelector.includes('shadowRoot') || bestPriceSelector.includes('::shadow')
                             });
                         }
                     } else {
-                        // For regular CSS selectors, prioritize textContent over innerText
+                        // For regular CSS selectors and shadow DOM elements
                         const prioritizedAttrs = ['textContent', ...priceAttrList.filter(attr => attr !== 'textContent')];
                         
                         for (const attr of prioritizedAttrs) {
@@ -293,7 +424,8 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                                         value,
                                         selector: bestPriceSelector,
                                         attribute: attr,
-                                        isJavaScript: false
+                                        isJavaScript: false,
+                                        isShadowDOM: bestPriceSelector && (bestPriceSelector.includes('shadowRoot') || bestPriceSelector.includes('::shadow'))
                                     });
                                     break; // Take first valid price from this element
                                 }
@@ -358,7 +490,8 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                         titleSelectorMatched,
                         imgSelectorMatched,
                         videoSelectorMatched,
-                        bestPriceSelector, // Include the best price selector used
+                        bestPriceSelector,
+                        priceExtractedFromShadowDOM: priceInfo.some(p => p.isShadowDOM)
                     },
                     pageTitle,
                     pageURL,
@@ -391,7 +524,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         videoAttribute: videoAttributes
     });
 
-    // ... rest of your validData processing remains the same
+    // Process and validate the scraped data
     const validData = data.map(item => {
         const processedImgs = (item.img || [])
             .map(m => getMiddleImageUrl(m, siteUrls.imageCDN || siteUrls.urls[0]))
