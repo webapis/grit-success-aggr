@@ -1,4 +1,5 @@
 export default [
+    '.o-productList__top--breadcrumbCount span',
     '.category-product-count.mb-2.d-none.d-md-block',
     '.collection-filter__item--count',
     '.collection-toolbar__products-count',
