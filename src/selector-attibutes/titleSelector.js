@@ -1,4 +1,5 @@
 export default [
+    '.product-title a',
     '.text-xs.font-medium.leading-snug.text-secondary-100',
     'span.productbox-name',
     '[class*="ProductTitle_"]',
