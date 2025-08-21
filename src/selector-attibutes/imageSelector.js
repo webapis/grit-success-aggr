@@ -1,4 +1,5 @@
 export default [
+  '.product-item-img',
   '.main-product-img.card-img',
   'span.teaser img',
   '.tp-image img',
