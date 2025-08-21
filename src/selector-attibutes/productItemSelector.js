@@ -1,4 +1,5 @@
 export default [
+    '.c-tile.c-tile--product',
     '.product-grid-item-container .product-box-container',
     'li.virtual-item',
     'ozd-custom-product-grid-item .carouselItem',
