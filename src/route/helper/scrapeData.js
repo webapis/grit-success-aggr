@@ -17,12 +17,8 @@ import productNotAvailable from "../../selector-attibutes/productNotAvailable.js
 import priceParser from "../../scrape-helpers/priceParcer.js";
 
 dotenv.config({ silent: true });
-// Separate helper function that works with Puppeteer page
-
 
 // Updated scrapeData function
-// Updated scrapeData function with enhanced price selector support
-// Enhanced scrapeData function with findBestSelector integration
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
     debugger
 
@@ -117,41 +113,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             return validSelectors[0];
         }
 
-        // Shadow DOM accessor function
-        function accessShadowElement(hostSelector, shadowSelector) {
-            try {
-                const hostElement = document.querySelector(hostSelector);
-                if (!hostElement || !hostElement.shadowRoot) {
-                    return null;
-                }
-                return hostElement.shadowRoot.querySelector(shadowSelector);
-            } catch (error) {
-                return null;
-            }
-        }
-
-        // Enhanced query function that can handle shadow DOM
-        function queryElement(container, selector) {
-            if (selector.includes('::shadow::')) {
-                const [hostSelector, shadowSelector] = selector.split('::shadow::');
-                return accessShadowElement(hostSelector.trim(), shadowSelector.trim());
-            }
-            return container.querySelector(selector);
-        }
-
-        // Enhanced query all function that can handle shadow DOM
-        function queryAllElements(container, selector) {
-            if (selector.includes('::shadow::')) {
-                const [hostSelector, shadowSelector] = selector.split('::shadow::');
-                const hostElement = document.querySelector(hostSelector.trim());
-                if (hostElement && hostElement.shadowRoot) {
-                    return Array.from(hostElement.shadowRoot.querySelectorAll(shadowSelector.trim()));
-                }
-                return [];
-            }
-            return Array.from(container.querySelectorAll(selector));
-        }
-
         // New function to execute JavaScript expressions safely
         function executeJavaScriptSelector(jsExpression) {
             try {
@@ -195,7 +156,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             } else {
                 // This is a CSS selector
                 return { 
-                    elements: queryAllElements(container, bestSelector), 
+                    elements: Array.from(container.querySelectorAll(bestSelector)), 
                     bestSelector 
                 };
             }
@@ -232,7 +193,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             // Title element matching with selector tracking
             const titleElementsWithSelectors = [];
             for (const sel of titleSelectors) {
-                const element = queryElement(m, sel);
+                const element = m.querySelector(sel);
                 if (element) {
                     titleElementsWithSelectors.push({ element, selector: sel });
                     break;
@@ -244,7 +205,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             // Link element matching with selector tracking
             const linkElementsWithSelectors = [];
             for (const sel of linkSelectors) {
-                const element = queryElement(m, sel);
+                const element = m.querySelector(sel);
                 if (element) {
                     linkElementsWithSelectors.push({ element, selector: sel });
                     break;
@@ -255,7 +216,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             // Image elements matching with selector tracking
             const imgElementsWithSelectors = [];
             for (const sel of imageSelectors) {
-                const elements = queryAllElements(m, sel);
+                const elements = Array.from(m.querySelectorAll(sel));
                 for (const element of elements) {
                     const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
                     if (!alreadyExists) {
@@ -266,7 +227,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             const imgElements = imgElementsWithSelectors.map(item => item.element);
             const imgSelectorMatched = imgElementsWithSelectors[0]?.selector || null;
 
-            const productNotInStock = queryElement(m, params.productNotAvailable.join(', ')) ? true : false;
+            const productNotInStock = m.querySelector(params.productNotAvailable.join(', ')) ? true : false;
 
             const imgUrls = imgElements.flatMap(el =>
                 params.imageAttributes
@@ -345,7 +306,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             // Video elements matching with selector tracking
             const videoElementsWithSelectors = [];
             for (const sel of videoSelectors) {
-                const elements = queryAllElements(m, sel);
+                const elements = Array.from(m.querySelectorAll(sel));
                 for (const element of elements) {
                     const alreadyExists = videoElementsWithSelectors.some(item => item.element === element);
                     if (!alreadyExists) {
