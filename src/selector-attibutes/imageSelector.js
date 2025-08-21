@@ -1,4 +1,5 @@
 export default [
+  '.main-product-img.card-img',
   'span.teaser img',
   '.tp-image img',
   "[data-testid='next-image'] img",
