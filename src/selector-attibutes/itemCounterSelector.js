@@ -1,4 +1,6 @@
 export default [
+    '.product-item-count',
+    '.text-base.font-bold.leading-6.text-secondary span',
     '.ITEMCOUNTUP span',
     '.o-productList__top--breadcrumbCount span',
     '.category-product-count.mb-2.d-none.d-md-block',
