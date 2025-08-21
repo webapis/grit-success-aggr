@@ -1,4 +1,5 @@
 export default [
+    ' document.querySelector("price-element").shadowRoot.querySelector(".container .price");',
     '.product-box-new-price',
     'span.product-box-price',
     '[class*="SinglePrice_"]',
