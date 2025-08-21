@@ -1,4 +1,5 @@
 export default [
+    '.product-box',
     '.c-tile.c-tile--product',
     '.product-grid-item-container .product-box-container',
     'li.virtual-item',
