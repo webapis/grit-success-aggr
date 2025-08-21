@@ -1,5 +1,5 @@
 export default [
-    '.cat-product article.product-box',
+    '.cat-product article.product-box',//
     '.c-tile.c-tile--product',
     '.product-grid-item-container .product-box-container',
     'li.virtual-item',
