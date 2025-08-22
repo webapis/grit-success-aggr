@@ -35,7 +35,7 @@ export async function processScrapedData(siteName) {
         const totalItemsPerPage = await getDatasetData('totalItemsPerPage');
         const totalItems = await getDatasetItems('totalItemsToBeCallected')
         debugger
-        const { totalItemsSelector, totalItemsToBeCallected: totalItemsToCallect } = totalItems[0]
+        const { totalItemsSelector, totalItemsToBeCallected: totalItemsToCallect } = totalItems[0]|| { totalItemsSelector: '', totalItemsToBeCallected: 0 }
         // Filter data
         const dataWithoutError = data.filter(f => !f.error);
         const dataWithError = data.filter(f => f.error);
