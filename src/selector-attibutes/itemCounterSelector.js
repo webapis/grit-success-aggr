@@ -1,4 +1,5 @@
 export default [
+    '.primary__item .products-listed',
     '.right-menu-item.product-number',
     '.productCount',
     '.number-of-products span',

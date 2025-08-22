@@ -1,7 +1,7 @@
 {
-  "targetSite": "berlesi",
+  "targetSite": "fashfed",
   "urls": [
-    "https://www.berlesi.com/tum-modeller"
+    "https://www.fashfed.com/kadin-canta"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,15 +9,15 @@
   "filteringNeeded": true,
   "configurations": [
     {
-      "brand": "berlesi",
+      "brand": "fashfed",
       "paginationSelector": "",
-      "paginationParameterName": "?sayfa=",
+      "paginationParameterName": "?page=",
       "scrollable": false,
       "showMoreButtonSelector": "",
       "totalProductCounterSelector": "",
 
       "urls": [
-        "https://www.berlesi.com/tum-modeller"
+        "https://www.fashfed.com/kadin-canta"
       ],
       "paused": false,
       "pausedReason": "",
@@ -26,7 +26,7 @@
     }
   ],
   "paginationSelector": "",
-  "paginationParameterName": "?sayfa=",
+  "paginationParameterName": "?page=",
   "scrollable": false,
   "showMoreButtonSelector": "",
   "totalProductCounterSelector": ""
