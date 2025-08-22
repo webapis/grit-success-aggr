@@ -1,4 +1,5 @@
 export default [
+    '.product-list-panel-title h1 span',
     '.primary__item .products-listed',
     '.right-menu-item.product-number',
     '.productCount',
