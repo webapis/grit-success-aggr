@@ -37,7 +37,7 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
             return null;
         }
 
-        const number = resultElement
+        const number = resultElement.replaceAll('(',' ').replaceAll(')',' ')
             .trim()
             .split(" ")
             .filter(f => Number(f));

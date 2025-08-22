@@ -1,7 +1,7 @@
 {
-  "targetSite": "fashfed",
+  "targetSite": "adl",
   "urls": [
-    "https://www.fashfed.com/kadin-canta"
+    "https://www.adl.com.tr/tr/kategoriler/canta-c-0020"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,15 +9,15 @@
   "filteringNeeded": true,
   "configurations": [
     {
-      "brand": "fashfed",
-      "paginationSelector": "",
+      "brand": "adl",
+      "paginationSelector": ".pagination .pagination__item.js-pagination-item",
       "paginationParameterName": "?page=",
       "scrollable": false,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": ".products-listed",
+      "totalProductCounterSelector": ".product-list-panel-title span",
 
       "urls": [
-        "https://www.fashfed.com/kadin-canta"
+        "https://www.adl.com.tr/tr/kategoriler/canta-c-0020"
       ],
       "paused": false,
       "pausedReason": "",
@@ -25,10 +25,10 @@
       "rowIndex": 41
     }
   ],
-  "paginationSelector": "",
+  "paginationSelector": ".pagination .pagination__item.js-pagination-item",
   "paginationParameterName": "?page=",
   "scrollable": false,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": ".products-listed"
+  "totalProductCounterSelector": ".product-list-panel-title span"
 
 }
