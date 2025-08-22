@@ -1,4 +1,5 @@
 export default [
+    '.rvts-badge-discount p',
     '.para-tutar',
     'span.text-sm.font-bold.leading-snug.text-primary',
     '.item-price.textBase',

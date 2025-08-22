@@ -1,4 +1,5 @@
 export default [
+    '.productCount',
     '.number-of-products span',
     'span.text-xs.flex.h-5',
     '.product-item-count',
