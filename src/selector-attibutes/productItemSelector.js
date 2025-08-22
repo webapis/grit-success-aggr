@@ -1,4 +1,5 @@
 export default [
+    '.product-box-container',
     '.single-banner',
     '.cat-product article.product-box:has(.product-body)',//
     '.c-tile.c-tile--product',
