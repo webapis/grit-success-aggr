@@ -1,4 +1,5 @@
 export default [
+    '.right-menu-item.product-number',
     '.productCount',
     '.number-of-products span',
     'span.text-xs.flex.h-5',
