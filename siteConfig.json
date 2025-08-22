@@ -1,7 +1,7 @@
 {
-  "targetSite": "adl",
+  "targetSite": "derimod",
   "urls": [
-    "https://www.adl.com.tr/tr/kategoriler/canta-c-0020"
+    "https://derimod.com.tr/collections/kadin-canta?filter.v.availability=1"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,15 +9,15 @@
   "filteringNeeded": true,
   "configurations": [
     {
-      "brand": "adl",
-      "paginationSelector": ".pagination .pagination__item.js-pagination-item",
-      "paginationParameterName": "?page=",
+      "brand": "derimod",
+      "paginationSelector": "",
+      "paginationParameterName": "&page=",
       "scrollable": false,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": ".product-list-panel-title span",
+      "totalProductCounterSelector": ".collection__products-count",
 
       "urls": [
-        "https://www.adl.com.tr/tr/kategoriler/canta-c-0020"
+        "https://derimod.com.tr/collections/kadin-canta?filter.v.availability=1"
       ],
       "paused": false,
       "pausedReason": "",
@@ -25,10 +25,10 @@
       "rowIndex": 41
     }
   ],
-  "paginationSelector": ".pagination .pagination__item.js-pagination-item",
-  "paginationParameterName": "?page=",
+  "paginationSelector": "",
+  "paginationParameterName": "&page=",
   "scrollable": false,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": ".product-list-panel-title span"
+  "totalProductCounterSelector": ".collection__products-count"
 
 }

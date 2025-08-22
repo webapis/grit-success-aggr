@@ -22,7 +22,7 @@ dotenv.config({ silent: true });
 export async function processScrapedData(siteName) {
     try {
         const site = siteName || process.env.site;
-        
+
         if (!site) {
             throw new Error('Site name is required');
         }
@@ -33,8 +33,9 @@ export async function processScrapedData(siteName) {
         const siteUrls = await getCachedSiteConfigFromFile();
         const data = await getDatasetItems(site);
         const totalItemsPerPage = await getDatasetData('totalItemsPerPage');
-        const totalItemsToCallect = await getDatasetData('totalItemsToBeCallected');
-
+        const totalItems = await getDatasetItems('totalItemsToBeCallected')
+        debugger
+        const { totalItemsSelector, totalItemsToBeCallected: totalItemsToCallect } = totalItems[0]
         // Filter data
         const dataWithoutError = data.filter(f => !f.error);
         const dataWithError = data.filter(f => f.error);
@@ -44,8 +45,8 @@ export async function processScrapedData(siteName) {
         const totalPages = countUnique({ data, key: 'pageURL' });
         const totalUniqueObjects = countUnique({ data, key: 'link' });
         const validLinks = countByField(data, 'linkValid');
-        const validimgs = countByField(data.filter(f=>f.mediaType === 'image'), 'imgValid');
-        const validVideos = countByField(data.filter(f=>f.mediaType === 'video'), 'videoValid');
+        const validimgs = countByField(data.filter(f => f.mediaType === 'image'), 'imgValid');
+        const validVideos = countByField(data.filter(f => f.mediaType === 'video'), 'videoValid');
         const validTitle = countByField(data, 'titleValid');
         const validPageTitle = countByField(data, 'pageTitleValid');
         const validPrice = countByField(data, 'priceValid');
@@ -53,6 +54,7 @@ export async function processScrapedData(siteName) {
         const priceScrapeError = countByField(data, 'priceScrapeError', true);
         const totalNotAvailable = countByField(data, 'productNotInStock', true);
         const dublicateURLs = findDuplicatesByLink(data);
+
         const totalItemsToBeCallected = totalItemsToCallect || 0;
         const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
 
@@ -97,7 +99,7 @@ export async function processScrapedData(siteName) {
 
         // Upload valid data samples
         console.log(`Uploading ${Math.min(dataWithoutError.length, 5)} valid data samples...`);
-        
+
         const jsonBuffer = Buffer.from(JSON.stringify(dataWithoutError.filter((f, i) => i < 5), null, 2), 'utf-8');
 
         const JSONDataDrive = await uploadJSONToGoogleDrive({
@@ -109,7 +111,7 @@ export async function processScrapedData(siteName) {
                 Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
             ),
         });
-        
+
         console.log('✅ JSON file uploaded to Google Drive:', JSONDataDrive.webViewLink);
 
         const JSONDataGit = await uploadCollection({
@@ -133,11 +135,11 @@ export async function processScrapedData(siteName) {
         let uploadSuccess = false;
         if (!siteUrls.paused && dataWithoutError.length > 0) {
             console.log('✅ Collected data length:', dataWithoutError.length);
-            const dataToUpload = dataWithoutError.filter(f => 
+            const dataToUpload = dataWithoutError.filter(f =>
                 f.linkValid && f.imgValid && f.titleValid && f.priceValid && !f.productNotInStock
             );
             console.log('✅ Data to upload length:', dataToUpload.length);
-            
+
             if (dataToUpload.length > 0) {
                 const response = await uploadCollection({
                     fileName: site || process.env.URL_CATEGORIES,
@@ -167,6 +169,7 @@ export async function processScrapedData(siteName) {
             'Unset Prices': unsetPrice,
             'Price Scrape Errors': priceScrapeError,
             'Product Not Available': totalNotAvailable,
+            'TotalItemsSelector': totalItemsSelector,
             'TotalItemsToBeCallected': totalItemsToBeCallected,
             'TotalItemsPerPage': totalItemsPerPage || 0,
             'Total Unique Objects (by link)': totalUniqueObjects.count,
@@ -191,7 +194,7 @@ export async function processScrapedData(siteName) {
 
     } catch (error) {
         console.error(`❌ Error processing data for site ${siteName}:`, error);
-        
+
         // Return error data object
         return {
             Site: siteName || 'Unknown',
@@ -209,14 +212,14 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     (async () => {
         try {
             const baseRowData = await processScrapedData(process.env.site);
-            
+
             // Log to sheet for backward compatibility when run directly
             await emitAsync('log-to-sheet', {
                 sheetTitle: baseRowData.Status === 'Processing Error' ? 'Crawl Logs(failed)' : 'Crawl Logs(success)',
                 message: `Site ${baseRowData.Site} data processing completed`,
                 rowData: baseRowData
             });
-            
+
             console.log('✅ Processing completed and logged to sheet');
         } catch (error) {
             console.error('💥 Fatal error:', error);

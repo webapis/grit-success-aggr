@@ -27,18 +27,18 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         }, waitForSeconds);
     }
 
-    const  bestSelector  = await findBestSelector(page, productItemSelector);
+    const bestSelector = await findBestSelector(page, productItemSelector);
 
-debugger
+    debugger
 
     if (bestSelector.count > 0) {
 
-            const totalItemsToBeCallected = await getTotalItemsCount(page, siteUrls?.totalProductCounterSelector);
+        const { count: totalItemsToBeCallected, selector: totalItemsSelector } = await getTotalItemsCount(page, siteUrls?.totalProductCounterSelector);
 
-            if (totalItemsToBeCallected > 0) {
-                await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected });
-            }
-        
+        if (totalItemsToBeCallected > 0) {
+            await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected, totalItemsSelector });
+        }
+
         const totalItemsPerPage = bestSelector['count'];
         const matchedproductItemSelectors = [bestSelector['selector']]
 

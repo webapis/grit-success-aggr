@@ -37,7 +37,7 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
             return null;
         }
 
-        const number = resultElement.replaceAll('(',' ').replaceAll(')',' ')
+        const number = resultElement.replaceAll('(', ' ').replaceAll(')', ' ')
             .trim()
             .split(" ")
             .filter(f => Number(f));
@@ -50,7 +50,8 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
             return null;
         }
 
-        return parseInt(number[0], 10);
+        return { count: parseInt(number[0], 10), selector };
+
 
     } catch (error) {
         console.error('Error getting total items count:', error);
