@@ -14,7 +14,7 @@
       "paginationParameterName": "?page=",
       "scrollable": false,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": "",
+      "totalProductCounterSelector": ".products-listed",
 
       "urls": [
         "https://www.fashfed.com/kadin-canta"
@@ -29,6 +29,6 @@
   "paginationParameterName": "?page=",
   "scrollable": false,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": ""
+  "totalProductCounterSelector": ".products-listed"
 
 }
