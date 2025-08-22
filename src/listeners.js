@@ -2,7 +2,6 @@
 import { emitter } from './events.js';
 import { logToGoogleSheet } from './sheet/logToGoogleSheet.js';
 import { uploadCollection } from './uploadCollection.js';
-import addDataToLogToSheet from '../src/sheet/logToGoogleSheet.js'
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -31,11 +30,7 @@ emitter.on('log-to-sheet', async ({ sheetTitle = 'Crawl Logs', rowData, message 
   }
 });
 
-emitter.on('add-data-to-log-to-sheet:Total-Objects', async ({ data, message }) => {
 
-
-  
-});
 emitter.on('no-valid-data', ({ site }) => {
   console.warn('⚠️ No valid data collected for site:', site);
 });
