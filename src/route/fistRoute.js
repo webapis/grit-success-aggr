@@ -2,7 +2,7 @@
 
 
 import dotenv from "dotenv";
-import scrapeData from "./helper/scrapeData.js";
+import scrapeData from "./scrape/scrapeData.js";
 import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
 import continueIfProductPage from "./helper/continueIfProductPage.js";
 import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";

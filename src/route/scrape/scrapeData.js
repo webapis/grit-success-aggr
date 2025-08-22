@@ -1,20 +1,16 @@
 import dotenv from "dotenv";
-import isValidImageURL from "../../scrape-helpers/isValidImageURL.js";
-import isValidVideoURL from "../../scrape-helpers/isValidVideoURL.js";
-import isValidURL from "../../scrape-helpers/isValidURL.js";
-import isValidText from "../../scrape-helpers/isValidText.js";
+
 import titleSelector from "../../selector-attibutes/titleSelector.js";
 import imageSelectors from "../../selector-attibutes/imageSelector.js";
 import linkSelectors from "../../selector-attibutes/linkSelector.js";
 import imageAttributes from "../../selector-attibutes/imageAttributes.js";
 import titleAttribute from "../../selector-attibutes/titleAttribute.js";
-import getMiddleImageUrl from "../../scrape-helpers/getMiddleImageUrl.js";
 import priceSelector from "../../selector-attibutes/priceSelector.js";
 import priceAttribute from "../../selector-attibutes/priceAttribute.js";
 import videoAttributes from "../../selector-attibutes/videoAttributes.js";
 import videoSelectors from "../../selector-attibutes/videoSelectors.js";
 import productNotAvailable from "../../selector-attibutes/productNotAvailable.js";
-import priceParser from "../../scrape-helpers/priceParcer.js";
+import processAndValidateScrapedData from "./validation/processAndValidateScrapedData.js";
 
 dotenv.config({ silent: true });
 
@@ -524,32 +520,8 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         videoAttribute: videoAttributes
     });
 
-    // Process and validate the scraped data
-    const validData = data.map(item => {
-        const processedImgs = (item.img || [])
-            .map(m => getMiddleImageUrl(m, siteUrls.imageCDN || siteUrls.urls[0]))
-            .filter(Boolean);
-
-        const imgValid = processedImgs.some(isValidImageURL);
-        if (!imgValid) {
-            console.log(`Invalid image URLs for item:`, item);
-        }
-        const videoValid = item.videos && item.videos.length > 0 && item.videos.every(isValidVideoURL);
-        const { parsedPrices, priceValid } = priceParser(item);
-
-        return {
-            ...item,
-            price: parsedPrices,
-            img: processedImgs,
-            imgValid,
-            linkValid: isValidURL(item.link),
-            titleValid: isValidText(item.title),
-            pageTitleValid: isValidText(item.pageTitle),
-            priceValid: item.productNotInStock ? true : priceValid,
-            videoValid,
-            mediaType: item.videos && item.videos.length > 0 ? 'video' : 'image'
-        };
-    });
+    // Use the extracted processing function
+    const validData = processAndValidateScrapedData(data, siteUrls);
     
     debugger
     return validData;

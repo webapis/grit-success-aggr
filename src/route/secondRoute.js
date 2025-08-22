@@ -3,7 +3,7 @@
 
 
 
-import scrapeData from "./helper/scrapeData.js";
+import scrapeData from "./scrape/scrapeData.js";
 import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
 import { getDatasetData } from "../crawlee/datasetOperations.js";
 export default async function second({
