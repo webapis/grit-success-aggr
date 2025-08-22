@@ -28,7 +28,7 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
 
     try {
         // Wait for element
-        await page.waitForSelector(selector, { timeout: 5000 });
+        await page.waitForSelector(selector);
 
         const resultElement = await page.$eval(selector, el => el.textContent);
 
