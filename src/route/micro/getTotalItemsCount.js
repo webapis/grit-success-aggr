@@ -23,7 +23,7 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
     if (!selector) {
         console.warn('No valid item counter selector found on the page');
         console.warn('Available selectors were:', selectorToUse);
-        return null;
+        return { count: 0 , selector:'N/A' };
     }
 
     try {
@@ -34,7 +34,7 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
 
         if (!resultElement) {
             console.warn('Element found but has no text content');
-            return null;
+            return { count: 0 , selector:'N/A' };
         }
 
         const number = resultElement.replaceAll('(', ' ').replaceAll(')', ' ')
@@ -47,7 +47,7 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
 
         if (number.length === 0) {
             console.warn('No numbers found in element text:', resultElement);
-            return null;
+            return { count: 0 , selector:'N/A' };
         }
 
         return { count: parseInt(number[0], 10), selector };
@@ -56,6 +56,7 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
     } catch (error) {
         console.error('Error getting total items count:', error);
         console.error('Selector used:', selector);
-        return null;
+        return { count: 0 , selector:'N/A' };
+
     }
 }
