@@ -287,109 +287,158 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             };
         }
 
-        // Clean price text function
-        function cleanPriceText(text, attribute) {
-            if (!text) return '';
+        // CONSOLIDATED TITLE OPERATIONS
+        function extractTitleInfo(container, titleSelectors, titleAttributes) {
+            let titleElement = null;
+            let titleSelectorMatched = null;
+            let title = null;
+            let linkFromTitle = null;
             
-            let cleaned = text.trim();
+            // Find title element using selectors
+            for (const selector of titleSelectors) {
+                const element = container.querySelector(selector);
+                if (element) {
+                    titleElement = element;
+                    titleSelectorMatched = selector;
+                    break;
+                }
+            }
             
-            // Remove common non-price text
-            cleaned = cleaned.replace(/KDV\s+Dahil/gi, '');
-            cleaned = cleaned.replace(/Vergiler\s+Dahil/gi, '');
-            cleaned = cleaned.replace(/Tax\s+Included/gi, '');
-            cleaned = cleaned.replace(/İndirimli\s+Fiyat/gi, '');
-            cleaned = cleaned.replace(/Normal\s+Fiyat/gi, '');
+            // Extract title text from element
+            if (titleElement) {
+                title = titleAttributes
+                    .map(attr => titleElement[attr?.replaceAll(" ", "")])
+                    .find(Boolean);
+                
+                // Extract link from title element if it has href
+                if (titleElement.href) {
+                    linkFromTitle = titleElement.href;
+                }
+            }
             
-            // Normalize whitespace
-            cleaned = cleaned.replace(/\s+/g, ' ').trim();
-            
-            return cleaned;
+            return {
+                titleElement,
+                titleSelectorMatched,
+                title,
+                linkFromTitle
+            };
         }
 
-        // Use only the best selector to get candidate items
-        const candidateItems = Array.from(document.querySelectorAll(params.productItemSelector)).map(m => {
-            const titleSelectors = params.titleSelector;
-            const imageSelectors = params.imageSelector;
-            const linkSelectors = params.linkSelector;
-            const priceSelectors = params.priceSelector;
-            const videoSelectors = params.videoSelector;
-            const videoAttrList = params.videoAttribute;
-
-            // Title element matching with selector tracking
-            const titleElementsWithSelectors = [];
-            for (const sel of titleSelectors) {
-                const element = m.querySelector(sel);
-                if (element) {
-                    titleElementsWithSelectors.push({ element, selector: sel });
-                    break;
-                }
-            }
-            const titleElement = titleElementsWithSelectors[0]?.element || null;
-            const titleSelectorMatched = titleElementsWithSelectors[0]?.selector || null;
-
-            // Link element matching with selector tracking
-            const linkElementsWithSelectors = [];
-            for (const sel of linkSelectors) {
-                const element = m.querySelector(sel);
-                if (element) {
-                    linkElementsWithSelectors.push({ element, selector: sel });
-                    break;
-                }
-            }
-            const linkElement = linkElementsWithSelectors[0]?.element || null;
-
-            // Image elements matching with selector tracking
+        // CONSOLIDATED IMAGE OPERATIONS
+        function extractImageInfo(container, imageSelectors, imageAttributes) {
             const imgElementsWithSelectors = [];
-            for (const sel of imageSelectors) {
-                const elements = Array.from(m.querySelectorAll(sel));
+            
+            // Find all image elements using selectors
+            for (const selector of imageSelectors) {
+                const elements = Array.from(container.querySelectorAll(selector));
                 for (const element of elements) {
                     const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
                     if (!alreadyExists) {
-                        imgElementsWithSelectors.push({ element, selector: sel });
+                        imgElementsWithSelectors.push({ element, selector });
                     }
                 }
             }
+            
             const imgElements = imgElementsWithSelectors.map(item => item.element);
             const imgSelectorMatched = imgElementsWithSelectors[0]?.selector || null;
-
-            const productNotInStock = m.querySelector(params.productNotAvailable.join(', ')) ? true : false;
-
+            
+            // Extract image URLs from attributes
             const imgUrls = imgElements.flatMap(el =>
-                params.imageAttributes
+                imageAttributes
                     .map(attr => el?.getAttribute(attr?.replaceAll(" ", "")))
                     .filter(Boolean)
             );
-
+            
+            // Extract background image URLs
             function getBackgroundImageUrl(el) {
                 const bgImage = el?.style.backgroundImage;
                 const urlMatch = bgImage?.match(/url\(["']?(.*?)["']?\)/);
                 return urlMatch ? urlMatch[1] : null;
             }
-
+            
             const bgImgs = imgElements
                 .map(el => getBackgroundImageUrl(el))
                 .filter(Boolean);
-
+            
             const allImgs = [...new Set([...imgUrls, ...bgImgs])];
             const primaryImg = allImgs[0] || null;
+            
+            return {
+                imgElements,
+                imgSelectorMatched,
+                imgUrls: allImgs,
+                primaryImg
+            };
+        }
 
-            const title = titleElement &&
-                params.titleAttribute
-                    .map(attr => titleElement[attr?.replaceAll(" ", "")])
-                    .find(Boolean);
+        // CONSOLIDATED LINK OPERATIONS
+        function extractLinkInfo(container, linkSelectors) {
+            const linkElementsWithSelectors = [];
+            
+            // Find link elements using selectors
+            for (const selector of linkSelectors) {
+                const element = container.querySelector(selector);
+                if (element) {
+                    linkElementsWithSelectors.push({ element, selector });
+                    break;
+                }
+            }
+            
+            const linkElement = linkElementsWithSelectors[0]?.element || null;
+            const linkSelectorMatched = linkElementsWithSelectors[0]?.selector || null;
+            
+            return {
+                linkElement,
+                linkSelectorMatched
+            };
+        }
 
-            // ENHANCED PRICE HANDLING WITH SHADOW DOM SUPPORT
+        // CONSOLIDATED VIDEO OPERATIONS
+        function extractVideoInfo(container, videoSelectors, videoAttributes) {
+            const videoElementsWithSelectors = [];
+            
+            // Find video elements using selectors
+            for (const selector of videoSelectors) {
+                const elements = Array.from(container.querySelectorAll(selector));
+                for (const element of elements) {
+                    const alreadyExists = videoElementsWithSelectors.some(item => item.element === element);
+                    if (!alreadyExists) {
+                        videoElementsWithSelectors.push({ element, selector });
+                    }
+                }
+            }
+            
+            const videoElements = videoElementsWithSelectors.map(item => item.element);
+            const videoSelectorMatched = videoElementsWithSelectors[0]?.selector || null;
+            
+            // Extract video URLs from attributes
+            const videoUrls = videoElements
+                .flatMap(el =>
+                    videoAttributes
+                        .map(attr => el?.getAttribute(attr))
+                        .filter(Boolean)
+                );
+            
+            const allVideos = [...new Set(videoUrls)];
+            
+            return {
+                videoElements,
+                videoSelectorMatched,
+                videoUrls: allVideos
+            };
+        }
+
+        // CONSOLIDATED PRICE OPERATIONS
+        function extractPriceInfo(container, priceSelectors, priceAttributes) {
             const priceInfo = [];
             
             // Use the enhanced shadow DOM-aware price extraction
             const { elements: priceElements, bestSelector: bestPriceSelector } = 
-                getPriceElementsWithBestSelector(m, priceSelectors);
+                getPriceElementsWithBestSelector(container, priceSelectors);
 
             console.log(`Best price selector for this item: ${bestPriceSelector}`);
 
             if (priceElements.length > 0) {
-                const priceAttrList = params.priceAttribute;
-                
                 for (const priceEl of priceElements) {
                     const isJavaScript = bestPriceSelector && 
                         (bestPriceSelector.includes('document') || bestPriceSelector.includes('shadowRoot'));
@@ -407,7 +456,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                         }
                     } else {
                         // For regular CSS selectors and shadow DOM elements
-                        const prioritizedAttrs = ['textContent', ...priceAttrList.filter(attr => attr !== 'textContent')];
+                        const prioritizedAttrs = ['textContent', ...priceAttributes.filter(attr => attr !== 'textContent')];
                         
                         for (const attr of prioritizedAttrs) {
                             let value = priceEl[attr]?.trim();
@@ -430,38 +479,62 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                     }
                 }
             }
+            
+            return {
+                priceInfo,
+                bestPriceSelector,
+                hasShadowDOMPrice: priceInfo.some(p => p.isShadowDOM)
+            };
+        }
 
-            // Video elements matching with selector tracking
-            const videoElementsWithSelectors = [];
-            for (const sel of videoSelectors) {
-                const elements = Array.from(m.querySelectorAll(sel));
-                for (const element of elements) {
-                    const alreadyExists = videoElementsWithSelectors.some(item => item.element === element);
-                    if (!alreadyExists) {
-                        videoElementsWithSelectors.push({ element, selector: sel });
-                    }
-                }
-            }
-            const videoElements = videoElementsWithSelectors.map(item => item.element);
-            const videoSelectorMatched = videoElementsWithSelectors[0]?.selector || null;
+        // Clean price text function
+        function cleanPriceText(text, attribute) {
+            if (!text) return '';
+            
+            let cleaned = text.trim();
+            
+            // Remove common non-price text
+            cleaned = cleaned.replace(/KDV\s+Dahil/gi, '');
+            cleaned = cleaned.replace(/Vergiler\s+Dahil/gi, '');
+            cleaned = cleaned.replace(/Tax\s+Included/gi, '');
+            cleaned = cleaned.replace(/İndirimli\s+Fiyat/gi, '');
+            cleaned = cleaned.replace(/Normal\s+Fiyat/gi, '');
+            
+            // Normalize whitespace
+            cleaned = cleaned.replace(/\s+/g, ' ').trim();
+            
+            return cleaned;
+        }
 
-            const videoUrls = videoElements
-                .flatMap(el =>
-                    videoAttrList
-                        .map(attr => el?.getAttribute(attr))
-                        .filter(Boolean)
-                );
+        // Use only the best selector to get candidate items
+        const candidateItems = Array.from(document.querySelectorAll(params.productItemSelector)).map(m => {
+            // CONSOLIDATED ELEMENT EXTRACTIONS
+            const titleInfo = extractTitleInfo(m, params.titleSelector, params.titleAttribute);
+            const { titleElement, titleSelectorMatched, title, linkFromTitle } = titleInfo;
 
-            const allVideos = [...new Set(videoUrls)];
+            const imageInfo = extractImageInfo(m, params.imageSelector, params.imageAttributes);
+            const { imgElements, imgSelectorMatched, imgUrls: allImgs, primaryImg } = imageInfo;
 
+            const linkInfo = extractLinkInfo(m, params.linkSelector);
+            const { linkElement, linkSelectorMatched } = linkInfo;
+
+            const videoInfo = extractVideoInfo(m, params.videoSelector, params.videoAttribute);
+            const { videoElements, videoSelectorMatched, videoUrls: allVideos } = videoInfo;
+
+            const priceInfo = extractPriceInfo(m, params.priceSelector, params.priceAttribute);
+            const { priceInfo: priceData, bestPriceSelector, hasShadowDOMPrice } = priceInfo;
+
+            // Product availability check
+            const productNotInStock = m.querySelector(params.productNotAvailable.join(', ')) ? true : false;
+
+            // CONSOLIDATED LINK DETERMINATION
             let link = null;
             let linkSource = null;
 
-            if (titleElement?.href) {
-                link = titleElement.href;
+            if (linkFromTitle) {
+                link = linkFromTitle;
                 linkSource = `titleElement (matched: ${titleSelectorMatched})`;
             } else if (linkElement?.href) {
-                const linkSelectorMatched = linkElementsWithSelectors[0]?.selector || null;
                 link = linkElement.href;
                 linkSource = `linkElement (matched: ${linkSelectorMatched})`;
             } else if (m?.href) {
@@ -469,7 +542,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                 linkSource = 'containerElement (m)';
             }
 
-            const matchedSelector = params.productItemSelector
+            const matchedSelector = params.productItemSelector;
 
             try {
                 return {
@@ -477,7 +550,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                     img: allImgs,
                     primaryImg,
                     link,
-                    price: priceInfo,
+                    price: priceData,
                     videos: allVideos,
                     productNotInStock,
                     matchedInfo: {
@@ -487,7 +560,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                         imgSelectorMatched,
                         videoSelectorMatched,
                         bestPriceSelector,
-                        priceExtractedFromShadowDOM: priceInfo.some(p => p.isShadowDOM)
+                        priceExtractedFromShadowDOM: hasShadowDOMPrice
                     },
                     pageTitle,
                     pageURL,
