@@ -7,28 +7,17 @@ import preNavigationHooks from "./crawler-helper/preNavigationHooksProd2.js";
 import puppeteer from './crawler-helper/puppeteer-stealth.js';
 import { getSiteConfig, getCachedSiteConfigFromFile } from './src/helper/siteConfig.js';
 import baseRowData from './src/route/micro/baseRowData.js';
-import { processScrapedData } from './src/pushToGit.js';
-
+import logToLocalSheet from './src/sheet/logToLocalSheet.js';
+import getGitHubActionsRunUrl from './src/helper/getGitHubActionsRunUrl.js';
 const site = process.env.site;
 const local = process.env.local;
 const HEADLESS = process.env.HEADLESS;
 
 // Function to generate GitHub Actions run URL
-function getGitHubActionsRunUrl() {
-    if (!process.env.GITHUB_ACTIONS) {
-        return null; // Not running in GitHub Actions
-    }
-    
-    const serverUrl = process.env.GITHUB_SERVER_URL || 'https://github.com';
-    const repository = process.env.GITHUB_REPOSITORY;
-    const runId = process.env.GITHUB_RUN_ID;
-    
-    if (repository && runId) {
-        return `${serverUrl}/${repository}/actions/runs/${runId}`;
-    }
-    
-    return null;
-}
+
+
+const GitHubRunUrl = getGitHubActionsRunUrl()
+logToLocalSheet({ GitHubRunUrl, Site: site })
 
 // URL validation function
 function validateUrls(urls) {
@@ -38,12 +27,12 @@ function validateUrls(urls) {
     for (const url of urls) {
         try {
             const urlObj = new URL(url);
-            
+
             // Check if URL has a specific path beyond just root
             // Root paths that should be considered invalid: "/", "", or only query params
             const path = urlObj.pathname;
             const hasSpecificPath = path && path !== '/' && path.length > 1;
-            
+
             if (hasSpecificPath) {
                 validUrls.push(url);
                 console.log(`✅ Valid URL: ${url} (path: ${path})`);
@@ -121,19 +110,9 @@ debugger
 
         // Check if site is paused
         if (siteConfig.paused) {
-            const logData = {
-                sheetTitle: 'paused-sites',
-                message: `Site ${site} is paused from aggregating. Reason: ${siteConfig.pausedReason || 'No reason provided'}`,
-                rowData: {
-                    site,
-                    status: 'Paused',
-                    pausedReason: siteConfig.pausedReason || 'No reason provided',
-                    timestamp: new Date().toISOString(),
-                    githubRunUrl: githubRunUrl // Add GitHub run URL
-                }
-            };
 
-            await emitAsync('log-to-sheet', logData);
+            logToLocalSheet({ Status: 'Paused', pausedReason: siteConfig.pausedReason || 'No reason provided' })
+
             console.log(`Site ${site} is paused from aggregating. Reason: ${siteConfig.pausedReason || 'No reason provided'}`);
             process.exit(0);
         }
@@ -152,22 +131,8 @@ debugger
         if (invalidUrls.length > 0) {
             console.error(`Found ${invalidUrls.length} invalid URLs (root-only paths):`);
             invalidUrls.forEach(url => console.error(`  - ${url}`));
-            
-            // Log invalid URLs to sheet
-            await emitAsync('log-to-sheet', {
-                sheetTitle: 'Crawl Logs(error)',
-                message: `Site ${site} contains invalid URLs with root-only paths`,
-                rowData: {
-                    ...baseRowData,
-                    Site: site,
-                    Status: 'Validation Error',
-                    Notes: `Found ${invalidUrls.length} invalid URLs: ${invalidUrls.join(', ')}`,
-                    ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
-                    Timestamp: new Date().toISOString(),
-                    GitHubRunUrl: githubRunUrl // Add GitHub run URL
-                }
-            });
 
+            logToLocalSheet({ Status: 'Validation Error', Notes: `Found ${invalidUrls.length} invalid URLs: ${invalidUrls.join(', ')}` })
             // Throw error if no valid URLs remain
             if (validUrls.length === 0) {
                 throw new Error(`All URLs for site ${site} are invalid (contain only root paths). Valid URLs must have specific paths like '/collections/kadin-hakiki-deri-cuzdan-ve-canta'`);
@@ -176,7 +141,7 @@ debugger
 
         // Use only valid URLs for crawling
         const urlsToScrape = validUrls;
-        
+
         console.log(`Starting crawler for site: ${site} with ${urlsToScrape.length} valid URLs`);
         console.log('Valid URLs to crawl:', urlsToScrape);
         console.log('Site configuration:', {
@@ -261,68 +226,73 @@ debugger
 
             console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
             console.log(`Stats: ${successfulRequests}/${totalRequests} successful, ${stats.requestsFailed} failed`);
-            const result = await processScrapedData(site);
-            
-            // Single comprehensive log entry with complete summary
-            await emitAsync('log-to-sheet', {
-                sheetTitle: isSuccess ? 'Crawl Logs(success)' : 'Crawl Logs(success)',
-                message: `Site ${site} crawling completed`,
-                rowData: {
-                    ...result,
-                    Duration: `${duration}s`,
-                    GitHubRunUrl: githubRunUrl // Add GitHub run URL
-                    //  Site: site,
-                    //   Status: isSuccess ? 'Success' : 'Partial Success',
-                    //   TotalURLs: totalRequests,
-                    //SuccessfulURLs: successfulRequests,
-                    //  FailedURLs: stats.requestsFailed,
-                    // Notes: isSuccess
-                    //     ? 'All URLs processed successfully'
-                    //     : `${stats.requestsFailed} URLs failed out of ${totalRequests}`,
-                    // ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
-                    //  Timestamp: new Date().toISOString()
-                }
-            });
+            // const data = await getDatasetItems(site);
+            // const dataAnalyzed = await analyzeData(data);
+            // debugger
+            // const logResult = await logToLocalSheet(dataAnalyzed);
 
+            //const result = await processScrapedData(site);
+
+            // Single comprehensive log entry with complete summary
+            // await emitAsync('log-to-sheet', {
+            //     sheetTitle: isSuccess ? 'Crawl Logs(success)' : 'Crawl Logs(success)',
+            //     message: `Site ${site} crawling completed`,
+            //     rowData: {
+            //         ...result,
+            //         Duration: `${duration}s`,
+            //         GitHubRunUrl: githubRunUrl // Add GitHub run URL
+            //         //  Site: site,
+            //         //   Status: isSuccess ? 'Success' : 'Partial Success',
+            //         //   TotalURLs: totalRequests,
+            //         //SuccessfulURLs: successfulRequests,
+            //         //  FailedURLs: stats.requestsFailed,
+            //         // Notes: isSuccess
+            //         //     ? 'All URLs processed successfully'
+            //         //     : `${stats.requestsFailed} URLs failed out of ${totalRequests}`,
+            //         // ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
+            //         //  Timestamp: new Date().toISOString()
+            //     }
+            // });
+            logToLocalSheet({ Duration: duration })
         } catch (crawlerError) {
             console.error('❌ Crawler execution failed:', crawlerError);
 
-            // Log fatal crawler error.
-            await emitAsync('log-to-sheet', {
-                sheetTitle: 'Crawl Logs(error)',
-                message: `Site ${site} crawler failed fatally`,
-                rowData: {
-                    ...baseRowData,
-                    Site: site,
-                    Status: 'Fatal Error',
-                    Notes: `Crawler crashed: ${crawlerError.message}`,
-                    ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
-                    Timestamp: new Date().toISOString(),
-                    GitHubRunUrl: githubRunUrl // Add GitHub run URL
-                }
-            });
-
+            // // Log fatal crawler error.
+            // await emitAsync('log-to-sheet', {
+            //     sheetTitle: 'Crawl Logs(error)',
+            //     message: `Site ${site} crawler failed fatally`,
+            //     rowData: {
+            //         ...baseRowData,
+            //         Site: site,
+            //         Status: 'Fatal Error',
+            //         Notes: `Crawler crashed: ${crawlerError.message}`,
+            //         ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
+            //         Timestamp: new Date().toISOString(),
+            //         GitHubRunUrl: githubRunUrl // Add GitHub run URL
+            //     }
+            // });
+            logToLocalSheet({ Status: 'Fatal Error', Notes: `Crawler crashed: ${crawlerError.message}` });
             throw crawlerError; // Re-throw to maintain error handling behavior
         }
 
     } catch (error) {
         console.error('💥 Fatal error in main execution:', error);
 
-        // Log fatal main execution error
-        await emitAsync('log-to-sheet', {
-            sheetTitle: 'Crawl Logs(error)',
-            message: `Site ${site} main execution failed`,
-            rowData: {
-                ...baseRowData,
-                Site: site,
-                Status: 'Fatal Error',
-                Notes: `Main execution failed: ${error.message}`,
-                ConfigSource: 'Unknown',
-                Timestamp: new Date().toISOString(),
-                GitHubRunUrl: githubRunUrl // Add GitHub run URL
-            }
-        });
-
+        // // Log fatal main execution error
+        // await emitAsync('log-to-sheet', {
+        //     sheetTitle: 'Crawl Logs(error)',
+        //     message: `Site ${site} main execution failed`,
+        //     rowData: {
+        //         ...baseRowData,
+        //         Site: site,
+        //         Status: 'Fatal Error',
+        //         Notes: `Main execution failed: ${error.message}`,
+        //         ConfigSource: 'Unknown',
+        //         Timestamp: new Date().toISOString(),
+        //         GitHubRunUrl: githubRunUrl // Add GitHub run URL
+        //     }
+        // });
+        logToLocalSheet({ Status: 'Fatal Error', Notes: `Main execution failed: ${error.message}` });
         process.exit(1);
     }
 })();

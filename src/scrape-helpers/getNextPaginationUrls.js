@@ -1,19 +1,19 @@
 
-import { getDatasetData } from '../crawlee/datasetOperations.js';
+
+import logToLocalSheet from '../sheet/logToLocalSheet.js';
 export default async function getNextPaginationUrls(page, url, siteUrls) {
   debugger
 
-  const itemsPerPage = await getDatasetData('totalItemsPerPage');
+  const {
+    totalItemsPerPage: itemsPerPage, totalItemsToBeCallected: totalItemsToCallect } = logToLocalSheet()
 
   debugger
   const paginationSelector = siteUrls?.paginationSelector
   const paginationParameterName = siteUrls?.paginationParameterName
-  //const itemsPerPage = siteUrls?.itemsPerPage
-  const totalItemsToCallect = await getDatasetData('totalItemsToBeCallected');
-  debugger
+
   if (paginationSelector && paginationParameterName) {
 
-    const result =  await page.evaluate((paginationSelector, baseUrl, paginationParameterName) => {
+    const result = await page.evaluate((paginationSelector, baseUrl, paginationParameterName) => {
       debugger
       try {
 

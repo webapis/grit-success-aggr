@@ -9,24 +9,18 @@ const site = process.env.site;
 const gitFolder = process.env.gitFolder;
 
 export const createRouter = async (siteUrls) => {
+  
   const productsDataset = await Dataset.open(site);
   const router = createPuppeteerRouter();
 
   router.addDefaultHandler(async (props) => {
-
     const data = await first({ ...props, label: "default", siteUrls });
-
-    if (data) {
-      await productsDataset.pushData(data);
-    }
+    await productsDataset.pushData(data);
   });
 
   router.addHandler("second", async (props) => {
     const data = await second({ ...props, label: "second", siteUrls });
-
-    if (data) {
-      await productsDataset.pushData(data);
-    }
+    await productsDataset.pushData(data);
   });
 
   return router;

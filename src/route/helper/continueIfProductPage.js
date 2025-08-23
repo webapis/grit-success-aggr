@@ -6,6 +6,7 @@ import { uploadImage } from "../../git/uploadImage.js";
 import '../../listeners.js'; // ← This registers event handlers
 import { pushDataToDataset } from "../../crawlee/datasetOperations.js";
 import getTotalItemsCount from "../micro/getTotalItemsCount.js";
+import logToLocalSheet from "../../sheet/logToLocalSheet.js";
 import baseRowData from "../micro/baseRowData.js";
 dotenv.config({ silent: true });
 const site = process.env.site;
@@ -35,17 +36,20 @@ export default async function continueIfProductPage({ page, siteUrls }) {
 
         const { count: totalItemsToBeCallected, selector: totalItemsSelector } = await getTotalItemsCount(page, siteUrls?.totalProductCounterSelector);
 
-        if (totalItemsToBeCallected > 0) {
-            await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected, totalItemsSelector });
-        }
+
+            logToLocalSheet({ totalItemsToBeCallected, totalItemsSelector });
+            //  await pushDataToDataset('totalItemsToBeCallected', { totalItemsToBeCallected, totalItemsSelector });
+        
 
         const totalItemsPerPage = bestSelector['count'];
-        const matchedproductItemSelectors = [bestSelector['selector']]
+       // const matchedproductItemSelectors = [bestSelector['selector']]
 
-        await pushDataToDataset('totalItemsPerPage', { totalItemsPerPage });
-        await pushDataToDataset("matchedproductItemSelectors", { matchedproductItemSelectors });
+        //  await pushDataToDataset('totalItemsPerPage', { totalItemsPerPage });
+        //  await pushDataToDataset("matchedproductItemSelectors", { matchedproductItemSelectors });
+        logToLocalSheet({ totalItemsPerPage });
+        logToLocalSheet({ productItemSelector: bestSelector.selector });
+
         return { success: true, productItemSelector: bestSelector.selector, totalItemsPerPage };
-
 
 
     } else {
