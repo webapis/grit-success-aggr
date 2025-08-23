@@ -5,7 +5,11 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
 
     // Prefer the selector passed into the function, otherwise use default
     const selectorToUse = totalProductCounterSelector || itemCounterSelector;
+    if (totalProductCounterSelector === 'none') {
 
+        return { count: 0, selector: 'none' };
+
+    }
     // If you don't want to use findBestSelector anymore, just query directly:
     let selector = selectorToUse;
 
