@@ -1,7 +1,7 @@
 {
-  "targetSite": "tergan",
+  "targetSite": "buenoshoes",
   "urls": [
-    "https://www.tergan.com.tr/kadin-canta"
+    "https://www.buenoshoes.com.tr/kadin/canta"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,15 +9,15 @@
   "filteringNeeded": true,
   "configurations": [
     {
-      "brand": "tergan",
-      "paginationSelector": "",
-      "paginationParameterName": "?ps=",
+      "brand": "buenoshoes",
+      "paginationSelector": ".divUPager a",
+      "paginationParameterName": "?page=",
       "scrollable": false,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": ".total-product span",
+      "totalProductCounterSelector": "none",
 
       "urls": [
-        "https://www.tergan.com.tr/kadin-canta"
+        "https://www.buenoshoes.com.tr/kadin/canta"
       ],
       "paused": false,
       "pausedReason": "",
@@ -25,10 +25,10 @@
       "rowIndex": 41
     }
   ],
-  "paginationSelector": "",
-  "paginationParameterName": "?ps=",
+  "paginationSelector": ".divUPager a",
+  "paginationParameterName": "?page=",
   "scrollable": false,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": ".total-product span"
+  "totalProductCounterSelector": "none"
 
 }
