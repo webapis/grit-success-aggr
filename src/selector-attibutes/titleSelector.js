@@ -1,4 +1,5 @@
 export default [
+    '.woocommerce-loop-product__title a',
     'a.card__title',
     '.product__inside__name .product-shot-desc',
     '.product-title a',
