@@ -23,7 +23,8 @@ emitter.on('log-to-sheet', async ({ sheetTitle = 'Crawl Logs', rowData, message 
     sheetId: SHEET_ID,
     sheetTitle,
     serviceAccountCredentials: CREDENTIALS,
-    rowData
+    rowData,
+    columnCount: 100
   });
   if (message) {
     console.log(message);

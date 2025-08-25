@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/test/index.js",
     "startProdPuppteer": "node prodCrawlerPuppeteer.js",
-    "uploadData": "node src/pushToGitLocal.js"
+    "uploadData": "node src/sheet/uploadToGoogleSheet.js"
   },
   "keywords": [],
   "author": "",

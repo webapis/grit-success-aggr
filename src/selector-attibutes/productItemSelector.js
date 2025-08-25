@@ -1,4 +1,5 @@
 export default [
+    'loess-product-card',
     '.product-box-container',
     '.single-banner',
     '.cat-product article.product-box:has(.product-body)',//

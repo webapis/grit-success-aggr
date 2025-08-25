@@ -1,4 +1,5 @@
 export default [
+    'a.card__title',
     '.product__inside__name .product-shot-desc',
     '.product-title a',
     '.text-xs.font-medium.leading-snug.text-secondary-100',

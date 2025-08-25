@@ -118,7 +118,8 @@ jobs:
         
         node prodCrawlerPuppeteer.js
 
-    # - name: Upload results
-    #   run: |
-    #     echo "📤 Uploading results..."
-    #     node src/pushToGit.js
+    - name: Upload results
+      if: always()
+      run: |
+        echo "📤 Uploading results..."
+        node src/sheet/uploadToGoogleSheet.js

@@ -6,7 +6,7 @@ import scrapeData from "./scrape/scrapeData.js";
 import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
 import continueIfProductPage from "./helper/continueIfProductPage.js";
 import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
-
+import logToLocalSheet from "../sheet/logToLocalSheet.js";
 
 
 dotenv.config({ silent: true });
@@ -23,11 +23,14 @@ export default async function first(props) {
     console.log('inside first route')
 
     debugger
-    const { success, productItemSelector } = await continueIfProductPage({ page, siteUrls });
+    const  success = await continueIfProductPage({ page, siteUrls });
     debugger
     if (success) {
 
         debugger
+
+          const {productItemSelector}=logToLocalSheet()
+
         await scrollPageIfRequired({page, siteUrls,routeName:"first"})
         await addNextPagesToRequests({ page, addRequests, siteUrls, url });
         const data = await scrapeData({ page, siteUrls, productItemSelector })
