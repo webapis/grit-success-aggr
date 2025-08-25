@@ -1,4 +1,5 @@
 export default [
+    '.product-prices li.text-left',
     '.rvts-badge-discount p',
     '.para-tutar',
     'span.text-sm.font-bold.leading-snug.text-primary',
@@ -12,11 +13,11 @@ export default [
     'document.querySelector("price-element").shadowRoot.querySelector(".price")',
     'document.querySelector("price-element").shadowRoot.querySelector("div.price")',
     'document.querySelector("price-element").shadowRoot.querySelector(".container .price")',
-    
+
     // Existing shadow DOM selectors from your original file
     'document.querySelector("price-element").shadowRoot.querySelector(".container .price");',
     '.product-info price-element::shadow::.price',
-    
+
     // Your existing regular selectors
     '.product-box-new-price',
     'span.product-box-price',
