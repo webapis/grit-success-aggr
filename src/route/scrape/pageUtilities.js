@@ -323,13 +323,78 @@ function extractTitleInfo(container, titleSelectors, titleAttributes) {
 function extractImageInfo(container, imageSelectors, imageAttributes) {
     const imgElementsWithSelectors = [];
     
-    // Find all image elements using selectors
+    // Helper function to check if a string is JavaScript code
+    function isJavaScriptCode(str) {
+        return str && (
+            str.includes('document.querySelector') ||
+            str.includes('document.querySelectorAll') ||
+            str.includes('getElementsBy') ||
+            str.includes('.getAttribute(') ||
+            str.includes('.style.') ||
+            str.includes('.src') ||
+            str.includes('.map(') ||
+            str.includes('.filter(') ||
+            str.includes('.find(') ||
+            str.includes('=>') ||
+            str.includes('function(')
+        );
+    }
+    
+    // Helper function to safely execute JavaScript code
+    function executeJavaScript(jsCode, container) {
+        try {
+            // Create a function that has access to the container
+            const func = new Function('container', 'document', `
+                try {
+                    return ${jsCode};
+                } catch (error) {
+                    console.error('Error executing JS code:', error);
+                    return [];
+                }
+            `);
+            
+            const result = func(container, document);
+            
+            // Ensure result is an array of elements
+            if (result) {
+                if (result.length !== undefined) {
+                    // It's array-like, convert to array
+                    return Array.from(result);
+                } else if (result.nodeType) {
+                    // It's a single element
+                    return [result];
+                } else if (typeof result === 'string') {
+                    // It's a URL string, create a virtual element for consistency
+                    const virtualElement = document.createElement('img');
+                    virtualElement.src = result;
+                    return [virtualElement];
+                }
+            }
+            return [];
+        } catch (error) {
+            console.error('Error executing JavaScript code:', error);
+            return [];
+        }
+    }
+    
+    // Find all image elements using selectors or JavaScript code
     for (const selector of imageSelectors) {
-        const elements = Array.from(container.querySelectorAll(selector));
+        let elements = [];
+        let actualSelector = selector;
+        
+        if (isJavaScriptCode(selector)) {
+            console.log('Executing JavaScript code for image selection:', selector);
+            elements = executeJavaScript(selector, container);
+            actualSelector = `JavaScript: ${selector}`;
+        } else {
+            // Regular CSS selector
+            elements = Array.from(container.querySelectorAll(selector));
+        }
+        
         for (const element of elements) {
             const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
             if (!alreadyExists) {
-                imgElementsWithSelectors.push({ element, selector });
+                imgElementsWithSelectors.push({ element, selector: actualSelector });
             }
         }
     }
@@ -338,15 +403,20 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
     const imgSelectorMatched = imgElementsWithSelectors[0]?.selector || null;
     
     // Extract image URLs from attributes
-    const imgUrls = imgElements.flatMap(el =>
-        imageAttributes
+    const imgUrls = imgElements.flatMap(el => {
+        // Handle virtual elements created from JavaScript execution
+        if (el.src && el.tagName === 'IMG' && el.src.startsWith('http')) {
+            return [el.src];
+        }
+        
+        return imageAttributes
             .map(attr => el?.getAttribute(attr?.replaceAll(" ", "")))
-            .filter(Boolean)
-    );
+            .filter(Boolean);
+    });
     
     // Extract background image URLs
     function getBackgroundImageUrl(el) {
-        const bgImage = el?.style.backgroundImage;
+        const bgImage = el?.style?.backgroundImage;
         const urlMatch = bgImage?.match(/url\(["']?(.*?)["']?\)/);
         return urlMatch ? urlMatch[1] : null;
     }
