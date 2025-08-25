@@ -1,4 +1,5 @@
 export default [
+    '.price-item.price-item--regular',
     '.product-prices li.text-left',
     '.rvts-badge-discount p',
     '.para-tutar',

@@ -1,4 +1,5 @@
 export default [
+    'a.card__title',
     '.AddToCartArea div.product-info > a:nth-of-type(2)',
     'div.text-sm.text-left.flex.flex-col.justify-start a',
     'a[class*="ProductImage_"]',
