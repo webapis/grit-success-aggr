@@ -1,4 +1,5 @@
 export default [
+  '.qodef-pl-image img',
   'img.attachment-woocommerce_thumbnail',
   '.product-item-img',
   '.main-product-img.card-img',
