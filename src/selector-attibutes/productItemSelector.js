@@ -1,4 +1,5 @@
 export default [
+    '.sf__pcard.cursor-pointer.sf-prod__block',
     'li.grid__item .card-wrapper.product-card-wrapper',
     'loess-product-card',
     '.product-box-container',
