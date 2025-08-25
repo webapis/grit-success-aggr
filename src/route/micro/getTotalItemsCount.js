@@ -2,15 +2,57 @@ import itemCounterSelector from "../../selector-attibutes/itemCounterSelector.js
 
 export default async function getTotalItemsCount(page, totalProductCounterSelector) {
     debugger;
-console.log('totalProductCounterSelector----------------!!', totalProductCounterSelector);
-    // Prefer the selector passed into the function, otherwise use default
-    const selectorToUse = totalProductCounterSelector || itemCounterSelector;
+    console.log('totalProductCounterSelector----------------!!', totalProductCounterSelector);
+    
+    // Handle special cases first
     if (totalProductCounterSelector === 'none') {
-
         return { count: 0, selector: 'none' };
-
     }
-    // If you don't want to use findBestSelector anymore, just query directly:
+    
+    // Check if totalProductCounterSelector is JavaScript code (contains common JS patterns)
+    const isJavaScriptCode = totalProductCounterSelector && (
+        totalProductCounterSelector.includes('document.querySelector') ||
+        totalProductCounterSelector.includes('document.querySelectorAll') ||
+        totalProductCounterSelector.includes('.innerText') ||
+        totalProductCounterSelector.includes('.textContent') ||
+        totalProductCounterSelector.includes('.split(') ||
+        totalProductCounterSelector.includes('.filter(')
+    );
+    
+    if (isJavaScriptCode) {
+        try {
+            console.log('Executing JavaScript code:', totalProductCounterSelector);
+            
+            // Execute the JavaScript code in the browser context
+            const result = await page.evaluate((jsCode) => {
+                try {
+                    // Use Function constructor to safely evaluate the code
+                    const func = new Function('return ' + jsCode);
+                    return func();
+                } catch (error) {
+                    console.error('Error executing JS code:', error);
+                    return null;
+                }
+            }, totalProductCounterSelector);
+            
+            if (result !== null && result !== undefined) {
+                const count = parseInt(result, 10);
+                if (!isNaN(count)) {
+                    return { count, selector: `JavaScript: ${totalProductCounterSelector}` };
+                }
+            }
+            
+            console.warn('JavaScript execution returned invalid result:', result);
+            return { count: 0, selector: `JavaScript execution failed: ${totalProductCounterSelector}` };
+            
+        } catch (error) {
+            console.error('Error executing JavaScript code:', error);
+            return { count: 0, selector: `JavaScript execution error: ${totalProductCounterSelector}` };
+        }
+    }
+    
+    // Original selector-based logic
+    const selectorToUse = totalProductCounterSelector || itemCounterSelector;
     let selector = selectorToUse;
 
     // Optional: If selector is an array, pick the first one that exists on the page
@@ -32,9 +74,7 @@ console.log('totalProductCounterSelector----------------!!', totalProductCounter
 
     try {
         // Wait for element
-
         await page.waitForSelector(selector);
-
         const resultElement = await page.$eval(selector, el => el.textContent);
 
         if (!resultElement) {
@@ -57,11 +97,9 @@ console.log('totalProductCounterSelector----------------!!', totalProductCounter
 
         return { count: parseInt(number[0], 10), selector };
 
-
     } catch (error) {
         console.error('Error getting total items count:', error);
         console.error('Selector used:', selector);
         return { count: 0, selector: 'Error getting total items count: ' + selector };
-
     }
 }
