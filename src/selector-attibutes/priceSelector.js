@@ -1,4 +1,5 @@
 export default [
+    '.money.buckscc-money',
     '.woocommerce-Price-amount.amount',
     '.price-item.price-item--regular',
     '.product-prices li.text-left',
