@@ -1,6 +1,5 @@
 export default [
   'img.attachment-woocommerce_thumbnail',
-  'img.attachment-woocommerce_thumbnail',
   '.product-item-img',
   '.main-product-img.card-img',
   'span.teaser img',
