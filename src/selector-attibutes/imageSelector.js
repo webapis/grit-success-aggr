@@ -1,4 +1,5 @@
 export default [
+  "document.querySelector('.attachment-woocommerce_thumbnail').getAttribute('data-lazy-src')",
   'img.attachment-woocommerce_thumbnail',
   '.product-item-img',
   '.main-product-img.card-img',
