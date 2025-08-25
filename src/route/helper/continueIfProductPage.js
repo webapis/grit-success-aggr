@@ -55,8 +55,8 @@ export default async function continueIfProductPage({ page, siteUrls }) {
             gitFolder: 'screenshots'
         })
 
-        logToLocalSheet({ totalItemsPerPage });
-        logToLocalSheet({ productItemSelector: bestSelector.selector });
+        logToLocalSheet({ totalItemsPerPage: 0 });
+        logToLocalSheet({ productItemSelector: 'not defined' });
         logToLocalSheet({ ScreenshotGit: result.url });
 
         return false
