@@ -1,4 +1,5 @@
 export default [
+    'li.grid__item .card-wrapper.product-card-wrapper',
     'loess-product-card',
     '.product-box-container',
     '.single-banner',
