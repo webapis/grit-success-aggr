@@ -1,4 +1,5 @@
 export default [
+    '.product-list-item-title',
     '.woocommerce-loop-product__title',
     '.qodef-product-list-title a',
     '.woocommerce-loop-product__title a',
