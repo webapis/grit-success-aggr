@@ -349,70 +349,77 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
                     return ${jsCode};
                 } catch (error) {
                     console.error('Error executing JS code:', error);
-                    return [];
+                    return null;
                 }
             `);
             
             const result = func(container, document);
             
-            // Ensure result is an array of elements
+            // Handle different result types
             if (result) {
-                if (result.length !== undefined) {
-                    // It's array-like, convert to array
-                    return Array.from(result);
+                if (typeof result === 'string' && result.trim()) {
+                    // It's a URL string - return it as URLs, not elements
+                    return { type: 'url', value: result.trim() };
+                } else if (result.length !== undefined) {
+                    // It's array-like, convert to array of elements
+                    return { type: 'elements', value: Array.from(result) };
                 } else if (result.nodeType) {
                     // It's a single element
-                    return [result];
-                } else if (typeof result === 'string') {
-                    // It's a URL string, create a virtual element for consistency
-                    const virtualElement = document.createElement('img');
-                    virtualElement.src = result;
-                    return [virtualElement];
+                    return { type: 'elements', value: [result] };
                 }
             }
-            return [];
+            return { type: 'empty', value: [] };
         } catch (error) {
             console.error('Error executing JavaScript code:', error);
-            return [];
+            return { type: 'empty', value: [] };
         }
     }
     
     // Find all image elements using selectors or JavaScript code
+    const directUrls = []; // Store URLs from JavaScript execution
+    
     for (const selector of imageSelectors) {
-        let elements = [];
-        let actualSelector = selector;
-        
         if (isJavaScriptCode(selector)) {
             console.log('Executing JavaScript code for image selection:', selector);
-            elements = executeJavaScript(selector, container);
-            actualSelector = `JavaScript: ${selector}`;
+            const jsResult = executeJavaScript(selector, container);
+            const actualSelector = `JavaScript: ${selector}`;
+            
+            if (jsResult.type === 'url') {
+                // JavaScript returned a URL string directly
+                directUrls.push({ url: jsResult.value, selector: actualSelector });
+            } else if (jsResult.type === 'elements') {
+                // JavaScript returned DOM elements
+                for (const element of jsResult.value) {
+                    const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
+                    if (!alreadyExists) {
+                        imgElementsWithSelectors.push({ element, selector: actualSelector });
+                    }
+                }
+            }
         } else {
             // Regular CSS selector
-            elements = Array.from(container.querySelectorAll(selector));
-        }
-        
-        for (const element of elements) {
-            const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
-            if (!alreadyExists) {
-                imgElementsWithSelectors.push({ element, selector: actualSelector });
+            const elements = Array.from(container.querySelectorAll(selector));
+            for (const element of elements) {
+                const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
+                if (!alreadyExists) {
+                    imgElementsWithSelectors.push({ element, selector });
+                }
             }
         }
     }
     
     const imgElements = imgElementsWithSelectors.map(item => item.element);
-    const imgSelectorMatched = imgElementsWithSelectors[0]?.selector || null;
+    const imgSelectorMatched = imgElementsWithSelectors[0]?.selector || directUrls[0]?.selector || null;
     
     // Extract image URLs from attributes
-    const imgUrls = imgElements.flatMap(el => {
-        // Handle virtual elements created from JavaScript execution
-        if (el.src && el.tagName === 'IMG' && el.src.startsWith('http')) {
-            return [el.src];
-        }
-        
+    const imgUrls = imgElements.flatMap(el => {        
         return imageAttributes
             .map(attr => el?.getAttribute(attr?.replaceAll(" ", "")))
             .filter(Boolean);
     });
+    
+    // Add URLs from direct JavaScript execution
+    const directUrlValues = directUrls.map(item => item.url);
     
     // Extract background image URLs
     function getBackgroundImageUrl(el) {
@@ -425,7 +432,7 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
         .map(el => getBackgroundImageUrl(el))
         .filter(Boolean);
     
-    const allImgs = [...new Set([...imgUrls, ...bgImgs])];
+    const allImgs = [...new Set([...imgUrls, ...directUrlValues, ...bgImgs])];
     const primaryImg = allImgs[0] || null;
     
     return {
