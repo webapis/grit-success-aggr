@@ -1,1 +1,1 @@
-export default [".mainTukendi",'.qode-pli-out-of-stock','span.out-of-stock']
+export default [".mainTukendi",'.qode-pli-out-of-stock','span.out-of-stock','.stock-status span']
