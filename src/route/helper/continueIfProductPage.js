@@ -16,14 +16,14 @@ export default async function continueIfProductPage({ page, siteUrls }) {
     });
 
 
-    const waitForSeconds = siteUrls?.waitForSeconds || 3;
+    //const waitForSeconds = siteUrls?.waitForSeconds || 3;
 
 
-    if (waitForSeconds > 0) {
-        await page.evaluate(async (seconds) => {
-            await new Promise(resolve => setTimeout(resolve, seconds * 1000)); // Fixed: multiply by 1000 for milliseconds
-        }, waitForSeconds);
-    }
+    // if (waitForSeconds > 0) {
+    //     await page.evaluate(async (seconds) => {
+    //         await new Promise(resolve => setTimeout(resolve, seconds * 1000)); // Fixed: multiply by 1000 for milliseconds
+    //     }, waitForSeconds);
+    // }
 
     const bestSelector = await findBestSelector(page, productItemSelector);
 
