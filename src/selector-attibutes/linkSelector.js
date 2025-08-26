@@ -1,4 +1,5 @@
 export default [
+    '.ast-loop-product__link',
     '.product-list-item-title a',
     '.uael-loop-product__link',
     '.qodef-product-list-title a',
