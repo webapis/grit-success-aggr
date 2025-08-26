@@ -1,4 +1,5 @@
 export default [
+    '.product_singlebody a',
     '[data-hook="product-item-name"]',
     '.product-item__title',
     '.product-list-item-title',

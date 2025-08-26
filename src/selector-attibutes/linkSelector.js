@@ -1,4 +1,5 @@
 export default [
+     '.product_singlebody a',
     '[data-hook="product-item-container"]',
     '.ast-loop-product__link',
     '.product-list-item-title a',
