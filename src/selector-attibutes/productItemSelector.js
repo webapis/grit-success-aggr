@@ -1,4 +1,5 @@
 export default [
+    '.product_single',
     '[data-hook="product-list-grid-item"]',
     '.sf__pcard.cursor-pointer.sf-prod__block',
     'li.grid__item .card-wrapper.product-card-wrapper',
