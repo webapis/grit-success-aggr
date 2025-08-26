@@ -1,4 +1,5 @@
 export default [
+    '.woocommerce-Price-amount.amount',
     '.priceone',
     '[data-hook="product-item-price-to-pay"]',
     'span.new-price',
