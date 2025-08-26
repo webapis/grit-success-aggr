@@ -1,4 +1,5 @@
 export default [
+    '.list-item .list-item-inline',
     '.product_single',
     '[data-hook="product-list-grid-item"]',
     '.sf__pcard.cursor-pointer.sf-prod__block',
