@@ -1,7 +1,7 @@
 {
-  "targetSite": "tergan",
+  "targetSite": "shulebags",
   "urls": [
-    "https://www.tergan.com.tr/kadin-canta"
+    "https://www.shulebags.com/kadin-canta"
   ],
   "totalUrls": 1,
   "paused": false,
@@ -9,15 +9,15 @@
   "filteringNeeded": true,
   "configurations": [
     {
-      "brand": "tergan",
+      "brand": "shulebags",
       "paginationSelector": "",
-      "paginationParameterName": "?ps=",
+      "paginationParameterName": "",
       "scrollable": false,
       "showMoreButtonSelector": "",
-      "totalProductCounterSelector": ".total-product span",
+      "totalProductCounterSelector": "",
 
       "urls": [
-        "https://www.tergan.com.tr/kadin-canta"
+        "https://www.shulebags.com/kadin-canta"
       ],
       "paused": false,
       "pausedReason": "",
@@ -26,9 +26,9 @@
     }
   ],
   "paginationSelector": "",
-  "paginationParameterName": "?ps=",
+  "paginationParameterName": "",
   "scrollable": false,
   "showMoreButtonSelector": "",
-  "totalProductCounterSelector": ".total-product span"
+  "totalProductCounterSelector": ""
 
 }

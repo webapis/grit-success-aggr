@@ -24,11 +24,11 @@
   "Error Sample Data (Drive)": "N/A",
   "Error Sample Data (Git)": "N/A",
   "Duplicate URL Sample Data (Git)": "N/A",
-  "totalItemsToBeCallected": 498,
-  "totalItemsSelector": ".total-product span",
-  "totalItemsPerPage": 32,
-  "productItemSelector": "[data-index].product-item",
+  "totalItemsToBeCallected": 1390,
+  "totalItemsSelector": ".FiltrelemeUrunAdet span",
+  "totalItemsPerPage": 12,
+  "productItemSelector": ".productItem:not(:has(.pw-img-swiper))",
   "GitHubRunUrl": null,
-  "Site": "tergan",
-  "Duration": 64
+  "Site": "shulebags",
+  "Duration": 138
 }
