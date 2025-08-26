@@ -1,4 +1,5 @@
 export default [
+    '[data-hook="product-item-container"]',
     '.ast-loop-product__link',
     '.product-list-item-title a',
     '.uael-loop-product__link',

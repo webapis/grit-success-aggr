@@ -1,4 +1,5 @@
 export default [
+    '[data-hook="product-item-name"]',
     '.product-item__title',
     '.product-list-item-title',
     '.woocommerce-loop-product__title',
