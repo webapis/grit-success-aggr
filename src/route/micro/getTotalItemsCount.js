@@ -1,5 +1,8 @@
 import itemCounterSelector from "../../selector-attibutes/itemCounterSelector.js";
+import { uploadImage } from "../../git/uploadImage.js";
+import logToLocalSheet from "../../sheet/logToLocalSheet.js";
 
+const site = process.env.site || 'unknown-site';
 export default async function getTotalItemsCount(page, totalProductCounterSelector) {
     let selector = null;
     const TIMEOUT = 10000; // 10 second timeout
@@ -54,6 +57,18 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
             await page.waitForSelector(selector, { timeout: TIMEOUT });
         } catch (timeoutError) {
             console.warn(`Selector not found within ${TIMEOUT}ms:`, selector);
+
+                   //take screenshot if initial pages could not be retrieved.
+        const screenshotBuffer = await page.screenshot({ fullPage: true });
+        // Upload directly to GitHub
+        const result = await uploadImage({
+            fileName: `${site}-${Date.now()}-getTotalItemsCount.png`,  // Will become 'webpage-screenshot.png'
+            imageBuffer: screenshotBuffer,   // Pass the buffer directly
+            gitFolder: 'screenshots'
+        })
+
+
+        logToLocalSheet({ ScreenshotGit: result.url });
             return { 
                 count: 0, 
                 selector: `Timeout waiting for selector: ${selector}`, 
