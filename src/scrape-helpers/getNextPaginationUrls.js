@@ -10,8 +10,7 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
   debugger
   const paginationSelector = siteUrls?.paginationSelector
   const paginationParameterName = siteUrls?.paginationParameterName
-  console.log('getNextPaginationUrls-----', siteUrls)
-    console.log('baseUrl-----', url)
+
   if (paginationSelector && paginationParameterName) {
 
     const result = await page.evaluate((paginationSelector, baseUrl, paginationParameterName) => {
