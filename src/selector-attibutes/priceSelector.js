@@ -1,11 +1,11 @@
 export default [
+    '.item-price',
     '.woocommerce-Price-amount.amount',
     '.priceone',
     '[data-hook="product-item-price-to-pay"]',
     'span.new-price',
     '.product-list-item-price .money',
     '.money.buckscc-money',
-    '.woocommerce-Price-amount.amount',
     '.price-item.price-item--regular',
     '.product-prices li.text-left',
     '.rvts-badge-discount p',
