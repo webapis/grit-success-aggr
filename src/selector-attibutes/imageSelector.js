@@ -1,4 +1,5 @@
 export default [
+  '.showcase-image img',
   '.product-list-item-thumbnail img',
   "document.querySelector('.attachment-woocommerce_thumbnail').getAttribute('data-lazy-src')",
   'img.attachment-woocommerce_thumbnail',
