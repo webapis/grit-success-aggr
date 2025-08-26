@@ -3,14 +3,17 @@ import itemCounterSelector from "../../selector-attibutes/itemCounterSelector.js
 export default async function getTotalItemsCount(page, totalProductCounterSelector) {
     debugger;
     console.log('totalProductCounterSelector----------------!!', totalProductCounterSelector);
-    
+
     // Handle special cases first
     if (totalProductCounterSelector === 'none') {
         return { count: 0, selector: 'none' };
     }
-    
+
+    // Original selector-based logic
+    const selectorToUse = totalProductCounterSelector || itemCounterSelector;
+    let selector = selectorToUse;
     // Check if totalProductCounterSelector is JavaScript code (contains common JS patterns)
-    const isJavaScriptCode = totalProductCounterSelector && (
+    const isJavaScriptCode = selector && (
         totalProductCounterSelector.includes('document.querySelector') ||
         totalProductCounterSelector.includes('document.querySelectorAll') ||
         totalProductCounterSelector.includes('.innerText') ||
@@ -18,11 +21,11 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
         totalProductCounterSelector.includes('.split(') ||
         totalProductCounterSelector.includes('.filter(')
     );
-    
+
     if (isJavaScriptCode) {
         try {
             console.log('Executing JavaScript code:', totalProductCounterSelector);
-            
+
             // Execute the JavaScript code in the browser context
             const result = await page.evaluate((jsCode) => {
                 try {
@@ -34,26 +37,24 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
                     return null;
                 }
             }, totalProductCounterSelector);
-            
+
             if (result !== null && result !== undefined) {
                 const count = parseInt(result, 10);
                 if (!isNaN(count)) {
                     return { count, selector: `JavaScript: ${totalProductCounterSelector}` };
                 }
             }
-            
+
             console.warn('JavaScript execution returned invalid result:', result);
             return { count: 0, selector: `JavaScript execution failed: ${totalProductCounterSelector}` };
-            
+
         } catch (error) {
             console.error('Error executing JavaScript code:', error);
             return { count: 0, selector: `JavaScript execution error: ${totalProductCounterSelector}` };
         }
     }
-    
-    // Original selector-based logic
-    const selectorToUse = totalProductCounterSelector || itemCounterSelector;
-    let selector = selectorToUse;
+
+
 
     // Optional: If selector is an array, pick the first one that exists on the page
     if (Array.isArray(selector)) {
