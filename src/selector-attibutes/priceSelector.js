@@ -1,4 +1,5 @@
 export default [
+    '[data-hook="product-item-price-to-pay"]',
     'span.new-price',
     '.product-list-item-price .money',
     '.money.buckscc-money',
