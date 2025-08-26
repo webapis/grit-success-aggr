@@ -1,5 +1,5 @@
-import { uploadImage } from "../../git/uploadImage";
-import logToLocalSheet from "../../sheet/logToLocalSheet";
+import { uploadImage } from "../../git/uploadImage.js";
+import logToLocalSheet from "../../sheet/logToLocalSheet.js";
 const site = process.env.site || 'unknown-site';
 export default async function uploadScreenShot({ page, fileNamePrefix }) {
     //take screenshot if initial pages could not be retrieved.
