@@ -1,4 +1,7 @@
 export default [
+    'span.new-price',
+    '.product-list-item-price .money',
+    '.money.buckscc-money',
     '.woocommerce-Price-amount.amount',
     '.price-item.price-item--regular',
     '.product-prices li.text-left',

@@ -323,30 +323,107 @@ function extractTitleInfo(container, titleSelectors, titleAttributes) {
 function extractImageInfo(container, imageSelectors, imageAttributes) {
     const imgElementsWithSelectors = [];
     
-    // Find all image elements using selectors
+    // Helper function to check if a string is JavaScript code
+    function isJavaScriptCode(str) {
+        return str && (
+            str.includes('document.querySelector') ||
+            str.includes('document.querySelectorAll') ||
+            str.includes('getElementsBy') ||
+            str.includes('.getAttribute(') ||
+            str.includes('.style.') ||
+            str.includes('.src') ||
+            str.includes('.map(') ||
+            str.includes('.filter(') ||
+            str.includes('.find(') ||
+            str.includes('=>') ||
+            str.includes('function(')
+        );
+    }
+    
+    // Helper function to safely execute JavaScript code
+    function executeJavaScript(jsCode, container) {
+        try {
+            // Create a function that has access to the container
+            const func = new Function('container', 'document', `
+                try {
+                    return ${jsCode};
+                } catch (error) {
+                    console.error('Error executing JS code:', error);
+                    return null;
+                }
+            `);
+            
+            const result = func(container, document);
+            
+            // Handle different result types
+            if (result) {
+                if (typeof result === 'string' && result.trim()) {
+                    // It's a URL string - return it as URLs, not elements
+                    return { type: 'url', value: result.trim() };
+                } else if (result.length !== undefined) {
+                    // It's array-like, convert to array of elements
+                    return { type: 'elements', value: Array.from(result) };
+                } else if (result.nodeType) {
+                    // It's a single element
+                    return { type: 'elements', value: [result] };
+                }
+            }
+            return { type: 'empty', value: [] };
+        } catch (error) {
+            console.error('Error executing JavaScript code:', error);
+            return { type: 'empty', value: [] };
+        }
+    }
+    
+    // Find all image elements using selectors or JavaScript code
+    const directUrls = []; // Store URLs from JavaScript execution
+    
     for (const selector of imageSelectors) {
-        const elements = Array.from(container.querySelectorAll(selector));
-        for (const element of elements) {
-            const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
-            if (!alreadyExists) {
-                imgElementsWithSelectors.push({ element, selector });
+        if (isJavaScriptCode(selector)) {
+            console.log('Executing JavaScript code for image selection:', selector);
+            const jsResult = executeJavaScript(selector, container);
+            const actualSelector = `JavaScript: ${selector}`;
+            
+            if (jsResult.type === 'url') {
+                // JavaScript returned a URL string directly
+                directUrls.push({ url: jsResult.value, selector: actualSelector });
+            } else if (jsResult.type === 'elements') {
+                // JavaScript returned DOM elements
+                for (const element of jsResult.value) {
+                    const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
+                    if (!alreadyExists) {
+                        imgElementsWithSelectors.push({ element, selector: actualSelector });
+                    }
+                }
+            }
+        } else {
+            // Regular CSS selector
+            const elements = Array.from(container.querySelectorAll(selector));
+            for (const element of elements) {
+                const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
+                if (!alreadyExists) {
+                    imgElementsWithSelectors.push({ element, selector });
+                }
             }
         }
     }
     
     const imgElements = imgElementsWithSelectors.map(item => item.element);
-    const imgSelectorMatched = imgElementsWithSelectors[0]?.selector || null;
+    const imgSelectorMatched = imgElementsWithSelectors[0]?.selector || directUrls[0]?.selector || null;
     
     // Extract image URLs from attributes
-    const imgUrls = imgElements.flatMap(el =>
-        imageAttributes
+    const imgUrls = imgElements.flatMap(el => {        
+        return imageAttributes
             .map(attr => el?.getAttribute(attr?.replaceAll(" ", "")))
-            .filter(Boolean)
-    );
+            .filter(Boolean);
+    });
+    
+    // Add URLs from direct JavaScript execution
+    const directUrlValues = directUrls.map(item => item.url);
     
     // Extract background image URLs
     function getBackgroundImageUrl(el) {
-        const bgImage = el?.style.backgroundImage;
+        const bgImage = el?.style?.backgroundImage;
         const urlMatch = bgImage?.match(/url\(["']?(.*?)["']?\)/);
         return urlMatch ? urlMatch[1] : null;
     }
@@ -355,7 +432,7 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
         .map(el => getBackgroundImageUrl(el))
         .filter(Boolean);
     
-    const allImgs = [...new Set([...imgUrls, ...bgImgs])];
+    const allImgs = [...new Set([...imgUrls, ...directUrlValues, ...bgImgs])];
     const primaryImg = allImgs[0] || null;
     
     return {
