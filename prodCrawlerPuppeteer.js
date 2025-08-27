@@ -1,12 +1,9 @@
-//https://claude.ai/chat/053a7f18-a1d1-48a5-aa28-f1551328a939
-import { emitAsync } from './src/events.js';
-import './src/listeners.js'; // ← This registers event handlers
+
 import { PuppeteerCrawler } from "crawlee";
 import { createRouter } from "./prodRoutesPuppeteer.js"; // Import factory function
 import preNavigationHooks from "./crawler-helper/preNavigationHooksProd2.js";
 import puppeteer from './crawler-helper/puppeteer-stealth.js';
 import { getSiteConfig, getCachedSiteConfigFromFile } from './src/helper/siteConfig.js';
-import baseRowData from './src/route/micro/baseRowData.js';
 import logToLocalSheet from './src/sheet/logToLocalSheet.js';
 import getGitHubActionsRunUrl from './src/helper/getGitHubActionsRunUrl.js';
 const site = process.env.site;
@@ -226,51 +223,13 @@ debugger
 
             console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
             console.log(`Stats: ${successfulRequests}/${totalRequests} successful, ${stats.requestsFailed} failed`);
-            // const data = await getDatasetItems(site);
-            // const dataAnalyzed = await analyzeData(data);
-            // debugger
-            // const logResult = await logToLocalSheet(dataAnalyzed);
 
-            //const result = await processScrapedData(site);
-
-            // Single comprehensive log entry with complete summary
-            // await emitAsync('log-to-sheet', {
-            //     sheetTitle: isSuccess ? 'Crawl Logs(success)' : 'Crawl Logs(success)',
-            //     message: `Site ${site} crawling completed`,
-            //     rowData: {
-            //         ...result,
-            //         Duration: `${duration}s`,
-            //         GitHubRunUrl: githubRunUrl // Add GitHub run URL
-            //         //  Site: site,
-            //         //   Status: isSuccess ? 'Success' : 'Partial Success',
-            //         //   TotalURLs: totalRequests,
-            //         //SuccessfulURLs: successfulRequests,
-            //         //  FailedURLs: stats.requestsFailed,
-            //         // Notes: isSuccess
-            //         //     ? 'All URLs processed successfully'
-            //         //     : `${stats.requestsFailed} URLs failed out of ${totalRequests}`,
-            //         // ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
-            //         //  Timestamp: new Date().toISOString()
-            //     }
-            // });
             logToLocalSheet({ Duration: duration })
+            
         } catch (crawlerError) {
             console.error('❌ Crawler execution failed:', crawlerError);
 
-            // // Log fatal crawler error.
-            // await emitAsync('log-to-sheet', {
-            //     sheetTitle: 'Crawl Logs(error)',
-            //     message: `Site ${site} crawler failed fatally`,
-            //     rowData: {
-            //         ...baseRowData,
-            //         Site: site,
-            //         Status: 'Fatal Error',
-            //         Notes: `Crawler crashed: ${crawlerError.message}`,
-            //         ConfigSource: siteConfig.cachedAt ? 'Cached' : 'Fresh API',
-            //         Timestamp: new Date().toISOString(),
-            //         GitHubRunUrl: githubRunUrl // Add GitHub run URL
-            //     }
-            // });
+    
             logToLocalSheet({ Status: 'Fatal Error', Notes: `Crawler crashed: ${crawlerError.message}` });
             throw crawlerError; // Re-throw to maintain error handling behavior
         }
@@ -278,20 +237,6 @@ debugger
     } catch (error) {
         console.error('💥 Fatal error in main execution:', error);
 
-        // // Log fatal main execution error
-        // await emitAsync('log-to-sheet', {
-        //     sheetTitle: 'Crawl Logs(error)',
-        //     message: `Site ${site} main execution failed`,
-        //     rowData: {
-        //         ...baseRowData,
-        //         Site: site,
-        //         Status: 'Fatal Error',
-        //         Notes: `Main execution failed: ${error.message}`,
-        //         ConfigSource: 'Unknown',
-        //         Timestamp: new Date().toISOString(),
-        //         GitHubRunUrl: githubRunUrl // Add GitHub run URL
-        //     }
-        // });
         logToLocalSheet({ Status: 'Fatal Error', Notes: `Main execution failed: ${error.message}` });
         process.exit(1);
     }
