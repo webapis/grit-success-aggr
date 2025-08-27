@@ -1,4 +1,5 @@
 export default [
+    'li.grid__item .card-wrapper.product-card-wrapper:has(a)',
     '.list-item .list-item-inline',
     '.product_single',
     '[data-hook="product-list-grid-item"]',
@@ -78,7 +79,7 @@ export default [
     ".o-productList__itemWrapper",
     ".product-layout",
     ".col-md-3.col-sm-3.col-xs-6.wow",
-   ".product-grid-container .grid__item",//causes problem for aldo
+    ".product-grid-container .grid__item",//causes problem for aldo
     ".js-product-list-item",
     ".product-listing-shelf__product-card",
     ".divUrun",
@@ -88,7 +89,7 @@ export default [
     "legacy-product",
     "article[data-category]",
     ".productItemLayout.ViewProduct",
-     ".grid [data-id]",
+    ".grid [data-id]",
     ".js-product-item",
     ".product",
     "[data-testid='product-box']",
@@ -103,7 +104,7 @@ export default [
 
     ".card-product",
     "div[data-id]",
-     "[data-id]",
+    "[data-id]",
     ".product-list__item",
 
 ]
