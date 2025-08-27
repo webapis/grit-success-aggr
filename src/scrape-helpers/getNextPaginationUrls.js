@@ -50,7 +50,7 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
         return [`${baseUrl}${paginationParameterName}${2}`];
       }
       const urls = [];
-      for (let i = 1; i <= totalPages; i++) {
+      for (let i = 2; i <= (totalPages+1); i++) {
         urls.push(`${baseUrl}${paginationParameterName}${i}`);
       }
       return urls;
