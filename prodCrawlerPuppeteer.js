@@ -46,7 +46,7 @@ function validateUrls(urls) {
     return { validUrls, invalidUrls };
 }
 
-debugger
+
 // Main execution block
 (async () => {
     // Get GitHub Actions run URL early for consistent logging
@@ -59,7 +59,7 @@ debugger
             process.exit(1);
         }
 
-        debugger
+        
         console.log(`Fetching configuration for site: ${site}`);
 
         // Enhanced configuration retrieval logic
@@ -90,7 +90,7 @@ debugger
             siteConfig = await getSiteConfig(site, true);
         }
 
-        debugger
+        
 
         if (!siteConfig) {
             console.error(`Could not retrieve configuration for site: ${site}. Exiting.`);

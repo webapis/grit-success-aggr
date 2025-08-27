@@ -18,9 +18,9 @@ export default async function addNextPagesToRequests({ page, addRequests, siteUr
     ) {
 
 
-        debugger
+        
         const nextPages = await getNextPaginationUrls(page, url, siteUrls);
-        debugger
+        
 
         if (nextPages.length > 0) {
 

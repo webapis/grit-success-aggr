@@ -10,7 +10,7 @@ const site = process.env.site;
 
 export default async function continueIfProductPage({ page, siteUrls }) {
 
-    debugger
+    
     page.on("console", (message) => {
         console.log("Message from Puppeteer page:", message.text());
     });
@@ -27,7 +27,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
 
     const bestSelector = await findBestSelector(page, productItemSelector);
 
-    debugger
+    
 
     if (bestSelector.count > 0) {
 

@@ -26,6 +26,7 @@ debugger
   });
 
   router.addHandler("second", async (props) => {
+    debugger
     const data = await second({ ...props, label: "second", siteUrls });
     await productsDataset.pushData(data);
   });

@@ -2,19 +2,19 @@
 
 import logToLocalSheet from '../sheet/logToLocalSheet.js';
 export default async function getNextPaginationUrls(page, url, siteUrls) {
-  debugger
+
 
   const {
     totalItemsPerPage: itemsPerPage, totalItemsToBeCallected: totalItemsToCallect } = logToLocalSheet()
 
-  debugger
+
   const paginationSelector = siteUrls?.paginationSelector
   const paginationParameterName = siteUrls?.paginationParameterName
 
   if (paginationSelector && paginationParameterName) {
 
     const result = await page.evaluate((paginationSelector, baseUrl, paginationParameterName) => {
-      debugger
+
       try {
 
         // Type 1: Page number buttons (like 1, 2, 3, ...)
@@ -25,7 +25,7 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
 
         const maxPage = Math.max(...pageNumbers, 1);
         const urls = [];
-        for (let i = 1; i <= maxPage; i++) {
+        for (let i = 2; i <= maxPage; i++) {
           urls.push(`${baseUrl}${paginationParameterName}${i}`);
         }
         return urls;
@@ -35,26 +35,29 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
         return [];
       }
     }, paginationSelector, url, paginationParameterName);
-    debugger
+
     return result;
 
   } else if (itemsPerPage && paginationParameterName && totalItemsToCallect > 0) {
-
+ 
+    debugger
     const nextUrls = await page.evaluate((baseUrl, itemsPerPage, paginationParameterName, totalItemsToCallect) => {
 
-      if (!isNaN(totalItemsToCallect) && totalItemsToCallect > itemsPerPage) {
-        const totalPages = Math.ceil(totalItemsToCallect / itemsPerPage);
-        const urls = [];
-        for (let i = 1; i <= totalPages; i++) {
-          urls.push(`${baseUrl}${paginationParameterName}${i}`);
-        }
-        return urls;
-      } else {
-        return [];
+
+      const totalPages = Math.ceil(totalItemsToCallect / itemsPerPage) - 1;
+      if (totalPages === 1) {
+
+        return [`${baseUrl}${paginationParameterName}${2}`];
       }
+      const urls = [];
+      for (let i = 2; i <= totalPages; i++) {
+        urls.push(`${baseUrl}${paginationParameterName}${i}`);
+      }
+      return urls;
+
     }, url, itemsPerPage, paginationParameterName, totalItemsToCallect);
 
-    debugger
+
     return nextUrls;
   } else {
     return []
