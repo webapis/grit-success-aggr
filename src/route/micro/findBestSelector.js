@@ -1,5 +1,5 @@
 export default async function findBestSelector(page, selectors) {
-    console.log('productItemSelector____________________________________________________', selectors);
+
     
     const result = await page.evaluate((selectors) => {
         // Calculate specificity score for a CSS selector
