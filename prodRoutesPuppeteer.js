@@ -12,13 +12,13 @@ export const createRouter = async (siteUrls) => {
 
   const productsDataset = await Dataset.open(site);
   const router = createPuppeteerRouter();
-
+  let hasRunFirstPageFunction = false;
   router.addDefaultHandler(async (props) => {
-    const { crawler } = props;
-    const stats = await crawler.stats;
 
-    if (stats.requestsFinished === 0) { // First request being processed
+
+    if (!hasRunFirstPageFunction) { // First request being processed
       console.log('First request being processed------------------');
+      hasRunFirstPageFunction = true
     }
     const data = await first({ ...props, label: "default", siteUrls });
     await productsDataset.pushData(data);
