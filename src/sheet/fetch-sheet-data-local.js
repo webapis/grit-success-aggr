@@ -84,7 +84,7 @@ function processSiteConfig(rows, targetSite) {
             const matchingUrls = rowUrls.filter(url => {
                 try {
                     const mainDomain = getMainDomainPart(url);
-                    return mainDomain.toLowerCase().includes(targetSite.toLowerCase());
+                    return mainDomain.toLowerCase() === targetSite.toLowerCase();
                 } catch (error) {
                     console.warn(`Error extracting domain from ${url}:`, error.message);
                     return false;

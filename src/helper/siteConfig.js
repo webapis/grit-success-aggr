@@ -79,7 +79,7 @@ function processCachedSheetData(sheetData, targetSite) {
     let allUrls = [];
     let siteConfigurations = [];
     let foundBrand = false;
-
+debugger
     console.log(`Processing cached data for site: "${targetSite}"`);
 
     for (const [index, row] of dataRows.entries()) {
@@ -95,7 +95,7 @@ function processCachedSheetData(sheetData, targetSite) {
             const matchingUrls = rowUrls.filter(url => {
                 try {
                     const mainDomain = getMainDomainPart(url);
-                    return mainDomain.toLowerCase().includes(targetSite.toLowerCase());
+                    return mainDomain.toLowerCase()===targetSite.toLowerCase()
                 } catch (error) {
                     console.warn(`Error extracting domain from ${url}:`, error.message);
                     return false;
