@@ -15,9 +15,10 @@ export const createRouter = async (siteUrls) => {
   let hasRunFirstPageFunction = false;
   router.addDefaultHandler(async (props) => {
 
-
+debugger
     if (!hasRunFirstPageFunction) { // First request being processed
       console.log('First request being processed------------------');
+      debugger
       hasRunFirstPageFunction = true
     }
     const data = await first({ ...props, label: "default", siteUrls });
