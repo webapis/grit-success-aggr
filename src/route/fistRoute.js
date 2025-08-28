@@ -15,25 +15,24 @@ const site = process.env.site;
 
 export default async function first(props) {
     const { page, addRequests, siteUrls, request: { url } } = props
-    debugger
-    // await page.evaluate(() => {
-    //     return new Promise(resolve => setTimeout(resolve, 10000));
-    // });
+
 
     console.log('inside first route')
 
-    
-    const  success = await continueIfProductPage({ page, siteUrls });
-    
+
+    const success = await continueIfProductPage({ page, siteUrls });
+
     if (success) {
 
-        
 
-          const {productItemSelector}=logToLocalSheet()
 
-        await scrollPageIfRequired({page, siteUrls,routeName:"first"})
+        const { productItemSelector } = logToLocalSheet()
+
+        await scrollPageIfRequired({ page, siteUrls, routeName: "first" })
         await addNextPagesToRequests({ page, addRequests, siteUrls, url });
         const data = await scrapeData({ page, siteUrls, productItemSelector })
+        logToLocalSheet({ pageItems: [data.length], pageNumbers: [1] })
+
         return data
     } else {
 

@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import analyzeData from "../route/scrape/analize-data/analizeData.js";
 import logToLocalSheet from "./logToLocalSheet.js";
 import { getDatasetItems } from "../crawlee/datasetOperations.js";
+import sortPageData from "../route/helper/sortPageData.js";
 import { emitAsync } from '../events.js';
 import '../listeners.js'; // ← This registers event handlers
 dotenv.config({ silent: true });
@@ -13,8 +14,12 @@ export default async function uploadToGoogleSheet() {
     debugger
     const analyzedData = await analyzeData(data);
     debugger
-    const logResult = await logToLocalSheet(analyzedData);
+    await logToLocalSheet(analyzedData);
+    const { pageItems, pageNumbers } = logToLocalSheet()
+    const result = sortPageData(pageItems, pageNumbers);
+   const logResult =  logToLocalSheet({pageItems:result.pageItems.join(','), pageNumbers:result.pageNumbers.join(',')});
     debugger
+
     return { analyzedData, logResult };
 }
 
