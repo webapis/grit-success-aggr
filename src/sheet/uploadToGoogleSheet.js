@@ -23,8 +23,9 @@ export default async function uploadToGoogleSheet() {
     return { analyzedData, logResult };
 }
 
-
+debugger
 const { logResult } = await uploadToGoogleSheet();
+debugger
 await emitAsync('log-to-sheet', {
     sheetTitle: 'Crawl Logs(success)',
     message: `Site ${site} crawler result`,
