@@ -429,53 +429,24 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
     debug = true
   } = options;
 
-  const debugLog = (message, data = {}) => {
+  const debugLog = (msg, data = {}) => {
     if (debug) {
       const timestamp = new Date().toISOString();
-      console.log(`[${timestamp}] SCROLL_DEBUG: ${message}`, data);
+      console.log(`[${timestamp}] SCROLL_DEBUG: ${msg}`, data);
     }
   };
 
-  debugLog("🚀 Starting scrollWithShowMoreAdvanced");
-
-  // Validate selector in Puppeteer context
   if (validateSelector) {
-    const selectorExists = await page.evaluate((selector) => {
-      try {
-        document.querySelector(selector);
-        return true;
-      } catch {
-        return false;
-      }
-    }, showMoreSelector);
-
-    if (!selectorExists) {
-      throw new Error(`Invalid CSS selector: "${showMoreSelector}"`);
-    }
-
-    const elementExists = await page.evaluate((selector) => {
-      return document.querySelector(selector) !== null;
-    }, showMoreSelector);
-
-    if (!elementExists) {
+    const isValid = await page.$(showMoreSelector);
+    if (!isValid) {
       throw new Error(`Show More button not found with selector: "${showMoreSelector}"`);
     }
-
-    debugLog("✅ Selector validation passed");
   }
 
-  // Listen to console logs inside the page
   page.on("console", (msg) => console.log("PAGE LOG:", msg.text()));
 
-  debugLog("📝 Injecting scroll + show more logic");
-
-  // Run inside the page context
   const clicks = await page.evaluate(
     async (_scrollSpeed, _showMoreSelector, _options, _debug) => {
-      const debugLog = (msg, data = {}) => {
-        if (_debug) console.log(`[PAGE_DEBUG] ${msg}`, data);
-      };
-
       const {
         maxAttempts,
         waitAfterClick,
@@ -489,8 +460,12 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
       let isWaitingForContent = false;
       let buttonClickCount = 0;
 
+      const debugLog = (msg, data = {}) => {
+        if (_debug) console.log(`[PAGE_DEBUG] ${msg}`, data);
+      };
+
       await new Promise((resolve, reject) => {
-        const distance = 150;
+        const distance = 200;
 
         const timer = setInterval(() => {
           try {
@@ -499,10 +474,10 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
             let isAtBottom = false;
             if (enableScrolling) {
               window.scrollBy(0, distance);
-              const windowHeight = window.innerHeight;
+              const winH = window.innerHeight;
               const scrollY = window.scrollY;
-              const documentHeight = document.documentElement.scrollHeight;
-              isAtBottom = windowHeight + scrollY >= documentHeight - 150;
+              const docH = document.documentElement.scrollHeight;
+              isAtBottom = winH + scrollY >= docH - 150;
             } else {
               isAtBottom = true;
             }
@@ -511,32 +486,37 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
 
             if (isAtBottom) {
               consecutiveBottomReached++;
+
               const showMoreButton = document.querySelector(_showMoreSelector);
 
               if (showMoreButton) {
-                const isVisible =
+                const visible =
                   showMoreButton.offsetParent !== null &&
                   !showMoreButton.disabled &&
                   getComputedStyle(showMoreButton).display !== "none";
 
-                if (isVisible) {
+                if (visible) {
                   buttonClickCount++;
-                  debugLog("👉 Clicking Show More button", { attemptCount, buttonClickCount });
+                  debugLog("👉 Clicking Show More", { attemptCount, buttonClickCount });
 
                   isWaitingForContent = true;
                   showMoreButton.scrollIntoView({ behavior: "smooth", block: "center" });
 
                   setTimeout(() => {
-                    showMoreButton.click();
-
-                    setTimeout(() => {
+                    try {
+                      showMoreButton.click();
+                      consecutiveBottomReached = 0; // reset bottom counter
+                      setTimeout(() => {
+                        isWaitingForContent = false;
+                      }, waitAfterClick);
+                    } catch (err) {
+                      debugLog("❌ Button click failed", { error: err.message });
                       isWaitingForContent = false;
-                    }, waitAfterClick);
+                    }
                   }, buttonClickDelay);
-
-                  consecutiveBottomReached = 0;
                 }
               } else if (consecutiveBottomReached >= maxConsecutiveBottomReached) {
+                debugLog("✅ No more show more button, stopping");
                 clearInterval(timer);
                 resolve();
               }
@@ -545,6 +525,7 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
             }
 
             if (attemptCount >= maxAttempts) {
+              debugLog("⚠️ Max attempts reached");
               clearInterval(timer);
               resolve();
             }
@@ -569,8 +550,8 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
     debug
   );
 
-  debugLog(`✅ Finished. Total button clicks: ${clicks}`);
-  return clicks; // return how many times button was clicked
+  debugLog(`✅ Completed. Total clicks: ${clicks}`);
+  return clicks;
 }
 
 
