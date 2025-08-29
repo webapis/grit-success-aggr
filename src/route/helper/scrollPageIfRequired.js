@@ -1,10 +1,11 @@
 import dotenv from "dotenv";
 import scroller, { autoScroll, scrollWithShowMoreAdvanced, autoScrollUntilCount, scrollWithShowMoreUntilCount } from "../../scrape-helpers/scroller.js";
 import productItemSelector from "../../selector-attibutes/productItemSelector.js";
+import logToLocalSheet from "../../sheet/logToLocalSheet.js";
 dotenv.config({ silent: true });
 
 export async function scrollPageIfRequired({ page, siteUrls, routeName }) {
-
+    const { totalItemsToBeCallected, totalItemsPerPage } = logToLocalSheet()
     console.log('inside scrollPageIfRequired', routeName)
     const scrollable = siteUrls?.scrollable || false;
     const showMoreButtonSelector = siteUrls?.showMoreButtonSelector || '';
@@ -12,11 +13,13 @@ export async function scrollPageIfRequired({ page, siteUrls, routeName }) {
     console.log('is scrollable', siteUrls?.scrollable)
 
     if (scrollable && showMoreButtonSelector) {
+        const totalPages = Math.ceil(totalItemsToBeCallected / totalItemsPerPage);
         console.log('scroller', 'autoScroll---showMoreButtonSelector-----------------')
+        console.log('totalPages',totalPages)
         await scrollWithShowMoreAdvanced(page, 1000, showMoreButtonSelector, {
             debug: true,
             waitAfterClick: 2500,
-            maxClicks: 5
+            maxClicks: totalPages
         });
     } else if (scrollable) {
         debugger

@@ -1,3 +1,5 @@
+
+
 export default async function scroller(page, scrollSpeed, scrollTimes = 50) {
     page.on("console", (message) => {
       console.log("Message from Puppeteer page:", message.text());
@@ -283,50 +285,7 @@ export async function autoScroll(page, options = {}) {
   }
 }
 
-// Usage examples:
-/*
-// Basic usage for dynamic content
-await autoScroll(page, { 
-  scrollSpeed: 200,
-  waitForNetworkIdle: 2000,
-  enableLogging: true 
-});
 
-// For heavy AJAX applications
-await autoScroll(page, {
-  scrollSpeed: 300,
-  waitForNetworkIdle: 3000,
-  waitForContentChange: 4000,
-  maxWaitCycles: 8,
-  timeout: 120000, // 2 minutes
-  enableLogging: true
-});
-
-// For infinite scroll with lazy loading
-await autoScroll(page, {
-  scrollSpeed: 500,
-  scrollDistance: 300,
-  waitForNetworkIdle: 1500,
-  maxScrollAttempts: 500,
-  enableLogging: true
-});
-*/
-
-// Usage examples:
-/*
-// Basic usage
-await autoScroll(page, { scrollSpeed: 200 });
-
-// Advanced usage with custom options
-await autoScroll(page, {
-  scrollSpeed: 150,
-  scrollDistance: 200,
-  maxScrollAttempts: 100,
-  timeout: 60000,
-  enableLogging: true
-});
-*/
-//https://claude.ai/chat/0b4bcff3-a737-49c7-a36c-5505ad587a14
 export async function scrollWithShowMore(page, scrollSpeed, showMoreSelector, maxAttempts = 50) {
   page.on("console", (message) => {
     console.log("Message from Puppeteer page:", message.text());
@@ -418,7 +377,12 @@ export async function scrollWithShowMore(page, scrollSpeed, showMoreSelector, ma
 }
 
 // Alternative version with more robust button detection and clicking
-export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSelector, options = {}) {
+export async function scrollWithShowMoreAdvanced(
+  page,
+  scrollSpeed,
+  showMoreSelector,
+  options = {}
+) {
   const {
     maxAttempts = 50,
     waitAfterClick = 2000,
@@ -427,138 +391,78 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
     enableScrolling = true,
     validateSelector = true,
     debug = true,
-    maxClicks = Infinity // ✅ new option: how many times to click button
+    maxClicks = Infinity, // user-defined limit
   } = options;
 
-  const debugLog = (msg, data = {}) => {
-    if (debug) {
-      const timestamp = new Date().toISOString();
-      console.log(`[${timestamp}] SCROLL_DEBUG: ${msg}`, data);
-    }
-  };
+  let consecutiveBottomReached = 0;
+  let lastHeight = 0;
+  let attempts = 0;
+  let clicksMade = 0;
+  let reason = "Completed successfully";
 
-  if (validateSelector) {
-    const isValid = await page.$(showMoreSelector);
-    if (!isValid) {
-      throw new Error(`Show More button not found with selector: "${showMoreSelector}"`);
+  while (attempts < maxAttempts) {
+    attempts++;
+
+    if (enableScrolling) {
+      lastHeight = await page.evaluate(
+        async (speed) => {
+          window.scrollBy(0, speed);
+          return document.body.scrollHeight;
+        },
+        scrollSpeed
+      );
     }
+
+    // Try clicking the "Show More" button if it's available and we still have clicks left
+    if (clicksMade < maxClicks) {
+      const buttonExists = await page.$(showMoreSelector);
+      if (buttonExists) {
+        try {
+          await page.click(showMoreSelector);
+          clicksMade++;
+          if (debug) console.log(`✅ Clicked 'Show More' (${clicksMade}/${maxClicks})`);
+          await page.waitForTimeout(waitAfterClick);
+          continue; // continue loop after clicking
+        } catch (err) {
+          reason = `⚠️ Failed to click 'Show More': ${err.message}`;
+          if (debug) console.warn(reason);
+          break;
+        }
+      } else {
+        reason = "⚠️ No 'Show More' button found";
+        if (debug) console.warn(reason);
+        break;
+      }
+    }
+
+    // Check if bottom is reached
+    const newHeight = await page.evaluate(() => document.body.scrollHeight);
+    if (newHeight === lastHeight) {
+      consecutiveBottomReached++;
+      if (consecutiveBottomReached >= maxConsecutiveBottomReached) {
+        reason = "⚠️ Reached bottom of page";
+        if (debug) console.log(reason);
+        break;
+      }
+    } else {
+      consecutiveBottomReached = 0;
+      lastHeight = newHeight;
+    }
+
+    await page.waitForTimeout(buttonClickDelay);
   }
 
-  page.on("console", (msg) => console.log("PAGE LOG:", msg.text()));
+  // Final log result
+  if (clicksMade < maxClicks) {
+    if (reason === "Completed successfully") {
+      reason = `⚠️ Stopped early, only clicked ${clicksMade}/${maxClicks}`;
+    }
+    console.warn(reason);
+  } else {
+    console.log(`🎯 All ${maxClicks} clicks completed successfully`);
+  }
 
-  const clicks = await page.evaluate(
-    async (_scrollSpeed, _showMoreSelector, _options, _debug) => {
-      const {
-        maxAttempts,
-        waitAfterClick,
-        maxConsecutiveBottomReached,
-        buttonClickDelay,
-        enableScrolling,
-        maxClicks
-      } = _options;
-
-      let attemptCount = 0;
-      let consecutiveBottomReached = 0;
-      let isWaitingForContent = false;
-      let buttonClickCount = 0;
-
-      const debugLog = (msg, data = {}) => {
-        if (_debug) console.log(`[PAGE_DEBUG] ${msg}`, data);
-      };
-
-      await new Promise((resolve, reject) => {
-        const distance = 200;
-
-        const timer = setInterval(() => {
-          try {
-            if (isWaitingForContent) return;
-
-            let isAtBottom = false;
-            if (enableScrolling) {
-              window.scrollBy(0, distance);
-              const winH = window.innerHeight;
-              const scrollY = window.scrollY;
-              const docH = document.documentElement.scrollHeight;
-              isAtBottom = winH + scrollY >= docH - 150;
-            } else {
-              isAtBottom = true;
-            }
-
-            attemptCount++;
-
-            if (isAtBottom) {
-              consecutiveBottomReached++;
-
-              const showMoreButton = document.querySelector(_showMoreSelector);
-
-              if (showMoreButton && buttonClickCount < maxClicks) {
-                const visible =
-                  showMoreButton.offsetParent !== null &&
-                  !showMoreButton.disabled &&
-                  getComputedStyle(showMoreButton).display !== "none";
-
-                if (visible) {
-                  buttonClickCount++;
-                  debugLog("👉 Clicking Show More", { attemptCount, buttonClickCount });
-
-                  isWaitingForContent = true;
-                  showMoreButton.scrollIntoView({ behavior: "smooth", block: "center" });
-
-                  setTimeout(() => {
-                    try {
-                      showMoreButton.click();
-                      consecutiveBottomReached = 0; // reset
-                      setTimeout(() => {
-                        isWaitingForContent = false;
-                      }, waitAfterClick);
-                    } catch (err) {
-                      debugLog("❌ Button click failed", { error: err.message });
-                      isWaitingForContent = false;
-                    }
-                  }, buttonClickDelay);
-                }
-              } else if (buttonClickCount >= maxClicks) {
-                debugLog("✅ Reached maxClicks, stopping");
-                clearInterval(timer);
-                resolve();
-              } else if (consecutiveBottomReached >= maxConsecutiveBottomReached) {
-                debugLog("✅ No more show more button, stopping");
-                clearInterval(timer);
-                resolve();
-              }
-            } else {
-              consecutiveBottomReached = 0;
-            }
-
-            if (attemptCount >= maxAttempts) {
-              debugLog("⚠️ Max attempts reached");
-              clearInterval(timer);
-              resolve();
-            }
-          } catch (err) {
-            clearInterval(timer);
-            reject(err);
-          }
-        }, _scrollSpeed);
-      });
-
-      return buttonClickCount;
-    },
-    scrollSpeed,
-    showMoreSelector,
-    {
-      maxAttempts,
-      waitAfterClick,
-      maxConsecutiveBottomReached,
-      buttonClickDelay,
-      enableScrolling,
-      maxClicks
-    },
-    debug
-  );
-
-  debugLog(`✅ Completed. Total clicks: ${clicks}`);
-  return clicks;
+  return { clicksMade, expected: maxClicks, reason };
 }
 
 
