@@ -13,13 +13,7 @@ export async function scrollPageIfRequired({ page, siteUrls, routeName }) {
 
     if (scrollable && showMoreButtonSelector) {
         console.log('scroller', 'autoScroll---showMoreButtonSelector-----------------')
-        await autoScroll(page, {
-            showMoreSelector: showMoreButtonSelector,
-            scrollSpeed: 1000,       // 1 second between scrolls
-            scrollDistance: 100,     // Very small steps
-            waitForContentChange: 10000, // Wait up to 10 seconds
-            enableLogging: true
-        });
+        await scrollWithShowMoreAdvanced(page, 1000, showMoreButtonSelector);
     } else if (scrollable) {
         debugger
         console.log('scroller', 'autoScroll--------------------')
