@@ -35,7 +35,7 @@ export default async function first(props) {
 
         return data
     } else {
-
+        logToLocalSheet({ pageItems: [0], pageNumbers: [1] })
         return []
     }
 
