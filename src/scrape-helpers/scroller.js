@@ -424,8 +424,37 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
     waitAfterClick = 2000,
     maxConsecutiveBottomReached = 5,
     buttonClickDelay = 500,
-    enableScrolling = true // New option to control scrolling behavior
+    enableScrolling = true,
+    validateSelector = true // New option to control selector validation
   } = options;
+
+  // Validate the selector exists on the page before starting
+  if (validateSelector) {
+    const selectorExists = await page.evaluate((selector) => {
+      try {
+        // Test if the selector is valid CSS
+        document.querySelector(selector);
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }, showMoreSelector);
+
+    if (!selectorExists) {
+      throw new Error(`Invalid CSS selector: "${showMoreSelector}". Please check the selector syntax.`);
+    }
+
+    // Check if the selector actually matches any elements on the page
+    const elementExists = await page.evaluate((selector) => {
+      return document.querySelector(selector) !== null;
+    }, showMoreSelector);
+
+    if (!elementExists) {
+      throw new Error(`Show More button not found on page with selector: "${showMoreSelector}". Please verify the selector matches an existing element.`);
+    }
+
+    console.log(`✓ Show More button selector validated: "${showMoreSelector}"`);
+  }
 
   page.on("console", (message) => {
     console.log("Message from Puppeteer page:", message.text());
@@ -448,6 +477,7 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
       let consecutiveBottomReached = 0;
       let isWaitingForContent = false;
       let buttonClickCount = 0;
+      let lastButtonFoundAttempt = 0; // Track when we last found a button
       
       var timer = setInterval(async () => {
         try {
@@ -483,6 +513,20 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
             
             // Look for show more button
             let showMoreButton = document.querySelector(_showMoreSelector);
+            
+            if (!showMoreButton) {
+              console.log(`❌ Show more button not found with selector: "${_showMoreSelector}"`);
+              
+              // If we haven't found any button for a long time, throw error
+              if (attemptCount - lastButtonFoundAttempt > _maxConsecutiveBottomReached * 2) {
+                clearInterval(timer);
+                reject(new Error(`Show more button selector "${_showMoreSelector}" not found after ${attemptCount - lastButtonFoundAttempt} attempts. The button may not exist, may have changed, or may not be loaded yet.`));
+                return;
+              }
+            } else {
+              lastButtonFoundAttempt = attemptCount;
+              console.log(`✓ Show more button found with selector: "${_showMoreSelector}"`);
+            }
             
             // Additional checks for button visibility and interactability
             const isButtonVisible = showMoreButton && 
@@ -538,9 +582,21 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
                 }
               }, _buttonClickDelay);
               
-            } else {
-              console.log("No visible show more button found");
+            } else if (showMoreButton) {
+              console.log("Show more button found but not visible/clickable:", {
+                offsetParent: showMoreButton.offsetParent !== null,
+                disabled: showMoreButton.disabled,
+                hasDisabledClass: showMoreButton.classList.contains('disabled'),
+                display: getComputedStyle(showMoreButton).display
+              });
               
+              // If button exists but isn't clickable for too long, stop
+              if (consecutiveBottomReached >= _maxConsecutiveBottomReached) {
+                console.log('Show more button exists but not clickable after max attempts, stopping...');
+                clearInterval(timer);
+                resolve();
+              }
+            } else {
               // If no button found for several consecutive attempts, stop
               if (consecutiveBottomReached >= _maxConsecutiveBottomReached) {
                 console.log(`${_enableScrolling ? 'No more content to load' : 'No show more button found after max attempts'}, stopping...`);
@@ -576,7 +632,6 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
     _enableScrolling: enableScrolling
   });
 }
-
 export async function autoScrollUntilCount(page, selector, targetCount, options = {}) {
   // Default configuration
   const config = {
