@@ -426,7 +426,8 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
     buttonClickDelay = 500,
     enableScrolling = true,
     validateSelector = true,
-    debug = true
+    debug = true,
+    maxClicks = Infinity // ✅ new option: how many times to click button
   } = options;
 
   const debugLog = (msg, data = {}) => {
@@ -452,7 +453,8 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
         waitAfterClick,
         maxConsecutiveBottomReached,
         buttonClickDelay,
-        enableScrolling
+        enableScrolling,
+        maxClicks
       } = _options;
 
       let attemptCount = 0;
@@ -489,7 +491,7 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
 
               const showMoreButton = document.querySelector(_showMoreSelector);
 
-              if (showMoreButton) {
+              if (showMoreButton && buttonClickCount < maxClicks) {
                 const visible =
                   showMoreButton.offsetParent !== null &&
                   !showMoreButton.disabled &&
@@ -505,7 +507,7 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
                   setTimeout(() => {
                     try {
                       showMoreButton.click();
-                      consecutiveBottomReached = 0; // reset bottom counter
+                      consecutiveBottomReached = 0; // reset
                       setTimeout(() => {
                         isWaitingForContent = false;
                       }, waitAfterClick);
@@ -515,6 +517,10 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
                     }
                   }, buttonClickDelay);
                 }
+              } else if (buttonClickCount >= maxClicks) {
+                debugLog("✅ Reached maxClicks, stopping");
+                clearInterval(timer);
+                resolve();
               } else if (consecutiveBottomReached >= maxConsecutiveBottomReached) {
                 debugLog("✅ No more show more button, stopping");
                 clearInterval(timer);
@@ -545,7 +551,8 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
       waitAfterClick,
       maxConsecutiveBottomReached,
       buttonClickDelay,
-      enableScrolling
+      enableScrolling,
+      maxClicks
     },
     debug
   );
@@ -553,6 +560,7 @@ export async function scrollWithShowMoreAdvanced(page, scrollSpeed, showMoreSele
   debugLog(`✅ Completed. Total clicks: ${clicks}`);
   return clicks;
 }
+
 
 
 export async function autoScrollUntilCount(page, selector, targetCount, options = {}) {
