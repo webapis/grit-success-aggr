@@ -24,14 +24,14 @@ export default async function continueIfProductPage({ page, siteUrls }) {
             await getTotalItemsCount(page, siteUrls?.totalProductCounterSelector);
         debugger
         logToLocalSheet({
-            totalItemsToBeCallected: totalItemsToBeCallected + previousTotalItemsToBeCallected,
+            totalItemsToBeCallected: totalItemsToBeCallectedCount + previousTotalItemsToBeCallected,
             totalItemsSelector
         });
 
         const totalItemsPerPage = bestSelector['count'];
         logToLocalSheet({ totalItemsPerPage });
         logToLocalSheet({ productItemSelector: bestSelector.selector });
-
+        console.log('totalItemsToBeCallected--', totalItemsToBeCallected)
         return true;
     } else {
         // Take screenshot if initial pages could not be retrieved.
