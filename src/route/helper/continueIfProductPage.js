@@ -18,14 +18,14 @@ export default async function continueIfProductPage({ page, siteUrls }) {
     if (bestSelector.count > 0) {
         // Safely extract with default 0
         const { totalItemsToBeCallected } = logToLocalSheet() || {};
-        const previousTotalItemsToBeCallected = totalItemsToBeCallected?.previousTotalItemsToBeCallected ?? 0;
-
-        const { count: totalItemsToBeCallectedCount, selector: totalItemsSelector } = 
+        const previousTotalItemsToBeCallected = totalItemsToBeCallected || 0;
+        debugger
+        const { count: totalItemsToBeCallectedCount, selector: totalItemsSelector } =
             await getTotalItemsCount(page, siteUrls?.totalProductCounterSelector);
-
-        logToLocalSheet({ 
-            totalItemsToBeCallected: totalItemsToBeCallectedCount + previousTotalItemsToBeCallected, 
-            totalItemsSelector 
+        debugger
+        logToLocalSheet({
+            totalItemsToBeCallected: totalItemsToBeCallected + previousTotalItemsToBeCallected,
+            totalItemsSelector
         });
 
         const totalItemsPerPage = bestSelector['count'];

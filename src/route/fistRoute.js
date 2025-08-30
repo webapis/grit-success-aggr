@@ -34,15 +34,18 @@ export default async function first(props) {
         const { pageItems = [], pageNumbers = [] } = logToLocalSheet()
 
         const mergePageItems = [...pageItems, data.length]
-        const pageNumber = extractPageNumber(url, paginationParameterName);
+        const pageNumber = extractPageNumber(url, paginationParameterName) || 1
         logToLocalSheet({ pageItems: mergePageItems, pageNumbers: [...pageNumbers, pageNumber] })
-
+        console.log('pageNumber', pageNumber)
+        debugger
         return data
     } else {
         const { pageItems = [], pageNumbers = [] } = logToLocalSheet()
-        const pageNumber = extractPageNumber(url, paginationParameterName);
+        const pageNumber = extractPageNumber(url, paginationParameterName)||1
         const mergePageItems = [...pageItems, 0]
         logToLocalSheet({ pageItems: mergePageItems, pageNumbers: [...pageNumbers, pageNumber] })
+        console.log('pageNumber', pageNumber)
+        debugger
         return []
     }
 
