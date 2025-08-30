@@ -31,11 +31,19 @@ export default async function first(props) {
         await scrollPageIfRequired({ page, siteUrls, routeName: "first" })
         await addNextPagesToRequests({ page, addRequests, siteUrls, url });
         const data = await scrapeData({ page, siteUrls, productItemSelector })
-        logToLocalSheet({ pageItems: [data.length], pageNumbers: [1] })
+
+        const { pageItems = [], pageNumbers = [] } = logToLocalSheet()
+
+        const mergePageItems = [...pageItems, data.length]
+        const pageNumber = extractPageNumber(url, paginationParameterName);
+        logToLocalSheet({ pageItems: mergePageItems, pageNumbers: [...pageNumbers, pageNumber] })
 
         return data
     } else {
-        logToLocalSheet({ pageItems: [0], pageNumbers: [1] })
+        const { pageItems = [], pageNumbers = [] } = logToLocalSheet()
+        const pageNumber = extractPageNumber(url, paginationParameterName);
+        const mergePageItems = [...pageItems, 0]
+        logToLocalSheet({ pageItems: mergePageItems, pageNumbers: [...pageNumbers, pageNumber] })
         return []
     }
 
