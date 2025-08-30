@@ -15,13 +15,19 @@ export async function scrollPageIfRequired({ page, siteUrls, routeName }) {
     if (scrollable && showMoreButtonSelector) {
         const totalPages = Math.ceil(totalItemsToBeCallected / totalItemsPerPage);
         console.log('scroller', 'autoScroll---showMoreButtonSelector-----------------')
-        console.log('totalPages',totalPages)
+        console.log('totalPages', totalPages)
         await scrollWithShowMoreAdvanced(page, 1000, showMoreButtonSelector, {
             debug: true,
             waitAfterClick: 2500,
             maxClicks: totalPages
         });
-    } else if (scrollable) {
+    }
+    else if (scrollable && totalItemsToBeCallected > 0) {
+
+        console.log('scroller', 'autoScrollUntilCount--------------------')
+        await autoScrollUntilCount(page, productItemSelector, totalItemsToBeCallected);
+    }
+    else if (scrollable) {
         debugger
         console.log('scroller', 'autoScroll--------------------')
         await autoScroll(page, {
