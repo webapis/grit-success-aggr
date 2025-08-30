@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import scroller, { autoScroll, scrollWithShowMoreAdvanced, autoScrollUntilCount, scrollWithShowMoreUntilCount } from "../../scrape-helpers/scroller.js";
-import productItemSelector from "../../selector-attibutes/productItemSelector.js";
+
 import logToLocalSheet from "../../sheet/logToLocalSheet.js";
 dotenv.config({ silent: true });
 
@@ -23,8 +23,9 @@ export async function scrollPageIfRequired({ page, siteUrls, routeName }) {
         });
     }
     else if (scrollable && totalItemsToBeCallected > 0) {
-
+        const { productItemSelector } = logToLocalSheet()
         console.log('scroller', 'autoScrollUntilCount--------------------')
+        console.log('productItemSelector is :', productItemSelector)
         await autoScrollUntilCount(page, productItemSelector, totalItemsToBeCallected);
     }
     else if (scrollable) {
