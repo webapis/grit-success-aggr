@@ -23,7 +23,7 @@ export default async function first(props) {
 
     if (success) {
 
-
+        const paginationParameterName = siteUrls?.paginationParameterName
 
         const { productItemSelector } = logToLocalSheet()
 
