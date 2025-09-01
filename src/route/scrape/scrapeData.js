@@ -152,10 +152,11 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
     // Use the extracted processing function
     const validData = processAndValidateScrapedData(data, siteUrls);
     const { totalItemsToBeCallected, totalItemsPerPage } = logToLocalSheet()
+    debugger
     await emitAsync('log-to-sheet', {
         sheetTitle: 'coralhigh',
         message: `Site crawler result`,
-        rowData: { " URL": url, totalItemsToBeCallected, totalItemsPerPage, "Scraped Items": data.length, "Valid Items": validData.length, "Timestamp": new Date().toISOString() }
+        rowData: { "URL": url, totalItemsToBeCallected, totalItemsPerPage, "Scraped Items": data.length, "Valid Items": validData.length, "Timestamp": new Date().toISOString() }
     });
 
     debugger

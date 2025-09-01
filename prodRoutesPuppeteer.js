@@ -15,10 +15,10 @@ export const createRouter = async (siteUrls) => {
   let hasRunFirstPageFunction = false;
   router.addDefaultHandler(async (props) => {
 
-    debugger
+    
     if (!hasRunFirstPageFunction) { // First request being processed
       console.log('First request being processed------------------');
-      debugger
+      
       hasRunFirstPageFunction = true
 
       logToLocalSheet({ paginationParameterName: siteUrls.paginationParameterName, scrollable: siteUrls.scrollable, showMoreButtonSelector: siteUrls.showMoreButtonSelector });
@@ -29,7 +29,7 @@ export const createRouter = async (siteUrls) => {
   });
 
   router.addHandler("second", async (props) => {
-    debugger
+    
     const data = await second({ ...props, label: "second", siteUrls });
     await productsDataset.pushData(data);
   });
