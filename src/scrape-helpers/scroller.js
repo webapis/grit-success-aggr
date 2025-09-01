@@ -470,16 +470,16 @@ export async function scrollWithShowMoreAdvanced(
 export async function autoScrollUntilCount(page, selector, targetCount, options = {}) {
   // Default configuration
   const config = {
-    scrollSpeed: options.scrollSpeed || 200,//100,
-    scrollDistance: options.scrollDistance || 100,//100,
+    scrollSpeed: options.scrollSpeed || 200,
+    scrollDistance: options.scrollDistance || 100,
     maxScrollAttempts: options.maxScrollAttempts || 500,
-    timeout: options.timeout || 300000, // 2 minutes for network-heavy pages
-    waitForNetworkIdle: options.waitForNetworkIdle || 10000,//2000, // Wait 2s after network idle
-    waitForContentChange: options.waitForContentChange || 10000, // Wait 3s for content changes
-    networkIdleTimeout: options.networkIdleTimeout || 5000, // Consider network idle after 500ms
-    maxWaitCycles: options.maxWaitCycles || 5, // Max cycles to wait for new content
+    timeout: options.timeout || 300000, // 5 minutes
+    waitForNetworkIdle: options.waitForNetworkIdle || 10000,
+    waitForContentChange: options.waitForContentChange || 10000,
+    networkIdleTimeout: options.networkIdleTimeout || 5000,
+    maxWaitCycles: options.maxWaitCycles || 5,
     enableLogging: options.enableLogging || false,
-    checkInterval: options.checkInterval || 10, // Check element count every N scrolls
+    checkInterval: options.checkInterval || 10,
     ...options
   };
 
@@ -502,9 +502,7 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
   let pendingRequests = new Set();
   let lastNetworkActivity = Date.now();
 
-  // Monitor network requests
   page.on('request', (request) => {
-    // Only track XHR, fetch, and document requests that might load content
     if (['xhr', 'fetch', 'document'].includes(request.resourceType())) {
       pendingRequests.add(request.url());
       lastNetworkActivity = Date.now();
@@ -540,13 +538,11 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
         let lastElementCount = 0;
         let waitCycles = 0;
         let isWaitingForContent = false;
-        
-        // Set up timeout
+
         const timeoutId = setTimeout(() => {
           reject(new Error(`Auto-scroll timeout after ${scrollConfig.timeout}ms`));
         }, scrollConfig.timeout);
 
-        // Helper function to get current element count
         const getCurrentElementCount = () => {
           try {
             return document.querySelectorAll(elementSelector).length;
@@ -556,7 +552,6 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
           }
         };
 
-        // Helper function to check if we're at the bottom
         const isAtBottom = () => {
           const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
           const windowHeight = window.innerHeight;
@@ -567,38 +562,36 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
             document.documentElement.scrollHeight,
             document.documentElement.offsetHeight
           );
-          return scrollTop + windowHeight >= docHeight - 50; // 50px buffer
+          return scrollTop + windowHeight >= docHeight - 50;
         };
 
         const waitForNewContent = () => {
           return new Promise((resolveWait) => {
             const checkForChanges = () => {
               const currentElementCount = getCurrentElementCount();
-              
-              // Check if element count has changed
+
               if (currentElementCount > lastElementCount) {
                 if (scrollConfig.enableLogging) {
                   console.log(`New elements detected: ${lastElementCount} -> ${currentElementCount}`);
                 }
                 lastElementCount = currentElementCount;
                 waitCycles = 0;
-                resolveWait(true); // Content changed
+                resolveWait(true);
                 return;
               }
-              
+
               waitCycles++;
               if (waitCycles >= scrollConfig.maxWaitCycles) {
                 if (scrollConfig.enableLogging) {
                   console.log(`Max wait cycles reached (${scrollConfig.maxWaitCycles})`);
                 }
-                resolveWait(false); // No new content
+                resolveWait(false);
                 return;
               }
-              
-              // Continue waiting
+
               setTimeout(checkForChanges, scrollConfig.waitForContentChange / scrollConfig.maxWaitCycles);
             };
-            
+
             checkForChanges();
           });
         };
@@ -606,63 +599,55 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
         const scroll = async () => {
           try {
             const currentElementCount = getCurrentElementCount();
-            
-            // Track if we've reached the target count (but don't stop yet)
             const targetReached = currentElementCount >= targetElementCount;
-            
-            // Check if we've exceeded max scroll attempts
+
             if (scrollAttempts >= scrollConfig.maxScrollAttempts) {
               clearTimeout(timeoutId);
-              const targetReached = currentElementCount >= targetElementCount;
               const reason = targetReached ? 'max_attempts_target_met' : 'max_attempts_target_not_met';
-              
-              console.log(`Scroll completed: max attempts (${scrollConfig.maxScrollAttempts}) reached. Found ${currentElementCount}/${targetElementCount} elements. Target ${targetReached ? 'achieved' : 'not achieved'}.`);
-              resolve({ 
-                success: targetReached, 
-                finalCount: currentElementCount, 
+
+              console.log(`Scroll completed: max attempts reached. Found ${currentElementCount}/${targetElementCount}. Target ${targetReached ? 'achieved' : 'not achieved'}.`);
+              resolve({
+                success: targetReached,
+                finalCount: currentElementCount,
                 targetCount: targetElementCount,
-                scrollAttempts: scrollAttempts,
-                reason: reason,
-                targetReached: targetReached
+                scrollAttempts,
+                reason,
+                targetReached
               });
               return;
             }
 
-            // Log progress periodically
             if (scrollConfig.enableLogging && scrollAttempts % scrollConfig.checkInterval === 0) {
               const status = targetReached ? '✓ TARGET REACHED, continuing to bottom' : 'searching';
               console.log(`Scroll progress: ${currentElementCount}/${targetElementCount} elements found (attempt ${scrollAttempts}) - ${status}`);
             }
 
-            // Check if we're at the bottom
             if (isAtBottom()) {
               if (!isWaitingForContent) {
                 isWaitingForContent = true;
-                const statusMsg = targetReached 
-                  ? `Reached bottom with target achieved (${currentElementCount}/${targetElementCount} elements), checking for more content...`
-                  : `Reached bottom with ${currentElementCount}/${targetElementCount} elements, waiting for new content...`;
-                
+                const statusMsg = targetReached
+                  ? `Reached bottom with target achieved (${currentElementCount}/${targetElementCount}), checking for more content...`
+                  : `Reached bottom with ${currentElementCount}/${targetElementCount}, waiting for new content...`;
+
                 if (scrollConfig.enableLogging) {
                   console.log(statusMsg);
                 }
-                
-                // Wait for potential new content
+
                 const hasNewContent = await waitForNewContent();
                 isWaitingForContent = false;
-                
+
                 if (!hasNewContent) {
                   clearTimeout(timeoutId);
-                  const successStatus = targetReached;
                   const reason = targetReached ? 'bottom_reached_target_met' : 'bottom_reached_target_not_met';
-                  
-                  console.log(`Scroll completed: reached bottom. Found ${currentElementCount}/${targetElementCount} elements. Target ${targetReached ? 'achieved' : 'not achieved'}.`);
-                  resolve({ 
-                    success: successStatus, 
-                    finalCount: currentElementCount, 
+
+                  console.log(`Scroll completed: reached bottom. Found ${currentElementCount}/${targetElementCount}. Target ${targetReached ? 'achieved' : 'not achieved'}.`);
+                  resolve({
+                    success: targetReached,
+                    finalCount: currentElementCount,
                     targetCount: targetElementCount,
-                    scrollAttempts: scrollAttempts,
-                    reason: reason,
-                    targetReached: targetReached
+                    scrollAttempts,
+                    reason,
+                    targetReached
                   });
                   return;
                 }
@@ -672,7 +657,6 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
               waitCycles = 0;
             }
 
-            // Update element count tracking
             if (currentElementCount > lastElementCount) {
               lastElementCount = currentElementCount;
             }
@@ -681,63 +665,56 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
             window.scrollBy(0, scrollConfig.scrollDistance);
             scrollAttempts++;
 
-            // Schedule next scroll
+            // 🔹 Log total count after every scroll
+            if (scrollConfig.enableLogging) {
+              const afterScrollCount = getCurrentElementCount();
+              console.log(`Scroll #${scrollAttempts}: total collected items = ${afterScrollCount}`);
+            }
+
             setTimeout(() => scroll(), scrollConfig.scrollSpeed);
-            
           } catch (error) {
             clearTimeout(timeoutId);
             reject(error);
           }
         };
 
-        // Initialize
         lastElementCount = getCurrentElementCount();
-        
+
         if (scrollConfig.enableLogging) {
           console.log(`Starting auto-scroll: looking for ${targetElementCount} elements with selector "${elementSelector}"`);
           console.log(`Initial count: ${lastElementCount} elements found`);
         }
-        
-        // Check if we already have enough elements (but still need to scroll to bottom)
-        if (lastElementCount >= targetElementCount) {
-          if (scrollConfig.enableLogging) {
-            console.log(`Target already reached: ${lastElementCount}/${targetElementCount} elements found, but continuing to scroll to bottom...`);
-          }
-        }
-        
-        // Start scrolling
+
         scroll();
       });
     }, config, selector, targetCount);
 
-    // Wait for any remaining network requests to complete
     if (pendingRequests.size > 0 || (Date.now() - lastNetworkActivity) < config.networkIdleTimeout) {
       if (config.enableLogging) {
         console.log('Waiting for network requests to complete...');
       }
-      
+
       await new Promise((resolve) => {
         const checkNetworkIdle = () => {
           const timeSinceLastActivity = Date.now() - lastNetworkActivity;
-          
           if (pendingRequests.size === 0 && timeSinceLastActivity >= config.networkIdleTimeout) {
             resolve();
           } else {
             setTimeout(checkNetworkIdle, 100);
           }
         };
-        
+
         setTimeout(checkNetworkIdle, config.waitForNetworkIdle);
       });
     }
-    
+
     console.log('Auto-scroll with element counting completed successfully');
-    
   } catch (error) {
     console.error('Auto-scroll with element counting failed:', error.message);
     throw error;
   }
 }
+
 
 export async function scrollWithShowMoreUntilCount(page, selector, targetCount, showMoreSelector, options = {}) {
   // Default configuration combining both functions
