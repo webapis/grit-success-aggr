@@ -468,6 +468,7 @@ export async function scrollWithShowMoreAdvanced(
 
 
 export async function autoScrollUntilCount(page, selector, targetCount, options = {}) {
+  page.on('console', msg => console.log('autoScrollUntilCount LOG:', msg.text()));
   // Default configuration
   const config = {
     scrollSpeed: options.scrollSpeed || 200,
