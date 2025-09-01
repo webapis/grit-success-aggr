@@ -1,13 +1,16 @@
 
 
 import logToLocalSheet from '../sheet/logToLocalSheet.js';
+import getTotalItemsCount from '../route/micro/getTotalItemsCount.js';
 export default async function getNextPaginationUrls(page, url, siteUrls) {
 
 
   const {
-    totalItemsPerPage: itemsPerPage, totalItemsToBeCallected: totalItemsToCallect } = logToLocalSheet()
+    totalItemsPerPage: itemsPerPage } = logToLocalSheet()
 
-
+  const { count: totalItemsToCallect } =
+    await getTotalItemsCount(page, siteUrls?.totalProductCounterSelector);
+  debugger
   const paginationSelector = siteUrls?.paginationSelector
   const paginationParameterName = siteUrls?.paginationParameterName
   if (itemsPerPage && paginationParameterName && totalItemsToCallect > 0) {

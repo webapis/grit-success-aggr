@@ -25,7 +25,7 @@ export default async function first(props) {
 
         const paginationParameterName = siteUrls?.paginationParameterName
 
-        const { productItemSelector, totalItemsToBeCallected, totalItemsPerPage } = logToLocalSheet()
+        const { productItemSelector } = logToLocalSheet()
 
         await scrollPageIfRequired({ page, siteUrls, routeName: "first" })
         await addNextPagesToRequests({ page, addRequests, siteUrls, url });
@@ -36,16 +36,14 @@ export default async function first(props) {
         const mergePageItems = [...pageItems, data.length]
         const pageNumber = extractPageNumber(url, paginationParameterName) || 1
         logToLocalSheet({ pageItems: mergePageItems, pageNumbers: [...pageNumbers, pageNumber] })
-        console.log('url:', url, 'totalItemsToBeCallected:', totalItemsToBeCallected, 'totalItemsPerPage:', totalItemsPerPage, 'pageNumber:', pageNumber, 'data.length:', data.length)
-        debugger
+
         return data
     } else {
-        const { pageItems = [], pageNumbers = [], totalItemsToBeCallected, totalItemsPerPage } = logToLocalSheet()
+        const { pageItems = [], pageNumbers = [] } = logToLocalSheet()
         const pageNumber = extractPageNumber(url, paginationParameterName) || 1
         const mergePageItems = [...pageItems, 0]
         logToLocalSheet({ pageItems: mergePageItems, pageNumbers: [...pageNumbers, pageNumber] })
-        console.log('url:', url, 'totalItemsToBeCallected:', totalItemsToBeCallected, 'totalItemsPerPage:', totalItemsPerPage, 'pageNumber:', pageNumber, 'data.length:', data.length)
-        debugger
+  
         return []
     }
 
