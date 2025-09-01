@@ -1,4 +1,5 @@
 export default [
+    '#ProductPageProductList .ItemOrj .productItem',
     'li.grid__item .card-wrapper.product-card-wrapper:has(a)',
     '.list-item .list-item-inline',
     '.product_single',
