@@ -22,9 +22,6 @@ export default async function first(props) {
     const success = await continueIfProductPage({ page, siteUrls });
        const paginationParameterName = siteUrls?.paginationParameterName
     if (success) {
-
- 
-
         const { productItemSelector } = logToLocalSheet()
 
         await scrollPageIfRequired({ page, siteUrls, routeName: "first" })
