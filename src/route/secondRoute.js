@@ -17,7 +17,7 @@ export default async function second({
   debugger
   console.log('inside second route')
   const paginationParameterName = siteUrls?.paginationParameterName
-  const { productItemSelector } = logToLocalSheet()
+  const { productItemSelector, totalItemsToBeCallected, totalItemsPerPage } = logToLocalSheet()
   debugger
 
   await scrollPageIfRequired({ page, siteUrls, routeName: "second" })
@@ -27,7 +27,7 @@ export default async function second({
   const mergePageItems = [...pageItems, data.length]
   const pageNumber = extractPageNumber(url, paginationParameterName);
   logToLocalSheet({ pageItems: mergePageItems, pageNumbers: [...pageNumbers, pageNumber] })
-
+  console.log('url:', url, 'totalItemsToBeCallected:', totalItemsToBeCallected, 'totalItemsPerPage:', totalItemsPerPage, 'pageNumber:', pageNumber, 'data.length:', data.length)
   return data
 
 }
