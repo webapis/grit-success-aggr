@@ -7,6 +7,7 @@ import findDuplicatesByLink from './findDuplicatesByLink.js';
 import getUniquePageURLs from "./getUniquePageURLs.js";
 import { uploadCollection } from "../../../uploadCollection.js";
 import uploadJSONToGoogleDrive from "../../../drive/uploadJSONToGoogleDrive.js";
+import extractCSSSelectors from '../../../helper/extractCSSSelectors.js';
 dotenv.config({ silent: true });
 
 const site = process.env.site;
@@ -100,43 +101,51 @@ export default async function analyzeData(data) {
             compress: false
         });
     }
-
+    const cssSelectors = extractCSSSelectors(dataWithoutError);
+   
+        JSONCSSSelectorsGitLink = await uploadCollection({
+            fileName: site,
+            data: cssSelectors,
+            gitFolder: "cssselectors",
+            compress: false
+        });
     return {
         // === OVERVIEW METRICS ===
         'Total Collected Items': data.length,
         'Total Valid Items': dataWithoutError.length,
         'Total Error Items': dataWithError.length,
         'Total Invalid Items': invalidItems.length,
-        
+
         // === TIME SPAN ===
         'Start Timestamp': oldestTimestamp,
         'End Timestamp': newestTimestamp,
         'Minutes Span': minutesSpan,
-        
+
         // === PAGE & CONTENT METRICS ===
         'Total Pages': totalPages.count || 0,
         'Total Unique Page URLs': uniquePageURLs.length,
         'Total Unique Items': totalUniqueItems.count || 0,
         'Total Duplicate URLs': duplicateURLs.length,
-        
+
         // === VALIDATION ERRORS ===
         'Total Invalid Links': invalidLinks,
         'Total Invalid Titles': invalidTitles,
         'Total Invalid Page Titles': invalidPageTitles,
         'Total Invalid Images': invalidimgs,
         'Total Invalid Videos': invalidVideos,
-        
+
         // === PRICE & AVAILABILITY ISSUES ===
         'Total Invalid Prices': invalidPrices,
         'Unset Prices': unsetPrices,
         'Price Scrape Errors': priceScrapeErrors,
         'Total Not Availables': totalNotAvailables,
-        
+
         // === SAMPLE DATA LINKS ===
         'Valid Sample Data (Drive)': ValidJSONSampleDataDriveLink ? ValidJSONSampleDataDriveLink.webViewLink : 'N/A',
         'Valid Sample Data (Git)': ValidJSONSampleDataGitLink ? ValidJSONSampleDataGitLink.url : 'N/A',
         'Error Sample Data (Drive)': JSONSampleDataWithErrorDriveLink ? JSONSampleDataWithErrorDriveLink.webViewLink : 'N/A',
         'Error Sample Data (Git)': JSONSampleDataWithErrorGitLink ? JSONSampleDataWithErrorGitLink.url : 'N/A',
         'Duplicate URL Sample Data (Git)': JSONSampleDataWithDuplicateUrlDataGitLink ? JSONSampleDataWithDuplicateUrlDataGitLink.url : 'N/A',
+        'CSS Selectors Data (Git)': JSONCSSSelectorsGitLink ? JSONCSSSelectorsGitLink.url : 'N/A'
     };
 }
