@@ -32,12 +32,12 @@ export default function extractCSSSelectors(dataArray) {
                     selectorInfo.selectorUsage[selector] = {
                         count: 0,
                         usedFor: new Set(),
-                        objectIndices: []
+                     //   objectIndices: []
                     };
                 }
                 
                 selectorInfo.selectorUsage[selector].count++;
-                selectorInfo.selectorUsage[selector].objectIndices.push(index);
+              //  selectorInfo.selectorUsage[selector].objectIndices.push(index);
                 
                 // Determine what this selector was used for
                 if (selector === matchedInfo.matchedSelector) {
@@ -93,7 +93,7 @@ function displaySelectorInfo(selectorInfo) {
         console.log(`\nSelector: ${selector}`);
         console.log(`  Used ${info.count} time(s)`);
         console.log(`  Purpose: ${Array.from(info.usedFor).join(', ')}`);
-        console.log(`  Found in objects: ${info.objectIndices.join(', ')}`);
+     //   console.log(`  Found in objects: ${info.objectIndices.join(', ')}`);
     });
     
     console.log("\n=== Most Common Selectors ===");
