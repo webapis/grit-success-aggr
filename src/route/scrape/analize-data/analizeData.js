@@ -103,7 +103,7 @@ export default async function analyzeData(data) {
     }
     const cssSelectors = extractCSSSelectors(dataWithoutError);
    
-        JSONCSSSelectorsGitLink = await uploadCollection({
+    const    JSONCSSSelectorsGitLink = await uploadCollection({
             fileName: site,
             data: cssSelectors,
             gitFolder: "cssselectors",
