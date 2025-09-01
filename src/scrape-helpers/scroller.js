@@ -471,7 +471,7 @@ export async function autoScrollUntilCount(page, selector, targetCount, options 
   // Default configuration
   const config = {
     scrollSpeed: options.scrollSpeed || 200,//100,
-    scrollDistance: options.scrollDistance || 50,//100,
+    scrollDistance: options.scrollDistance || 100,//100,
     maxScrollAttempts: options.maxScrollAttempts || 500,
     timeout: options.timeout || 300000, // 2 minutes for network-heavy pages
     waitForNetworkIdle: options.waitForNetworkIdle || 10000,//2000, // Wait 2s after network idle
