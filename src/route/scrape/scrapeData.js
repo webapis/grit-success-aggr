@@ -14,7 +14,9 @@ import videoAttributes from "../../selector-attibutes/videoAttributes.js";
 import videoSelectors from "../../selector-attibutes/videoSelectors.js";
 import productNotAvailable from "../../selector-attibutes/productNotAvailable.js";
 import processAndValidateScrapedData from "./validation/processAndValidateScrapedData.js";
-
+import { emitAsync } from "../../events.js";
+import logToLocalSheet from "../../sheet/logToLocalSheet.js";
+import '../../listeners.js'; // ← This registers event handlers
 dotenv.config({ silent: true });
 
 // Get current file directory
@@ -25,13 +27,13 @@ const __dirname = path.dirname(__filename);
 async function getPageUtilitiesScript() {
     const utilitiesPath = path.join(__dirname, 'pageUtilities.js');
     const utilitiesCode = fs.readFileSync(utilitiesPath, 'utf8');
-    
+
     // Remove the export statements and auto-injection code for browser use
     const browserCode = utilitiesCode
         .replace(/^export\s+{[\s\S]*?};\s*$/m, '') // Remove export statement
         .replace(/^\/\/\s*Export\s+for\s+Node\.js[\s\S]*$/m, '') // Remove export section
         .concat(`\n// Auto-inject utilities\ninjectPageUtilities();`); // Add injection call
-    
+
     return browserCode;
 }
 
@@ -42,8 +44,8 @@ function convertFunctionToString(func) {
 
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
     debugger
-const url =await page.url()
-debugger
+    const url = await page.url()
+    debugger
     // Method 1: Inject utilities from file
     const utilitiesScript = await getPageUtilitiesScript();
     await page.addScriptTag({ content: utilitiesScript });
@@ -149,7 +151,13 @@ debugger
 
     // Use the extracted processing function
     const validData = processAndValidateScrapedData(data, siteUrls);
-    
+    const { totalItemsToBeCallected, totalItemsPerPage } = logToLocalSheet()
+    await emitAsync('log-to-sheet', {
+        sheetTitle: 'coralhigh',
+        message: `Site crawler result`,
+        rowData: { " URL": url, totalItemsToBeCallected, totalItemsPerPage, "Scraped Items": data.length, "Valid Items": validData.length, "Timestamp": new Date().toISOString() }
+    });
+
     debugger
     return validData;
 }
