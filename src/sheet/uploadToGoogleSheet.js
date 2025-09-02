@@ -44,7 +44,7 @@ await emitAsync('log-to-sheet', {
 debugger
 if (debug && duplicateURLs.length > 0) {
     debugger
-    const limited = duplicateURLs.filter((f,i)=>i<30);
+    const limited = duplicateURLs//.filter((f,i)=>i<30);
     debugger
     console.log('Duplicate URLs found:', duplicateURLs.length);
     await emitAsync('bulk-log-to-sheet', {
