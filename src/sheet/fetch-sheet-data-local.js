@@ -4,6 +4,7 @@ import fs from 'fs/promises';
 import dotenv from 'dotenv';
 import getMainDomainPart from '../helper/getMainDomainPart.js';
 
+
 // Load environment variables for local development
 dotenv.config();
 
@@ -28,7 +29,12 @@ function parseScrollable(value) {
     }
     return value.trim().toLowerCase() === 'true';
 }
-
+function parseDebug(value) {
+    if (!value || typeof value !== 'string') {
+        return false;
+    }
+    return value.trim().toLowerCase() === 'true';
+}
 /**
  * Parses items per page from the sheet value
  */
@@ -101,7 +107,7 @@ function processSiteConfig(rows, targetSite) {
                     scrollable: parseScrollable(row[3]),
                     showMoreButtonSelector: row[4] ? row[4].trim() : '',
                     totalProductCounterSelector: row[5] ? row[5].trim() : '',
-                    itemsPerPage: parseItemsPerPage(row[6]),
+                    debug: parseDebug(row[6]),
                     urls: matchingUrls,
                     paused: row[8] ? row[8].trim().toLowerCase() === 'true' : false,
                     pausedReason: row[9] ? row[9].trim() : '',
@@ -138,7 +144,7 @@ function processSiteConfig(rows, targetSite) {
         scrollable: siteConfigurations[0]?.scrollable || false,
         showMoreButtonSelector: siteConfigurations[0]?.showMoreButtonSelector || '',
         totalProductCounterSelector: siteConfigurations[0]?.totalProductCounterSelector || '',
-        itemsPerPage: siteConfigurations[0]?.itemsPerPage || null,
+        debug: siteConfigurations[0]?.debug || false,
         cachedAt: new Date().toISOString()
     };
 }

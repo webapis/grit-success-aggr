@@ -14,8 +14,9 @@ dotenv.config({ silent: true });
 const site = process.env.site;
 
 export default async function analyzeData(data) {
-    const { debug } = logToLocalSheet
-
+    debugger
+    const { debug } = logToLocalSheet()
+debugger
     const dataWithoutError = data.filter(f => !f.error);
     const dataWithError = data.filter(f => f.error);
     const { oldestTimestamp, newestTimestamp, minutesSpan } = getAggrTimeSpan({ data });

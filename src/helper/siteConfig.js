@@ -109,7 +109,7 @@ debugger
 
             if (matchingUrls.length > 0) {
                 foundBrand = true;
-
+debugger
                 const rowConfig = {
                     brand: row[0] ? row[0].trim() : '',
                     paginationSelector: row[1] ? row[1].trim() : '',
