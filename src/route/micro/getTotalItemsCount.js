@@ -5,7 +5,7 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
     const TIMEOUT = 10000; // 10 second timeout
     
     try {
-        console.log('totalProductCounterSelector----------------!!', totalProductCounterSelector);
+     
 
         // Handle special cases first
         if (totalProductCounterSelector === 'none') {
@@ -86,7 +86,7 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
             };
         }
 
-        console.log('getTotalItemsCount success:', extractedCount);
+  
         return { count: extractedCount, selector, success: true };
 
     } catch (error) {

@@ -6,11 +6,11 @@ dotenv.config({ silent: true });
 
 export async function scrollPageIfRequired({ page, siteUrls, routeName }) {
     const { totalItemsToBeCallected, totalItemsPerPage } = logToLocalSheet()
-    console.log('inside scrollPageIfRequired', routeName)
+
     const scrollable = siteUrls?.scrollable || false;
     const showMoreButtonSelector = siteUrls?.showMoreButtonSelector || '';
     // const totalProductCounterSelector = siteUrls?.totalProductCounterSelector || '';
-    console.log('is scrollable', siteUrls?.scrollable)
+  
 
     if (scrollable && showMoreButtonSelector) {
         const totalPages = Math.ceil(totalItemsToBeCallected / totalItemsPerPage);

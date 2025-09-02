@@ -19,10 +19,10 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         // Safely extract with default 0
 
         const previousTotalItemsToBeCallected = totalItemsToBeCallected || 0;
-        debugger
+        
         const { count: totalItemsToBeCallectedCount, selector: totalItemsSelector } =
             await getTotalItemsCount(page, siteUrls?.totalProductCounterSelector);
-        debugger
+        
         logToLocalSheet({
             totalItemsToBeCallected: totalItemsToBeCallectedCount + previousTotalItemsToBeCallected,
             totalItemsSelector

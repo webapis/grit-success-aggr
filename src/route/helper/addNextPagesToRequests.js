@@ -29,7 +29,7 @@ export default async function addNextPagesToRequests({ page, addRequests, siteUr
            
                 .map(url => ({ url: url.replace('??', '?'), label: 'second' }));
 
-            console.log('filtered', filtered);
+         //   console.log('filtered', filtered);
             await addRequests(filtered);
 
         }

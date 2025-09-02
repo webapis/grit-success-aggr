@@ -47,7 +47,7 @@ function convertFunctionToString(func) {
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
     debugger
     const url = await page.url()
-    debugger
+
     // Method 1: Inject utilities from file
     const utilitiesScript = await getPageUtilitiesScript();
     await page.addScriptTag({ content: utilitiesScript });

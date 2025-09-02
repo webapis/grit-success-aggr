@@ -17,7 +17,7 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
   const paginationSelector = siteUrls?.paginationSelector
   const paginationParameterName = siteUrls?.paginationParameterName
   if (itemsPerPage && paginationParameterName && totalItemsToCallect > 0) {
-    console.log('pagination with itemsPerPage, paginationParameterName, totalItemsToCallect', itemsPerPage, paginationParameterName, totalItemsToCallect)
+
     
     const nextUrls = await page.evaluate((baseUrl, itemsPerPage, paginationParameterName, totalItemsToCallect) => {
 
@@ -39,7 +39,7 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
     return nextUrls;
   } else
     if (paginationSelector && paginationParameterName) {
-      console.log('pagination with  paginationSelector,paginationParameterName', paginationSelector, paginationParameterName)
+    
       const result = await page.evaluate((paginationSelector, baseUrl, paginationParameterName) => {
 
         try {
