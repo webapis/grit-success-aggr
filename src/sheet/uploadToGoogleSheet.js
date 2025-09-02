@@ -38,7 +38,8 @@ await emitAsync('log-to-sheet', {
     message: `Site ${site} crawler result`,
     rowData: logResult
 });
-if (debug) {
+if (debug && duplicateURLs.length > 0) {
+    console.log('Duplicate URLs found:', duplicateURLs.length);
     await emitAsync('bulk-log-to-sheet', {
 
         message: `Site ${site} crawler result`,
