@@ -5,6 +5,7 @@ import { getDatasetItems } from "../crawlee/datasetOperations.js";
 import sortPageData from "../route/helper/sortPageData.js";
 import { flattenObjectForSheets } from "./flattenObjectForSheets.js";
 import findDuplicatesByLink from "../route/scrape/analize-data/findDuplicatesByLink.js";
+import { findDuplicateObjects } from "./findDuplicateObjects.js";
 import { emitAsync } from '../events.js';
 import '../listeners.js'; // ← This registers event handlers
 dotenv.config({ silent: true });
@@ -31,7 +32,7 @@ const { debug } = logToLocalSheet()
 const data = await getDatasetItems(site);
 const dataWithoutError = data.filter(f => !f.error);
 const flattenedData = dataWithoutError.map(flattenObjectForSheets);
-const duplicateURLs = findDuplicatesByLink(flattenedData);
+const duplicateURLs = findDuplicateObjects(flattenedData);
 debugger
 await emitAsync('log-to-sheet', {
     sheetTitle: 'Crawl Logs(success)',
