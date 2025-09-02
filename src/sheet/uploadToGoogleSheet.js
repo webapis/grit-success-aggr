@@ -14,9 +14,9 @@ export default async function uploadToGoogleSheet() {
     debugger
     const analyzedData = await analyzeData(data);
     debugger
-    const { pageItems, pageNumbers } = logToLocalSheet(analyzedData);
+    const { pageItems = [], pageNumbers = [] } = logToLocalSheet(analyzedData);
     console.log('pageItems--, pageNumbers--', pageItems, pageNumbers);
-    const result = sortPageData(pageItems, pageNumbers);
+    const result =  sortPageData(pageItems, pageNumbers);
     const logResult = logToLocalSheet({ pageItems: result.pageItems.join(','), pageNumbers: result.pageNumbers.join(',') });
     debugger
 
