@@ -16,6 +16,8 @@ import productNotAvailable from "../../selector-attibutes/productNotAvailable.js
 import processAndValidateScrapedData from "./validation/processAndValidateScrapedData.js";
 import { emitAsync } from "../../events.js";
 import logToLocalSheet from "../../sheet/logToLocalSheet.js";
+import { flattenObjectForSheets } from "../../sheet/flattenObjectForSheets.js";
+
 import '../../listeners.js'; // ← This registers event handlers
 dotenv.config({ silent: true });
 
@@ -159,8 +161,13 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             message: `Site crawler result`,
             rowData: { "URL": url, totalItemsToBeCallected, totalItemsPerPage, "Scraped Items": data.length, "Valid Items": validData.length, "Timestamp": new Date().toISOString() }
         });
+
+        await emitAsync('bulk-log-to-sheet', {
+            rowsData: validData.map(item => flattenObjectForSheets(item))
+        });
     }
 
+    debugger
 
     debugger
     return validData;

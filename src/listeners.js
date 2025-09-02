@@ -2,6 +2,7 @@
 import { emitter } from './events.js';
 import { logToGoogleSheet } from './sheet/logToGoogleSheet.js';
 import { uploadCollection } from './uploadCollection.js';
+import { bulkLogToGoogleSheet } from './sheet/bulk.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -31,6 +32,14 @@ emitter.on('log-to-sheet', async ({ sheetTitle = 'Crawl Logs', rowData, message 
   }
 });
 
+emitter.on('bulk-log-to-sheet', async ({ rowsData }) => {
+  await bulkLogToGoogleSheet({
+    sheetId: SHEET_ID,
+    sheetTitle: 'debug2',
+    serviceAccountCredentials: CREDENTIALS,
+    rowsData
+  });
+});
 
 emitter.on('no-valid-data', ({ site }) => {
   console.warn('⚠️ No valid data collected for site:', site);
