@@ -27,22 +27,24 @@ export default async function uploadToGoogleSheet() {
 
 debugger
 const { logResult } = await uploadToGoogleSheet();
-
+const { debug } = logToLocalSheet()
 const data = await getDatasetItems(site);
 const dataWithoutError = data.filter(f => !f.error);
 const flattenedData = dataWithoutError.map(flattenObjectForSheets);
-const duplicateURLs = findDuplicatesByLink(data);
+const duplicateURLs = findDuplicatesByLink(flattenedData);
 debugger
 await emitAsync('log-to-sheet', {
     sheetTitle: 'Crawl Logs(success)',
     message: `Site ${site} crawler result`,
     rowData: logResult
 });
+if (debug) {
+    await emitAsync('bulk-log-to-sheet', {
 
-await emitAsync('bulk-log-to-sheet', {
+        message: `Site ${site} crawler result`,
+        rowData: duplicateURLs
+    });
+}
 
-    message: `Site ${site} crawler result`,
-    rowData: duplicateURLs
-});
 debugger;
 
