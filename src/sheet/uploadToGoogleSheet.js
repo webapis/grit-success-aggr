@@ -18,6 +18,7 @@ export default async function uploadToGoogleSheet() {
     const analyzedData = await analyzeData(data);
     debugger
     const { pageItems = [], pageNumbers = [] } = logToLocalSheet(analyzedData);
+    debugger
     console.log('pageItems--, pageNumbers--', pageItems, pageNumbers);
     const result = sortPageData(pageItems, pageNumbers);
     const logResult = logToLocalSheet({ pageItems: result.pageItems.join(','), pageNumbers: result.pageNumbers.join(',') });
@@ -42,11 +43,14 @@ await emitAsync('log-to-sheet', {
 
 debugger
 if (debug && duplicateURLs.length > 0) {
+    debugger
+    const limited = duplicateURLs.filter((f,i)=>i<30);
+    debugger
     console.log('Duplicate URLs found:', duplicateURLs.length);
     await emitAsync('bulk-log-to-sheet', {
 
         message: `Site ${site} crawler result`,
-        rowData: duplicateURLs.filter((f,i)=>i<30)
+        rowsData: limited
     });
 }
 
