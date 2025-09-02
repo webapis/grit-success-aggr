@@ -62,10 +62,10 @@ debugger
                     Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
                 ),
             });
-
+   
         }
 
-        console.log(`Uploaded invalid items to Google Drive: ${JSONSampleDataWithErrorDriveLink.webViewLink}`);
+    
         if (debug) {
             JSONSampleDataWithErrorGitLink = await uploadCollection({
                 fileName: site,
@@ -78,7 +78,7 @@ debugger
     }
 
     // Upload valid data samples
-    console.log(`Uploading ${Math.min(dataWithoutError.length, 5)} valid data samples...`);
+
 
     const jsonBuffer2 = Buffer.from(JSON.stringify(dataWithoutError.filter((f, i) => i < 5), null, 2), 'utf-8');
 
@@ -92,7 +92,7 @@ debugger
         ),
     });
 
-    console.log('✅ JSON file uploaded to Google Drive:', ValidJSONSampleDataDriveLink.webViewLink);
+
 
     const ValidJSONSampleDataGitLink = await uploadCollection({
         fileName: site,
