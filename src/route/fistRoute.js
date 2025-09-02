@@ -24,8 +24,8 @@ export default async function first(props) {
     if (success) {
         const { productItemSelector } = logToLocalSheet()
 
-       // await scrollPageIfRequired({ page, siteUrls, routeName: "first" })
-      //  await addNextPagesToRequests({ page, addRequests, siteUrls, url });
+        await scrollPageIfRequired({ page, siteUrls, routeName: "first" })
+        await addNextPagesToRequests({ page, addRequests, siteUrls, url });
         const data = await scrapeData({ page, siteUrls, productItemSelector })
 
         const { pageItems = [], pageNumbers = [] } = logToLocalSheet()
