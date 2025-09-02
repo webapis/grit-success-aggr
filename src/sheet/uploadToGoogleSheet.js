@@ -3,6 +3,8 @@ import analyzeData from "../route/scrape/analize-data/analizeData.js";
 import logToLocalSheet from "./logToLocalSheet.js";
 import { getDatasetItems } from "../crawlee/datasetOperations.js";
 import sortPageData from "../route/helper/sortPageData.js";
+import { flattenObjectForSheets } from "./flattenObjectForSheets.js";
+import findDuplicatesByLink from "../route/scrape/analize-data/findDuplicatesByLink.js";
 import { emitAsync } from '../events.js';
 import '../listeners.js'; // ← This registers event handlers
 dotenv.config({ silent: true });
@@ -16,7 +18,7 @@ export default async function uploadToGoogleSheet() {
     debugger
     const { pageItems = [], pageNumbers = [] } = logToLocalSheet(analyzedData);
     console.log('pageItems--, pageNumbers--', pageItems, pageNumbers);
-    const result =  sortPageData(pageItems, pageNumbers);
+    const result = sortPageData(pageItems, pageNumbers);
     const logResult = logToLocalSheet({ pageItems: result.pageItems.join(','), pageNumbers: result.pageNumbers.join(',') });
     debugger
 
@@ -25,11 +27,22 @@ export default async function uploadToGoogleSheet() {
 
 debugger
 const { logResult } = await uploadToGoogleSheet();
+
+const data = await getDatasetItems(site);
+const dataWithoutError = data.filter(f => !f.error);
+const flattenedData = dataWithoutError.map(flattenObjectForSheets);
+const duplicateURLs = findDuplicatesByLink(data);
 debugger
 await emitAsync('log-to-sheet', {
     sheetTitle: 'Crawl Logs(success)',
     message: `Site ${site} crawler result`,
     rowData: logResult
+});
+
+await emitAsync('bulk-log-to-sheet', {
+
+    message: `Site ${site} crawler result`,
+    rowData: duplicateURLs
 });
 debugger;
 

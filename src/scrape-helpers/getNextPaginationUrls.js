@@ -13,12 +13,12 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
     await getTotalItemsCount(page, siteUrls?.totalProductCounterSelector);
 
   const itemsPerPage = await page.$$eval(productItemSelector, els => els.length);
-  debugger
+  
   const paginationSelector = siteUrls?.paginationSelector
   const paginationParameterName = siteUrls?.paginationParameterName
   if (itemsPerPage && paginationParameterName && totalItemsToCallect > 0) {
     console.log('pagination with itemsPerPage, paginationParameterName, totalItemsToCallect', itemsPerPage, paginationParameterName, totalItemsToCallect)
-    debugger
+    
     const nextUrls = await page.evaluate((baseUrl, itemsPerPage, paginationParameterName, totalItemsToCallect) => {
 
 

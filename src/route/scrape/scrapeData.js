@@ -156,15 +156,14 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
     const { totalItemsToBeCallected, totalItemsPerPage, debug } = logToLocalSheet()
     debugger
     if (debug) {
-        await emitAsync('log-to-sheet', {
-            sheetTitle: 'debug',
-            message: `Site crawler result`,
-            rowData: { "URL": url, totalItemsToBeCallected, totalItemsPerPage, "Scraped Items": data.length, "Valid Items": validData.length, "Timestamp": new Date().toISOString() }
-        });
+        // await emitAsync('log-to-sheet', {
+        //     sheetTitle: 'debug',
+        //     message: `Site crawler result`,
+        //     rowData: { "URL": url, totalItemsToBeCallected, totalItemsPerPage, "Scraped Items": data.length, "Valid Items": validData.length, "Timestamp": new Date().toISOString() }
+        // });
 
-        await emitAsync('bulk-log-to-sheet', {
-            rowsData: validData.map(item => flattenObjectForSheets(item))
-        });
+
+        debugger
     }
 
     debugger
