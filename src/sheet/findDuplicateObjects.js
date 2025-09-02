@@ -10,15 +10,14 @@ export function findDuplicateObjects(objectArray) {
   }
 
   const seen = new Set();
-  const duplicates = [];
 
-  objectArray.forEach(obj => {
+  return objectArray.filter(obj => {
     if (obj.link && seen.has(obj.link)) {
-      duplicates.push(obj);
-    } else if (obj.link) {
+      return true; // This is a duplicate
+    }
+    if (obj.link) {
       seen.add(obj.link);
     }
+    return false; // This is not a duplicate
   });
-
-  return duplicates;
 }
