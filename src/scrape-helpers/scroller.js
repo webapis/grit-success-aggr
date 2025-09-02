@@ -2,7 +2,7 @@
 
 export default async function scroller(page, scrollSpeed, scrollTimes = 50) {
     page.on("console", (message) => {
-      console.log("Message from Puppeteer page:", message.text());
+    //  console.log("Message from Puppeteer page:", message.text());
     });
   
     await page.evaluate(async (_scrollSpeed, _scrollTimes) => {
@@ -288,7 +288,7 @@ export async function autoScroll(page, options = {}) {
 
 export async function scrollWithShowMore(page, scrollSpeed, showMoreSelector, maxAttempts = 50) {
   page.on("console", (message) => {
-    console.log("Message from Puppeteer page:", message.text());
+  //  console.log("Message from Puppeteer page:", message.text());
   });
 
   await page.evaluate(async (_scrollSpeed, _showMoreSelector, _maxAttempts) => {

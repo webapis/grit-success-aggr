@@ -1,7 +1,7 @@
 
 export default async function autoScroll(page,scrollSpeed) {
     page.on("console", (message) => {
-      console.log("Message from Puppeteer page:", message.text());
+     // console.log("Message from Puppeteer page:", message.text());
     });
     await page.evaluate(async (_scrollSpeed) => {
       await new Promise((resolve, reject) => {

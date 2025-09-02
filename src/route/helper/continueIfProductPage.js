@@ -10,7 +10,7 @@ const site = process.env.site;
 
 export default async function continueIfProductPage({ page, siteUrls }) {
     page.on("console", (message) => {
-        console.log("Message from Puppeteer page:", message.text());
+      //  console.log("Message from Puppeteer page:", message.text());
     });
 
     const bestSelector = await findBestSelector(page, productItemSelector);
@@ -31,7 +31,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         const totalItemsPerPage = bestSelector['count'];
         logToLocalSheet({ totalItemsPerPage });
         logToLocalSheet({ productItemSelector: bestSelector.selector });
-        console.log('totalItemsToBeCallected--', totalItemsToBeCallected)
+       // console.log('totalItemsToBeCallected--', totalItemsToBeCallected)
         return true;
     } else {
         if (debug) {

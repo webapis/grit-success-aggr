@@ -32,8 +32,8 @@ const { logResult } = await uploadToGoogleSheet();
 const { debug } = logToLocalSheet()
 const data = await getDatasetItems(site);
 const dataWithoutError = data.filter(f => !f.error);
-const flattenedData = dataWithoutError.map(flattenObjectForSheets);
-const duplicateURLs = findDuplicateObjects(flattenedData);
+//const flattenedData = dataWithoutError.map(flattenObjectForSheets);
+//const duplicateURLs = findDuplicateObjects(flattenedData);
 debugger
 await emitAsync('log-to-sheet', {
     sheetTitle: 'Crawl Logs(success)',
@@ -42,17 +42,17 @@ await emitAsync('log-to-sheet', {
 });
 
 debugger
-if (debug && duplicateURLs.length > 0) {
-    debugger
-    const limited = duplicateURLs//.filter((f,i)=>i<30);
-    debugger
-    console.log('Duplicate URLs found:', duplicateURLs.length);
-    await emitAsync('bulk-log-to-sheet', {
+// if (debug && duplicateURLs.length > 0) {
+//     debugger
+//     const limited = duplicateURLs//.filter((f,i)=>i<30);
+//     debugger
+//     console.log('Duplicate URLs found:', duplicateURLs.length);
+//     await emitAsync('bulk-log-to-sheet', {
 
-        message: `Site ${site} crawler result`,
-        rowsData: limited
-    });
-}
+//         message: `Site ${site} crawler result`,
+//         rowsData: limited
+//     });
+// }
 
 debugger;
 

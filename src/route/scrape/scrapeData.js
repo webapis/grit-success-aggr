@@ -45,9 +45,10 @@ function convertFunctionToString(func) {
 }
 
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
-    debugger
+    
     const url = await page.url()
-
+console.log('URL:',url)
+debugger
     // Method 1: Inject utilities from file
     const utilitiesScript = await getPageUtilitiesScript();
     await page.addScriptTag({ content: utilitiesScript });
@@ -154,7 +155,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
     // Use the extracted processing function
     const validData = processAndValidateScrapedData(data, siteUrls);
     const { totalItemsToBeCallected, totalItemsPerPage, debug } = logToLocalSheet()
-    debugger
+
     if (debug) {
         // await emitAsync('log-to-sheet', {
         //     sheetTitle: 'debug',
@@ -163,11 +164,10 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         // });
 
 
-        debugger
+        
     }
 
-    debugger
-
-    debugger
-    return validData.map(m => ({ ...m, processId: generateTimestampId() }))
+ 
+    const timestamp= generateTimestampId()
+    return validData.map(m => ({ ...m, processId: timestamp}))
 }
