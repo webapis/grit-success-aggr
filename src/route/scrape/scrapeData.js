@@ -17,7 +17,7 @@ import processAndValidateScrapedData from "./validation/processAndValidateScrape
 import { emitAsync } from "../../events.js";
 import logToLocalSheet from "../../sheet/logToLocalSheet.js";
 import { flattenObjectForSheets } from "../../sheet/flattenObjectForSheets.js";
-
+import { generateTimestampId } from "../micro/generateTimestampId.js";
 import '../../listeners.js'; // ← This registers event handlers
 dotenv.config({ silent: true });
 
@@ -169,5 +169,5 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
     debugger
 
     debugger
-    return validData;
+    return validData.map(m => ({ ...m, processId: generateTimestampId() }))
 }

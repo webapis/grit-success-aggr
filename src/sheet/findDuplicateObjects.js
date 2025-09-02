@@ -1,23 +1,24 @@
 /**
- * Returns all duplicate objects based on link property
+ * Returns all duplicate objects based on link property (including all occurrences)
  * 
  * @param {Array} objectArray - Array of objects to check for duplicates
- * @returns {Array} - Array containing all duplicate objects (excluding the first occurrence of each)
+ * @returns {Array} - Array containing all objects that have duplicate links (including first occurrence)
  */
 export function findDuplicateObjects(objectArray) {
   if (!Array.isArray(objectArray)) {
     return [];
   }
 
-  const seen = new Set();
-
-  return objectArray.filter(obj => {
-    if (obj.link && seen.has(obj.link)) {
-      return true; // This is a duplicate
-    }
+  // First pass: count occurrences of each link
+  const linkCounts = {};
+  objectArray.forEach(obj => {
     if (obj.link) {
-      seen.add(obj.link);
+      linkCounts[obj.link] = (linkCounts[obj.link] || 0) + 1;
     }
-    return false; // This is not a duplicate
+  });
+
+  // Second pass: filter objects whose link appears more than once
+  return objectArray.filter(obj => {
+    return obj.link && linkCounts[obj.link] > 1;
   });
 }
