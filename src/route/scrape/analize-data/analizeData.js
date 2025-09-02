@@ -8,11 +8,14 @@ import getUniquePageURLs from "./getUniquePageURLs.js";
 import { uploadCollection } from "../../../uploadCollection.js";
 import uploadJSONToGoogleDrive from "../../../drive/uploadJSONToGoogleDrive.js";
 import extractCSSSelectors from '../../../helper/extractCSSSelectors.js';
+import logToLocalSheet from '../../../sheet/logToLocalSheet.js';
 dotenv.config({ silent: true });
 
 const site = process.env.site;
 
 export default async function analyzeData(data) {
+    const { debug } = logToLocalSheet
+
     const dataWithoutError = data.filter(f => !f.error);
     const dataWithError = data.filter(f => f.error);
     const { oldestTimestamp, newestTimestamp, minutesSpan } = getAggrTimeSpan({ data });
@@ -42,30 +45,35 @@ export default async function analyzeData(data) {
     let JSONSampleDataWithErrorDriveLink = null;
     let JSONSampleDataWithErrorGitLink = null;
     let JSONSampleDataWithDuplicateUrlDataGitLink = null;
-
+    let JSONCSSSelectorsGitLink = null
     if (invalidItems.length > 0) {
         console.log(`Found ${invalidItems.length} invalid items, uploading samples...`);
 
-        const jsonBuffer = Buffer.from(JSON.stringify(invalidItems.filter((f, i) => i < 5), null, 2), 'utf-8');
 
-        JSONSampleDataWithErrorDriveLink = await uploadJSONToGoogleDrive({
-            buffer: jsonBuffer,
-            fileName: `${site}-error.json`,
-            mimeType: 'application/json',
-            folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-            serviceAccountCredentials: JSON.parse(
-                Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
-            ),
-        });
+        if (debug) {
+            const jsonBuffer = Buffer.from(JSON.stringify(invalidItems.filter((f, i) => i < 5), null, 2), 'utf-8');
+            JSONSampleDataWithErrorDriveLink = await uploadJSONToGoogleDrive({
+                buffer: jsonBuffer,
+                fileName: `${site}-error.json`,
+                mimeType: 'application/json',
+                folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
+                serviceAccountCredentials: JSON.parse(
+                    Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
+                ),
+            });
+
+        }
 
         console.log(`Uploaded invalid items to Google Drive: ${JSONSampleDataWithErrorDriveLink.webViewLink}`);
+        if (debug) {
+            JSONSampleDataWithErrorGitLink = await uploadCollection({
+                fileName: site,
+                data: invalidItems.filter((f, i) => i < 5),
+                gitFolder: "ErrorSample",
+                compress: false
+            });
+        }
 
-        JSONSampleDataWithErrorGitLink = await uploadCollection({
-            fileName: site,
-            data: invalidItems.filter((f, i) => i < 5),
-            gitFolder: "ErrorSample",
-            compress: false
-        });
     }
 
     // Upload valid data samples
@@ -93,22 +101,26 @@ export default async function analyzeData(data) {
     });
 
     // Upload duplicate URL samples if any
-    if (duplicateURLs.length > 1) {
+    if (duplicateURLs.length > 1 && debug) {
         JSONSampleDataWithDuplicateUrlDataGitLink = await uploadCollection({
             fileName: site,
             data: duplicateURLs.filter((f, i) => i < 5),
             gitFolder: "duplicateUrl",
             compress: false
         });
+
     }
-    const cssSelectors = extractCSSSelectors(dataWithoutError);
-   
-    const    JSONCSSSelectorsGitLink = await uploadCollection({
+
+    if (debug) {
+        const cssSelectors = extractCSSSelectors(dataWithoutError);
+        JSONCSSSelectorsGitLink = await uploadCollection({
             fileName: site,
             data: cssSelectors,
             gitFolder: "cssselectors",
             compress: false
         });
+    }
+
     return {
         // === OVERVIEW METRICS ===
         'Total Collected Items': data.length,

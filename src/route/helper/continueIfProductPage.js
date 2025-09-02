@@ -14,10 +14,10 @@ export default async function continueIfProductPage({ page, siteUrls }) {
     });
 
     const bestSelector = await findBestSelector(page, productItemSelector);
-
+    const { totalItemsToBeCallected, debug } = logToLocalSheet() || {};
     if (bestSelector.count > 0) {
         // Safely extract with default 0
-        const { totalItemsToBeCallected } = logToLocalSheet() || {};
+
         const previousTotalItemsToBeCallected = totalItemsToBeCallected || 0;
         debugger
         const { count: totalItemsToBeCallectedCount, selector: totalItemsSelector } =
@@ -34,19 +34,22 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         console.log('totalItemsToBeCallected--', totalItemsToBeCallected)
         return true;
     } else {
-        // Take screenshot if initial pages could not be retrieved.
-        const screenshotBuffer = await page.screenshot({ fullPage: true });
+        if (debug) {
+            // Take screenshot if initial pages could not be retrieved.
+            const screenshotBuffer = await page.screenshot({ fullPage: true });
 
-        // Upload directly to GitHub
-        const result = await uploadImage({
-            fileName: `${site}-${Date.now()}.png`,
-            imageBuffer: screenshotBuffer,
-            gitFolder: 'screenshots'
-        });
+            // Upload directly to GitHub
+            const result = await uploadImage({
+                fileName: `${site}-${Date.now()}.png`,
+                imageBuffer: screenshotBuffer,
+                gitFolder: 'screenshots'
+            });
 
-        logToLocalSheet({ totalItemsPerPage: 0 });
-        logToLocalSheet({ productItemSelector: 'not defined' });
-        logToLocalSheet({ ScreenshotGit: result.url });
+            logToLocalSheet({ totalItemsPerPage: 0 });
+            logToLocalSheet({ productItemSelector: 'not defined' });
+            logToLocalSheet({ ScreenshotGit: result.url });
+        }
+
 
         return false;
     }
