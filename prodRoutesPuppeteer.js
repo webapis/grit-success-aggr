@@ -14,23 +14,28 @@ export const createRouter = async (siteUrls) => {
   const router = createPuppeteerRouter();
   let hasRunFirstPageFunction = false;
   router.addDefaultHandler(async (props) => {
-
-    
+    const {  request: { url } } = props
     if (!hasRunFirstPageFunction) { // First request being processed
-      console.log('First request being processed------------------');
+      console.log('First request being processed------------------', url);
       
       hasRunFirstPageFunction = true
 
       logToLocalSheet({ paginationParameterName: siteUrls.paginationParameterName, scrollable: siteUrls.scrollable, showMoreButtonSelector: siteUrls.showMoreButtonSelector, debug: siteUrls.debug || false });
 
     }
+    debugger
     const data = await first({ ...props, label: "default", siteUrls });
-    await productsDataset.pushData(data);
+
+    debugger
+   await productsDataset.pushData(data);
+    debugger
+
   });
 
   router.addHandler("second", async (props) => {
-    
+    debugger
     const data = await second({ ...props, label: "second", siteUrls });
+    debugger
     await productsDataset.pushData(data);
   });
 

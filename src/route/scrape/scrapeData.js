@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import titleSelector from "../../selector-attibutes/titleSelector.js";
 import imageSelectors from "../../selector-attibutes/imageSelector.js";
 import linkSelectors from "../../selector-attibutes/linkSelector.js";
+
 import imageAttributes from "../../selector-attibutes/imageAttributes.js";
 import titleAttribute from "../../selector-attibutes/titleAttribute.js";
 import priceSelector from "../../selector-attibutes/priceSelector.js";
@@ -16,10 +17,11 @@ import productNotAvailable from "../../selector-attibutes/productNotAvailable.js
 import processAndValidateScrapedData from "./validation/processAndValidateScrapedData.js";
 import { emitAsync } from "../../events.js";
 import logToLocalSheet from "../../sheet/logToLocalSheet.js";
-import { flattenObjectForSheets } from "../../sheet/flattenObjectForSheets.js";
+
 import { generateTimestampId } from "../micro/generateTimestampId.js";
 import '../../listeners.js'; // ← This registers event handlers
 dotenv.config({ silent: true });
+const site = process.env.site;
 
 // Get current file directory
 const __filename = fileURLToPath(import.meta.url);
@@ -45,10 +47,10 @@ function convertFunctionToString(func) {
 }
 
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
-    
+
     const url = await page.url()
-console.log('URL:',url)
-debugger
+    console.log('URL:', url)
+    debugger
     // Method 1: Inject utilities from file
     const utilitiesScript = await getPageUtilitiesScript();
     await page.addScriptTag({ content: utilitiesScript });
@@ -164,10 +166,12 @@ debugger
         // });
 
 
-        
+
     }
 
- 
-    const timestamp= generateTimestampId()
-    return validData.map(m => ({ ...m, processId: timestamp}))
+
+    const timestamp = generateTimestampId()
+
+
+    return validData.map(m => ({ ...m, processId: timestamp }))
 }

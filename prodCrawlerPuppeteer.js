@@ -59,7 +59,7 @@ function validateUrls(urls) {
             process.exit(1);
         }
 
-        
+
         console.log(`Fetching configuration for site: ${site}`);
 
         // Enhanced configuration retrieval logic
@@ -90,7 +90,7 @@ function validateUrls(urls) {
             siteConfig = await getSiteConfig(site, true);
         }
 
-        
+
 
         if (!siteConfig) {
             console.error(`Could not retrieve configuration for site: ${site}. Exiting.`);
@@ -173,7 +173,7 @@ function validateUrls(urls) {
             // Retry configuration
             maxRequestRetries: 2,
             retryOnBlocked: false,
-
+            maxConcurrency: 1,
             // Request configuration to avoid 403s
             sessionPoolOptions: {
                 maxPoolSize: 10,
@@ -225,11 +225,11 @@ function validateUrls(urls) {
             console.log(`Stats: ${successfulRequests}/${totalRequests} successful, ${stats.requestsFailed} failed`);
 
             logToLocalSheet({ Duration: duration })
-            
+
         } catch (crawlerError) {
             console.error('❌ Crawler execution failed:', crawlerError);
 
-    
+
             logToLocalSheet({ Status: 'Fatal Error', Notes: `Crawler crashed: ${crawlerError.message}` });
             throw crawlerError; // Re-throw to maintain error handling behavior
         }
