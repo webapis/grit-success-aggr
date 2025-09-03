@@ -18,6 +18,7 @@ export async function scrollPageIfRequired({ page, siteUrls, routeName }) {
         console.log('totalItemsToBeCallected', totalItemsToBeCallected)
         console.log('totalItemsPerPage', totalItemsPerPage)
         console.log('totalPages', totalPages)
+        logToLocalSheet({scroller:'scrollWithShowMoreAdvanced'})
         await scrollWithShowMoreAdvanced(page, 1000, showMoreButtonSelector, {
             debug: true,
             waitAfterClick: 2500,
@@ -28,11 +29,13 @@ export async function scrollPageIfRequired({ page, siteUrls, routeName }) {
         const { productItemSelector } = logToLocalSheet()
         console.log('scroller', 'autoScrollUntilCount--------------------')
         console.log('productItemSelector is :', productItemSelector)
+        logToLocalSheet({scroller:'autoScrollUntilCount'})
         await autoScrollUntilCount(page, productItemSelector, totalItemsToBeCallected);
     }
     else if (scrollable) {
         debugger
         console.log('scroller', 'autoScroll--------------------')
+        logToLocalSheet({scroller:'autoScroll'})
         await autoScroll(page, {
             scrollSpeed: 500,
             scrollDistance: 300,
