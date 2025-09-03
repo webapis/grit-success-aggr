@@ -15,6 +15,8 @@ export async function scrollPageIfRequired({ page, siteUrls, routeName }) {
     if (scrollable && showMoreButtonSelector) {
         const totalPages = Math.ceil(totalItemsToBeCallected / totalItemsPerPage);
         console.log('scroller', 'autoScroll---showMoreButtonSelector-----------------')
+        console.log('totalItemsToBeCallected', totalItemsToBeCallected)
+        console.log('totalItemsPerPage', totalItemsPerPage)
         console.log('totalPages', totalPages)
         await scrollWithShowMoreAdvanced(page, 1000, showMoreButtonSelector, {
             debug: true,
