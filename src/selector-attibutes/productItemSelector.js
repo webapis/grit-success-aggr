@@ -1,4 +1,5 @@
 export default [
+    '[data-product-id].product-block.none[data-cc-animate]',
     '[class*="style_product_container"]',
     '.list__content .js-product-wrapper.product-item',
     '#ProductPageProductList .ItemOrj .productItem',
