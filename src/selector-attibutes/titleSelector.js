@@ -1,4 +1,5 @@
 export default [
+    '[class*="style_product_title__"] h2',
     '.item-title a',
     '.product-category.product-info',
     '.product_singlebody a',

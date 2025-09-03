@@ -1,4 +1,5 @@
 export default [
+    '[class*="style_imageContainer"] a',
     '.item-title a',
     '.product-category.product-info',
      '.product_singlebody a',
