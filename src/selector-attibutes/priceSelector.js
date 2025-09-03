@@ -1,4 +1,5 @@
 export default [
+    '[class*="style_price__"]',
     '.item-price',
     '.woocommerce-Price-amount.amount',
     '.priceone',
