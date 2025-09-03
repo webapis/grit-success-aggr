@@ -1,4 +1,5 @@
 export default [
+    '[class*="style_product_container"]',
     '.list__content .js-product-wrapper.product-item',
     '#ProductPageProductList .ItemOrj .productItem',
     'li.grid__item .card-wrapper.product-card-wrapper:has(a)',
