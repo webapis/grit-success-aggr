@@ -21,7 +21,7 @@ export async function scrollPageIfRequired({ page, siteUrls, routeName }) {
         await scrollWithShowMoreAdvanced(page, 1000, showMoreButtonSelector, {
             debug: true,
             waitAfterClick: 2500,
-            maxClicks: totalPages
+           // maxClicks: totalPages
         });
     }
     else if (scrollable && totalItemsToBeCallected > 0) {
