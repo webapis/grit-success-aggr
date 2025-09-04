@@ -121,7 +121,7 @@ debugger
                     urls: matchingUrls,
                     paused: row[8] ? row[8].trim().toLowerCase() === 'true' : false,
                     pausedReason: row[9] ? row[9].trim() : '',
-                    filteringNeeded: parseFilteringNeeded(row[10]),
+                    inflexible_notes: row[10] ? row[10].trim() : '',
                     rowIndex: index + 2
                 };
 
@@ -139,7 +139,7 @@ debugger
     // Build final configuration
     const isPaused = siteConfigurations.some(config => config.paused);
     const pausedReason = siteConfigurations.find(config => config.paused)?.pausedReason || '';
-    const isFilteringNeeded = siteConfigurations.some(config => config.filteringNeeded);
+   
 
     return {
         targetSite: targetSite,
@@ -147,7 +147,7 @@ debugger
         totalUrls: allUrls.length,
         paused: isPaused,
         pausedReason: pausedReason,
-        filteringNeeded: isFilteringNeeded,
+        inflexible_notes: siteConfigurations[0]?.inflexible_notes || '',
         configurations: siteConfigurations,
         paginationSelector: siteConfigurations[0]?.paginationSelector || '',
         paginationParameterName: siteConfigurations[0]?.paginationParameterName || '',
