@@ -1,4 +1,5 @@
 export default [
+  '.product-image img',
   '.product_single img',
   'wow-image img',
   '.showcase-image img',

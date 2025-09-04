@@ -6,7 +6,7 @@ import logToLocalSheet from "./src/sheet/logToLocalSheet.js";
 dotenv.config({ silent: true });
 
 const site = process.env.site;
-const gitFolder = process.env.gitFolder;
+//const gitFolder = process.env.gitFolder;
 
 export const createRouter = async (siteUrls) => {
 
