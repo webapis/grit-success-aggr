@@ -1,5 +1,5 @@
 export default [
-    'a.product-tile-info__title',
+    '.product-tile-info__title',
     '[class*="style_product_title__"] h2',
     '.item-title a',
     '.product-category.product-info',
