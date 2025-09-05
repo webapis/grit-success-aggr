@@ -31,7 +31,7 @@ export default [
     '.test.MuiBox-root',
     '.ProductCard.mb-2.w-full',
     '.boost-sd__product-item',
-   // 'article.product-tile-core',
+  // 'article.product-tile-core',
     '.product_box.sm-product-list',
     '.infinite-scroll-component  .max-w-xl',
     '.p-item.col-6',
