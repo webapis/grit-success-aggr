@@ -1,5 +1,5 @@
 export default [
-    '.product-list__products .product-tile-core',
+    '.product-list__products article.product-tile-core',
     '.content-product-card .product-media',
     '[data-product-id].product-block.none[data-cc-animate]',
     '[class*="style_product_container"]',
