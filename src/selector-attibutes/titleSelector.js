@@ -1,4 +1,5 @@
 export default [
+    '.product-tile-info__title-container a',
     '.product-tile-info__title',
     '[class*="style_product_title__"] h2',
     '.item-title a',
