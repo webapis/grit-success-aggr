@@ -1,4 +1,5 @@
 export default [
+  '.content-product-card .product-media:has(product-prices)',
     '.product-list__products article.product-tile-core',
     '.content-product-card .product-media',
     '[data-product-id].product-block.none[data-cc-animate]',
