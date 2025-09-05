@@ -1,4 +1,5 @@
 export default [
+  '.ls-is-cached.lazyloaded',
   '.img-responsive.img-first',
   '.product-image img',
   '.product_single img',
