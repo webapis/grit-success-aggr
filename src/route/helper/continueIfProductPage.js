@@ -44,7 +44,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
             gitFolder: 'screenshots'
         });
 
-        logToLocalSheet({ totalItemsPerPage: 0 });
+       
         logToLocalSheet({ ScreenshotGit: result.url });
     }
 
