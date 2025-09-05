@@ -1,4 +1,6 @@
 export default [
+'.price-normal',
+    '.money.tutar',
     'span.transcy-money.b4b-vprice',
     '.grid-product__price',
     '[class*="style_price__"]',

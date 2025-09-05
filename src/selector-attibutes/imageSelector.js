@@ -1,5 +1,5 @@
 export default [
-
+  '.img-responsive.img-first',
   '.product-image img',
   '.product_single img',
   'wow-image img',
