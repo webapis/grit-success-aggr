@@ -30,8 +30,8 @@ export default async function continueIfProductPage({ page, siteUrls }) {
 
         const totalItemsPerPage = bestSelector['count'];
         logToLocalSheet({ totalItemsPerPage });
-        logToLocalSheet({ productItemSelector: 'not defined' });
-      //  logToLocalSheet({ productItemSelector: bestSelector.selector });
+     
+        logToLocalSheet({ productItemSelector: bestSelector.selector });
         // console.log('totalItemsToBeCallected--', totalItemsToBeCallected)
 
         if (debug) {
