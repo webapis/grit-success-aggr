@@ -45,7 +45,6 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         });
 
         logToLocalSheet({ totalItemsPerPage: 0 });
-        logToLocalSheet({ productItemSelector: 'not defined' });
         logToLocalSheet({ ScreenshotGit: result.url });
     }
 

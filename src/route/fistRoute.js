@@ -27,7 +27,7 @@ export default async function first(props) {
         await scrollPageIfRequired({ page, siteUrls, routeName: "first" })
         await addNextPagesToRequests({ page, addRequests, siteUrls, url });
         const data = await scrapeData({ page, siteUrls, productItemSelector })
-
+debugger
         const { pageItems = [], pageNumbers = [] } = logToLocalSheet()
 
         const mergePageItems = [...pageItems, data.length]
