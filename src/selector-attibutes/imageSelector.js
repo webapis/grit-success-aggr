@@ -1,4 +1,5 @@
 export default [
+  '.ng-star-inserted',
   '.ls-is-cached.lazyloaded',
   '.img-responsive.img-first',
   '.product-image img',
