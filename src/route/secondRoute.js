@@ -19,7 +19,8 @@ export default async function second({
   const paginationParameterName = siteUrls?.paginationParameterName
   const { productItemSelector } = logToLocalSheet()
   debugger
-
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  await delay(5000); // wait for 5 seconds
   await scrollPageIfRequired({ page, siteUrls, routeName: "second" })
   const data = await scrapeData({ page, siteUrls, productItemSelector })
   const { pageItems, pageNumbers } = logToLocalSheet()

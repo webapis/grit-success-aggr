@@ -40,7 +40,7 @@ export default async function getTotalItemsCount(page, totalProductCounterSelect
         if (Array.isArray(selector)) {
             selector = await findFirstValidSelector(page, selector);
             if (!selector) {
-                console.warn('No valid selector found from array:', selectorToUse);
+            //    console.warn('No valid selector found from array:', selectorToUse);
                 return { 
                     count: 0, 
                     selector: 'No valid selector found from array', 
