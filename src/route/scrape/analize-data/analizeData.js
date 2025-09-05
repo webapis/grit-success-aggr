@@ -16,6 +16,9 @@ const site = process.env.site;
 export default async function analyzeData(data) {
     debugger
     const { debug } = logToLocalSheet()
+    console.log('Analyzing data for site:', site);
+    console.log(`debug: ${debug}`);
+
 debugger
     const dataWithoutError = data.filter(f => !f.error);
     const dataWithError = data.filter(f => f.error);
@@ -63,6 +66,7 @@ debugger
                 ),
             });
    
+            console.log('Uploaded invalid items sample to Google Drive:', JSONSampleDataWithErrorDriveLink ? JSONSampleDataWithErrorDriveLink.webViewLink : 'N/A');
         }
 
     
@@ -73,6 +77,7 @@ debugger
                 gitFolder: "ErrorSample",
                 compress: false
             });
+            console.log('Uploaded invalid items sample to Git:', JSONSampleDataWithErrorGitLink ? JSONSampleDataWithErrorGitLink.url : 'N/A');
         }
 
     }
@@ -92,7 +97,7 @@ debugger
         ),
     });
 
-
+    console.log('Uploaded valid items sample to Google Drive:', ValidJSONSampleDataDriveLink ? ValidJSONSampleDataDriveLink.webViewLink : 'N/A');
 
     const ValidJSONSampleDataGitLink = await uploadCollection({
         fileName: site,
@@ -109,7 +114,7 @@ debugger
             gitFolder: "duplicateUrl",
             compress: false
         });
-
+        console.log('Uploaded duplicate URL samples to Git:', JSONSampleDataWithDuplicateUrlDataGitLink ? JSONSampleDataWithDuplicateUrlDataGitLink.url : 'N/A');
     }
 
     if (debug) {
@@ -120,6 +125,7 @@ debugger
             gitFolder: "cssselectors",
             compress: false
         });
+        console.log('Uploaded CSS selectors to Git:', JSONCSSSelectorsGitLink ? JSONCSSSelectorsGitLink.url : 'N/A');
     }
 
     return {
