@@ -10,7 +10,7 @@ const site = process.env.site;
 
 export default async function continueIfProductPage({ page, siteUrls }) {
     page.on("console", (message) => {
-      //  console.log("Message from Puppeteer page:", message.text());
+        //  console.log("Message from Puppeteer page:", message.text());
     });
 
     const bestSelector = await findBestSelector(page, productItemSelector);
@@ -19,10 +19,10 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         // Safely extract with default 0
 
         const previousTotalItemsToBeCallected = totalItemsToBeCallected || 0;
-        
+
         const { count: totalItemsToBeCallectedCount, selector: totalItemsSelector } =
             await getTotalItemsCount(page, siteUrls?.totalProductCounterSelector);
-        
+
         logToLocalSheet({
             totalItemsToBeCallected: totalItemsToBeCallectedCount + previousTotalItemsToBeCallected,
             totalItemsSelector
@@ -30,23 +30,24 @@ export default async function continueIfProductPage({ page, siteUrls }) {
 
         const totalItemsPerPage = bestSelector['count'];
         logToLocalSheet({ totalItemsPerPage });
-        logToLocalSheet({ productItemSelector: bestSelector.selector });
-       // console.log('totalItemsToBeCallected--', totalItemsToBeCallected)
+        logToLocalSheet({ productItemSelector: 'not defined' });
+      //  logToLocalSheet({ productItemSelector: bestSelector.selector });
+        // console.log('totalItemsToBeCallected--', totalItemsToBeCallected)
 
-       if (debug) {
-        // Take screenshot if initial pages could not be retrieved.
-        const screenshotBuffer = await page.screenshot({ fullPage: true });
+        if (debug) {
+            // Take screenshot if initial pages could not be retrieved.
+            const screenshotBuffer = await page.screenshot({ fullPage: true });
 
-        // Upload directly to GitHub
-        const result = await uploadImage({
-            fileName: `${site}-${Date.now()}.png`,
-            imageBuffer: screenshotBuffer,
-            gitFolder: 'screenshots'
-        });
+            // Upload directly to GitHub
+            const result = await uploadImage({
+                fileName: `${site}-${Date.now()}.png`,
+                imageBuffer: screenshotBuffer,
+                gitFolder: 'screenshots'
+            });
 
-       
-        logToLocalSheet({ ScreenshotGit: result.url });
-    }
+
+            logToLocalSheet({ ScreenshotGit: result.url });
+        }
 
         return true;
     } else {
@@ -61,11 +62,11 @@ export default async function continueIfProductPage({ page, siteUrls }) {
                 gitFolder: 'screenshots'
             });
 
-            logToLocalSheet({ totalItemsPerPage: 0 });
-            logToLocalSheet({ productItemSelector: 'not defined' });
             logToLocalSheet({ ScreenshotGit: result.url });
         }
 
+        logToLocalSheet({ totalItemsPerPage: 0 });
+        logToLocalSheet({ productItemSelector: 'not defined' });
 
         return false;
     }
