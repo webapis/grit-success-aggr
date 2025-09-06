@@ -1,5 +1,6 @@
 export default [
-    '.deskTitle' ,
+    '.article div a h2',
+    '.deskTitle',
     '.name a',
     '.product-tile-info__title-container a',
     '.product-tile-info__title',
