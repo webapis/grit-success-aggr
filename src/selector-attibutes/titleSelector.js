@@ -1,5 +1,5 @@
 export default [
-    '.article div a h2',
+    'li div article[data-articlecode][data-category] div a h2',
     '.deskTitle',
     '.name a',
     '.product-tile-info__title-container a',
