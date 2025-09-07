@@ -116,7 +116,7 @@ jobs:
           echo "🌐 Will fetch fresh data from Google Sheets API"
         fi
         
-        node prodCrawlerPuppeteer.js
+        node scripts/crawl-ecommerce-site.js
 
     - name: Upload results
       if: always()
