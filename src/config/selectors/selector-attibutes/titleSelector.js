@@ -1,4 +1,6 @@
 export default [
+    'li div article[data-articlecode][data-category] div a h2',
+    '.deskTitle',
     '.name a',
     '.product-tile-info__title-container a',
     '.product-tile-info__title',

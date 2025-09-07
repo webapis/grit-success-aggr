@@ -1,4 +1,6 @@
 export default [
+  'li div article[data-articlecode][data-category]',
+  '.product-list [data-product-id].product-block.none[data-cc-animate]',
   '.main-products.product-grid .product-thumb',
   '.content-product-card .product-media:has(product-prices)',
   '.product-list__products article.product-tile-core',
