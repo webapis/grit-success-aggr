@@ -123,4 +123,4 @@ jobs:
       if: always()
       run: |
         echo "📤 Uploading results..."
-        node src/2_data/persistence/sheet/uploadToGoogleSheet.js
+        node node src/2_data/persistence/sheet/uploadToGoogleSheet.js

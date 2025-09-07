@@ -5,10 +5,10 @@ import countByField from "./countByField.js";
 import getAggrTimeSpan from "./getAggrTimeSpan.js";
 import findDuplicatesByLink from './findDuplicatesByLink.js';
 import getUniquePageURLs from "./getUniquePageURLs.js";
-import { uploadCollection } from "../../../uploadCollection.js";
-import uploadJSONToGoogleDrive from "../../../drive/uploadJSONToGoogleDrive.js";
-import extractCSSSelectors from '../../../helper/extractCSSSelectors.js';
-import logToLocalSheet from '../../../sheet/logToLocalSheet.js';
+import { uploadCollection } from "../../persistence/uploadCollection.js";
+import uploadJSONToGoogleDrive from "../../persistence/drive/uploadJSONToGoogleDrive.js";
+import extractCSSSelectors from '../../../1_scraping/helpers/extractCSSSelectors.js';
+import logToLocalSheet from '../../persistence/sheet/logToLocalSheet.js';
 dotenv.config({ silent: true });
 
 const site = process.env.site;

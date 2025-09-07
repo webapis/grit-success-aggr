@@ -1,13 +1,13 @@
 import dotenv from "dotenv";
 import analyzeData from "../../processing/analize-data/analizeData.js";
 import logToLocalSheet from "./logToLocalSheet.js";
-import { getDatasetItems } from "../../1_scraping/crawlee/datasetOperations.js";
-import sortPageData from "../../1_scraping/navigation/helper/sortPageData.js";
+import { getDatasetItems } from "../../../1_scraping/crawlee/datasetOperations.js";
+import sortPageData from "../../../1_scraping/navigation/helper/sortPageData.js";
 import { flattenObjectForSheets } from "./flattenObjectForSheets.js";
 
 import { findDuplicateObjects } from "./findDuplicateObjects.js";
-import { emitAsync } from '../../shared/events.js';
-import '../../shared/listeners.js'; // ← This registers event handlers
+import { emitAsync } from '../../../shared/events.js';
+import '../../../shared/listeners.js'; // ← This registers event handlers
 dotenv.config({ silent: true });
 
 const site = process.env.site;
