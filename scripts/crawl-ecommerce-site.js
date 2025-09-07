@@ -1,11 +1,11 @@
 
 import { PuppeteerCrawler } from "crawlee";
-import { createRouter } from "./prodRoutesPuppeteer.js"; // Import factory function
-import preNavigationHooks from "./crawler-helper/preNavigationHooksProd2.js";
-import puppeteer from './crawler-helper/puppeteer-stealth.js';
-import { getSiteConfig, getCachedSiteConfigFromFile } from './src/helper/siteConfig.js';
-import logToLocalSheet from './src/sheet/logToLocalSheet.js';
-import getGitHubActionsRunUrl from './src/helper/getGitHubActionsRunUrl.js';
+import { createRouter } from "./routes-puppeteer.js"; // Import factory function
+import preNavigationHooks from "./helpers/preNavigationHooksProd2.js";
+import puppeteer from '../src/scraping/helpers/puppeteer-stealth.js';
+import { getSiteConfig, getCachedSiteConfigFromFile } from '../src/config/siteConfig.js';
+import logToLocalSheet from '../src/data/persistence/sheet/logToLocalSheet.js';
+import getGitHubActionsRunUrl from '../src/shared/getGitHubActionsRunUrl.js';
 const site = process.env.site;
 const local = process.env.local;
 const HEADLESS = process.env.HEADLESS;
@@ -76,7 +76,7 @@ function validateUrls(urls) {
                 if (siteConfig.data && !siteConfig.targetSite) {
                     console.log('Processing raw sheet data for specific site...');
                     // Import the processing function
-                    const { processCachedSheetData } = await import('./src/helper/siteConfig.js');
+                    const { processCachedSheetData } = await import('../src/config/siteConfig.js');
                     siteConfig = processCachedSheetData(siteConfig, site);
                 }
             } else {

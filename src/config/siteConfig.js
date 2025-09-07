@@ -2,7 +2,7 @@
 import { google } from 'googleapis';
 import fs from 'fs/promises';
 import path from 'path';
-import getMainDomainPart from './getMainDomainPart.js';
+import getMainDomainPart from '../shared/getMainDomainPart.js';
 
 // Environment variables for Google Sheets access
 const GOOGLE_SERVICE_ACCOUNT_CREDENTIALS = process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS;

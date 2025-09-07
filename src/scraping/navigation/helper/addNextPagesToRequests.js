@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import getNextPaginationUrls from "../../scrape-helpers/getNextPaginationUrls.js";
+import getNextPaginationUrls from "../../helpers/getNextPaginationUrls.js";
 
 
 dotenv.config({ silent: true });
