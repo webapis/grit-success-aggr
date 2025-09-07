@@ -16,7 +16,7 @@ import videoSelectors from "../../config/selectors/videoSelectors.js";
 import productNotAvailable from "../../config/selectors/productNotAvailable.js";
 import processAndValidateScrapedData from "../validation/processAndValidateScrapedData.js";
 import { emitAsync } from "../../shared/events.js";
-import logToLocalSheet from "../../data/persistence/sheet/logToLocalSheet.js";
+import logToLocalSheet from "../../2_data/persistence/sheet/logToLocalSheet.js";
 
 import { generateTimestampId } from "../navigation/micro/generateTimestampId.js";
 import '../../shared/listeners.js'; // ← This registers event handlers

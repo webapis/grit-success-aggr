@@ -5,7 +5,7 @@
 
 import scrapeData from "../extraction/scrapeData.js";
 import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
-import logToLocalSheet from "../../data/persistence/sheet/logToLocalSheet.js";
+import logToLocalSheet from "../../2_data/persistence/sheet/logToLocalSheet.js";
 import extractPageNumber from "./helper/extractPageNumber.js";
 export default async function second({
   page,

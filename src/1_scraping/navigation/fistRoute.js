@@ -6,7 +6,7 @@ import scrapeData from "../extraction/scrapeData.js";
 import addNextPagesToRequests from "./helper/addNextPagesToRequests.js";
 import continueIfProductPage from "./helper/continueIfProductPage.js";
 import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
-import logToLocalSheet from "../../data/persistence/sheet/logToLocalSheet.js";
+import logToLocalSheet from "../../2_data/persistence/sheet/logToLocalSheet.js";
 import extractPageNumber from "./helper/extractPageNumber.js";
 dotenv.config({ silent: true });
 

@@ -2,7 +2,7 @@
 import { emitter } from './events.js';
 import { logToGoogleSheet } from '../data/persistence/sheet/logToGoogleSheet.js';
 import { uploadCollection } from '../data/persistence/uploadCollection.js';
-import { bulkLogToGoogleSheet } from '../data/persistence/sheet/bulk.js';
+import { bulkLogToGoogleSheet } from '../2_data/persistence/sheet/bulk.js';
 import dotenv from 'dotenv';
 
 dotenv.config();

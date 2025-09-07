@@ -4,7 +4,7 @@ import { createRouter } from "./routes-puppeteer.js"; // Import factory function
 import preNavigationHooks from "./helpers/preNavigationHooksProd2.js";
 import puppeteer from '../src/scraping/helpers/puppeteer-stealth.js';
 import { getSiteConfig, getCachedSiteConfigFromFile } from '../src/config/siteConfig.js';
-import logToLocalSheet from '../src/data/persistence/sheet/logToLocalSheet.js';
+import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 import getGitHubActionsRunUrl from '../src/shared/getGitHubActionsRunUrl.js';
 const site = process.env.site;
 const local = process.env.local;
