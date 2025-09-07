@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
-import scroller, { autoScroll, scrollWithShowMoreAdvanced, autoScrollUntilCount, scrollWithShowMoreUntilCount } from "../../scrape-helpers/scroller.js";
+import scroller, { autoScroll, scrollWithShowMoreAdvanced, autoScrollUntilCount, scrollWithShowMoreUntilCount } from "../../helpers/scroller.js";
 
-import logToLocalSheet from "../../sheet/logToLocalSheet.js";
+import logToLocalSheet from "../../../2_data/persistence/sheet/logToLocalSheet.js";
 dotenv.config({ silent: true });
 
 export async function scrollPageIfRequired({ page, siteUrls, routeName }) {

@@ -3,17 +3,17 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import titleSelector from "../../config/selectors/titleSelector.js";
-import imageSelectors from "../../config/selectors/imageSelector.js";
-import linkSelectors from "../../config/selectors/linkSelector.js";
+import titleSelector from "../../config/selectors/selector-attibutes/titleSelector.js";
+import imageSelectors from "../../config/selectors/selector-attibutes/imageSelector.js";
+import linkSelectors from "../../config/selectors/selector-attibutes/linkSelector.js";
 
-import imageAttributes from "../../config/selectors/imageAttributes.js";
-import titleAttribute from "../../config/selectors/titleAttribute.js";
-import priceSelector from "../../config/selectors/priceSelector.js";
-import priceAttribute from "../../config/selectors/priceAttribute.js";
-import videoAttributes from "../../config/selectors/videoAttributes.js";
-import videoSelectors from "../../config/selectors/videoSelectors.js";
-import productNotAvailable from "../../config/selectors/productNotAvailable.js";
+import imageAttributes from "../../config/selectors/selector-attibutes/imageAttributes.js";
+import titleAttribute from "../../config/selectors/selector-attibutes/titleAttribute.js";
+import priceSelector from "../../config/selectors/selector-attibutes/priceSelector.js";
+import priceAttribute from "../../config/selectors/selector-attibutes/priceAttribute.js";
+import videoAttributes from "../../config/selectors/selector-attibutes/videoAttributes.js";
+import videoSelectors from "../../config/selectors/selector-attibutes/videoSelectors.js";
+import productNotAvailable from "../../config/selectors/selector-attibutes/productNotAvailable.js";
 import processAndValidateScrapedData from "../validation/processAndValidateScrapedData.js";
 import { emitAsync } from "../../shared/events.js";
 import logToLocalSheet from "../../2_data/persistence/sheet/logToLocalSheet.js";

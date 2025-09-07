@@ -2,7 +2,7 @@
 import { google } from 'googleapis';
 import fs from 'fs/promises';
 import dotenv from 'dotenv';
-import getMainDomainPart from '../helper/getMainDomainPart.js';
+import getMainDomainPart from '../src/shared/getMainDomainPart.js';
 
 
 // Load environment variables for local development

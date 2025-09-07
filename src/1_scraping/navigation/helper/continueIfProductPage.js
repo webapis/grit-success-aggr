@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
-import productItemSelector from "../../selector-attibutes/productItemSelector.js";
+import productItemSelector from "../../../config/selectors/selector-attibutes/productItemSelector.js";
 import findBestSelector from "../micro/findBestSelector.js";
-import { uploadImage } from "../../git/uploadImage.js";
+import { uploadImage } from "../../../shared/git/uploadImage.js";
 import getTotalItemsCount from "../micro/getTotalItemsCount.js";
-import logToLocalSheet from "../../sheet/logToLocalSheet.js";
+import logToLocalSheet from "../../../2_data/persistence/sheet/logToLocalSheet.js";
 
 dotenv.config({ silent: true });
 const site = process.env.site;

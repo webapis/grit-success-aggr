@@ -1,4 +1,4 @@
-import itemCounterSelector from "../../selector-attibutes/itemCounterSelector.js";
+import itemCounterSelector from "../../../config/selectors/selector-attibutes/itemCounterSelector.js";
 import uploadScreenShot from "./uploadScreenShot.js";
 export default async function getTotalItemsCount(page, totalProductCounterSelector) {
     let selector = null;

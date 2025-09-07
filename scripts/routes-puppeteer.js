@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { createPuppeteerRouter, Dataset } from "crawlee";
-import first from "../src/scraping/navigation/fistRoute.js";
-import second from "../src/scraping/navigation/secondRoute.js";
+import first from "../src/1_scraping/navigation/fistRoute.js";
+import second from "../src/1_scraping/navigation/secondRoute.js";
 import logToLocalSheet from "../src/2_data/persistence/sheet/logToLocalSheet.js";
 dotenv.config({ silent: true });
 

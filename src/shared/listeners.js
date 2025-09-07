@@ -1,7 +1,7 @@
 // src/listeners.js
 import { emitter } from './events.js';
-import { logToGoogleSheet } from '../data/persistence/sheet/logToGoogleSheet.js';
-import { uploadCollection } from '../data/persistence/uploadCollection.js';
+import { logToGoogleSheet } from '../2_data/persistence/sheet/logToGoogleSheet.js';
+import { uploadCollection } from '../2_data/persistence/uploadCollection.js';
 import { bulkLogToGoogleSheet } from '../2_data/persistence/sheet/bulk.js';
 import dotenv from 'dotenv';
 

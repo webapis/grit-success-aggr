@@ -1,8 +1,8 @@
 
 
-import logToLocalSheet from '../sheet/logToLocalSheet.js';
-import getTotalItemsCount from '../route/micro/getTotalItemsCount.js';
-import findBestSelector from '../route/micro/findBestSelector.js';
+import logToLocalSheet from '../../2_data/persistence/sheet/logToLocalSheet.js';
+import getTotalItemsCount from '../navigation/micro/getTotalItemsCount.js';
+import findBestSelector from '../navigation/micro/findBestSelector.js';
 export default async function getNextPaginationUrls(page, url, siteUrls) {
 
 
