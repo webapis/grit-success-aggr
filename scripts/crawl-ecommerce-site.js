@@ -216,13 +216,14 @@ function validateUrls(urls) {
             const duration = Math.round((endTime - startTime) / 1000);
 
             // Get crawler statistics
-            const stats = await crawler.stats;
-            const totalRequests = stats.requestsTotal;
-            const successfulRequests = totalRequests - stats.requestsFailed;
-            const isSuccess = stats.requestsFailed === 0;
+            const stats = crawler.stats;
+            const statsJson = stats.toJSON();
+            const totalRequests = statsJson.requestsFinished;
+            const successfulRequests = totalRequests - statsJson.requestsFailed;
+            const isSuccess = statsJson.requestsFailed === 0;
 
             console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
-            console.log(`Stats: ${successfulRequests}/${totalRequests} successful, ${stats.requestsFailed} failed`);
+            console.log(`Stats: ${successfulRequests}/${totalRequests} successful, ${statsJson.requestsFailed} failed`);
 
             logToLocalSheet({ Duration: duration })
 
