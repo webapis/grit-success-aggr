@@ -27,6 +27,7 @@ jobs:
     outputs:
       sites: ${{ steps.set-matrix.outputs.sites }}
       has-sites: ${{ steps.set-matrix.outputs.has-sites }}
+      has-sheet-data: ${{ steps.set-matrix.outputs.has-sheet-data }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -59,12 +60,6 @@ jobs:
 
           async function fetchAllSheetData() {
             try {
-              const singleSite = process.env.SINGLE_SITE;
-              if (singleSite && singleSite.trim()) {
-                console.log(`🏃 Running for single site: ${singleSite}`);
-                return { sites: [singleSite.trim()], sheetData: null };
-              }
-
               console.log('🔍 Starting Google Sheets data fetch...');
 
               if (!process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS) throw new Error('GOOGLE_SERVICE_ACCOUNT_CREDENTIALS not set');
@@ -85,7 +80,14 @@ jobs:
               });
 
               const rows = response.data.values;
-              if (!rows || rows.length < 2) return { sites: [], sheetData: null };
+              const sheetData = { timestamp: new Date().toISOString(), runId: process.env.GITHUB_RUN_ID || 'local', data: rows };
+              fs.writeFileSync('sheet-data.json', JSON.stringify(sheetData, null, 2));
+
+              const singleSite = process.env.SINGLE_SITE;
+              if (singleSite && singleSite.trim()) {
+                console.log(`🏃 Running for single site: ${singleSite}`);
+                return { sites: [singleSite.trim()] };
+              }
 
               const dataRows = rows.slice(1);
               const sites = [];
@@ -106,9 +108,7 @@ jobs:
                 }
               }
 
-              const sheetData = { timestamp: new Date().toISOString(), runId: process.env.GITHUB_RUN_ID || 'local', data: rows };
-              fs.writeFileSync('sheet-data.json', JSON.stringify(sheetData, null, 2));
-              return { sites, sheetData };
+              return { sites };
             } catch (error) {
               console.error(error);
               process.exit(1);
@@ -119,10 +119,7 @@ jobs:
             const sitesJson = JSON.stringify(result.sites);
             const hasSites = result.sites.length > 0 ? 'true' : 'false';
             fs.appendFileSync(process.env.GITHUB_OUTPUT, `sites=${sitesJson}\n`);
-            // Only set sheetData if it exists (not for single site runs)
-            if (result.sheetData) {
-              fs.appendFileSync(process.env.GITHUB_OUTPUT, `has-sheet-data=true\n`);
-            }
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `has-sheet-data=true\n`);
             fs.appendFileSync(process.env.GITHUB_OUTPUT, `has-sites=${hasSites}\n`);
           }).catch(error => {
             console.error(error);
@@ -134,7 +131,7 @@ jobs:
 
       - name: Upload sheet data artifact
         uses: actions/upload-artifact@v4
-        if: steps.set-matrix.outputs.has-sheet-data == 'true'
+        if: steps.set-matrix.outputs.has-sheet-data == 'true' # This will now always be true
         with:
           name: sheet-data
           path: sheet-data.json
