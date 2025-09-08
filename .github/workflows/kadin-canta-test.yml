@@ -1,4 +1,4 @@
-name: kadin-canta-test-1
+name: Kadin Canta Scraper
 on:
   workflow_dispatch:
     inputs:
@@ -7,6 +7,10 @@ on:
         required: false
         type: number
         default: 0 # 0 means no limit
+      site:
+        description: 'Run for a single site (e.g., "brand-name"). Overrides schedule/site_limit.'
+        required: false
+        type: string
   schedule:
     - cron: '0 5 * * 1'
 
@@ -47,6 +51,7 @@ jobs:
         id: set-matrix
         env:
           SITE_LIMIT: ${{ github.event.inputs.site_limit }}
+          SINGLE_SITE: ${{ github.event.inputs.site }}
         run: |
           cat > fetch_data.js << 'EOF'
           const { google } = require('googleapis');
@@ -54,6 +59,12 @@ jobs:
 
           async function fetchAllSheetData() {
             try {
+              const singleSite = process.env.SINGLE_SITE;
+              if (singleSite && singleSite.trim()) {
+                console.log(`🏃 Running for single site: ${singleSite}`);
+                return { sites: [singleSite.trim()], sheetData: null };
+              }
+
               console.log('🔍 Starting Google Sheets data fetch...');
 
               if (!process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS) throw new Error('GOOGLE_SERVICE_ACCOUNT_CREDENTIALS not set');
@@ -108,6 +119,10 @@ jobs:
             const sitesJson = JSON.stringify(result.sites);
             const hasSites = result.sites.length > 0 ? 'true' : 'false';
             fs.appendFileSync(process.env.GITHUB_OUTPUT, `sites=${sitesJson}\n`);
+            // Only set sheetData if it exists (not for single site runs)
+            if (result.sheetData) {
+              fs.appendFileSync(process.env.GITHUB_OUTPUT, `has-sheet-data=true\n`);
+            }
             fs.appendFileSync(process.env.GITHUB_OUTPUT, `has-sites=${hasSites}\n`);
           }).catch(error => {
             console.error(error);
@@ -119,6 +134,7 @@ jobs:
 
       - name: Upload sheet data artifact
         uses: actions/upload-artifact@v4
+        if: steps.set-matrix.outputs.has-sheet-data == 'true'
         with:
           name: sheet-data
           path: sheet-data.json
