@@ -2,16 +2,36 @@ import fs from 'fs/promises';
 import path from 'path';
 
 /**
+ * Recursively finds all files with a specific name in a directory.
+ * @param {string} dir - The directory to search.
+ * @param {string} fileName - The name of the file to find.
+ * @returns {Promise<string[]>} - A promise that resolves to an array of full file paths.
+ */
+async function findFilesRecursively(dir, fileName) {
+    let results = [];
+    const list = await fs.readdir(dir, { withFileTypes: true });
+
+    for (const dirent of list) {
+        const fullPath = path.resolve(dir, dirent.name);
+        if (dirent.isDirectory()) {
+            results = results.concat(await findFilesRecursively(fullPath, fileName));
+        } else if (dirent.name === fileName) {
+            results.push(fullPath);
+        }
+    }
+    return results;
+}
+
+/**
  * Aggregates summary data from multiple JSON files into a single report.
  * @param {string} inputDir - The directory containing the JSON summary files.
  * @returns {Promise<object>} - The aggregated summary object.
  */
 async function aggregateSummaries(inputDir) {
-    console.log(`Reading summary files from: ${inputDir}`);
-    const files = await fs.readdir(inputDir);
-    const jsonFiles = files.filter(file => file.endsWith('.json'));
+    console.log(`Recursively searching for 'upload-summary.json' in: ${inputDir}`);
+    const jsonFilePaths = await findFilesRecursively(inputDir, 'upload-summary.json');
 
-    if (jsonFiles.length === 0) {
+    if (jsonFilePaths.length === 0) {
         console.warn('No summary JSON files found to aggregate.');
         return {
             totalSitesScraped: 0,
@@ -23,21 +43,22 @@ async function aggregateSummaries(inputDir) {
                 'Total Invalid Items': 0,
                 'Total Duplicate URLs': 0,
                 'Total Pages': 0,
+                'Total Minutes Span': 0,
             },
             errors: ['No summary files found.'],
         };
     }
 
-    console.log(`Found ${jsonFiles.length} summary files to process.`);
+    console.log(`Found ${jsonFilePaths.length} summary files to process:`);
+    jsonFilePaths.forEach(p => console.log(`  - ${p}`));
 
     const allSummaries = [];
-    for (const file of jsonFiles) {
+    for (const filePath of jsonFilePaths) {
         try {
-            const filePath = path.join(inputDir, file);
             const content = await fs.readFile(filePath, 'utf-8');
             allSummaries.push(JSON.parse(content));
         } catch (error) {
-            console.error(`Error reading or parsing ${file}:`, error);
+            console.error(`Error reading or parsing ${path.basename(filePath)}:`, error);
         }
     }
 
