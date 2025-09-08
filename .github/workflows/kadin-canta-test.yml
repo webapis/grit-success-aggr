@@ -1,8 +1,14 @@
 name: kadin-canta-test-1
 on:
-   workflow_dispatch:
-   schedule:
-     - cron: '0 5 * * 1'
+  workflow_dispatch:
+    inputs:
+      site_limit:
+        description: 'Limit the number of sites to run for testing (optional)'
+        required: false
+        type: number
+        default: 0 # 0 means no limit
+  schedule:
+    - cron: '0 5 * * 1'
 
 env:
   MONGODB_URL: ${{secrets.MONGODB_URL}}
@@ -37,127 +43,80 @@ jobs:
           }
           EOF
       
-      # Fetch ALL sheet data once and cache it
       - name: Fetch sheet data and prepare matrix
         id: set-matrix
+        env:
+          SITE_LIMIT: ${{ github.event.inputs.site_limit }}
         run: |
           cat > fetch_data.js << 'EOF'
           const { google } = require('googleapis');
           const fs = require('fs');
-          
+
           async function fetchAllSheetData() {
             try {
               console.log('🔍 Starting Google Sheets data fetch...');
-              
-              if (!process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS) {
-                throw new Error('GOOGLE_SERVICE_ACCOUNT_CREDENTIALS environment variable is not set');
-              }
-              
-              if (!process.env.GOOGLE_SHEET_ID) {
-                throw new Error('GOOGLE_SHEET_ID environment variable is not set');
-              }
-              
-              console.log('🔑 Decoding credentials...');
+
+              if (!process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS) throw new Error('GOOGLE_SERVICE_ACCOUNT_CREDENTIALS not set');
+              if (!process.env.GOOGLE_SHEET_ID) throw new Error('GOOGLE_SHEET_ID not set');
+
               const decodedCredentials = Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf8');
               const credentials = JSON.parse(decodedCredentials);
-              
-              console.log('🔐 Authenticating with Google Sheets API...');
+
               const auth = new google.auth.GoogleAuth({
-                credentials: credentials,
+                credentials,
                 scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
               });
-              
+
               const sheets = google.sheets({ version: 'v4', auth });
-              
-              console.log('📊 Fetching data from sheet...');
-              // Fetch ALL data from the sheet (A:K columns)
               const response = await sheets.spreadsheets.values.get({
                 spreadsheetId: process.env.GOOGLE_SHEET_ID,
                 range: 'wbags-scroll!A:K',
               });
-              
+
               const rows = response.data.values;
-              console.log(`📝 Retrieved ${rows ? rows.length : 0} rows from sheet`);
-              
-              if (!rows || rows.length === 0) {
-                console.log('⚠️  No data found in sheet');
-                return { sites: [], sheetData: null };
-              }
-              
-              if (rows.length < 2) {
-                console.log('⚠️  Only header row found, no data rows');
-                return { sites: [], sheetData: null };
-              }
-              
-              // Extract sites (skip header, get non-paused sites)
+              if (!rows || rows.length < 2) return { sites: [], sheetData: null };
+
               const dataRows = rows.slice(1);
-              console.log(`🔍 Processing ${dataRows.length} data rows...`);
-              
               const sites = [];
+              const siteLimit = process.env.SITE_LIMIT ? parseInt(process.env.SITE_LIMIT, 10) : 0;
+              let sitesAdded = 0;
+
               for (let i = 0; i < dataRows.length; i++) {
+                if (siteLimit > 0 && sitesAdded >= siteLimit) break;
+
                 const row = dataRows[i];
                 const brandName = row[0];
-                const isPaused = row[8]; // Column I (paused)
-                
-                console.log(`Row ${i + 2}: Brand="${brandName}", Paused="${isPaused}"`);
-                
-                if (brandName && 
-                    brandName.trim() !== '' && 
-                    brandName.toLowerCase() !== 'brands' &&
-                    isPaused !== 'TRUE' &&
-                    isPaused !== 'true') {
+                const isPaused = row[8];
+
+                if (brandName && brandName.trim() && brandName.toLowerCase() !== 'brands' &&
+                    isPaused !== 'TRUE' && isPaused !== 'true') {
                   sites.push(brandName.trim());
-                  console.log(`✅ Added site: ${brandName.trim()}`);
-                } else {
-                  console.log(`❌ Skipped site: ${brandName} (paused or invalid)`);
+                  sitesAdded++;
                 }
               }
-              
-              console.log(`🎯 Final sites list: ${JSON.stringify(sites)}`);
-              
-              // Prepare sheet data for sharing
-              const sheetData = {
-                timestamp: new Date().toISOString(),
-                runId: process.env.GITHUB_RUN_ID || 'local',
-                data: rows
-              };
-              
-              // Save to file for artifact upload
+
+              const sheetData = { timestamp: new Date().toISOString(), runId: process.env.GITHUB_RUN_ID || 'local', data: rows };
               fs.writeFileSync('sheet-data.json', JSON.stringify(sheetData, null, 2));
-              console.log('💾 Sheet data saved to file');
-              
               return { sites, sheetData };
             } catch (error) {
-              console.error('❌ Error fetching data from Google Sheets:', error.message);
-              console.error('Full error:', error);
+              console.error(error);
               process.exit(1);
             }
           }
-          
+
           fetchAllSheetData().then(result => {
-            console.log('📤 Setting GitHub Actions outputs...');
-            
             const sitesJson = JSON.stringify(result.sites);
             const hasSites = result.sites.length > 0 ? 'true' : 'false';
-            
-            console.log(`sites=${sitesJson}`);
-            console.log(`has-sites=${hasSites}`);
-            
-            // Write to GITHUB_OUTPUT
-            const fs = require('fs');
             fs.appendFileSync(process.env.GITHUB_OUTPUT, `sites=${sitesJson}\n`);
             fs.appendFileSync(process.env.GITHUB_OUTPUT, `has-sites=${hasSites}\n`);
-            
-            console.log('✅ Outputs set successfully');
           }).catch(error => {
-            console.error('❌ Promise Error:', error.message);
+            console.error(error);
             process.exit(1);
           });
           EOF
-          
+
           node fetch_data.js
 
-      # Upload sheet data as artifact for other jobs to download
       - name: Upload sheet data artifact
         uses: actions/upload-artifact@v4
         with:
@@ -167,11 +126,10 @@ jobs:
 
   dizitv_job:
     needs: prepare_matrix
-    # Only run if we have sites to process
     if: needs.prepare_matrix.outputs.has-sites == 'true'
     strategy:
       fail-fast: false
-      max-parallel: 5  # Limit concurrent jobs to avoid overwhelming resources
+      max-parallel: 5
       matrix:
         site: ${{ fromJSON(needs.prepare_matrix.outputs.sites) }}
     uses: ./.github/workflows/reusableProdPuppeteer.yml
@@ -179,7 +137,6 @@ jobs:
       site: ${{ matrix.site }}
     secrets: inherit
 
-  # Optional: Summary job to report results
   summary:
     needs: [prepare_matrix, dizitv_job]
     if: always()
