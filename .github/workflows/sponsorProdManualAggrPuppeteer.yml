@@ -160,3 +160,9 @@ jobs:
         with:
           name: final-run-summary
           path: artifacts/final-summary.json
+
+      - name: Upload Aggregated Metrics to Google Sheet
+        if: always()
+        run: |
+          npm ci --prefer-offline --no-audit
+          node scripts/upload-summary-to-sheet.js artifacts/final-summary.json
