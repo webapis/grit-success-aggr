@@ -66,6 +66,7 @@ async function aggregateSummaries(inputDir) {
         totalSitesScraped: allSummaries.length,
         sites: allSummaries.map(s => s.Site || 'Unknown'),
         aggregatedMetrics: {
+            'runTimestamp': new Date().toISOString(),
             'Total Collected Items': 0,
             'Total Valid Items': 0,
             'Total Error Items': 0,
