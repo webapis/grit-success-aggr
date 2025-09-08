@@ -75,6 +75,7 @@ async function aggregateSummaries(inputDir) {
             'Total Minutes Span': 0,
             'sitesWithErrors': [],
             'sitesWithNoItems': [],
+            'sitesWithInvalidItems': [],
         },
         individualSiteData: allSummaries,
     };
@@ -95,6 +96,10 @@ async function aggregateSummaries(inputDir) {
         // Check for sites with no collected items
         if ((summary['Total Collected Items'] || 0) === 0) {
             aggregated.aggregatedMetrics.sitesWithNoItems.push(summary.Site || 'Unknown');
+        }
+        // Check for sites with invalid items
+        if ((summary['Total Invalid Items'] || 0) > 0) {
+            aggregated.aggregatedMetrics.sitesWithInvalidItems.push(summary.Site || 'Unknown');
         }
     }
 
