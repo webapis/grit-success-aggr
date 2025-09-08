@@ -73,6 +73,8 @@ async function aggregateSummaries(inputDir) {
             'Total Duplicate URLs': 0,
             'Total Pages': 0,
             'Total Minutes Span': 0,
+            'sitesWithErrors': [],
+            'sitesWithNoItems': [],
         },
         individualSiteData: allSummaries,
     };
@@ -85,6 +87,15 @@ async function aggregateSummaries(inputDir) {
         aggregated.aggregatedMetrics['Total Duplicate URLs'] += summary['Total Duplicate URLs'] || 0;
         aggregated.aggregatedMetrics['Total Pages'] += summary['Total Pages'] || 0;
         aggregated.aggregatedMetrics['Total Minutes Span'] += parseFloat(summary['Minutes Span']) || 0;
+
+        // Check for sites with errors
+        if ((summary['Total Error Items'] || 0) > 0) {
+            aggregated.aggregatedMetrics.sitesWithErrors.push(summary.Site || 'Unknown');
+        }
+        // Check for sites with no collected items
+        if ((summary['Total Collected Items'] || 0) === 0) {
+            aggregated.aggregatedMetrics.sitesWithNoItems.push(summary.Site || 'Unknown');
+        }
     }
 
     // Round the total minutes for readability
