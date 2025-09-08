@@ -137,20 +137,38 @@ jobs:
       site: ${{ matrix.site }}
     secrets: inherit
 
-  summary:
-    needs: [prepare_matrix, dizitv_job]
-    if: always()
+  summarize_run:
     runs-on: ubuntu-latest
+    needs: dizitv_job # This job runs only after all matrix jobs are finished
+    if: always()
     steps:
-      - name: Job Summary
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download all run artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/ # Download all artifacts into an 'artifacts' directory
+
+      - name: List downloaded files
+        run: ls -R artifacts/
+
+      - name: Generate Final Summary Report
+        id: summary-report
         run: |
-          echo "## Workflow Summary" >> $GITHUB_STEP_SUMMARY
-          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
-          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Sites Found | ${{ needs.prepare_matrix.outputs.has-sites == 'true' && 'Yes' || 'No' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Matrix Job Status | ${{ needs.dizitv_job.result }} |" >> $GITHUB_STEP_SUMMARY
-          
-          if [[ "${{ needs.prepare_matrix.outputs.has-sites }}" == "false" ]]; then
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "⚠️ **No sites were found to process. Check your Google Sheet configuration.**" >> $GITHUB_STEP_SUMMARY
-          fi
+          # The script needs a directory with summary files, which are inside subdirectories.
+          # We'll find all upload-summary.json files and pass their parent directory to the script.
+          # The script is designed to read from the directory passed as an argument.
+          # The download-artifact action creates a directory for each artifact.
+          node scripts/summarize-run.js artifacts/
+
+      - name: Upload Final Summary Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-run-summary
+          path: artifacts/final-summary.json

@@ -129,3 +129,34 @@ jobs:
     with:
       site: ${{inputs.site}}
     secrets: inherit
+
+  summarize_run:
+    runs-on: ubuntu-latest
+    needs: dizitv_job # This job runs only after the crawler job finishes
+    if: always() # Run this job even if the crawler job fails, to summarize what was completed
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Download all run artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/ # Download all artifacts into an 'artifacts' directory
+
+      - name: List downloaded files
+        run: ls -R artifacts/
+
+      - name: Generate Final Summary Report
+        run: node scripts/summarize-run.js artifacts/
+
+      - name: Upload Final Summary Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-run-summary
+          path: artifacts/final-summary.json
