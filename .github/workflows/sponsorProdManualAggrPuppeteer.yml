@@ -154,6 +154,12 @@ jobs:
 
       - name: Generate Final Summary Report
         run: node scripts/summarize-run.js artifacts/
+        id: summary-report
+        run: |
+          # The script needs a directory with summary files, which are inside subdirectories.
+          # The download-artifact action creates a directory for each artifact.
+          # This script recursively finds and processes them.
+          node scripts/summarize-run.js artifacts/
 
       - name: Upload Final Summary Report
         uses: actions/upload-artifact@v4
