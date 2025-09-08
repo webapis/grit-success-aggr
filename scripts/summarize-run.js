@@ -69,10 +69,12 @@ async function aggregateSummaries(inputDir) {
             'runTimestamp': new Date().toISOString(),
             'Total Collected Items': 0,
             'Total Valid Items': 0,
+            'Total Unique Items': 0,
             'Total Error Items': 0,
             'Total Invalid Items': 0,
             'Total Duplicate URLs': 0,
             'Total Pages': 0,
+
             'Total Minutes Span': 0,
             'sitesWithErrors': [],
             'sitesWithNoItems': [],
@@ -88,6 +90,7 @@ async function aggregateSummaries(inputDir) {
         aggregated.aggregatedMetrics['Total Invalid Items'] += summary['Total Invalid Items'] || 0;
         aggregated.aggregatedMetrics['Total Duplicate URLs'] += summary['Total Duplicate URLs'] || 0;
         aggregated.aggregatedMetrics['Total Pages'] += summary['Total Pages'] || 0;
+        aggregated.aggregatedMetrics['Total Unique Items'] += summary['Total Unique Items'] || 0;
         aggregated.aggregatedMetrics['Total Minutes Span'] += parseFloat(summary['Minutes Span']) || 0;
 
         // Check for sites with errors
