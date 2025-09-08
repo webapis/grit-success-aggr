@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import analyzeData from "../../processing/analize-data/analizeData.js";
+import fs from 'fs';
 import logToLocalSheet from "./logToLocalSheet.js";
 import { getDatasetItems } from "../../../1_scraping/crawlee/datasetOperations.js";
 import sortPageData from "../../../1_scraping/navigation/helper/sortPageData.js";
@@ -23,6 +24,14 @@ export default async function uploadToGoogleSheet() {
     const result = sortPageData(pageItems, pageNumbers);
     const logResult = logToLocalSheet({ pageItems: result.pageItems.join(','), pageNumbers: result.pageNumbers.join(',') });
     debugger
+
+    // If running in GitHub Actions, save the logResult to a file for artifact upload
+    if (process.env.GITHUB_ACTIONS === 'true') {
+        console.log('Running in GitHub Actions. Saving logResult to artifact file.');
+        fs.writeFileSync('upload-summary.json', JSON.stringify(logResult, null, 2));
+    } else {
+        console.log('Not in GitHub Actions. Skipping artifact file creation.');
+    }
 
     return { analyzedData, logResult };
 }
@@ -55,4 +64,3 @@ if (debug && duplicateURLs.length > 0) {
 }
 
 debugger;
-

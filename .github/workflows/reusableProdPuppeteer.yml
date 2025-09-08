@@ -124,3 +124,11 @@ jobs:
       run: |
         echo "📤 Uploading results..."
         node src/2_data/persistence/sheet/uploadToGoogleSheet.js
+
+    - name: Upload Summary Artifact
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: upload-summary-${{ inputs.site }}
+        path: upload-summary.json
+        if-no-files-found: ignore # Don't fail if the file doesn't exist
