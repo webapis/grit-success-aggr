@@ -1,12 +1,14 @@
 import fs from 'fs/promises';
 import path from 'path';
-
+import dotenv from 'dotenv';
 /**
  * Recursively finds all files with a specific name in a directory.
  * @param {string} dir - The directory to search.
  * @param {string} fileName - The name of the file to find.
  * @returns {Promise<string[]>} - A promise that resolves to an array of full file paths.
  */
+
+dotenv.config({ silent: true });
 async function findFilesRecursively(dir, fileName) {
     let results = [];
     const list = await fs.readdir(dir, { withFileTypes: true });
@@ -68,6 +70,7 @@ async function aggregateSummaries(inputDir) {
         aggregatedMetrics: {
             'Total Sites Scraped': allSummaries.length,
             'runTimestamp': new Date().toISOString(),
+            'branch': process.env.GITHUB_REF_NAME || 'local', // Add branch name here
             'Total Collected Items': 0,
             'Total Valid Items': 0,
             'Total Error Items': 0,
