@@ -238,6 +238,4 @@ jobs:
       - name: Upload Aggregated Metrics to Google Sheet
         if: always()
         run: |
-          npm ci --prefer-offline --no-audit
-          node scripts/upload-summary-to-sheet.js artifacts/final-summary.json
           node scripts/upload-summary-to-sheet.js ${{ github.workspace }}/artifacts/final-summary.json
