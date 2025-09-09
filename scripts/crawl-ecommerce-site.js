@@ -87,6 +87,7 @@ function validateUrls(urls) {
         // Strategy 2: Fallback to direct Google Sheets API call
         if (!siteConfig) {
             console.log('Fetching fresh configuration from Google Sheets API...');
+            // Pass forceRefresh=true to ensure it bypasses any in-memory cache and hits the API
             siteConfig = await getSiteConfig(site, true);
         }
 
@@ -94,7 +95,7 @@ function validateUrls(urls) {
 
         if (!siteConfig) {
             console.error(`Could not retrieve configuration for site: ${site}. Exiting.`);
-            process.exit(1);
+            process.exit(1); // This is now correctly placed after all fetch attempts have failed.
         }
 
         console.log(`Configuration loaded for site: ${site}`, {

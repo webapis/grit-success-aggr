@@ -102,7 +102,7 @@ jobs:
                 const isPaused = row[8];
 
                 if (brandName && brandName.trim() && brandName.toLowerCase() !== 'brands' &&
-                    isPaused !== 'TRUE' && isPaused !== 'true') {
+                    isPaused !== 'TRUE' && isPaused !== 'true' && brandName.trim().length > 1) {
                   sites.push(brandName.trim());
                   sitesAdded++;
                 }
