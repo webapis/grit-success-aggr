@@ -9,12 +9,14 @@ import getGitHubActionsRunUrl from '../src/shared/getGitHubActionsRunUrl.js';
 const site = process.env.site;
 const local = process.env.local;
 const HEADLESS = process.env.HEADLESS;
+const GITHUB_BRANCH = process.env.GITHUB_REF_NAME; // Get branch name from GitHub Actions env
 
 // Function to generate GitHub Actions run URL
 
 
 const GitHubRunUrl = getGitHubActionsRunUrl()
-logToLocalSheet({ GitHubRunUrl, Site: site })
+console.log(`🚀 Starting crawler for site: ${site}${GITHUB_BRANCH ? ` on branch: ${GITHUB_BRANCH}` : ''}`);
+logToLocalSheet({ GitHubRunUrl, Site: site, Branch: GITHUB_BRANCH || 'local' })
 
 // URL validation function
 function validateUrls(urls) {
