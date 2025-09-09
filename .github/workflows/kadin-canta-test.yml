@@ -1,4 +1,4 @@
-name: Kadin Canta Scraper
+name: Kadin Canta Aggregator
 on:
   workflow_dispatch:
     inputs:
