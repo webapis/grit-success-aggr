@@ -5,7 +5,9 @@ function parsePrice(trimPrice) {
   trimPrice = trimPrice.trim();
 
   switch (true) {
-
+    // Handle European format: X.XX,XX or XX.X,XX or XXX.XX,XX etc.
+    case /^\d{1,3}[.]\d{1,3}[,]\d{2}$/.test(trimPrice):
+      return parseFloat(trimPrice.replace(/\./g, '').replace(',', '.'));
     // Handle format like 25.64,00 (2 digits.2 digits,2 digits)
     case /^\d{2}[.]\d{2}[,]\d{2}$/.test(trimPrice):
       return parseFloat(trimPrice.replace('.', '').replace(',', '.'));
