@@ -20,7 +20,9 @@ export const createRouter = async (siteUrls) => {
       
       hasRunFirstPageFunction = true
 
-      logToLocalSheet({ paginationParameterName: siteUrls.paginationParameterName, scrollable: siteUrls.scrollable, showMoreButtonSelector: siteUrls.showMoreButtonSelector, debug: siteUrls.debug || false,inflexible_notes: siteUrls.inflexible_notes || '' });
+      logToLocalSheet({ paginationParameterName: siteUrls.paginationParameterName, scrollable: siteUrls.scrollable, showMoreButtonSelector: siteUrls.showMoreButtonSelector, debug: siteUrls.debug || false,inflexible_notes: siteUrls.inflexible_notes || '',paused:siteUrls.paused || false,pausedReason:siteUrls.pausedReason || ''
+      
+      });
 
     }
     debugger
