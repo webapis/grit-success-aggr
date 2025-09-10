@@ -82,6 +82,8 @@ async function aggregateSummaries(inputDir) {
             'sitesWithErrors': [],
             'sitesWithNoItems': [],
             'sitesWithInvalidItems': [],
+            'totalSitesPaused': 0,
+            'totalSitesActive': 0,
         },
         individualSiteData: allSummaries,
     };
@@ -110,6 +112,13 @@ async function aggregateSummaries(inputDir) {
         const totalInvalidItems = summary['Total Invalid Items'] || 0;
         if (totalInvalidItems > 0) {
             aggregated.aggregatedMetrics.sitesWithInvalidItems.push(`${summary.Site || 'Unknown'} (${totalInvalidItems})`);
+        }
+
+        // Check for paused status
+        if (summary.Status === 'Paused') {
+            aggregated.aggregatedMetrics.totalSitesPaused += 1;
+        } else {
+            aggregated.aggregatedMetrics.totalSitesActive += 1;
         }
     }
 
