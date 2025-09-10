@@ -97,16 +97,19 @@ async function aggregateSummaries(inputDir) {
         aggregated.aggregatedMetrics['Total Minutes Span'] += parseFloat(summary['Minutes Span']) || 0;
 
         // Check for sites with errors
-        if ((summary['Total Error Items'] || 0) > 0) {
-            aggregated.aggregatedMetrics.sitesWithErrors.push(summary.Site || 'Unknown');
+        const totalErrorItems = summary['Total Error Items'] || 0;
+        if (totalErrorItems > 0) {
+            aggregated.aggregatedMetrics.sitesWithErrors.push(`${summary.Site || 'Unknown'} (${totalErrorItems})`);
         }
         // Check for sites with no collected items
-        if ((summary['Total Collected Items'] || 0) === 0) {
-            aggregated.aggregatedMetrics.sitesWithNoItems.push(summary.Site || 'Unknown');
+        const totalCollectedItems = summary['Total Collected Items'] || 0;
+        if (totalCollectedItems === 0) {
+            aggregated.aggregatedMetrics.sitesWithNoItems.push(`${summary.Site || 'Unknown'} (0)`);
         }
         // Check for sites with invalid items
-        if ((summary['Total Invalid Items'] || 0) > 0) {
-            aggregated.aggregatedMetrics.sitesWithInvalidItems.push(summary.Site || 'Unknown');
+        const totalInvalidItems = summary['Total Invalid Items'] || 0;
+        if (totalInvalidItems > 0) {
+            aggregated.aggregatedMetrics.sitesWithInvalidItems.push(`${summary.Site || 'Unknown'} (${totalInvalidItems})`);
         }
     }
 
