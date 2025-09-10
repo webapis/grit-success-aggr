@@ -5,6 +5,10 @@ function parsePrice(trimPrice) {
   trimPrice = trimPrice.trim();
 
   switch (true) {
+
+    // Handle format like 25.64,00 (2 digits.2 digits,2 digits)
+    case /^\d{2}[.]\d{2}[,]\d{2}$/.test(trimPrice):
+      return parseFloat(trimPrice.replace('.', '').replace(',', '.'));
     // Turkish format: 1.111.111,11
     case /^\d{1,3}(\.\d{3})+,\d{2}$/.test(trimPrice):
       return parseFloat(trimPrice.replace(/\./g, '').replace(',', '.'));
