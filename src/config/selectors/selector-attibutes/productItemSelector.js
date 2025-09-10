@@ -1,4 +1,5 @@
 export default [
+  '.product-list.js-customize .p-item.col',
   'li div article[data-articlecode][data-category]',
   '.product-list [data-product-id].product-block.none[data-cc-animate]',
   '.main-products.product-grid .product-thumb',
