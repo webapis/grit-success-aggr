@@ -128,21 +128,19 @@ jobs:
 
                 const row = dataRows[i];
                 const brandName = row[0];
-                const isPaused = row[8];
 
                 // Validate row data
                 if (brandName && 
                     brandName.trim() && 
                     brandName.toLowerCase() !== 'brands' &&
-                    brandName.trim().length > 1 &&
-                    isPaused !== 'TRUE' && 
-                    isPaused !== 'true') {
+                    brandName.trim().length > 1) {
+
                   
                   sites.push(brandName.trim());
                   sitesAdded++;
                   console.log(`✅ Added site: ${brandName.trim()} (${sitesAdded}/${siteLimit || 'unlimited'})`);
                 } else {
-                  console.log(`⏭️ Skipping site: ${brandName} (paused: ${isPaused})`);
+                  // This block can be used for logging skipped invalid rows if needed
                 }
               }
 
