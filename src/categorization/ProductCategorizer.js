@@ -1,6 +1,12 @@
 class KeywordCategorizer {
     constructor(categoryDefinitions) {
-        this.categories = categoryDefinitions;
+        // Deep clone and convert all keywords to lowercase for consistent matching
+        this.categories = JSON.parse(JSON.stringify(categoryDefinitions));
+        for (const categoryType in this.categories) {
+            for (const categoryName in this.categories[categoryType]) {
+                this.categories[categoryType][categoryName] = this.categories[categoryType][categoryName].map(keyword => keyword.toLowerCase());
+            }
+        }
         this.compiledPatterns = this.compilePatterns();
     }
 
