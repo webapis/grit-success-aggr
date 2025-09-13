@@ -9,7 +9,9 @@
     "start": "node src/test/index.js",
     "sheet": "node scripts/fetch-sheet-data-local.js",
     "startProdPuppteer": "node scripts/crawl-ecommerce-site.js",
-    "uploadData": "node src/2_data/persistence/sheet/uploadToGoogleSheet.js"
+    "uploadData": "node src/2_data/persistence/sheet/uploadToGoogleSheet.js",
+    "categorize": "node scripts/run-categorization.js"
+  
   },
   "keywords": [],
   "author": "",

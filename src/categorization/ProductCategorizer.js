@@ -147,10 +147,12 @@ class KeywordCategorizer {
     }
 
     // Suggest keywords based on uncategorized products
-    suggestKeywords(uncategorizedProducts, categoryType) {
+    suggestKeywords(allProducts, categoryType, allCategories) {
         const wordFrequency = {};
 
-        uncategorizedProducts.forEach(product => {
+        const uncategorizedForType = allProducts.filter(p => !p.categories[categoryType] || p.categories[categoryType].length === 0);
+
+        uncategorizedForType.forEach(product => {
             const title = (product.title || '').toLowerCase();
             const words = title.match(/[\wçğıöşü]+/g) || [];
 
@@ -161,11 +163,24 @@ class KeywordCategorizer {
             });
         });
 
+        const existingKeywords = new Set();
+        for (const catType in allCategories) {
+            for (const cat in allCategories[catType]) {
+                for (const keyword of allCategories[catType][cat]) {
+                    existingKeywords.add(keyword);
+                }
+            }
+        }
+
         // Sort by frequency and return top suggestions
         return Object.entries(wordFrequency)
             .sort(([, a], [, b]) => b - a)
             .slice(0, 20)
-            .map(([word, count]) => ({ word, frequency: count }));
+            .map(([word, count]) => ({
+                word,
+                frequency: count,
+                isExisting: existingKeywords.has(word)
+            }));
     }
 }
 
@@ -184,13 +199,7 @@ const DefaultCategories = {
         'el çantası': ['el çantası', 'hand bag', 'clutch'],
         'sırt çantası': ['sırt çantası', 'backpack', 'sırt'],
         'cüzdan': ['cüzdan', 'wallet'],
-        'ayakkabı': ['ayakkabı', 'shoes', 'bot', 'sandalet'],
-        'elbise': ['elbise', 'dress'],
-        'bluz': ['bluz', 'blouse', 'gömlek'],
-        'pantolon': ['pantolon', 'pants', 'trousers'],
-        'ceket': ['ceket', 'jacket', 'mont'],
-        'tişört': ['tişört', 't-shirt', 'tshirt'],
-        'etek': ['etek', 'skirt']
+        'çapraz çanta': ['çapraz çanta', 'crossbody bag', 'çapraz']
     },
 
     color: {
