@@ -141,39 +141,14 @@ async function runCategorization() {
         console.log(`
 ✅ Saved uncategorized products stats to ${path.join(outputDir, 'uncategorized-stats.json')}`);
 
-        // 10. Suggest keywords for categories with missing products
-        console.log('\n🔍 Keyword suggestions for categories with missing products:');
+        // 10. Suggest keywords for uncategorized products
+        console.log('\n🔍 Generating keyword suggestions for uncategorized products...');
 
-        const allSuggestions = {};
-        const categoriesToSuggest = ['style', 'size', 'material', 'productType'];
-        for (const categoryType of categoriesToSuggest) {
-            const suggestions = categorizer.suggestKeywords(categorizedProducts, categoryType, DefaultCategories);
-            allSuggestions[categoryType] = suggestions;
-            console.log(`
-Suggestions for ${categoryType}:`);
-            console.log(suggestions);
-        }
-
-        await fs.writeFile(path.join(outputDir, 'keyword-suggestions.json'), JSON.stringify(allSuggestions, null, 2));
-        console.log(`
-✅ Saved keyword suggestions to ${path.join(outputDir, 'keyword-suggestions.json')}`);
-
-        // Separate existing and new keywords
-        const existingKeywords = {};
-        const newKeywords = {};
-
-        for (const categoryType in allSuggestions) {
-            existingKeywords[categoryType] = allSuggestions[categoryType].filter(s => s.isExisting);
-            newKeywords[categoryType] = allSuggestions[categoryType].filter(s => !s.isExisting);
-        }
-
-        await fs.writeFile(path.join(outputDir, 'existing-keywords.json'), JSON.stringify(existingKeywords, null, 2));
-        console.log(`
-✅ Saved existing keywords to ${path.join(outputDir, 'existing-keywords.json')}`);
-
-        await fs.writeFile(path.join(outputDir, 'new-keywords.json'), JSON.stringify(newKeywords, null, 2));
-        console.log(`
-✅ Saved new keywords to ${path.join(outputDir, 'new-keywords.json')}`);
+        const suggestions = categorizer.suggestKeywords(categorizedProducts, DefaultCategories);
+        
+        await fs.writeFile(path.join(outputDir, 'keyword-suggestions.json'), JSON.stringify(suggestions, null, 2));
+        console.log(`\n✅ Saved keyword suggestions to ${path.join(outputDir, 'keyword-suggestions.json')}`);
+        console.log('Top suggestions:', suggestions.slice(0, 10));
 
     } catch (error) {
         console.error('❌ An error occurred during the categorization process:', error);

@@ -153,12 +153,12 @@ class KeywordCategorizer {
     }
 
     // Suggest keywords based on uncategorized products
-    suggestKeywords(allProducts, categoryType, allCategories) {
+    suggestKeywords(allProducts, allCategories) {
         const wordFrequency = {};
 
-        const uncategorizedForType = allProducts.filter(p => !p.categories[categoryType] || p.categories[categoryType].length === 0);
+        const uncategorizedProducts = this.findUncategorized(allProducts);
 
-        uncategorizedForType.forEach(product => {
+        uncategorizedProducts.forEach(product => {
             const title = (product.title || '').toLowerCase();
             const words = title.match(/[\wçğıöşü]+/g) || [];
 
@@ -173,19 +173,19 @@ class KeywordCategorizer {
         for (const catType in allCategories) {
             for (const cat in allCategories[catType]) {
                 for (const keyword of allCategories[catType][cat]) {
-                    existingKeywords.add(keyword);
+                    existingKeywords.add(keyword.toLowerCase());
                 }
             }
         }
 
         // Sort by frequency and return top suggestions
         return Object.entries(wordFrequency)
+            .filter(([word]) => !existingKeywords.has(word))
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 20)
+            .slice(0, 50) // Increased slice to 50 from 20
             .map(([word, count]) => ({
                 word,
-                frequency: count,
-                isExisting: existingKeywords.has(word)
+                frequency: count
             }));
     }
 }
