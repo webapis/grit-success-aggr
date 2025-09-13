@@ -180,12 +180,12 @@ class KeywordCategorizer {
 
         // Sort by frequency and return top suggestions
         return Object.entries(wordFrequency)
-            .filter(([word]) => !existingKeywords.has(word))
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 50) // Increased slice to 50 from 20
+            .slice(0, 100) // Increased slice to 100
             .map(([word, count]) => ({
                 word,
-                frequency: count
+                frequency: count,
+                isExisting: existingKeywords.has(word)
             }));
     }
 }

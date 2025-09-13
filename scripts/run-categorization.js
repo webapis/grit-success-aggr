@@ -148,7 +148,16 @@ async function runCategorization() {
         
         await fs.writeFile(path.join(outputDir, 'keyword-suggestions.json'), JSON.stringify(suggestions, null, 2));
         console.log(`\n✅ Saved keyword suggestions to ${path.join(outputDir, 'keyword-suggestions.json')}`);
-        console.log('Top suggestions:', suggestions.slice(0, 10));
+
+        // Separate existing and new keywords
+        const existingKeywords = suggestions.filter(s => s.isExisting);
+        const newKeywords = suggestions.filter(s => !s.isExisting);
+
+        await fs.writeFile(path.join(outputDir, 'existing-keywords.json'), JSON.stringify(existingKeywords, null, 2));
+        console.log(`\n✅ Saved existing keywords to ${path.join(outputDir, 'existing-keywords.json')}`);
+
+        await fs.writeFile(path.join(outputDir, 'new-keywords.json'), JSON.stringify(newKeywords, null, 2));
+        console.log(`\n✅ Saved new keywords to ${path.join(outputDir, 'new-keywords.json')}`);
 
     } catch (error) {
         console.error('❌ An error occurred during the categorization process:', error);
