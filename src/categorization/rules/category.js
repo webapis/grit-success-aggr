@@ -128,5 +128,42 @@ export default [
         includesAll: ["cloth Bag"],
         keyword: 'bez çanta'
     }
+    ,
+    {
+        includesAll: ["Postacı"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'postacı çantası'
+    }
+    ,
+    {
+        includesAll: ["Portföy"],
+        keyword: 'portföy'
+    }
+    ,
+    {
+        includesAll: ["gece"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'gece çantası'
+    }
+    ,
+    {
+        includesAll: ["makyaj"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'makyaj çantası'
+    }
+
+    ,
+    {
+        includesAll: ["airpods"],
+        includesOr: ['kılıfı'],
+        keyword: 'airpods kılıfı'
+    }
+     ,
+    {
+        includesAll: ["kese"],
+       matchesAllExact: true,
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'kese çanta'
+    }
 ];
 
