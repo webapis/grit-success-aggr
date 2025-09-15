@@ -85,120 +85,40 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
     return result;
 }
 
-// --- Main categorization function ---
-function categorizeProducts(products, categoryRules) {
-    categorizer.stats = {
-        total: products.length,
-        categorized: 0,
-        notCategorized: 0,
-        categories: {},
-        notCategorizedProducts: []
-    };
+function categorizeProducts(items, categoryRules) {
+    return items.map(item => {
+        let categorizedItem = { ...item };
+        let matched = false;
 
-    return products.map(product => {
-        let matchedCategories = [];
+        categoryRules.forEach(rule => {
+            const before = JSON.stringify(categorizedItem.categories);
+            categorizedItem = categorizer({
+                product: categorizedItem,
+                category: rule.category || 'productType',
+                includesAll: rule.includesAll,
+                includesAllExact: rule.includesAllExact,
+                includesOr: rule.includesOr,
+                keyword: rule.keyword
+            });
+            const after = JSON.stringify(categorizedItem.categories);
+            if (before !== after) matched = true;
+        });
 
-        for (const rule of categoryRules) {
-            const titleLower = product.title.toLowerCase();
-
-            const includesAll = (rule.includesAll || []).every(k =>
-                titleLower.includes(k.toLowerCase())
-            );
-            const includesOr =
-                (rule.includesOr || []).length === 0 ||
-                (rule.includesOr || []).some(k =>
-                    titleLower.includes(k.toLowerCase())
-                );
-
-            if (includesAll && includesOr) {
-                matchedCategories.push({
-                    category: rule.category,
-                    keyword: rule.keyword
-                });
-
-                if (!categorizer.stats.categories[rule.category]) {
-                    categorizer.stats.categories[rule.category] = {};
-                }
-                if (!categorizer.stats.categories[rule.category][rule.keyword]) {
-                    categorizer.stats.categories[rule.category][rule.keyword] = 0;
-                }
-                categorizer.stats.categories[rule.category][rule.keyword]++;
-            }
-        }
-
-        if (matchedCategories.length > 0) {
+        // Update stats once per product
+        categorizer.stats.total++;
+        if (matched) {
             categorizer.stats.categorized++;
         } else {
             categorizer.stats.notCategorized++;
-            categorizer.stats.notCategorizedProducts.push(product.title);
+            categorizer.stats.notCategorizedProducts.push(item.title); // 👈 track uncategorized
         }
 
-        return {
-            ...product,
-            categories: matchedCategories
-        };
+        return categorizedItem;
     });
 }
 
-// --- Helper for keyword suggestions with stopword filtering ---
-function generateKeywordSuggestions(products, categoryRules, minFrequency = 3) {
-    const normalizeTurkish = (text) => {
-        return text.toLowerCase()
-            .replace(/ı/g, 'i')
-            .replace(/ğ/g, 'g')
-            .replace(/ü/g, 'u')
-            .replace(/ş/g, 's')
-            .replace(/ö/g, 'o')
-            .replace(/ç/g, 'c');
-    };
-
-    // 🚫 Hardcoded stopwords (shortened so we don’t over-filter)
-    const stopwords = new Set([
-        "kadın", "kadin",
-        "erkek",
-        "unisex",
-        "çocuk", "cocuk",
-        "moda", "giyim",
-        "aksesuar"
-    ]);
-
-    // Collect all existing keywords from rules (normalized)
-    const existingKeywords = new Set(
-        categoryRules.flatMap(r =>
-            [ ...(r.includesAll || []), ...(r.includesOr || []), r.keyword ]
-        ).map(k => normalizeTurkish(k))
-    );
-
-    const freqMap = {};
-
-    products.forEach(product => {
-        const words = normalizeTurkish(product.title)
-            .split(/[\s\-,./()]+/) // split on spaces & punctuation
-            .filter(w => w.length > 1);
-
-        words.forEach(word => {
-            if (stopwords.has(word)) return;
-            if (!freqMap[word]) freqMap[word] = 0;
-            freqMap[word]++;
-        });
-    });
-
-    // Convert to array with isExisting flag
-    const suggestions = Object.entries(freqMap)
-        .filter(([_, frequency]) => frequency >= minFrequency) // 👈 only frequent words
-        .map(([word, frequency]) => ({
-            word,
-            frequency,
-            isExisting: existingKeywords.has(word)
-        }))
-        .sort((a, b) => b.frequency - a.frequency);
-
-    return suggestions;
-}
-
-
-// --- Stats + Suggestions ---
-categorizer.getStats = function(products = [], categoryRules = []) {
+// Method to get statistics
+categorizer.getStats = function() {
     if (!categorizer.stats) {
         return { message: "No categorization has been performed yet." };
     }
@@ -217,16 +137,20 @@ categorizer.getStats = function(products = [], categoryRules = []) {
         console.log('\n🚨 Products not categorized:', stats.notCategorizedProducts);
     }
 
-    if (products.length > 0 && categoryRules.length > 0) {
-        const suggestions = generateKeywordSuggestions(products, categoryRules);
-        const newWords = suggestions.filter(s => !s.isExisting).slice(0, 30); // top 30
-        console.log('\n💡 Suggested new keywords (stopwords removed):', newWords);
-        stats.suggestions = newWords;
-    }
-
     return stats;
 };
 
+// Method to reset statistics
+categorizer.resetStats = function() {
+    categorizer.stats = {
+        total: 0,
+        categorized: 0,
+        notCategorized: 0,
+        categories: {},
+        notCategorizedProducts: []
+    };
+    console.log('📊 Statistics reset');
+};
 
 
 export { categorizer,categorizeProducts };
