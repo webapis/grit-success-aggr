@@ -1,9 +1,12 @@
+import dotenv from 'dotenv';
 import { Dataset } from "crawlee";
 import { categorizer } from "../src/categorization/categorizer.js";
-const dataset = await Dataset.open("defacto");
-const datasetCategorized = await Dataset.open("defacto-categorized");
-const { items } = await dataset.getData();
 
+dotenv.config({ silent: true });
+const site = process.env.site;
+const dataset = await Dataset.open(site);
+const datasetCategorized = await Dataset.open(`${site}-categorized`);
+const { items } = await dataset.getData();
 const categorizedItems = items
     // .map(item => {
     //     let categorizedItem = item;
@@ -90,7 +93,7 @@ const categorizedItems = items
         return categorizedItem
     })
 
-        .map(item => {
+    .map(item => {
         let categorizedItem = item;
         categorizedItem = categorizer({
             product: categorizedItem,
@@ -99,6 +102,32 @@ const categorizedItems = items
             includesAllExact: true,
             includesOr: ['çanta', 'çantası'],
             keyword: 'tablet çantası'
+        });
+
+        return categorizedItem
+    })
+    .map(item => {
+        let categorizedItem = item;
+        categorizedItem = categorizer({
+            product: categorizedItem,
+            category: 'productType',
+            includesAll: ['telefon'],
+            includesAllExact: true,
+            includesOr: ['çanta', 'çantası'],
+            keyword: 'telefon çantası'
+        });
+
+        return categorizedItem
+    })
+        .map(item => {
+        let categorizedItem = item;
+        categorizedItem = categorizer({
+            product: categorizedItem,
+            category: 'productType',
+            includesAll: ['baskılı'],
+            includesAllExact: true,
+            includesOr: ['çanta', 'çantası'],
+            keyword: 'baskılı çanta'
         });
 
         return categorizedItem
