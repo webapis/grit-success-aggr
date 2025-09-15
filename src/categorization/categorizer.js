@@ -10,6 +10,25 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
     // Get the product title in lowercase for case-insensitive matching
     const titleLower = product.title.toLowerCase();
     
+    // Helper function to normalize Turkish characters for better matching
+    const normalizeTurkish = (text) => {
+        return text.toLowerCase()
+            .replace(/ı/g, 'i')
+            .replace(/ğ/g, 'g')
+            .replace(/ü/g, 'u')
+            .replace(/ş/g, 's')
+            .replace(/ö/g, 'o')
+            .replace(/ç/g, 'c');
+    };
+    
+    // Helper function for exact word matching with Turkish support
+    const isExactWordMatch = (text, word) => {
+        // Define Turkish word characters (including Turkish-specific characters)
+        const turkishWordChars = 'a-zA-ZçÇğĞıİöÖşŞüÜ0-9_';
+        const regex = new RegExp(`(?<![${turkishWordChars}])${word.toLowerCase()}(?![${turkishWordChars}])`, 'i');
+        return regex.test(text);
+    };
+    
     let conditionMet = false;
     let allConditionMet = true;
     let orConditionMet = true;
@@ -17,13 +36,12 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
     // Check if all required words are present in the title (AND logic)
     if (includesAll && includesAll.length > 0) {
         if (includesAllExact) {
-            // Exact word matching using word boundaries
+            // Exact word matching with Turkish character support
             allConditionMet = includesAll.every(word => {
-                const regex = new RegExp(`\\b${word.toLowerCase()}\\b`, 'i');
-                return regex.test(titleLower);
+                return isExactWordMatch(titleLower, word);
             });
         } else {
-            // Partial matching (contains)
+            // Partial matching (contains) - also improved for Turkish
             allConditionMet = includesAll.every(word => 
                 titleLower.includes(word.toLowerCase())
             );
@@ -132,4 +150,25 @@ categorizer.resetStats = function() {
     };
     console.log('📊 Statistics reset');
 };
-export { categorizer };
+
+function categorizeProducts(items, categoryRules) {
+    return items.map(item => {
+        let categorizedItem = item;
+        
+        // Apply each categorization rule sequentially
+        categoryRules.forEach(rule => {
+            categorizedItem = categorizer({
+                product: categorizedItem,
+                category: rule.category || 'productType',
+                includesAll: rule.includesAll,
+                includesAllExact: rule.includesAllExact,
+                includesOr: rule.includesOr,
+                keyword: rule.keyword
+            });
+        });
+        
+        return categorizedItem;
+    });
+}
+
+export { categorizer,categorizeProducts };
