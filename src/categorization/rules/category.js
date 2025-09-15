@@ -1,4 +1,4 @@
-export default  [
+export default [
     // {
     //     includesOr: ['çantası', 'çanta'],
     //     keyword: 'çanta'
@@ -8,8 +8,24 @@ export default  [
         keyword: 'omuz çantası'
     },
     {
+        includesAll: ['shoulder bag'],
+        keyword: 'omuz çantası'
+    },
+    {
         includesAll: ['çapraz'],
         includesOr: ['çanta', 'çantası'],
+        keyword: 'çapraz çanta'
+    },
+    {
+        includesAll: ['crossbody', 'bag'],
+        keyword: 'çapraz çanta'
+    },
+    {
+        includesAll: ['cross', 'bag'],
+        keyword: 'çapraz çanta'
+    },
+    {
+        includesAll: ['cross body', 'bag'],
         keyword: 'çapraz çanta'
     },
     {
@@ -33,6 +49,12 @@ export default  [
         includesOr: ['çanta', 'çantası'],
         keyword: 'el çantası'
     },
+    {
+        includesAll: ['Handbag'],
+        includesAllExact: true,
+        keyword: 'el çantası'
+    },
+
     {
         includesAll: ['tablet'],
         includesAllExact: true,
@@ -58,10 +80,15 @@ export default  [
         keyword: 'büyük çanta'
     },
     {
-        includesAll: ['zincirli'],
+        includesAll: ['zincirli', 'zincir'],
         includesAllExact: true,
         includesOr: ['çanta', 'çantası'],
         keyword: 'zincirli çanta'
+    },
+    {
+        includesAll: ['Leather'],
+        includesOr: ['bag'],
+        keyword: 'deri çanta'
     },
     {
         includesAll: ['deri çanta'],
@@ -81,4 +108,25 @@ export default  [
         includesOr: ['çanta', 'çantası'],
         keyword: 'deri çanta'
     }
+    ,
+    {
+        includesAll: ['Metal Aksesuarlı'],
+        keyword: 'metal aksesuarlı çanta'
+    },
+    {
+        includesAll: ["tote"],
+        includesOr: ['çanta', 'çantası', 'bag'],
+        keyword: 'tote çanta'
+    }
+    ,
+    {
+        includesAll: ["clutch"],
+        keyword: 'debriyaj çanta'
+    }
+    ,
+    {
+        includesAll: ["cloth Bag"],
+        keyword: 'bez çanta'
+    }
 ];
+
