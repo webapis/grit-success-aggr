@@ -5,13 +5,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node test.js",
     "start": "node src/test/index.js",
     "sheet": "node scripts/fetch-sheet-data-local.js",
     "startProdPuppteer": "node scripts/crawl-ecommerce-site.js",
     "uploadData": "node src/2_data/persistence/sheet/uploadToGoogleSheet.js",
-    "categorize": "node scripts/run-categorization.js"
-  
+    "categize": "node scripts/run-categorization2.js"
   },
   "keywords": [],
   "author": "",
