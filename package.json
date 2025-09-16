@@ -10,7 +10,7 @@
     "sheet": "node scripts/fetch-sheet-data-local.js",
     "startProdPuppteer": "node scripts/crawl-ecommerce-site.js",
     "uploadData": "node src/2_data/persistence/sheet/uploadToGoogleSheet.js",
-    "categize": "node scripts/run-categorization2.js"
+    "categorize": "node scripts/run-categorization2.js"
   },
   "keywords": [],
   "author": "",

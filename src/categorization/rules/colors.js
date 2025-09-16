@@ -73,5 +73,17 @@ export default [
         includesAll: ['gümüş', 'silver'],
         keyword: 'gümüş',
         category: 'color'
+    },
+    
+    {
+        includesAll: ['bordo'],
+        keyword: 'bordo',
+        category: 'color'
+    },
+    
+    {
+        includesAll: ['pudra'],
+        keyword: 'pudra',
+        category: 'color'
     }
 ]
