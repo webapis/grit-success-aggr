@@ -212,5 +212,25 @@ export default [
         includesOr: ['çanta', 'çantası'],
         keyword: 'jean görümümlü çantası'
     }
+    ,
+
+    {
+        includesAll: ["Yılan Derisi Desenli"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'yılan derisi desenli çanta'
+    },
+        
+
+    {
+        includesAll: ["Pelüş"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'Pelüş çanta'
+    },
+    
+    {
+        includesAll: ["düz"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'Düz çanta'
+    }
 ];
 
