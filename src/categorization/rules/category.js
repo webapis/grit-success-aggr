@@ -91,7 +91,9 @@ export default [
         keyword: 'deri çanta'
     },
     {
-        includesAll: ['deri çanta'],
+        includesAll: ['deri'],
+        excludes: ['suni', 'sahte', 'yapay'],
+        includesOr: ['çanta', 'çantası'],
         keyword: 'deri çanta'
     },
     {
@@ -179,18 +181,18 @@ export default [
         includesOr: ['çanta', 'çantası'],
         keyword: 'zincir askılı çanta'
     },
-       
+
     {
         includesAll: ["su geçirmez"],
         matchesAllExact: true,
         includesOr: ['çanta', 'çantası'],
         keyword: 'su geçirmez çanta'
     },
-          
+
     {
-        includesAll: ["leopar","desen"],
+        includesAll: ["leopar", "desen"],
         includesOr: ['çanta', 'çantası'],
         keyword: 'leopar desenli çanta'
     }
 ];
- 
+
