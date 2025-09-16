@@ -97,6 +97,11 @@ export default [
         keyword: 'deri çanta'
     },
     {
+        includesAll: ['suni', 'deri'],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'suni deri çanta'
+    },
+    {
         includesAll: ['hasır'],
         includesOr: ['çanta', 'çantası'],
         keyword: 'hasır çanta'
@@ -105,12 +110,6 @@ export default [
         includesAll: ['küçük çanta'],
         keyword: 'küçük çanta'
     },
-    {
-        includesAll: ['deri'],
-        includesOr: ['çanta', 'çantası'],
-        keyword: 'deri çanta'
-    }
-    ,
     {
         includesAll: ['Metal Aksesuarlı'],
         keyword: 'metal aksesuarlı çanta'
@@ -193,6 +192,25 @@ export default [
         includesAll: ["leopar", "desen"],
         includesOr: ['çanta', 'çantası'],
         keyword: 'leopar desenli çanta'
+    }
+    ,
+
+    {
+        includesAll: ["okul"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'okul çantası'
+    },
+
+    {
+        includesAll: ["Sedef", "görünümlü"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'Sedef görümümlü çantası'
+    },
+
+    {
+        includesAll: ["jean", "görünümlü"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'jean görümümlü çantası'
     }
 ];
 

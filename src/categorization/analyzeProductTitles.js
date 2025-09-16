@@ -10,7 +10,7 @@ function analyzeProductTitles(products, options = {}) {
     const turkishStopWords = new Set([
         'bir', 'bu', 've', 'ile', 'için', 'de', 'da', 'den', 'dan', 'te', 'ta',
         'le', 'la', 'ki', 'olan', 'olan', 'her', 'çok', 'en', 'az', 'ya', 'yada',
-        'veya', 'ancak', 'fakat', 'ama', 'lakin', 'şu', 'o', 'onun', 'bunun'
+        'veya', 'ancak', 'fakat', 'ama', 'lakin', 'şu', 'o', 'onun', 'bunun','defacto','DCEY'
     ]);
 
     const result = {

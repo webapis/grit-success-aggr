@@ -1,3 +1,5 @@
+
+
 export default [
 
     {
@@ -5,6 +7,12 @@ export default [
         keyword: 'kadın',
         category: 'gender'
     },
-    
+    {
+        includesOr: ['unisex'],
+        keyword: 'unisex',
+        category: 'gender'
+
+    }
+
 
 ]

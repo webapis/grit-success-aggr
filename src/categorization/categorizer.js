@@ -1,5 +1,4 @@
-// Main categorizer function (without statistics)
-function categorizer({ product, category, includesAll, includesAllExact = false, includesOr, keyword }) {
+function categorizer({ product, category, includesAll, includesAllExact = false, includesOr, excludes, keyword }) {
     // Create a copy of the product to avoid mutating the original
     const result = { ...product };
     
@@ -21,7 +20,8 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
     
     let conditionMet = false;
     let allConditionMet = true;
-    let orConditionMet = true;
+    let orConditionMet = false;
+    let excludeConditionMet = true; // Start with true, will be set to false if any exclude word is found
     
     // Check if all required words are present in the title (AND logic)
     if (includesAll && includesAll.length > 0) {
@@ -47,8 +47,15 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
         orConditionMet = true; // If no OR condition specified, consider it satisfied
     }
     
-    // Both conditions must be satisfied if both are provided
-    conditionMet = allConditionMet && orConditionMet;
+    // Check if any of the excluded words are present in the title
+    if (excludes && excludes.length > 0) {
+        excludeConditionMet = !excludes.some(word => 
+            titleLower.includes(word.toLowerCase())
+        );
+    }
+    
+    // All conditions must be satisfied
+    conditionMet = allConditionMet && orConditionMet && excludeConditionMet;
     
     // If conditions are met, add the keyword to the category
     if (conditionMet) {
@@ -83,8 +90,6 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
     return result;
 }
 
-
-// Enhanced wrapper function that can optionally use statistics
 function categorizeProducts(items, categoryRules, withStats = true) {
     return items.map(item => {
         let categorizedItem = item;
@@ -99,15 +104,45 @@ function categorizeProducts(items, categoryRules, withStats = true) {
                 includesAll: rule.includesAll,
                 includesAllExact: rule.includesAllExact,
                 includesOr: rule.includesOr,
+                excludes: rule.excludes, // Added excludes parameter
                 keyword: rule.keyword
             });
             
             // Generate stats if requested
-       
         });
         
         return categorizedItem;
     });
 }
+
+// Example usage with the rule you provided:
+const exampleRule = {
+    includesAll: ['deri'],
+    excludes: ['suni', 'sahte', 'yapay'],
+    includesOr: ['çanta', 'çantası'],
+    keyword: 'deri çanta'
+};
+
+// Test products
+const testProducts = [
+    { title: "Hakiki deri kadın çantası" }, // Should match
+    { title: "Suni deri çanta modelleri" }, // Should NOT match (excluded)
+    { title: "Deri ayakkabı" }, // Should NOT match (no çanta/çantası)
+    { title: "Yapay deri çantası" }, // Should NOT match (excluded)
+    { title: "Gerçek deri çantası premium" } // Should match
+];
+
+console.log("Test results:");
+testProducts.forEach((product, index) => {
+    const result = categorizer({
+        product,
+        category: 'productType',
+        includesAll: exampleRule.includesAll,
+        excludes: exampleRule.excludes,
+        includesOr: exampleRule.includesOr,
+        keyword: exampleRule.keyword
+    });
+    console.log(`${index + 1}. "${product.title}" -> Categories:`, result.categories);
+});
 
 export { categorizer, categorizeProducts };
