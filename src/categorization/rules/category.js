@@ -158,12 +158,39 @@ export default [
         includesOr: ['kılıfı'],
         keyword: 'airpods kılıfı'
     }
-     ,
+    ,
     {
         includesAll: ["kese"],
-       matchesAllExact: true,
+        matchesAllExact: true,
         includesOr: ['çanta', 'çantası'],
         keyword: 'kese çanta'
     }
+    ,
+    {
+        includesAll: ["bel"],
+        matchesAllExact: true,
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'bel çantası'
+    }
+    ,
+    {
+        includesAll: ["Zincir Askılı"],
+        matchesAllExact: true,
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'zincir askılı çanta'
+    },
+       
+    {
+        includesAll: ["su geçirmez"],
+        matchesAllExact: true,
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'su geçirmez çanta'
+    },
+          
+    {
+        includesAll: ["leopar","desen"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'leopar desenli çanta'
+    }
 ];
-
+ 

@@ -83,84 +83,6 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
     return result;
 }
 
-// Separate statistics module
-const CategorizationStats = {
-    stats: {
-        total: 0,
-        categorized: 0,
-        notCategorized: 0,
-        categories: {}
-    },
-    
-    // Track a categorization attempt
-    track: function(product, category, keyword, conditionMet, includesAll, includesOr) {
-        this.stats.total++;
-        
-        if (conditionMet) {
-            this.stats.categorized++;
-            if (!this.stats.categories[category]) {
-                this.stats.categories[category] = {};
-            }
-            if (!this.stats.categories[category][keyword]) {
-                this.stats.categories[category][keyword] = 0;
-            }
-            this.stats.categories[category][keyword]++;
-            
-            console.log(`✅ Categorized: "${product.title}" → ${category}: ${keyword}`);
-        } else {
-            this.stats.notCategorized++;
-            console.log(`❌ Not categorized: "${product.title}" (${category}: ${includesAll ? 'includesAll: ' + includesAll.join(', ') : ''}${includesOr ? 'includesOr: ' + includesOr.join(', ') : ''})`);
-        }
-    },
-    
-    // Get current statistics
-    getStats: function() {
-        if (this.stats.total === 0) {
-            return { message: "No categorization has been performed yet." };
-        }
-        
-        const stats = { ...this.stats };
-        stats.categorizationRate = ((stats.categorized / stats.total) * 100).toFixed(2) + '%';
-        
-        console.log('\n📊 CATEGORIZATION STATISTICS:');
-        console.log(`Total products processed: ${stats.total}`);
-        console.log(`Successfully categorized: ${stats.categorized} (${stats.categorizationRate})`);
-        console.log(`Not categorized: ${stats.notCategorized}`);
-        console.log('\nCategory breakdown:', stats.categories);
-        
-        return stats;
-    },
-    
-    // Reset statistics
-    resetStats: function() {
-        this.stats = {
-            total: 0,
-            categorized: 0,
-            notCategorized: 0,
-            categories: {}
-        };
-        console.log('📊 Statistics reset');
-    }
-};
-
-// Function to generate statistics based on categorizer result
-function generateStats(originalProduct, result, category, keyword, includesAll, includesOr) {
-    // Determine if categorization was successful by comparing before/after
-    const wasAlreadyCategorized = originalProduct.categories && 
-                                 originalProduct.categories[category] && 
-                                 originalProduct.categories[category].includes(keyword);
-    
-    const isNowCategorized = result.categories[category] && 
-                           result.categories[category].includes(keyword);
-    
-    // Only count as successful if it's newly categorized (not already present)
-    const conditionMet = !wasAlreadyCategorized && isNowCategorized;
-    
-    // Track the statistics
-    CategorizationStats.track(originalProduct, category, keyword, conditionMet, includesAll, includesOr);
-    
-    return result;
-}
 
 // Enhanced wrapper function that can optionally use statistics
 function categorizeProducts(items, categoryRules, withStats = true) {
@@ -181,13 +103,11 @@ function categorizeProducts(items, categoryRules, withStats = true) {
             });
             
             // Generate stats if requested
-            if (withStats) {
-                generateStats(originalProduct, categorizedItem, rule.category || 'productType', rule.keyword, rule.includesAll, rule.includesOr);
-            }
+       
         });
         
         return categorizedItem;
     });
 }
 
-export { categorizer, categorizeProducts, CategorizationStats };
+export { categorizer, categorizeProducts };
