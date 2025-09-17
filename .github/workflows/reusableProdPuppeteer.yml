@@ -125,6 +125,18 @@ jobs:
         echo "📤 Uploading results..."
         node src/2_data/persistence/sheet/uploadToGoogleSheet.js
 
+    - name: Run categorization
+      if: always()
+      run: |
+        echo "📊 Starting categorization..."
+        node scripts/run-categorization.js
+
+    - name: Upload categorization results
+      if: always()
+      run: |
+        echo "📤 Uploading categorization results..."
+        node scripts/upload-categorization-results-to-sheet.js
+
     - name: Upload Summary Artifact
       if: always()
       uses: actions/upload-artifact@v4
