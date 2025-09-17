@@ -7,6 +7,17 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
         result.categories = {};
     }
     
+    // Handle cases where product title might be null or not a string
+    if (typeof product.title !== 'string' || !product.title) {
+        // If the category is 'productType', ensure it's set to 'none' if no other category has been assigned
+        if (category === 'productType') {
+            if (!result.categories[category] || result.categories[category].length === 0) {
+                result.categories[category] = ['none'];
+            }
+        }
+        return result; // Return the product without further processing
+    }
+    
     // Get the product title in lowercase for case-insensitive matching
     const titleLower = product.title.toLowerCase();
     
@@ -115,34 +126,6 @@ function categorizeProducts(items, categoryRules, withStats = true) {
     });
 }
 
-// Example usage with the rule you provided:
-const exampleRule = {
-    includesAll: ['deri'],
-    excludes: ['suni', 'sahte', 'yapay'],
-    includesOr: ['çanta', 'çantası'],
-    keyword: 'deri çanta'
-};
 
-// Test products
-const testProducts = [
-    { title: "Hakiki deri kadın çantası" }, // Should match
-    { title: "Suni deri çanta modelleri" }, // Should NOT match (excluded)
-    { title: "Deri ayakkabı" }, // Should NOT match (no çanta/çantası)
-    { title: "Yapay deri çantası" }, // Should NOT match (excluded)
-    { title: "Gerçek deri çantası premium" } // Should match
-];
-
-console.log("Test results:");
-testProducts.forEach((product, index) => {
-    const result = categorizer({
-        product,
-        category: 'productType',
-        includesAll: exampleRule.includesAll,
-        excludes: exampleRule.excludes,
-        includesOr: exampleRule.includesOr,
-        keyword: exampleRule.keyword
-    });
-    console.log(`${index + 1}. "${product.title}" -> Categories:`, result.categories);
-});
 
 export { categorizer, categorizeProducts };
