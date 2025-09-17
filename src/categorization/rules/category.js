@@ -1,8 +1,8 @@
 export default [
-    // {
-    //     includesOr: ['çantası', 'çanta'],
-    //     keyword: 'çanta'
-    // },
+    {
+        includesOr: ['çantası', 'çanta'],
+        keyword: 'çanta'
+    },
     {
         includesAll: ['çantası', 'omuz'],
         keyword: 'omuz çantası'
@@ -266,7 +266,62 @@ export default [
         includesAll: ["zımba"],
         includesOr: ['çanta', 'çantası'],
         keyword: 'zımba detaylı çanta'
-    }
+    },
 
+
+    {
+        includesAll: ["alışveriş"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'alışveriş çantası'
+    },
+    {
+        includesAll: ["shopper"],
+        includesOr: ['çanta', 'çantası', 'bag'],
+        keyword: 'alışveriş çantası'
+    },
+
+    {
+        includesAll: ["ruj"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'ruj çantası'
+    }
+    ,
+
+    {
+        includesAll: ["Hilal"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'Hilal şeklinde çantası'
+    },
+
+    {
+        includesAll: ["orta boy"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'orta boy çanta'
+    },
+
+    {
+        includesAll: ["klasik"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'klasik çanta'
+    }
+    ,
+
+    {
+        includesAll: ["mini"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'mini çanta'
+    } ,
+
+    {
+        includesAll: ["vegan"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'vegan çanta'
+    } ,
+
+    {
+        includesAll: ["abiye"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'abiye çanta'
+    }
 ];
 
