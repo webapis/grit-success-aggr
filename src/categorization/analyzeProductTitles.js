@@ -15,6 +15,8 @@ function analyzeProductTitles(products, options = {}) {
 
     const result = {
         wordCounts: {},
+        wordTitleExamples: {}, // Store example titles for each word
+        wordLinkExamples: {}, // Store example links for each word
         suggestions: [],
         stats: {
             totalProducts: products.length,
@@ -47,9 +49,16 @@ function analyzeProductTitles(products, options = {}) {
             })
             .map(word => caseSensitive ? word : word.toLowerCase());
 
-        // Count word occurrences
+        // Count word occurrences and store example titles and links
         words.forEach(word => {
             result.wordCounts[word] = (result.wordCounts[word] || 0) + 1;
+            
+            // Store the first example title and link for each word
+            if (!result.wordTitleExamples[word]) {
+                result.wordTitleExamples[word] = product.title;
+                result.wordLinkExamples[word] = product.link || null;
+            }
+            
             totalWordCount++;
         });
     });
@@ -77,12 +86,14 @@ function analyzeProductTitles(products, options = {}) {
         }
     });
 
-    // Create suggestions array from word counts
+    // Create suggestions array from word counts with example titles and links
     result.suggestions = Object.entries(result.wordCounts).map(([word, count]) => ({
         word: word,
         count: count,
         frequency: ((count / products.length) * 100).toFixed(2) + '%',
-        exists: allCategoryValues.has(word.toLowerCase())
+        exists: allCategoryValues.has(word.toLowerCase()),
+        title: result.wordTitleExamples[word], // Add example title
+        link: result.wordLinkExamples[word] // Add example link
     }));
 
     // Sort suggestions based on sortBy option
@@ -109,7 +120,7 @@ function analyzeProductTitles(products, options = {}) {
     return result;
 }
 
-// Enhanced version with category-aware suggestions
+// Enhanced version with category-aware suggestions (also updated to include titles)
 function analyzeProductTitlesWithCategories(products, options = {}) {
     const basicAnalysis = analyzeProductTitles(products, options);
     
@@ -144,7 +155,7 @@ function analyzeProductTitlesWithCategories(products, options = {}) {
         });
     });
     
-    // Convert sets to arrays with counts
+    // Convert sets to arrays with counts and example titles
     const categorySuggestions = {};
     Object.entries(categoryWordMap).forEach(([categoryType, categories]) => {
         categorySuggestions[categoryType] = {};
@@ -152,7 +163,9 @@ function analyzeProductTitlesWithCategories(products, options = {}) {
             categorySuggestions[categoryType][categoryValue] = Array.from(wordsSet)
                 .map(word => ({
                     word,
-                    count: basicAnalysis.wordCounts[word] || 0
+                    count: basicAnalysis.wordCounts[word] || 0,
+                    title: basicAnalysis.wordTitleExamples[word], // Include example title
+                    link: basicAnalysis.wordLinkExamples[word] // Include example link
                 }))
                 .sort((a, b) => b.count - a.count);
         });
@@ -163,90 +176,6 @@ function analyzeProductTitlesWithCategories(products, options = {}) {
         categorySuggestions
     };
 }
-
-// Example usage with your data:
-const products = [
-    {
-        "title": "Kadın Siyah Deri Omuz Çantası",
-        "img": [
-            "https://akn-desa.a-cdn.akinoncloud.com/cms/2022/05/09/daa0baf0-4ff9-4a6c-b4ec-ac6c54e4b573.png",
-            "https://akn-desa.a-cdn.akinoncloud.com/products/2025/03/27/280546/55426b1c-cff0-4a2f-99ba-c48669dc699e_size917x917_cropCenter.jpg"
-        ],
-        "primaryImg": "https://akn-desa.a-cdn.akinoncloud.com/cms/2022/05/09/daa0baf0-4ff9-4a6c-b4ec-ac6c54e4b573.png",
-        "link": "https://www.desa.com.tr/siyah-kadin-siyah-deri-omuz-cantasi-1010039461/",
-        "price": [
-            {
-                "value": "9490 TL",
-                "selector": ".product-price-content .product-sale-price",
-                "attribute": "textContent",
-                "isJavaScript": false,
-                "isShadowDOM": false,
-                "numericValue": 9490,
-                "unsetPrice": false
-            }
-        ],
-        "videos": [],
-        "productNotInStock": false,
-        "matchedInfo": {
-            "linkSource": "titleElement (matched: .product-item-info  p.product-name a)",
-            "matchedSelector": ".product-item-box",
-            "titleSelectorMatched": ".product-item-info  p.product-name a",
-            "imgSelectorMatched": ".ls-is-cached.lazyloaded",
-            "videoSelectorMatched": null,
-            "bestPriceSelector": ".product-price-content .product-sale-price",
-            "priceExtractedFromShadowDOM": false
-        },
-        "pageTitle": "Kadin Deri Çanta Modelleri ve Fiyatları | DESA",
-        "pageURL": "https://www.desa.com.tr/kadin-canta/",
-        "timestamp": "2025-09-15T12:13:46.509Z",
-        "imgValid": true,
-        "linkValid": true,
-        "titleValid": true,
-        "pageTitleValid": true,
-        "priceValid": true,
-        "videoValid": false,
-        "mediaType": "image",
-        "processId": "mfl35f6zmcc7h",
-        "index": 0,
-        "categories": {
-            "productType": [
-                "omuz çantası",
-                "deri çanta"
-            ],
-            "color": [
-                "siyah"
-            ]
-        }
-    }
-];
-
-// Test the basic function
-console.log("=== Basic Title Analysis ===");
-const analysis = analyzeProductTitles(products, {
-    minWordLength: 2,
-    sortBy: 'frequency'
-});
-
-console.log("Word counts:", analysis.wordCounts);
-console.log("Top suggestions:", analysis.suggestions);
-console.log("Statistics:", analysis.stats);
-
-// Test filtering by categorization status
-console.log("\n=== Suggestions by Status ===");
-const existingWords = getSuggestionsByStatus(analysis, true);
-const newWords = getSuggestionsByStatus(analysis, false);
-console.log("Words already in categories:", existingWords);
-console.log("New word suggestions:", newWords);
-
-// Test word usage details
-console.log("\n=== Word Usage Details ===");
-const wordUsage = getWordCategoryUsage(products, "siyah");
-console.log("Usage for 'siyah':", wordUsage);
-
-// Test the enhanced function with categories
-console.log("\n=== Enhanced Analysis with Categories ===");
-const enhancedAnalysis = analyzeProductTitlesWithCategories(products);
-console.log("Category suggestions:", enhancedAnalysis.categorySuggestions);
 
 // Helper function to filter suggestions by minimum frequency
 function filterByMinimumCount(analysisResult, minCount = 2) {
@@ -306,4 +235,31 @@ function getWordCategoryUsage(products, targetWord) {
     
     return usage;
 }
-export {analyzeProductTitles, analyzeProductTitlesWithCategories, filterByMinimumCount, getSuggestionsByStatus, getWordCategoryUsage};
+
+// Enhanced helper function to get multiple title and link examples for a word
+function getWordTitleExamples(products, targetWord, maxExamples = 3) {
+    const examples = [];
+    
+    products.forEach((product, index) => {
+        if (examples.length >= maxExamples) return;
+        
+        if (product.title && product.title.toLowerCase().includes(targetWord.toLowerCase())) {
+            examples.push({
+                index,
+                title: product.title,
+                link: product.link || null
+            });
+        }
+    });
+    
+    return examples;
+}
+
+export {
+    analyzeProductTitles, 
+    analyzeProductTitlesWithCategories, 
+    filterByMinimumCount, 
+    getSuggestionsByStatus, 
+    getWordCategoryUsage,
+    getWordTitleExamples
+};

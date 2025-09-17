@@ -44,8 +44,10 @@ export async function bulkLogToGoogleSheet({
       
       sheet = await doc.addSheet({ 
         title: sheetTitle,
-        columnCount: requiredColumns,
-        rowCount: Math.max(rowsData.length + 100, 1000)
+        gridProperties: {
+          rowCount: Math.max(rowsData.length + 100, 1000),
+          columnCount: requiredColumns
+        }
       });
     }
 
@@ -177,8 +179,10 @@ export async function bulkLogToGoogleSheetCells({
       
       sheet = await doc.addSheet({ 
         title: sheetTitle,
-        columnCount: requiredColumns,
-        rowCount: Math.max(rowsData.length + 100, 1000)
+        gridProperties: {
+          rowCount: Math.max(rowsData.length + 100, 1000),
+          columnCount: requiredColumns
+        }
       });
     }
 

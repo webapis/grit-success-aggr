@@ -219,18 +219,54 @@ export default [
         includesOr: ['çanta', 'çantası'],
         keyword: 'yılan derisi desenli çanta'
     },
-        
+
 
     {
         includesAll: ["Pelüş"],
         includesOr: ['çanta', 'çantası'],
         keyword: 'Pelüş çanta'
     },
-    
+
     {
         includesAll: ["düz"],
         includesOr: ['çanta', 'çantası'],
         keyword: 'Düz çanta'
     }
+    ,
+
+    {
+        includesAll: ["Toka Detaylı"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'toka detaylı çanta'
+    }
+    ,
+
+    {
+        includesAll: ["süet"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'süet çanta'
+    }
+    ,
+
+    {
+        includesAll: ["fermuar", "detaylı"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'fermuar detaylı çanta'
+    }
+    ,
+
+    {
+        includesAll: ["Ananas"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'ananas desenli çanta'
+    }
+    ,
+
+    {
+        includesAll: ["zımba"],
+        includesOr: ['çanta', 'çantası'],
+        keyword: 'zımba detaylı çanta'
+    }
+
 ];
 

@@ -32,10 +32,10 @@ emitter.on('log-to-sheet', async ({ sheetTitle = 'Crawl Logs', rowData, message 
   }
 });
 
-emitter.on('bulk-log-to-sheet', async ({ rowsData }) => {
+emitter.on('bulk-log-to-sheet', async ({ sheetTitle, rowsData }) => {
   await bulkLogToGoogleSheet({
     sheetId: SHEET_ID,
-    sheetTitle: 'debug2',
+    sheetTitle,
     serviceAccountCredentials: CREDENTIALS,
     rowsData
   });
