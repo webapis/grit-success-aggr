@@ -35,6 +35,7 @@ const analysis = analyzeProductTitles(categorizedItems);
 //console.log("Title Analysis:", analysis);
 debugger;
 const newWords = getSuggestionsByStatus(analysis, false);
+const filteredNewWords = newWords.filter(item => !/\d/.test(item.word));
 const outputPath = path.join(outputDir, `new-words-${site}.json`);
-fs.writeFileSync(outputPath, JSON.stringify(newWords, null, 2));
+fs.writeFileSync(outputPath, JSON.stringify(filteredNewWords, null, 2));
 console.log(`New word suggestions saved to ${outputPath}`);
