@@ -30,22 +30,30 @@ async function uploadCategorizationResults() {
             }
         }
 
-        await emitAsync('bulk-log-to-sheet', {
-            sheetTitle: 'Categorization Summary',
-            rowsData: categoryRows,
-        });
-        console.log('✅ Successfully uploaded categorization summary to Google Sheet.');
+        if (categoryRows.length > 0) {
+            await emitAsync('bulk-log-to-sheet', {
+                sheetTitle: 'Categorization Summary',
+                rowsData: categoryRows,
+            });
+            console.log('✅ Successfully uploaded categorization summary to Google Sheet.');
+        } else {
+            console.log('ℹ️ No categorization summary data to upload.');
+        }
 
         // Process and upload new words
         const newWordsContent = await fs.readFile(newWordsPath, 'utf-8');
         const newWordsData = JSON.parse(newWordsContent);
         const newWordsRows = newWordsData.map(row => ({ site, ...row }));
 
-        await emitAsync('bulk-log-to-sheet', {
-            sheetTitle: 'New Words',
-            rowsData: newWordsRows,
-        });
-        console.log('✅ Successfully uploaded new words to Google Sheet.');
+        if (newWordsRows.length > 0) {
+            await emitAsync('bulk-log-to-sheet', {
+                sheetTitle: 'New Words',
+                rowsData: newWordsRows,
+            });
+            console.log('✅ Successfully uploaded new words to Google Sheet.');
+        } else {
+            console.log('ℹ️ No new words to upload.');
+        }
 
     } catch (error) {
         console.error('❌ Error uploading categorization results to Google Sheet:', error);
