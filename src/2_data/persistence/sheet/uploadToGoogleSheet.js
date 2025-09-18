@@ -44,23 +44,25 @@ const dataWithoutError = [...data.filter(f => !f.error)];
 const flattenedData = dataWithoutError.map(flattenObjectForSheets);
 const duplicateURLs = findDuplicateObjects(flattenedData);
 debugger
-await emitAsync('log-to-sheet', {
-    sheetTitle: 'Crawl Logs(success)',
-    message: `Site ${site} crawler result`,
-    rowData: logResult
-});
-
-debugger
-if (debug && duplicateURLs.length > 0) {
-    debugger
-    const limited = duplicateURLs.sort((a, b) => a.link - b.link).filter((f, i) => i < 30);
-    debugger
-    console.log('Duplicate URLs found:', duplicateURLs.length);
-    await emitAsync('bulk-log-to-sheet', {
-
+if (process.env.UPLOAD_TO_SHEET === 'true') {
+    await emitAsync('log-to-sheet', {
+        sheetTitle: 'Crawl Logs(success)',
         message: `Site ${site} crawler result`,
-        rowsData: limited
+        rowData: logResult
     });
+
+    debugger
+    if (debug && duplicateURLs.length > 0) {
+        debugger
+        const limited = duplicateURLs.sort((a, b) => a.link - b.link).filter((f, i) => i < 30);
+        debugger
+        console.log('Duplicate URLs found:', duplicateURLs.length);
+        await emitAsync('bulk-log-to-sheet', {
+
+            message: `Site ${site} crawler result`,
+            rowsData: limited
+        });
+    }
 }
 
 debugger;
