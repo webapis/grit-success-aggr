@@ -1,77 +1,77 @@
 export default [
     {
-        includesAll: ['kahverengi'],
+        includesOr: ['kahverengi'],
         keyword: 'kahverengi',
         category: 'color'
     },
     {
-        includesAll: ['siyah'],
+        includesOr: ['siyah'],
         keyword: 'siyah',
         category: 'color'
     },
     {
-        includesAll: ['beyaz'],
+        includesOr: ['beyaz'],
         keyword: 'beyaz',
         category: 'color'
     },
     {
-        includesAll: ['kırmızı'],
+        includesOr: ['kırmızı'],
         keyword: 'kırmızı',
         category: 'color'
     },
     {
-        includesAll: ['mavi'],
+        includesOr: ['mavi'],
         keyword: 'mavi',
         category: 'color'
     },
     {
-        includesAll: ['yeşil'],
+        includesOr: ['yeşil'],
         keyword: 'yeşil',
         category: 'color'
     },
     {
-        includesAll: ['sarı'],
+        includesOr: ['sarı'],
         keyword: 'sarı',
         category: 'color'
     },
     {
-        includesAll: ['gri', 'füme'],
-        keyword: 'gri',
+        includesOr: ['gri', 'füme'],
+        keyword: 'gri/füme',
         category: 'color'
     },
     {
-        includesAll: ['pembe'],
+        includesOr: ['pembe'],
         keyword: 'pembe',
         category: 'color'
     },
     {
-        includesAll: ['mor', 'lila'],
-        keyword: 'mor',
+        includesOr: ['mor', 'lila'],
+        keyword: 'mor/lila',
         category: 'color'
     },
     {
-        includesAll: ['turuncu'],
+        includesOr: ['turuncu'],
         keyword: 'turuncu',
         category: 'color'
     },
     {
-        includesAll: ['lacivert'],
+        includesOr: ['lacivert'],
         keyword: 'lacivert',
         category: 'color'
     },
     {
-        includesAll: ['bej', 'ten'],
+        includesOr: ['bej', 'ten'],
         keyword: 'bej',
         category: 'color'
     },
     {
-        includesAll: ['altın', 'gold'],
-        keyword: 'altın',
+        includesOr: ['altın', 'gold'],
+        keyword: 'altın/gold',
         category: 'color'
     },
     {
-        includesAll: ['gümüş', 'silver'],
-        keyword: 'gümüş',
+        includesOr: ['gümüş', 'silver'],
+        keyword: 'gümüş/silver',
         category: 'color'
     },
     
@@ -84,6 +84,25 @@ export default [
     {
         includesAll: ['pudra'],
         keyword: 'pudra',
+        category: 'color'
+    },
+    
+    {
+        includesOr: ['altın', 'gold'],
+        keyword: 'altın/gold',
+        category: 'color'
+    },
+    
+    {
+        includesOr: ['amber', 'kehribar'],
+        keyword: 'kehribar/amber',
+        category: 'color'
+    }
+,
+    
+    {
+        includesOr: ['antrasit', 'kömür grisi'],
+        keyword: 'antrasit/ kömür grisi',
         category: 'color'
     }
 ]

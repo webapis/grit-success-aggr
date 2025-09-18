@@ -1,4 +1,4 @@
-function categorizer({ product, category, includesAll, includesAllExact = false, includesOr, excludes, keyword }) {
+function categorizer({ product, category, includesAll, includesAllExact = false, includesOr, includesOrExact = false, includesOrConditions, includesOrConditionsExact = false, excludes, keyword }) {
     // Create a copy of the product to avoid mutating the original
     const result = { ...product };
     
@@ -32,6 +32,7 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
     let conditionMet = false;
     let allConditionMet = true;
     let orConditionMet = false;
+    let orConditionsMet = true; // New: for multiple OR condition groups
     let excludeConditionMet = true; // Start with true, will be set to false if any exclude word is found
     
     // Check if all required words are present in the title (AND logic)
@@ -49,13 +50,35 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
         }
     }
     
-    // Check if any of the words are present in the title (OR logic)
+    // Check if any of the words are present in the title (OR logic) - Legacy support
     if (includesOr && includesOr.length > 0) {
-        orConditionMet = includesOr.some(word => 
-            titleLower.includes(word.toLowerCase())
-        );
+        if (includesOrExact) {
+            // Exact word matching for OR condition
+            orConditionMet = includesOr.some(word => isExactWordMatch(titleLower, word));
+        } else {
+            // Partial matching (contains)
+            orConditionMet = includesOr.some(word => 
+                titleLower.includes(word.toLowerCase())
+            );
+        }
     } else if (!includesOr) {
         orConditionMet = true; // If no OR condition specified, consider it satisfied
+    }
+    
+    // NEW: Check multiple OR condition groups (all groups must have at least one match)
+    if (includesOrConditions && includesOrConditions.length > 0) {
+        orConditionsMet = includesOrConditions.every(orGroup => {
+            // Each OR group must have at least one matching word
+            if (includesOrConditionsExact) {
+                // Exact word matching for OR conditions
+                return orGroup.some(word => isExactWordMatch(titleLower, word));
+            } else {
+                // Partial matching (contains)
+                return orGroup.some(word => 
+                    titleLower.includes(word.toLowerCase())
+                );
+            }
+        });
     }
     
     // Check if any of the excluded words are present in the title
@@ -65,8 +88,8 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
         );
     }
     
-    // All conditions must be satisfied
-    conditionMet = allConditionMet && orConditionMet && excludeConditionMet;
+    // All conditions must be satisfied (including the new OR conditions)
+    conditionMet = allConditionMet && orConditionMet && orConditionsMet && excludeConditionMet;
     
     // If conditions are met, add the keyword to the category
     if (conditionMet) {
@@ -107,15 +130,16 @@ function categorizeProducts(items, categoryRules, withStats = true) {
         
         // Apply each categorization rule sequentially
         categoryRules.forEach(rule => {
-            const originalProduct = withStats ? { ...categorizedItem } : null;
-            
             categorizedItem = categorizer({
                 product: categorizedItem,
                 category: rule.category || 'productType',
                 includesAll: rule.includesAll,
                 includesAllExact: rule.includesAllExact,
                 includesOr: rule.includesOr,
-                excludes: rule.excludes, // Added excludes parameter
+                includesOrExact: rule.includesOrExact, // NEW parameter
+                includesOrConditions: rule.includesOrConditions,
+                includesOrConditionsExact: rule.includesOrConditionsExact, // NEW parameter
+                excludes: rule.excludes,
                 keyword: rule.keyword
             });
             
@@ -125,7 +149,5 @@ function categorizeProducts(items, categoryRules, withStats = true) {
         return categorizedItem;
     });
 }
-
-
 
 export { categorizer, categorizeProducts };

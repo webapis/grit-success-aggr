@@ -3,7 +3,7 @@
 export default [
 
     {
-        includesOr: ['kadın', 'kadin'],
+        includesOrConditions: ['kadın', 'kadin','bayan','woman','female'],
         keyword: 'kadın',
         category: 'gender'
     },

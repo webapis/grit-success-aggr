@@ -1,23 +1,19 @@
+// Remove duplicates from commonBagWords
+const commonBagWords = ['çantası', 'çanta', 'bag'];
+
 export default [
     {
-        includesOr: ['çantası', 'çanta'],
+        includesOr: commonBagWords,
+        includesOrExact: true,
         keyword: 'çanta'
     },
+
     {
-        includesAll: ['çantası', 'omuz'],
+        includesOrConditions: [['omuz', 'shoulder'], commonBagWords],
         keyword: 'omuz çantası'
     },
     {
-        includesAll: ['shoulder bag'],
-        keyword: 'omuz çantası'
-    },
-    {
-        includesAll: ['çapraz'],
-        includesOr: ['çanta', 'çantası'],
-        keyword: 'çapraz çanta'
-    },
-    {
-        includesAll: ['crossbody', 'bag'],
+        includesOrConditions: [['çapraz', 'çaprazı', 'crossbody', 'cross body', 'cross-body'], commonBagWords],
         keyword: 'çapraz çanta'
     },
     {
@@ -30,23 +26,22 @@ export default [
     },
     {
         includesAll: ['sırt'],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'sırt çantası'
     },
     {
         includesAll: ['baget'],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'baget çanta'
     },
     {
-        includesAll: ['plaj'],
-        includesOr: ['çanta', 'çantası'],
+        includesOrConditions: [['plaj', 'beach'], commonBagWords],
         keyword: 'plaj çantası'
     },
     {
         includesAll: ['el'],
         includesAllExact: true,
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'el çantası'
     },
     {
@@ -54,35 +49,32 @@ export default [
         includesAllExact: true,
         keyword: 'el çantası'
     },
-
     {
         includesAll: ['tablet'],
         includesAllExact: true,
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'tablet çantası'
     },
     {
         includesAll: ['telefon'],
         includesAllExact: true,
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'telefon çantası'
     },
     {
-        includesAll: ['baskılı'],
-        includesAllExact: true,
-        includesOr: ['çanta', 'çantası'],
+        includesOrConditions: [['baskılı', 'baskili', 'baskı'], commonBagWords],
         keyword: 'baskılı çanta'
     },
     {
         includesAll: ['büyük'],
         includesAllExact: true,
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'büyük çanta'
     },
     {
         includesAll: ['zincirli', 'zincir'],
         includesAllExact: true,
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'zincirli çanta'
     },
     {
@@ -93,17 +85,17 @@ export default [
     {
         includesAll: ['deri'],
         excludes: ['suni', 'sahte', 'yapay'],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'deri çanta'
     },
     {
         includesAll: ['suni', 'deri'],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'suni deri çanta'
     },
     {
         includesAll: ['hasır'],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'hasır çanta'
     },
     {
@@ -116,212 +108,215 @@ export default [
     },
     {
         includesAll: ["tote"],
-        includesOr: ['çanta', 'çantası', 'bag'],
+        includesOr: commonBagWords,
         keyword: 'tote çanta'
-    }
-    ,
+    },
     {
         includesAll: ["clutch"],
         keyword: 'debriyaj çanta'
-    }
-    ,
+    },
     {
         includesAll: ["cloth Bag"],
         keyword: 'bez çanta'
-    }
-    ,
+    },
     {
         includesAll: ["Postacı"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'postacı çantası'
-    }
-    ,
+    },
     {
         includesAll: ["Portföy"],
         keyword: 'portföy'
-    }
-    ,
+    },
     {
         includesAll: ["gece"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'gece çantası'
-    }
-    ,
+    },
     {
         includesAll: ["makyaj"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'makyaj çantası'
-    }
-
-    ,
+    },
     {
         includesAll: ["airpods"],
         includesOr: ['kılıfı'],
         keyword: 'airpods kılıfı'
-    }
-    ,
+    },
     {
         includesAll: ["kese"],
-        matchesAllExact: true,
-        includesOr: ['çanta', 'çantası'],
+        includesAllExact: true, // Fixed: was matchesAllExact
+        includesOr: commonBagWords,
         keyword: 'kese çanta'
-    }
-    ,
+    },
     {
         includesAll: ["bel"],
-        matchesAllExact: true,
-        includesOr: ['çanta', 'çantası'],
+        includesAllExact: true, // Fixed: was matchesAllExact
+        includesOr: commonBagWords,
         keyword: 'bel çantası'
-    }
-    ,
+    },
     {
         includesAll: ["Zincir Askılı"],
-        matchesAllExact: true,
-        includesOr: ['çanta', 'çantası'],
+        includesAllExact: true, // Fixed: was matchesAllExact
+        includesOr: commonBagWords,
         keyword: 'zincir askılı çanta'
     },
-
     {
         includesAll: ["su geçirmez"],
-        matchesAllExact: true,
-        includesOr: ['çanta', 'çantası'],
+        includesAllExact: true, // Fixed: was matchesAllExact
+        includesOr: commonBagWords,
         keyword: 'su geçirmez çanta'
     },
-
     {
         includesAll: ["leopar", "desen"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'leopar desenli çanta'
-    }
-    ,
-
+    },
     {
         includesAll: ["okul"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'okul çantası'
     },
-
     {
         includesAll: ["Sedef", "görünümlü"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'Sedef görümümlü çantası'
     },
-
     {
         includesAll: ["jean", "görünümlü"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'jean görümümlü çantası'
-    }
-    ,
-
+    },
     {
         includesAll: ["Yılan Derisi Desenli"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'yılan derisi desenli çanta'
     },
-
-
     {
         includesAll: ["Pelüş"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'Pelüş çanta'
     },
-
     {
         includesAll: ["düz"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'Düz çanta'
-    }
-    ,
-
+    },
     {
         includesAll: ["Toka Detaylı"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'toka detaylı çanta'
-    }
-    ,
-
+    },
     {
         includesAll: ["süet"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'süet çanta'
-    }
-    ,
-
+    },
     {
         includesAll: ["fermuar", "detaylı"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'fermuar detaylı çanta'
-    }
-    ,
-
+    },
     {
         includesAll: ["Ananas"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'ananas desenli çanta'
-    }
-    ,
-
+    },
     {
         includesAll: ["zımba"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'zımba detaylı çanta'
     },
-
-
     {
         includesAll: ["alışveriş"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'alışveriş çantası'
     },
     {
         includesAll: ["shopper"],
-        includesOr: ['çanta', 'çantası', 'bag'],
+        includesOr: commonBagWords,
         keyword: 'alışveriş çantası'
     },
-
     {
         includesAll: ["ruj"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'ruj çantası'
-    }
-    ,
-
+    },
     {
         includesAll: ["Hilal"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'Hilal şeklinde çantası'
     },
-
     {
         includesAll: ["orta boy"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'orta boy çanta'
     },
-
     {
         includesAll: ["klasik"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'klasik çanta'
-    }
-    ,
-
+    },
     {
         includesAll: ["mini"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'mini çanta'
-    } ,
-
+    },
     {
         includesAll: ["vegan"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'vegan çanta'
-    } ,
-
+    },
     {
         includesAll: ["abiye"],
-        includesOr: ['çanta', 'çantası'],
+        includesOr: commonBagWords,
         keyword: 'abiye çanta'
+    },
+    {
+        includesAll: ["ağzı büzgülü"],
+        includesOr: commonBagWords,
+        keyword: 'ağzı büzgülü çanta'
+    },
+    {
+        includesAll: ["akıllı"],
+        includesOr: commonBagWords,
+        keyword: 'akıllı çanta'
+    },
+    {
+        includesAll: ["All-in"],
+        includesOr: commonBagWords,
+        keyword: 'All-in çanta'
+    },
+    {
+        includesAll: ["carry all"],
+        includesOr: commonBagWords,
+        keyword: 'carry all çanta'
+    },
+    {
+        includesAll: [" ALL DAY"],
+        includesOr: commonBagWords,
+        keyword: ' ALL DAY çanta'
+    },
+    {
+        includesAll: ['anne', 'bebek'],
+        includesOr: commonBagWords,
+        keyword: 'anne-bebek çantası',
+    },
+    {
+        includesAll: ['anti', 'theft'],
+        includesOr: commonBagWords,
+        keyword: 'hırsızlığa karşı anti-theft çantası',
+    },
+    {
+        includesOrConditions: [['askılı', 'askili'], commonBagWords],
+        keyword: 'askılı çanta',
+    },
+    {
+        includesOrConditions: [['Askı', 'detaylı'], commonBagWords],
+        keyword: 'askı detaylı çanta',
+    },
+    {
+        includesOrConditions: [['astarlı'], commonBagWords],
+        keyword: 'astarlı çanta',
     }
 ];
-
