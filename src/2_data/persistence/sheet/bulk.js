@@ -33,23 +33,87 @@ export async function bulkLogToGoogleSheet({
     const doc = new GoogleSpreadsheet(sheetId, jwtClient);
     await doc.loadInfo();
 
-    // Get or create the sheet
-    let sheet = doc.sheetsByTitle[sheetTitle];
+    // Get or create the sheet with comprehensive error handling
+    let sheet = await findOrCreateSheet(doc, sheetTitle, rowsData);
+
+// Helper function to find or create sheet with all edge cases handled
+async function findOrCreateSheet(doc, sheetTitle, rowsData) {
+  // First attempt: check if sheet exists in loaded sheets
+  let sheet = doc.sheetsByTitle[sheetTitle];
+  
+  if (sheet) {
+    console.log(`Found existing sheet: ${sheetTitle}`);
+    return sheet;
+  }
+
+  // Second attempt: reload document info and check again
+  console.log(`Sheet "${sheetTitle}" not found, reloading document...`);
+  await doc.loadInfo();
+  sheet = doc.sheetsByTitle[sheetTitle];
+  
+  if (sheet) {
+    console.log(`Found sheet "${sheetTitle}" after reload`);
+    return sheet;
+  }
+
+  // Third attempt: search by index (sometimes sheetsByTitle misses sheets)
+  sheet = doc.sheetsByIndex.find(s => s.title === sheetTitle);
+  if (sheet) {
+    console.log(`Found sheet "${sheetTitle}" in sheetsByIndex`);
+    return sheet;
+  }
+
+  // Sheet doesn't exist, attempt to create it
+  console.log(`Sheet "${sheetTitle}" not found anywhere, attempting to create...`);
+  
+  try {
+    const allHeaders = [...new Set(rowsData.flatMap(row => Object.keys(row)))];
+    const requiredColumns = Math.max(allHeaders.length + 10, 60);
     
-    if (!sheet) {
-      console.log(`Creating new sheet: ${sheetTitle}`);
-      // Get all unique headers from all rows
-      const allHeaders = [...new Set(rowsData.flatMap(row => Object.keys(row)))];
-      const requiredColumns = Math.max(allHeaders.length + 10, 60);
+    sheet = await doc.addSheet({ 
+      title: sheetTitle,
+      gridProperties: {
+        rowCount: Math.max(rowsData.length + 100, 1000),
+        columnCount: requiredColumns
+      }
+    });
+    console.log(`Successfully created new sheet: ${sheetTitle}`);
+    return sheet;
+    
+  } catch (createError) {
+    console.log(`Sheet creation failed:`, createError.message);
+    
+    // Handle specific error cases
+    if (createError.message && createError.message.includes('already exists')) {
+      console.log(`Sheet "${sheetTitle}" was created by another process, searching again...`);
       
-      sheet = await doc.addSheet({ 
-        title: sheetTitle,
-        gridProperties: {
-          rowCount: Math.max(rowsData.length + 100, 1000),
-          columnCount: requiredColumns
-        }
-      });
+      // Reload and search one more time
+      await doc.loadInfo();
+      sheet = doc.sheetsByTitle[sheetTitle] || 
+              doc.sheetsByIndex.find(s => s.title === sheetTitle);
+      
+      if (sheet) {
+        console.log(`Found the sheet that was created by another process`);
+        return sheet;
+      }
+      
+      throw new Error(`Sheet "${sheetTitle}" exists but cannot be accessed after multiple attempts`);
+      
+    } else if (createError.message && createError.message.includes('permission')) {
+      throw new Error(`Permission denied: Cannot create sheet "${sheetTitle}". Check service account permissions.`);
+      
+    } else if (createError.message && createError.message.includes('limit')) {
+      throw new Error(`Cannot create sheet "${sheetTitle}": Spreadsheet has reached maximum number of sheets.`);
+      
+    } else if (createError.message && createError.message.includes('Invalid')) {
+      throw new Error(`Cannot create sheet "${sheetTitle}": Invalid sheet name. Use only letters, numbers, spaces, and basic punctuation.`);
+      
+    } else {
+      // Re-throw unknown errors with more context
+      throw new Error(`Failed to create sheet "${sheetTitle}": ${createError.message}`);
     }
+  }
+}
 
     // Get all unique headers from all rows
     const allHeaders = [...new Set(rowsData.flatMap(row => Object.keys(row)))];
@@ -171,20 +235,8 @@ export async function bulkLogToGoogleSheetCells({
     const doc = new GoogleSpreadsheet(sheetId, jwtClient);
     await doc.loadInfo();
 
-    let sheet = doc.sheetsByTitle[sheetTitle];
-    
-    if (!sheet) {
-      const allHeaders = [...new Set(rowsData.flatMap(row => Object.keys(row)))];
-      const requiredColumns = Math.max(allHeaders.length + 10, 60);
-      
-      sheet = await doc.addSheet({ 
-        title: sheetTitle,
-        gridProperties: {
-          rowCount: Math.max(rowsData.length + 100, 1000),
-          columnCount: requiredColumns
-        }
-      });
-    }
+    // Get or create the sheet with comprehensive error handling
+    let sheet = await findOrCreateSheet(doc, sheetTitle, rowsData);
 
     // Get all unique headers
     const allHeaders = [...new Set(rowsData.flatMap(row => Object.keys(row)))];
