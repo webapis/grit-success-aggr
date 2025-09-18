@@ -1,21 +1,22 @@
 export default [
     {
-        includesOr: ['kahverengi'],
+        includesOr: ['kahverengi', 'kahve', 'brown', 'taba', 'camel'],
+        includesOrExact: true,
         keyword: 'kahverengi',
         category: 'color'
     },
     {
-        includesOr: ['siyah'],
+        includesOrConditions: [['siyah', 'black']],
         keyword: 'siyah',
         category: 'color'
     },
     {
-        includesOr: ['beyaz'],
+        includesOrConditions: [['beyaz', 'white']],
         keyword: 'beyaz',
         category: 'color'
     },
     {
-        includesOr: ['kırmızı'],
+        includesOrConditions: [['kırmızı', 'red', 'Nar Çiçeği']],
         keyword: 'kırmızı',
         category: 'color'
     },
@@ -74,35 +75,51 @@ export default [
         keyword: 'gümüş/silver',
         category: 'color'
     },
-    
+
     {
         includesAll: ['bordo'],
         keyword: 'bordo',
         category: 'color'
     },
-    
+
     {
         includesAll: ['pudra'],
         keyword: 'pudra',
         category: 'color'
     },
-    
+
     {
         includesOr: ['altın', 'gold'],
         keyword: 'altın/gold',
         category: 'color'
     },
-    
+
     {
         includesOr: ['amber', 'kehribar'],
         keyword: 'kehribar/amber',
         category: 'color'
     }
-,
-    
+    ,
+
     {
         includesOr: ['antrasit', 'kömür grisi'],
         keyword: 'antrasit/ kömür grisi',
+        category: 'color'
+    },
+    {
+        includesOr: ['açık mavi', 'açık mavi'],
+        keyword: 'açık mavi',
+        category: 'color'
+    },
+    {
+        includesOr: ['açık yeşil', 'açık yeşil'],
+        keyword: 'açık yeşil',
+        category: 'color'
+
+    },
+    {
+        includesOr: ['Vizon'],
+        keyword: 'vizon',
         category: 'color'
     }
 ]
