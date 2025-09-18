@@ -16,6 +16,11 @@ on:
         required: false
         type: boolean
         default: false
+      upload_results:
+        description: 'Upload results to sheet'
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: '0 5 * * 1'
 
@@ -201,6 +206,7 @@ jobs:
     with:
       site: ${{ matrix.site }}
       upload_categorization_results: ${{ inputs.upload_categorization_results || false }}
+      upload_results: ${{ inputs.upload_results || false }}
     secrets: inherit
 
   summarize_run:

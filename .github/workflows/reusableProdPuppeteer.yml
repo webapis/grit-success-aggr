@@ -12,6 +12,11 @@ on:
         required: false
         type: boolean
         default: false
+      upload_results:
+        description: 'Upload results to sheet'
+        required: false
+        type: boolean
+        default: false
 
 env:
   site: ${{inputs.site}}
@@ -125,7 +130,7 @@ jobs:
         node scripts/crawl-ecommerce-site.js
 
     - name: Upload results
-      if: always()
+      if: always() && inputs.upload_results == true
       run: |
         echo "📤 Uploading results..."
         node src/2_data/persistence/sheet/uploadToGoogleSheet.js
