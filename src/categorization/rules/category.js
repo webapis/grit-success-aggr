@@ -26,7 +26,7 @@ export default [
         keyword: 'çapraz çanta'
     },
     {
-        includesAll: ['sırt'],
+        includesOrConditions: [['sırt','sirt'], commonBagWords],
         includesOr: commonBagWords,
         keyword: 'sırt çantası'
     },
@@ -334,7 +334,7 @@ export default [
     }
     ,
     {
-        includesOrConditions: [['spor'], commonBagWords],
+        includesOrConditions: [['spor','sport','sports'], commonBagWords],
         keyword: 'spor çantası',
     },
 
@@ -360,4 +360,11 @@ export default [
         includesOrConditions: [['camera'], commonBagWords],
         keyword: 'kamera çantası',
     }
+       ,
+
+    {
+        includesOrConditions: [['asimetrik'], commonBagWords],
+        keyword: 'asimetrik çanta',
+    }
 ];
+
