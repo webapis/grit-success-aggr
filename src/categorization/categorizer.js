@@ -36,7 +36,7 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
     let excludeConditionMet = true; // Start with true, will be set to false if any exclude word is found
     
     // Check if all required words are present in the title (AND logic)
-    if (includesAll && includesAll.length > 0) {
+    if (includesAll && Array.isArray(includesAll) && includesAll.length > 0) {
         if (includesAllExact) {
             // Exact word matching with Turkish character support
             allConditionMet = includesAll.every(word => {
@@ -51,7 +51,7 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
     }
     
     // Check if any of the words are present in the title (OR logic) - Legacy support
-    if (includesOr && includesOr.length > 0) {
+    if (includesOr && Array.isArray(includesOr) && includesOr.length > 0) {
         if (includesOrExact) {
             // Exact word matching for OR condition
             orConditionMet = includesOr.some(word => isExactWordMatch(titleLower, word));
@@ -66,8 +66,14 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
     }
     
     // NEW: Check multiple OR condition groups (all groups must have at least one match)
-    if (includesOrConditions && includesOrConditions.length > 0) {
+    if (includesOrConditions && Array.isArray(includesOrConditions) && includesOrConditions.length > 0) {
         orConditionsMet = includesOrConditions.every(orGroup => {
+            // Ensure orGroup is an array before using array methods
+            if (!Array.isArray(orGroup)) {
+                console.warn('includesOrConditions contains non-array element:', orGroup);
+                return false; // If it's not an array, condition fails
+            }
+            
             // Each OR group must have at least one matching word
             if (includesOrConditionsExact) {
                 // Exact word matching for OR conditions
@@ -82,7 +88,7 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
     }
     
     // Check if any of the excluded words are present in the title
-    if (excludes && excludes.length > 0) {
+    if (excludes && Array.isArray(excludes) && excludes.length > 0) {
         excludeConditionMet = !excludes.some(word => 
             titleLower.includes(word.toLowerCase())
         );
@@ -125,25 +131,38 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
 }
 
 function categorizeProducts(items, categoryRules, withStats = true) {
+    // Validate inputs
+    if (!Array.isArray(items)) {
+        console.error('Items must be an array');
+        return [];
+    }
+    
+    if (!Array.isArray(categoryRules)) {
+        console.error('CategoryRules must be an array');
+        return items;
+    }
+    
     return items.map(item => {
         let categorizedItem = item;
         
         // Apply each categorization rule sequentially
         categoryRules.forEach(rule => {
-            categorizedItem = categorizer({
-                product: categorizedItem,
-                category: rule.category || 'productType',
-                includesAll: rule.includesAll,
-                includesAllExact: rule.includesAllExact,
-                includesOr: rule.includesOr,
-                includesOrExact: rule.includesOrExact, // NEW parameter
-                includesOrConditions: rule.includesOrConditions,
-                includesOrConditionsExact: rule.includesOrConditionsExact, // NEW parameter
-                excludes: rule.excludes,
-                keyword: rule.keyword
-            });
-            
-            // Generate stats if requested
+            try {
+                categorizedItem = categorizer({
+                    product: categorizedItem,
+                    category: rule.category || 'productType',
+                    includesAll: rule.includesAll,
+                    includesAllExact: rule.includesAllExact,
+                    includesOr: rule.includesOr,
+                    includesOrExact: rule.includesOrExact,
+                    includesOrConditions: rule.includesOrConditions,
+                    includesOrConditionsExact: rule.includesOrConditionsExact,
+                    excludes: rule.excludes,
+                    keyword: rule.keyword
+                });
+            } catch (error) {
+                console.error('Error applying categorization rule:', error, 'Rule:', rule);
+            }
         });
         
         return categorizedItem;
