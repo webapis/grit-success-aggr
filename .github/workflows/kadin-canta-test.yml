@@ -11,6 +11,11 @@ on:
         description: 'Run for a single site (e.g., "brand-name"). Overrides schedule/site_limit.'
         required: false
         type: string
+      upload_categorization_results:
+        description: 'Upload categorization results to sheet'
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: '0 5 * * 1'
 
@@ -184,7 +189,7 @@ jobs:
           path: sheet-data.json
           retention-days: 1
 
-  dizitv_job:
+    dizitv_job:
     needs: prepare_matrix
     if: needs.prepare_matrix.outputs.has-sites == 'true'
     strategy:
@@ -195,6 +200,7 @@ jobs:
     uses: ./.github/workflows/reusableProdPuppeteer.yml
     with:
       site: ${{ matrix.site }}
+      upload_categorization_results: ${{ github.event.inputs.upload_categorization_results || false }}
     secrets: inherit
 
   summarize_run:
