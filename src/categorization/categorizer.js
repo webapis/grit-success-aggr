@@ -7,6 +7,14 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
         result.categories = {};
     }
     
+    // Initialize SEO object if it doesn't exist
+    if (!result.seo) {
+        result.seo = {
+            keywords: [],
+            tags: []
+        };
+    }
+    
     // Handle cases where product title might be null or not a string
     if (typeof product.title !== 'string' || !product.title) {
         // If the category is 'productType', ensure it's set to 'none' if no other category has been assigned
@@ -27,6 +35,59 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
         const turkishWordChars = 'a-zA-ZçÇğĞıİöÖşŞüÜ0-9_';
         const regex = new RegExp(`(?<![${turkishWordChars}])${word.toLowerCase()}(?![${turkishWordChars}])`, 'i');
         return regex.test(text);
+    };
+    
+    // Helper function to add SEO keywords
+    const addSeoKeywords = (keywords) => {
+        if (!Array.isArray(keywords)) {
+            keywords = [keywords];
+        }
+        
+        keywords.forEach(kw => {
+            if (kw && typeof kw === 'string' && kw.trim() !== '') {
+                const cleanKeyword = kw.trim().toLowerCase();
+                // Add to keywords array if not already present
+                if (!result.seo.keywords.includes(cleanKeyword)) {
+                    result.seo.keywords.push(cleanKeyword);
+                }
+                // Also add to tags for additional SEO value
+                if (!result.seo.tags.includes(cleanKeyword)) {
+                    result.seo.tags.push(cleanKeyword);
+                }
+            }
+        });
+    };
+    
+    // Helper function to collect all SEO keywords from rule parameters
+    const collectSeoKeywords = () => {
+        let seoTerms = [];
+        
+        // Add the main keyword
+        if (keyword) {
+            seoTerms.push(keyword);
+        }
+        
+        // Add all terms from includesAll
+        if (includesAll && Array.isArray(includesAll)) {
+            seoTerms = seoTerms.concat(includesAll);
+        }
+        
+        // Add all terms from includesOr
+        if (includesOr && Array.isArray(includesOr)) {
+            seoTerms = seoTerms.concat(includesOr);
+        }
+        
+        // Add all terms from includesOrConditions (flatten nested arrays)
+        if (includesOrConditions && Array.isArray(includesOrConditions)) {
+            includesOrConditions.forEach(orGroup => {
+                if (Array.isArray(orGroup)) {
+                    seoTerms = seoTerms.concat(orGroup);
+                }
+            });
+        }
+        
+        // Remove duplicates and return
+        return [...new Set(seoTerms.filter(term => term && typeof term === 'string'))];
     };
     
     let conditionMet = false;
@@ -97,7 +158,7 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
     // All conditions must be satisfied (including the new OR conditions)
     conditionMet = allConditionMet && orConditionMet && orConditionsMet && excludeConditionMet;
     
-    // If conditions are met, add the keyword to the category
+    // If conditions are met, add the keyword to the category and SEO
     if (conditionMet) {
         if (!result.categories[category]) {
             result.categories[category] = [];
@@ -113,6 +174,10 @@ function categorizer({ product, category, includesAll, includesAllExact = false,
         if (noneIndex > -1) {
             result.categories[category].splice(noneIndex, 1);
         }
+        
+        // Add SEO keywords - collect from all rule parameters
+        const allSeoKeywords = collectSeoKeywords();
+        addSeoKeywords(allSeoKeywords);
         
     } else {
         // If the category is 'productType' and conditions are not met, set to 'none'
