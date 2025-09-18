@@ -189,7 +189,7 @@ jobs:
           path: sheet-data.json
           retention-days: 1
 
-    dizitv_job:
+  dizitv_job:
     needs: prepare_matrix
     if: needs.prepare_matrix.outputs.has-sites == 'true'
     strategy:
