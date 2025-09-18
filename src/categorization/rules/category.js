@@ -67,7 +67,7 @@ export default [
         keyword: 'baskılı çanta'
     },
     {
-        includesAll: ['büyük'],
+        includesOrConditions: [['büyük','large', 'big'], commonBagWords],
         includesAllExact: true,
         includesOr: commonBagWords,
         keyword: 'büyük çanta'
@@ -92,7 +92,7 @@ export default [
         keyword: 'hasır çanta'
     },
     {
-        includesAll: ['küçük çanta'],
+        includesOrConditions: [['küçük', 'small'], commonBagWords],
         keyword: 'küçük çanta'
     },
     {
@@ -241,7 +241,7 @@ export default [
         keyword: 'Hilal şeklinde çantası'
     },
     {
-        includesAll: ["orta boy"],
+        includesOrConditions: [["orta boy", "medium"], commonBagWords],
         includesOr: commonBagWords,
         keyword: 'orta boy çanta'
     },
@@ -347,5 +347,17 @@ export default [
     {
         includesOrConditions: [['logolu'], commonBagWords],
         keyword: 'logolu çanta',
+    }
+    ,
+
+    {
+        includesOrConditions: [['hobo'], commonBagWords],
+        keyword: 'hobo çanta',
+    }
+    ,
+
+    {
+        includesOrConditions: [['camera'], commonBagWords],
+        keyword: 'kamera çantası',
     }
 ];
