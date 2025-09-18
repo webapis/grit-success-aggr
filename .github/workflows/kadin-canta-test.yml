@@ -200,7 +200,7 @@ jobs:
     uses: ./.github/workflows/reusableProdPuppeteer.yml
     with:
       site: ${{ matrix.site }}
-      upload_categorization_results: ${{ github.event.inputs.upload_categorization_results || false }}
+      upload_categorization_results: ${{ inputs.upload_categorization_results || false }}
     secrets: inherit
 
   summarize_run:
