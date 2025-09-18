@@ -63,22 +63,18 @@ function analyzeProductTitles(products, options = {}) {
         });
     });
 
-    // Collect all category values for checking if words exist in categories
+    // Collect all SEO keywords for checking if words exist
     const allCategoryValues = new Set();
     products.forEach(product => {
-        if (product.categories && typeof product.categories === 'object') {
-            Object.values(product.categories).forEach(categoryArray => {
-                if (Array.isArray(categoryArray)) {
-                    categoryArray.forEach(value => {
-                        if (value && typeof value === 'string') {
-                            // Add the full category value
-                            allCategoryValues.add(value.toLowerCase().trim());
-                            // Also add individual words from multi-word categories
-                            value.toLowerCase().trim().split(/\s+/).forEach(word => {
-                                if (word.length >= minWordLength) {
-                                    allCategoryValues.add(word);
-                                }
-                            });
+        if (product.seo && Array.isArray(product.seo.keywords)) {
+            product.seo.keywords.forEach(keyword => {
+                if (keyword && typeof keyword === 'string') {
+                    // Add the full keyword
+                    allCategoryValues.add(keyword.toLowerCase().trim());
+                    // Also add individual words from multi-word keywords
+                    keyword.toLowerCase().trim().split(/\s+/).forEach(word => {
+                        if (word.length >= minWordLength) {
+                            allCategoryValues.add(word);
                         }
                     });
                 }
