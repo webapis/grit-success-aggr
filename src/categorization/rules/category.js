@@ -127,9 +127,8 @@ export default [
         keyword: 'gece çantası'
     },
     {
-        includesAll: ["makyaj"],
-        includesOr: commonBagWords,
-        keyword: 'makyaj çantası'
+        includesOrConditions: [["makyaj", 'kozmetik'], commonBagWords],
+        keyword: 'makyaj, kozmetik çantası'
     },
     {
         includesAll: ["airpods"],
@@ -149,9 +148,7 @@ export default [
         keyword: 'bel çantası'
     },
     {
-        includesAll: ["Zincir Askılı"],
-        includesAllExact: true,
-        includesOr: commonBagWords,
+        includesOrConditions: [["zincir", "askılı"], commonBagWords],
         keyword: 'zincir askılı çanta'
     },
     {
@@ -339,7 +336,7 @@ export default [
     },
 
     {
-        includesOrConditions: [['saffiano', 'deri'], commonBagWords],
+        includesOrConditions: [['saffiano'], ['deri'], commonBagWords],
         keyword: 'saffiano deri çantası',
     }
     ,
@@ -365,6 +362,66 @@ export default [
     {
         includesOrConditions: [['asimetrik'], commonBagWords],
         keyword: 'asimetrik çanta',
+    }
+    ,
+    {
+        includesOrConditions: [['vaketa'], commonBagWords],
+        keyword: 'vaketa deri çanta',
+    }
+    ,
+    {
+        includesOrConditions: [['hakiki', 'gerçek'], ['deri'], commonBagWords],
+        keyword: 'hakiki deri çanta',
+    }
+    ,
+    {
+        includesOrConditions: [['günlük'], commonBagWords],
+        keyword: 'günlük çanta',
+    }
+    ,
+    {
+        includesOrConditions: [['fermuarlı'], commonBagWords],
+        keyword: 'fermuarlı çanta',
+    }
+    ,
+    {
+        includesOrConditions: [['deri'], ['görünümlü'], commonBagWords],
+        keyword: 'deri görünümlü çanta',
+    },
+
+    {
+        includesOrConditions: [['uzun'], ['askılı'], commonBagWords],
+        keyword: 'uzun askılı çanta',
+    }
+    ,
+
+    {
+        includesOrConditions: [['torba'], commonBagWords],
+        keyword: 'torba çanta',
+    }
+    ,
+
+    {
+        includesOrConditions: [['metal'], ['görünümlü'], commonBagWords],
+        keyword: 'metal görünümlü çanta',
+    }
+    ,
+
+    {
+        includesOrConditions: [['laptop', 'notebook', 'bilgisayar'], commonBagWords],
+        keyword: 'laptop çantası',
+    }
+    ,
+
+    {
+        includesOrConditions: [['outdoor'], commonBagWords],
+        keyword: 'outdoor çanta',
+    }
+    ,
+
+    {
+        includesOrConditions: [['dikiş'], commonBagWords],
+        keyword: 'dikiş detailı çanta',
     }
 ];
 
