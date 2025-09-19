@@ -14,7 +14,7 @@ dotenv.config({ silent: true });
 const site = process.env.site;
 export default async function uploadToGoogleSheet() {
     debugger
-    const data = await getDatasetItems(`${site}-categorized`);
+    const data = await getDatasetItems(site);
     debugger
     const analyzedData = await analyzeData(data);
     debugger
