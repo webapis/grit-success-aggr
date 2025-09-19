@@ -309,7 +309,7 @@ export default [
         includesOrConditions: [['astarlı'], commonBagWords],
         keyword: 'astarlı çanta',
     },
-    ,
+    
     {
         includesOrConditions: [['floater', 'deri'], commonBagWords],
         keyword: 'floater deri çanta',
