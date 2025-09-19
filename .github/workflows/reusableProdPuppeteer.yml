@@ -129,18 +129,18 @@ jobs:
         
         node scripts/crawl-ecommerce-site.js
 
+    - name: Run categorization
+      if: always()
+      run: |
+        echo "📊 Starting categorization..."
+        node scripts/run-categorization.js
+
     - name: Upload results
       run: |
         echo "📤 Uploading results..."
         node src/2_data/persistence/sheet/uploadToGoogleSheet.js
       env:
         UPLOAD_TO_SHEET: ${{ inputs.upload_results }}
-
-    - name: Run categorization
-      if: always()
-      run: |
-        echo "📊 Starting categorization..."
-        node scripts/run-categorization.js
 
     - name: Upload categorization results
       if: always() && inputs.upload_categorization_results == true

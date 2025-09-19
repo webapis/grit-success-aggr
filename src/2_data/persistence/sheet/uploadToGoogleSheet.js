@@ -14,7 +14,7 @@ dotenv.config({ silent: true });
 const site = process.env.site;
 export default async function uploadToGoogleSheet() {
     debugger
-    const data = await getDatasetItems(site);
+    const data = await getDatasetItems(`${site}-categorized`);
     debugger
     const analyzedData = await analyzeData(data);
     debugger
@@ -45,6 +45,7 @@ const flattenedData = dataWithoutError.map(flattenObjectForSheets);
 const duplicateURLs = findDuplicateObjects(flattenedData);
 debugger
 if (process.env.UPLOAD_TO_SHEET === 'true') {
+    debugger
     await emitAsync('log-to-sheet', {
         sheetTitle: 'Crawl Logs(success)',
         message: `Site ${site} crawler result`,
