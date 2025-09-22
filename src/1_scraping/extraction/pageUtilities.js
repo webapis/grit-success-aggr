@@ -3,43 +3,43 @@
 // Enhanced calculateSpecificity function
 function calculateSpecificity(selector) {
     let score = 0;
-    
+
     // Shadow DOM selectors get highest priority
     if (selector.includes('::shadow') || selector.includes('shadowRoot')) {
         score += 2000; // Very high bonus for shadow DOM selectors
     }
-    
+
     // Count IDs (#id, [id*=], [id^=], etc.)
     const idMatches = selector.match(/#[\w-]+|\[id[\*\^$~|]?=/g);
     score += (idMatches || []).length * 100;
-    
+
     // Count classes (.class), attributes ([attr]), and pseudo-classes (:pseudo)
     const classMatches = selector.match(/\.[\w-]+|\[[\w-]+[\*\^$~|]?=|\:[\w-]+(?:\([^)]*\))?/g);
     score += (classMatches || []).length * 10;
-    
+
     // Count elements (div, span, article, etc.)
     const elementMatches = selector.match(/(?:^|[\s>+~])([a-zA-Z][\w-]*)/g);
     score += (elementMatches || []).length * 1;
-    
+
     // Bonus for descendant combinators (spaces)
     const descendantMatches = selector.match(/\s+(?![>+~])/g);
     score += (descendantMatches || []).length * 5;
-    
+
     // Bonus for direct child combinators (>)
     const childMatches = selector.match(/>/g);
     score += (childMatches || []).length * 3;
-    
+
     // Bonus for negation selectors (:not())
     const notMatches = selector.match(/:not\([^)]+\)/g);
     score += (notMatches || []).length * 8;
-    
+
     // Bonus for :has() selectors
     const hasMatches = selector.match(/:has\([^)]+\)/g);
     score += (hasMatches || []).length * 12;
-    
+
     // Length bonus
     score += Math.floor(selector.length / 10);
-    
+
     return score;
 }
 
@@ -48,7 +48,7 @@ function executeJavaScriptSelector(jsExpression) {
     try {
         const cleanExpression = jsExpression.replace(/;$/, '');
         const result = eval(cleanExpression);
-        
+
         if (result) {
             if (typeof result === 'string') {
                 // Create fake element for string results
@@ -74,19 +74,19 @@ function executeJavaScriptSelector(jsExpression) {
 // Function to handle CSS shadow DOM selectors (::shadow syntax)
 function querySelectorShadowDOM(rootElement, selector) {
     const elements = [];
-    
+
     if (selector.includes('::shadow::')) {
         // Format: 'price-element::shadow::.price-container .price'
         const parts = selector.split('::shadow::');
         const hostSelector = parts[0].trim();
         const shadowSelector = parts[1].trim();
-        
+
         // Search in root element first, then in document if not found
         let hostElements = Array.from(rootElement.querySelectorAll(hostSelector));
         if (hostElements.length === 0 && rootElement !== document) {
             hostElements = Array.from(document.querySelectorAll(hostSelector));
         }
-        
+
         for (const host of hostElements) {
             if (host.shadowRoot) {
                 try {
@@ -98,7 +98,7 @@ function querySelectorShadowDOM(rootElement, selector) {
             }
         }
     }
-    
+
     return elements;
 }
 
@@ -106,45 +106,45 @@ function querySelectorShadowDOM(rootElement, selector) {
 function executeJavaScriptShadowSelector(rootElement, selector) {
     try {
         const cleanExpression = selector.replace(/;$/, '');
-        
+
         // Handle expressions like: document.querySelector("price-element").shadowRoot.querySelector(".price")
         const shadowMatch = cleanExpression.match(/document\.querySelector\(['"]([^'"]+)['"]\)\.shadowRoot\.querySelector\(['"]([^'"]+)['"]\)/);
-        
+
         if (shadowMatch) {
             const hostSelector = shadowMatch[1];
             const shadowSelector = shadowMatch[2];
-            
+
             // Try to find in current container first, then document
             let hostElement = rootElement.querySelector ? rootElement.querySelector(hostSelector) : null;
             if (!hostElement) {
                 hostElement = document.querySelector(hostSelector);
             }
-            
+
             if (hostElement && hostElement.shadowRoot) {
                 const result = hostElement.shadowRoot.querySelector(shadowSelector);
                 return result ? [result] : [];
             }
             return [];
         }
-        
+
         // Handle querySelectorAll variants
         const shadowMatchAll = cleanExpression.match(/document\.querySelector\(['"]([^'"]+)['"]\)\.shadowRoot\.querySelectorAll\(['"]([^'"]+)['"]\)/);
-        
+
         if (shadowMatchAll) {
             const hostSelector = shadowMatchAll[1];
             const shadowSelector = shadowMatchAll[2];
-            
+
             let hostElement = rootElement.querySelector ? rootElement.querySelector(hostSelector) : null;
             if (!hostElement) {
                 hostElement = document.querySelector(hostSelector);
             }
-            
+
             if (hostElement && hostElement.shadowRoot) {
                 return Array.from(hostElement.shadowRoot.querySelectorAll(shadowSelector));
             }
             return [];
         }
-        
+
         // Fallback to regular eval for other JavaScript expressions
         return executeJavaScriptSelector(cleanExpression);
     } catch (error) {
@@ -164,7 +164,7 @@ function querySelectorAllDeep(rootElement, selector) {
             return [];
         }
     }
-    
+
     // Handle JavaScript shadow DOM selectors
     if (selector.includes('shadowRoot')) {
         try {
@@ -174,7 +174,7 @@ function querySelectorAllDeep(rootElement, selector) {
             return [];
         }
     }
-    
+
     // Regular CSS selector
     try {
         return Array.from(rootElement.querySelectorAll(selector));
@@ -192,7 +192,7 @@ function findBestSelectorInContext(container, selectors) {
                 const elements = querySelectorAllDeep(container, selector);
                 const count = elements.length;
                 const specificity = calculateSpecificity(selector);
-                
+
                 // Additional scoring for price-specific criteria
                 let priceScore = 0;
                 if (count > 0) {
@@ -202,7 +202,7 @@ function findBestSelectorInContext(container, selectors) {
                         return /[\d.,]+/.test(text);
                     });
                     priceScore = hasNumericContent ? 100 : 0;
-                    
+
                     // Bonus for currency symbols
                     const hasCurrency = elements.some(el => {
                         const text = el.textContent || el.innerText || '';
@@ -210,7 +210,7 @@ function findBestSelectorInContext(container, selectors) {
                     });
                     priceScore += hasCurrency ? 50 : 0;
                 }
-                
+
                 return {
                     selector,
                     elements,
@@ -247,38 +247,38 @@ function findBestSelectorInContext(container, selectors) {
 function getPriceElementsWithBestSelector(container, selectors) {
     // Use findBestSelector to get the optimal selector for this container
     const bestSelectorInfo = findBestSelectorInContext(container, selectors);
-    
+
     if (!bestSelectorInfo) {
         return { elements: [], bestSelector: null };
     }
 
     const bestSelector = bestSelectorInfo.selector;
-    
+
     // Log the best selector found for debugging
     console.log('Best price selector found:', bestSelector, '(score:', bestSelectorInfo.combinedScore, ')');
-    
-    return { 
-        elements: bestSelectorInfo.elements, 
-        bestSelector 
+
+    return {
+        elements: bestSelectorInfo.elements,
+        bestSelector
     };
 }
 
 // Clean price text function
 function cleanPriceText(text, attribute) {
     if (!text) return '';
-    
+
     let cleaned = text.trim();
-    
+
     // Remove common non-price text
     cleaned = cleaned.replace(/KDV\s+Dahil/gi, '');
     cleaned = cleaned.replace(/Vergiler\s+Dahil/gi, '');
     cleaned = cleaned.replace(/Tax\s+Included/gi, '');
     cleaned = cleaned.replace(/İndirimli\s+Fiyat/gi, '');
     cleaned = cleaned.replace(/Normal\s+Fiyat/gi, '');
-    
+
     // Normalize whitespace
     cleaned = cleaned.replace(/\s+/g, ' ').trim();
-    
+
     return cleaned;
 }
 
@@ -288,7 +288,7 @@ function extractTitleInfo(container, titleSelectors, titleAttributes) {
     let titleSelectorMatched = null;
     let title = null;
     let linkFromTitle = null;
-    
+
     // Find title element using selectors
     for (const selector of titleSelectors) {
         const element = container.querySelector(selector);
@@ -298,19 +298,19 @@ function extractTitleInfo(container, titleSelectors, titleAttributes) {
             break;
         }
     }
-    
+
     // Extract title text from element
     if (titleElement) {
         title = titleAttributes
             .map(attr => titleElement[attr?.replaceAll(" ", "")])
             .find(Boolean);
-        
+
         // Extract link from title element if it has href
         if (titleElement.href) {
             linkFromTitle = titleElement.href;
         }
     }
-    
+
     return {
         titleElement,
         titleSelectorMatched,
@@ -322,7 +322,7 @@ function extractTitleInfo(container, titleSelectors, titleAttributes) {
 // CONSOLIDATED IMAGE OPERATIONS
 function extractImageInfo(container, imageSelectors, imageAttributes) {
     const imgElementsWithSelectors = [];
-    
+
     // Helper function to check if a string is JavaScript code
     function isJavaScriptCode(str) {
         return str && (
@@ -339,7 +339,7 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
             str.includes('function(')
         );
     }
-    
+
     // Helper function to safely execute JavaScript code
     function executeJavaScript(jsCode, container) {
         try {
@@ -352,9 +352,9 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
                     return null;
                 }
             `);
-            
+
             const result = func(container, document);
-            
+
             // Handle different result types
             if (result) {
                 if (typeof result === 'string' && result.trim()) {
@@ -374,16 +374,16 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
             return { type: 'empty', value: [] };
         }
     }
-    
+
     // Find all image elements using selectors or JavaScript code
     const directUrls = []; // Store URLs from JavaScript execution
-    
+
     for (const selector of imageSelectors) {
         if (isJavaScriptCode(selector)) {
             console.log('Executing JavaScript code for image selection:', selector);
             const jsResult = executeJavaScript(selector, container);
             const actualSelector = `JavaScript: ${selector}`;
-            
+
             if (jsResult.type === 'url') {
                 // JavaScript returned a URL string directly
                 directUrls.push({ url: jsResult.value, selector: actualSelector });
@@ -407,34 +407,34 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
             }
         }
     }
-    
+
     const imgElements = imgElementsWithSelectors.map(item => item.element);
     const imgSelectorMatched = imgElementsWithSelectors[0]?.selector || directUrls[0]?.selector || null;
-    
+
     // Extract image URLs from attributes
-    const imgUrls = imgElements.flatMap(el => {        
+    const imgUrls = imgElements.flatMap(el => {
         return imageAttributes
             .map(attr => el?.getAttribute(attr?.replaceAll(" ", "")))
             .filter(Boolean);
     });
-    
+
     // Add URLs from direct JavaScript execution
     const directUrlValues = directUrls.map(item => item.url);
-    
+
     // Extract background image URLs
     function getBackgroundImageUrl(el) {
         const bgImage = el?.style?.backgroundImage;
         const urlMatch = bgImage?.match(/url\(["']?(.*?)["']?\)/);
         return urlMatch ? urlMatch[1] : null;
     }
-    
+
     const bgImgs = imgElements
         .map(el => getBackgroundImageUrl(el))
         .filter(Boolean);
-    
-    const allImgs = [...new Set([...imgUrls, ...directUrlValues, ...bgImgs])];
+
+    const allImgs = [...new Set([...imgUrls, ...directUrlValues, ...bgImgs])].filter(image => !image.includes(".svg"));
     const primaryImg = allImgs[0] || null;
-    
+
     return {
         imgElements,
         imgSelectorMatched,
@@ -446,7 +446,7 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
 // CONSOLIDATED LINK OPERATIONS
 function extractLinkInfo(container, linkSelectors) {
     const linkElementsWithSelectors = [];
-    
+
     // Find link elements using selectors
     for (const selector of linkSelectors) {
         const element = container.querySelector(selector);
@@ -455,10 +455,10 @@ function extractLinkInfo(container, linkSelectors) {
             break;
         }
     }
-    
+
     const linkElement = linkElementsWithSelectors[0]?.element || null;
     const linkSelectorMatched = linkElementsWithSelectors[0]?.selector || null;
-    
+
     return {
         linkElement,
         linkSelectorMatched
@@ -468,7 +468,7 @@ function extractLinkInfo(container, linkSelectors) {
 // CONSOLIDATED VIDEO OPERATIONS
 function extractVideoInfo(container, videoSelectors, videoAttributes) {
     const videoElementsWithSelectors = [];
-    
+
     // Find video elements using selectors
     for (const selector of videoSelectors) {
         const elements = Array.from(container.querySelectorAll(selector));
@@ -479,10 +479,10 @@ function extractVideoInfo(container, videoSelectors, videoAttributes) {
             }
         }
     }
-    
+
     const videoElements = videoElementsWithSelectors.map(item => item.element);
     const videoSelectorMatched = videoElementsWithSelectors[0]?.selector || null;
-    
+
     // Extract video URLs from attributes
     const videoUrls = videoElements
         .flatMap(el =>
@@ -490,9 +490,9 @@ function extractVideoInfo(container, videoSelectors, videoAttributes) {
                 .map(attr => el?.getAttribute(attr))
                 .filter(Boolean)
         );
-    
+
     const allVideos = [...new Set(videoUrls)];
-    
+
     return {
         videoElements,
         videoSelectorMatched,
@@ -503,18 +503,18 @@ function extractVideoInfo(container, videoSelectors, videoAttributes) {
 // CONSOLIDATED PRICE OPERATIONS
 function extractPriceInfo(container, priceSelectors, priceAttributes) {
     const priceInfo = [];
-    
+
     // Use the enhanced shadow DOM-aware price extraction
-    const { elements: priceElements, bestSelector: bestPriceSelector } = 
+    const { elements: priceElements, bestSelector: bestPriceSelector } =
         getPriceElementsWithBestSelector(container, priceSelectors);
 
     console.log('Best price selector for this item:', bestPriceSelector);
 
     if (priceElements.length > 0) {
         for (const priceEl of priceElements) {
-            const isJavaScript = bestPriceSelector && 
+            const isJavaScript = bestPriceSelector &&
                 (bestPriceSelector.includes('document') || bestPriceSelector.includes('shadowRoot'));
-            
+
             if (isJavaScript && typeof priceEl === 'object' && priceEl.textContent) {
                 const value = cleanPriceText(priceEl.textContent, 'textContent');
                 if (value && /[\d.,]+/.test(value)) {
@@ -529,12 +529,12 @@ function extractPriceInfo(container, priceSelectors, priceAttributes) {
             } else {
                 // For regular CSS selectors and shadow DOM elements
                 const prioritizedAttrs = ['textContent', ...priceAttributes.filter(attr => attr !== 'textContent')];
-                
+
                 for (const attr of prioritizedAttrs) {
                     let value = priceEl[attr]?.trim();
                     if (value) {
                         value = cleanPriceText(value, attr);
-                        
+
                         // Validate that we have something that looks like a price
                         if (value && /[\d.,]+/.test(value)) {
                             priceInfo.push({
@@ -551,7 +551,7 @@ function extractPriceInfo(container, priceSelectors, priceAttributes) {
             }
         }
     }
-    
+
     return {
         priceInfo,
         bestPriceSelector,
