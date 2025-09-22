@@ -34,7 +34,7 @@ async function uploadCollection({ fileName, data, gitFolder, compress = true, ma
             console.log(`Attempt ${attempt} to upload ${fullFileName} to branch ${branchName}`)
             
             // Get current file info (including SHA) from the specific branch
-            const responsesha = await fetch(`https://api.github.com/repos/webapis/crawler-state-2/contents/${gitFolder}/${fullFileName}?ref=${branchName}`, { 
+            const responsesha = await fetch(`https://api.github.com/repos/webapis/grit-2-state/contents/${gitFolder}/${fullFileName}?ref=${branchName}`, { 
                 method: 'get', 
                 headers: { 
                     Accept: "application/vnd.github.v3+json", 
@@ -50,7 +50,7 @@ async function uploadCollection({ fileName, data, gitFolder, compress = true, ma
                 const { sha } = await responsesha.json()
                 console.log(`File exists on branch ${branchName}, updating with SHA: ${sha}`)
 
-                response = await fetch(`https://api.github.com/repos/webapis/crawler-state-2/contents/${gitFolder}/${fullFileName}`, { 
+                response = await fetch(`https://api.github.com/repos/webapis/grit-2-state/contents/${gitFolder}/${fullFileName}`, { 
                     method: 'put', 
                     headers: { 
                         Accept: "application/vnd.github.v3+json", 
@@ -68,7 +68,7 @@ async function uploadCollection({ fileName, data, gitFolder, compress = true, ma
                 // File doesn't exist, create new
                 console.log(`File doesn't exist on branch ${branchName}, creating new file`)
                 
-                response = await fetch(`https://api.github.com/repos/webapis/crawler-state-2/contents/${gitFolder}/${fullFileName}`, { 
+                response = await fetch(`https://api.github.com/repos/webapis/grit-2-state/contents/${gitFolder}/${fullFileName}`, { 
                     method: 'put', 
                     headers: { 
                         Accept: "application/vnd.github.v3+json", 
@@ -149,7 +149,7 @@ async function ensureBranchExists(branchName) {
         console.log(`Checking if branch ${branchName} exists...`)
         
         // Check if branch exists
-        const branchResponse = await fetch(`https://api.github.com/repos/webapis/crawler-state-2/branches/${branchName}`, {
+        const branchResponse = await fetch(`https://api.github.com/repos/webapis/grit-2-state/branches/${branchName}`, {
             method: 'get',
             headers: {
                 Accept: "application/vnd.github.v3+json",
@@ -167,7 +167,7 @@ async function ensureBranchExists(branchName) {
             console.log(`Branch ${branchName} doesn't exist, creating it...`)
             
             // Get the main branch's latest commit SHA
-            const mainBranchResponse = await fetch(`https://api.github.com/repos/webapis/crawler-state-2/branches/main`, {
+            const mainBranchResponse = await fetch(`https://api.github.com/repos/webapis/grit-2-state/branches/main`, {
                 method: 'get',
                 headers: {
                     Accept: "application/vnd.github.v3+json",
@@ -184,7 +184,7 @@ async function ensureBranchExists(branchName) {
             const mainSha = mainBranchData.commit.sha
 
             // Create new branch from main
-            const createBranchResponse = await fetch(`https://api.github.com/repos/webapis/crawler-state-2/git/refs`, {
+            const createBranchResponse = await fetch(`https://api.github.com/repos/webapis/grit-2-state/git/refs`, {
                 method: 'post',
                 headers: {
                     Accept: "application/vnd.github.v3+json",
