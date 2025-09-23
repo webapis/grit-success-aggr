@@ -101,7 +101,7 @@ jobs:
               console.log('📊 Fetching data from Google Sheets...');
               const response = await sheets.spreadsheets.values.get({
                 spreadsheetId: process.env.GOOGLE_SHEET_ID,
-                range: 'wbags-scroll!A:K',
+                range: 'wbags-scroll!A:L',
               });
 
               const rows = response.data.values;

@@ -47,7 +47,7 @@ function convertFunctionToString(func) {
 }
 
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
-
+    const imageSelectorsOverride = (siteUrls.imageSelector && siteUrls.imageSelector) || imageSelectors;
     const url = await page.url()
     console.log('URL:', url)
     debugger
@@ -144,7 +144,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         productItemSelector: productItemSelector,
         titleSelector: titleSelector,
         titleAttribute: titleAttribute,
-        imageSelector: imageSelectors,
+        imageSelector: imageSelectorsOverride,
         imageAttributes: imageAttributes,
         linkSelector: linkSelectors,
         priceSelector: priceSelector,
@@ -172,6 +172,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
     const timestamp = generateTimestampId()
 
-debugger
-    return validData.map((m,i) => {return { ...m, processId: timestamp, index:i}}); 
+    debugger
+    return validData.map((m, i) => { return { ...m, processId: timestamp, index: i } });
 }

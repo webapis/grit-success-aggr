@@ -4,7 +4,6 @@ import fs from 'fs/promises';
 import dotenv from 'dotenv';
 import getMainDomainPart from '../src/shared/getMainDomainPart.js';
 
-
 // Load environment variables for local development
 dotenv.config();
 
@@ -74,7 +73,7 @@ function processSiteConfig(rows, targetSite) {
     let allUrls = [];
     let siteConfigurations = [];
     let foundBrand = false;
-
+debugger
     console.log(`Processing data for site: "${targetSite}"`);
 
     for (const [index, row] of dataRows.entries()) {
@@ -112,6 +111,7 @@ function processSiteConfig(rows, targetSite) {
                     paused: row[8] ? row[8].trim().toLowerCase() === 'true' : false,
                     pausedReason: row[9] ? row[9].trim() : '',
                     inflexible_notes: row[10] ? row[10].trim() : '',
+                    imageSelector: row[11] ? row[11].trim() : '',
                     rowIndex: index + 2
                 };
 
@@ -137,6 +137,7 @@ function processSiteConfig(rows, targetSite) {
         paused: isPaused,
         pausedReason: pausedReason,
         inflexible_notes: siteConfigurations[0]?.inflexible_notes || '',
+        imageSelector: siteConfigurations[0]?.imageSelector || '',
         configurations: siteConfigurations,
         paginationSelector: siteConfigurations[0]?.paginationSelector || '',
         paginationParameterName: siteConfigurations[0]?.paginationParameterName || '',
@@ -181,7 +182,7 @@ async function fetchSheetDataLocal() {
         console.log(`📊 Fetching data from sheet: ${sheetName}...`);
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId: process.env.GOOGLE_SHEET_ID,
-            range: `${sheetName}!A:K`,
+            range: `${sheetName}!A:L`,
         });
         
         const rows = response.data.values;
