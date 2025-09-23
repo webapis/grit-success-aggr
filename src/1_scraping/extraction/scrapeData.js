@@ -171,7 +171,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
 
     const timestamp = generateTimestampId()
-
+console.log('Scraping completed. Valid items ', validData[0]);
     debugger
     return validData.map((m, i) => { return { ...m, processId: timestamp, index: i } });
 }
