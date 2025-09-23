@@ -47,7 +47,7 @@ function convertFunctionToString(func) {
 }
 
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
-    const imageSelectorsOverride = siteUrls.imageSelector // || imageSelectors;
+    const imageSelectorsOverride = (siteUrls.imageSelector && siteUrls.imageSelector) || imageSelectors;
     const url = await page.url()
     console.log('URL:', url)
     debugger

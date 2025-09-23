@@ -122,7 +122,7 @@ debugger
                     paused: row[8] ? row[8].trim().toLowerCase() === 'true' : false,
                     pausedReason: row[9] ? row[9].trim() : '',
                     inflexible_notes: row[10] ? row[10].trim() : '',
-                    image_selector: row[11] ? row[11].trim() : '',
+                     imageSelector: row[11] ? row[11].trim() : '',
                     rowIndex: index + 2
                 };
 
@@ -149,7 +149,7 @@ debugger
         paused: isPaused,
         pausedReason: pausedReason,
         inflexible_notes: siteConfigurations[0]?.inflexible_notes || '',
-        image_selector: siteConfigurations[0]?.image_selector || '',
+        imageSelector: siteConfigurations[0]?.imageSelector || '',
         configurations: siteConfigurations,
         paginationSelector: siteConfigurations[0]?.paginationSelector || '',
         paginationParameterName: siteConfigurations[0]?.paginationParameterName || '',
