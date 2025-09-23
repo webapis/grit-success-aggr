@@ -2,152 +2,10 @@
 import { google } from 'googleapis';
 import fs from 'fs/promises';
 import dotenv from 'dotenv';
-import getMainDomainPart from '../src/shared/getMainDomainPart.js';
+import { processCachedSheetData } from '../src/config/siteConfig.js';
 
 // Load environment variables for local development
 dotenv.config();
-
-/**
- * Validates if a string is a valid URL
- */
-function isValidUrl(string) {
-    try {
-        new URL(string);
-        return true;
-    } catch (_) {
-        return false;
-    }
-}
-
-/**
- * Parses scrollable(boolean) from the sheet value
- */
-function parseScrollable(value) {
-    if (!value || typeof value !== 'string') {
-        return false;
-    }
-    return value.trim().toLowerCase() === 'true';
-}
-function parseDebug(value) {
-    if (!value || typeof value !== 'string') {
-        return false;
-    }
-    return value.trim().toLowerCase() === 'true';
-}
-/**
- * Parses items per page from the sheet value
- */
-function parseItemsPerPage(value) {
-    if (!value || typeof value !== 'string') {
-        return null;
-    }
-    const parsed = parseInt(value.trim(), 10);
-    return isNaN(parsed) ? null : parsed;
-}
-
-/**
- * Parses filtering needed boolean from the sheet value
- */
-function parseFilteringNeeded(value) {
-    if (!value || typeof value !== 'string') {
-        return false;
-    }
-    return value.trim().toLowerCase() === 'true';
-}
-
-/**
- * Processes raw sheet data to extract site configuration for a specific site
- */
-function processSiteConfig(rows, targetSite) {
-    if (!rows || rows.length === 0) {
-        console.log('No data found in sheet.');
-        return null;
-    }
-
-    if (rows.length < 2) {
-        console.log('No data rows found (only header present).');
-        return null;
-    }
-
-    const dataRows = rows.slice(1); // Skip header row
-    let allUrls = [];
-    let siteConfigurations = [];
-    let foundBrand = false;
-debugger
-    console.log(`Processing data for site: "${targetSite}"`);
-
-    for (const [index, row] of dataRows.entries()) {
-        const urlsString = row[7] || ''; // URLs are in column H (index 7)
-        
-        if (urlsString.trim()) {
-            const rowUrls = urlsString
-                .split(',')
-                .map(url => url.trim())
-                .filter(url => url !== '')
-                .filter(url => isValidUrl(url));
-
-            const matchingUrls = rowUrls.filter(url => {
-                try {
-                    const mainDomain = getMainDomainPart(url);
-                    return mainDomain.toLowerCase() === targetSite.toLowerCase();
-                } catch (error) {
-                    console.warn(`Error extracting domain from ${url}:`, error.message);
-                    return false;
-                }
-            });
-
-            if (matchingUrls.length > 0) {
-                foundBrand = true;
-
-                const rowConfig = {
-                    brand: row[0] ? row[0].trim() : '',
-                    paginationSelector: row[1] ? row[1].trim() : '',
-                    paginationParameterName: row[2] ? row[2].trim() : '',
-                    scrollable: parseScrollable(row[3]),
-                    showMoreButtonSelector: row[4] ? row[4].trim() : '',
-                    totalProductCounterSelector: row[5] ? row[5].trim() : '',
-                    debug: parseDebug(row[6]),
-                    urls: matchingUrls,
-                    paused: row[8] ? row[8].trim().toLowerCase() === 'true' : false,
-                    pausedReason: row[9] ? row[9].trim() : '',
-                    inflexible_notes: row[10] ? row[10].trim() : '',
-                    imageSelector: row[11] ? row[11].trim() : '',
-                    rowIndex: index + 2
-                };
-
-                siteConfigurations.push(rowConfig);
-                allUrls.push(...matchingUrls);
-            }
-        }
-    }
-
-    if (!foundBrand || allUrls.length === 0) {
-        console.log(`No URLs found for site "${targetSite}".`);
-        return null;
-    }
-
-    // Build final configuration for the specific site
-    const isPaused = siteConfigurations.some(config => config.paused);
-    const pausedReason = siteConfigurations.find(config => config.paused)?.pausedReason || '';
-
-    return {
-        targetSite: targetSite,
-        urls: allUrls,
-        totalUrls: allUrls.length,
-        paused: isPaused,
-        pausedReason: pausedReason,
-        inflexible_notes: siteConfigurations[0]?.inflexible_notes || '',
-        imageSelector: siteConfigurations[0]?.imageSelector || '',
-        configurations: siteConfigurations,
-        paginationSelector: siteConfigurations[0]?.paginationSelector || '',
-        paginationParameterName: siteConfigurations[0]?.paginationParameterName || '',
-        scrollable: siteConfigurations[0]?.scrollable || false,
-        showMoreButtonSelector: siteConfigurations[0]?.showMoreButtonSelector || '',
-        totalProductCounterSelector: siteConfigurations[0]?.totalProductCounterSelector || '',
-        debug: siteConfigurations[0]?.debug || false,
-        cachedAt: new Date().toISOString()
-    };
-}
 
 async function fetchSheetDataLocal() {
     try {
@@ -193,8 +51,8 @@ async function fetchSheetDataLocal() {
             return;
         }
         
-        // Process the raw sheet data for the specific site
-        const siteConfig = processSiteConfig(rows, targetSite);
+        // Process the raw sheet data for the specific site using the imported function
+        const siteConfig = processCachedSheetData({ data: rows }, targetSite);
         
         if (!siteConfig) {
             throw new Error(`No configuration found for site: ${targetSite}`);
@@ -218,7 +76,6 @@ async function fetchSheetDataLocal() {
     }
 }
 
-
-    fetchSheetDataLocal();
+fetchSheetDataLocal();
 
 
