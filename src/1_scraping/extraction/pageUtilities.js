@@ -431,9 +431,8 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
     const bgImgs = imgElements
         .map(el => getBackgroundImageUrl(el))
         .filter(Boolean);
-
-    const allImgs = [...new Set([...imgUrls, ...directUrlValues, ...bgImgs])]
-        .filter(image => !/\.(png|svg)(\?.*)?$/i.test(image));
+const allImgs = [...new Set([...imgUrls, ...directUrlValues, ...bgImgs])]
+    .filter(image => !/\.(png|svg|gif)(\?.*)?$/i.test(image));
 
     // Pick the first valid image as primary
     const primaryImg = allImgs.length > 0 ? allImgs[0] : null;
