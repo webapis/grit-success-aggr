@@ -421,7 +421,13 @@ export default [
 
     {
         includesOrConditions: [['dikiş'], commonBagWords],
-        keyword: 'dikiş detailı çanta',
+        keyword: 'dikiş detaylı çanta',
+    }
+     ,
+
+    {
+        includesOrConditions: [['yaprak'],['detaylı','detayli'], commonBagWords],
+        keyword: 'yaprak detaylı çanta',
     }
 ];
 

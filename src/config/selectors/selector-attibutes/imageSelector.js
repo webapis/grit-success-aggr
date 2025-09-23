@@ -1,4 +1,5 @@
 export default [
+  [...document.querySelectorAll('div.m-productImageList__item[data-src]')].map(m => m.getAttribute('data-src').replace('{width}/{height}', '596/830')),//beymen
   '.ng-star-inserted',
   '.ls-is-cached.lazyloaded',
   '.img-responsive.img-first',
