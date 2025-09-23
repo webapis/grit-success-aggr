@@ -51,6 +51,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
     const url = await page.url()
     console.log('URL:', url)
     debugger
+    console.log('imageSelectorsOverride', imageSelectorsOverride)
     // Method 1: Inject utilities from file
     const utilitiesScript = await getPageUtilitiesScript();
     await page.addScriptTag({ content: utilitiesScript });
