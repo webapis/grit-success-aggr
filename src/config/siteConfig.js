@@ -140,7 +140,7 @@ debugger
     // Build final configuration
     const isPaused = siteConfigurations.some(config => config.paused);
     const pausedReason = siteConfigurations.find(config => config.paused)?.pausedReason || '';
-   
+   console.log('siteConfigurations',siteConfigurations);
 
     return {
         targetSite: targetSite,
