@@ -19,7 +19,7 @@ export default async function analyzeData(data) {
     console.log('Analyzing data for site:', site);
     console.log(`debug: ${debug}`);
 
-debugger
+    debugger
     const dataWithoutError = data.filter(f => !f.error);
     const dataWithError = data.filter(f => f.error);
     const { oldestTimestamp, newestTimestamp, minutesSpan } = getAggrTimeSpan({ data });
@@ -65,11 +65,11 @@ debugger
                     Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
                 ),
             });
-   
+
             console.log('Uploaded invalid items sample to Google Drive:', JSONSampleDataWithErrorDriveLink ? JSONSampleDataWithErrorDriveLink.webViewLink : 'N/A');
         }
 
-    
+
         if (debug) {
             JSONSampleDataWithErrorGitLink = await uploadCollection({
                 fileName: site,
@@ -84,27 +84,32 @@ debugger
 
     // Upload valid data samples
 
-
+    let ValidJSONSampleDataDriveLink = null;
+    let ValidJSONSampleDataGitLink = null;
     const jsonBuffer2 = Buffer.from(JSON.stringify(dataWithoutError.filter((f, i) => i < 5), null, 2), 'utf-8');
+    if (dataWithoutError.length > 0) {
+        ValidJSONSampleDataDriveLink = await uploadJSONToGoogleDrive({
+            buffer: jsonBuffer2,
+            fileName: `${site}.json`,
+            mimeType: 'application/json',
+            folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
+            serviceAccountCredentials: JSON.parse(
+                Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
+            ),
+        });
+        console.log('Uploaded valid items sample to Google Drive:', ValidJSONSampleDataDriveLink ? ValidJSONSampleDataDriveLink.webViewLink : 'N/A');
 
-    const ValidJSONSampleDataDriveLink = await uploadJSONToGoogleDrive({
-        buffer: jsonBuffer2,
-        fileName: `${site}.json`,
-        mimeType: 'application/json',
-        folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-        serviceAccountCredentials: JSON.parse(
-            Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
-        ),
-    });
+        ValidJSONSampleDataGitLink = await uploadCollection({
+            fileName: site,
+            data: dataWithoutError,//.filter((f, i) => i < 5),
+            gitFolder: "validSample",
+            compress: false
+        });
 
-    console.log('Uploaded valid items sample to Google Drive:', ValidJSONSampleDataDriveLink ? ValidJSONSampleDataDriveLink.webViewLink : 'N/A');
+    }
 
-    const ValidJSONSampleDataGitLink = await uploadCollection({
-        fileName: site,
-        data: dataWithoutError.filter((f, i) => i < 5),
-        gitFolder: "validSample",
-        compress: false
-    });
+
+
 
     // Upload duplicate URL samples if any
     if (duplicateURLs.length > 1 && debug) {

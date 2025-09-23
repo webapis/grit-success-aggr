@@ -432,7 +432,7 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
         .map(el => getBackgroundImageUrl(el))
         .filter(Boolean);
 
-    const allImgs = [...new Set([...imgUrls, ...directUrlValues, ...bgImgs])].filter(image => !image.includes(".svg"));
+    const allImgs = [...new Set([...imgUrls, ...directUrlValues, ...bgImgs])].filter(image => !image.includes(".svg") && !image.includes(".png"));
     const primaryImg = allImgs[0] || null;
 
     return {
