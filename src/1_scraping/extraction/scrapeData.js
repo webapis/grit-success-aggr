@@ -52,18 +52,16 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
     console.log('URL:', url)
     debugger
     console.log('imageSelectorsOverride', imageSelectorsOverride)
-    console.log('siteUrls---',siteUrls)
+    console.log('siteUrls---', siteUrls)
     // Method 1: Inject utilities from file
     const utilitiesScript = await getPageUtilitiesScript();
     await page.addScriptTag({ content: utilitiesScript });
 
-    // Method 2: Alternative approach - import and convert to string
-    /*
-    import { injectPageUtilities } from './pageUtilities.js';
-    await page.addScriptTag({ 
-        content: `(${convertFunctionToString(injectPageUtilities)})(); ${convertFunctionToString(injectPageUtilities)}` 
-    });
-    */
+ 
+
+    if (siteUrls.debug) {
+        page.on('console', msg => console.log('PAGE LOG:', msg.text()));
+    }
 
     const data = await page.evaluate((params) => {
         const pageTitle = document.title;
@@ -173,7 +171,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
 
     const timestamp = generateTimestampId()
-console.log('Scraping completed. Valid items ', validData[0]);
+
     debugger
     return validData.map((m, i) => { return { ...m, processId: timestamp, index: i } });
 }

@@ -1,6 +1,6 @@
 export default [
   '.product_img img',
-  "[...document.querySelectorAll('div.m-productImageList__item[data-src]')].map(m => m.getAttribute('data-src').replace('{width}/{height}', '596/830'))",//beymen
+
   '.ng-star-inserted',
   '.ls-is-cached.lazyloaded',
   '.img-responsive.img-first',
@@ -9,7 +9,6 @@ export default [
   'wow-image img',
   '.showcase-image img',
   '.product-list-item-thumbnail img',
-  "document.querySelector('.attachment-woocommerce_thumbnail').getAttribute('data-lazy-src')",
   'img.attachment-woocommerce_thumbnail',
   '.product-item-img',
   '.main-product-img.card-img',

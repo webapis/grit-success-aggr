@@ -321,13 +321,23 @@ function extractTitleInfo(container, titleSelectors, titleAttributes) {
 
 // CONSOLIDATED IMAGE OPERATIONS
 function extractImageInfo(container, imageSelectors, imageAttributes) {
+    console.group('🖼️ Image Extraction Process Started');
+    console.log('Container:', container);
+    console.log('Image Selectors Type:', typeof imageSelectors);
+    console.log('Image Selectors Value:', imageSelectors);
+    console.log('Image Attributes:', imageAttributes);
+    
     const imgElementsWithSelectors = [];
 
     // Helper function to safely execute JavaScript code
     function executeJavaScript(jsCode, container) {
+        console.group('🔧 Executing JavaScript Code');
+        console.log('Code to execute:', jsCode);
+        
         try {
             // Check if it's a function definition
             if (jsCode.trim().startsWith('function')) {
+                console.log('✅ Detected: Function definition');
                 // It's a function definition - evaluate it and then call it
                 const func = new Function('container', 'document', `
                     try {
@@ -340,8 +350,11 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
                 `);
                 
                 const result = func(container, document);
+                console.log('Function execution result:', result);
+                console.groupEnd();
                 return { type: 'function_result', value: result };
             } else {
+                console.log('✅ Detected: JavaScript expression');
                 // It's a JavaScript expression - wrap it in a function automatically
                 const func = new Function('element', 'container', 'document', `
                     try {
@@ -354,36 +367,52 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
 
                 // Execute the wrapped expression with container as 'element'
                 const result = func(container, container, document);
+                console.log('Expression execution result:', result);
                 
                 // Handle different result types
                 if (result) {
                     if (typeof result === 'string' && result.trim()) {
-                        // It's a URL string
+                        console.log('✅ Result type: Single URL string');
+                        console.groupEnd();
                         return { type: 'url', value: result.trim() };
                     } else if (Array.isArray(result)) {
-                        // It's an array - could be URLs or elements
+                        console.log('✅ Result type: Array with', result.length, 'items');
                         if (result.length > 0) {
                             if (typeof result[0] === 'string') {
-                                // Array of URLs
+                                console.log('✅ Array contains: URL strings');
+                                console.groupEnd();
                                 return { type: 'urls', value: result.filter(url => url && url.trim()) };
                             } else if (result[0] && result[0].nodeType) {
-                                // Array of elements
+                                console.log('✅ Array contains: DOM elements');
+                                console.groupEnd();
                                 return { type: 'elements', value: result };
                             }
                         }
+                        console.log('⚠️ Array is empty or contains unknown types');
+                        console.groupEnd();
                         return { type: 'empty', value: [] };
                     } else if (result.length !== undefined) {
-                        // It's array-like (NodeList), convert to array of elements
+                        console.log('✅ Result type: Array-like (NodeList) with', result.length, 'items');
+                        console.groupEnd();
                         return { type: 'elements', value: Array.from(result) };
                     } else if (result && result.nodeType) {
-                        // It's a single element
+                        console.log('✅ Result type: Single DOM element');
+                        console.groupEnd();
                         return { type: 'elements', value: [result] };
                     }
                 }
+                console.log('⚠️ Result is null, undefined, or unrecognized type');
+                console.groupEnd();
                 return { type: 'empty', value: [] };
             }
         } catch (error) {
-            console.error('Error executing JavaScript code:', error);
+            console.error('❌ JavaScript execution failed:', error);
+            console.error('Error details:', {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            });
+            console.groupEnd();
             return { type: 'empty', value: [] };
         }
     }
@@ -391,166 +420,300 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
     // Find all image elements using selectors or JavaScript code
     const directUrls = []; // Store URLs from JavaScript execution
 
+    console.group('🎯 Processing Image Selectors');
+
     if (typeof imageSelectors === 'function') {
+        console.log('✅ Selection Method: Function');
         // Function - call it with the container element
         try {
             console.log('Executing function for image selection:', imageSelectors.name || 'anonymous function');
             const result = imageSelectors(container);
             const actualSelector = `Function: ${imageSelectors.name || 'anonymous'}`;
+            console.log('Function result:', result);
 
             if (result) {
                 if (typeof result === 'string' && result.trim()) {
-                    // Function returned a single URL string
+                    console.log('✅ Function returned single URL:', result.trim());
                     directUrls.push({ url: result.trim(), selector: actualSelector });
                 } else if (Array.isArray(result)) {
-                    // Function returned an array - could be URLs or elements
+                    console.log('✅ Function returned array with', result.length, 'items');
                     if (result.length > 0) {
                         if (typeof result[0] === 'string') {
-                            // Array of URLs
-                            for (const url of result.filter(url => url && url.trim())) {
+                            console.log('✅ Array contains URL strings');
+                            const validUrls = result.filter(url => url && url.trim());
+                            console.log('Valid URLs found:', validUrls.length);
+                            for (const url of validUrls) {
                                 directUrls.push({ url: url.trim(), selector: actualSelector });
                             }
                         } else if (result[0].nodeType) {
-                            // Array of elements
+                            console.log('✅ Array contains DOM elements');
                             for (const element of result) {
                                 const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
                                 if (!alreadyExists) {
                                     imgElementsWithSelectors.push({ element, selector: actualSelector });
+                                } else {
+                                    console.log('⚠️ Element already exists, skipping duplicate');
                                 }
                             }
                         }
+                    } else {
+                        console.log('⚠️ Function returned empty array');
                     }
                 } else if (result.length !== undefined) {
-                    // It's array-like (NodeList), convert to array of elements
+                    console.log('✅ Function returned NodeList with', result.length, 'items');
                     const elements = Array.from(result);
                     for (const element of elements) {
                         const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
                         if (!alreadyExists) {
                             imgElementsWithSelectors.push({ element, selector: actualSelector });
+                        } else {
+                            console.log('⚠️ Element already exists, skipping duplicate');
                         }
                     }
                 } else if (result.nodeType) {
-                    // It's a single element
+                    console.log('✅ Function returned single DOM element');
                     const alreadyExists = imgElementsWithSelectors.some(item => item.element === result);
                     if (!alreadyExists) {
                         imgElementsWithSelectors.push({ element: result, selector: actualSelector });
+                    } else {
+                        console.log('⚠️ Element already exists, skipping duplicate');
                     }
                 }
+            } else {
+                console.log('⚠️ Function returned null/undefined result');
             }
         } catch (error) {
-            console.error('Error executing function for image selection:', error);
+            console.error('❌ Function execution failed:', error);
+            console.error('Error details:', {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            });
         }
     } else if (typeof imageSelectors === 'string') {
+        console.log('✅ Selection Method: JavaScript String');
         // String - could be JavaScript code, function definition, or expression
         console.log('Executing JavaScript code/expression for image selection:', imageSelectors);
         const jsResult = executeJavaScript(imageSelectors, container);
-        const actualSelector = `JavaScript: ${imageSelectors.substring(0, 50)}...`;
+        const actualSelector = `JavaScript: ${imageSelectors.substring(0, 50)}${imageSelectors.length > 50 ? '...' : ''}`;
+
+        console.log('JavaScript execution result type:', jsResult.type);
+        console.log('JavaScript execution result value:', jsResult.value);
 
         if (jsResult.type === 'url' || jsResult.type === 'function_result') {
-            // JavaScript returned a single URL string or function result
             if (typeof jsResult.value === 'string' && jsResult.value.trim()) {
+                console.log('✅ JavaScript returned single URL:', jsResult.value.trim());
                 directUrls.push({ url: jsResult.value.trim(), selector: actualSelector });
             } else if (Array.isArray(jsResult.value)) {
-                // Function/expression returned array of URLs
-                for (const url of jsResult.value.filter(url => url && url.trim())) {
+                console.log('✅ JavaScript returned array of URLs, count:', jsResult.value.length);
+                const validUrls = jsResult.value.filter(url => url && url.trim());
+                console.log('Valid URLs from array:', validUrls.length);
+                for (const url of validUrls) {
                     directUrls.push({ url: url.trim(), selector: actualSelector });
                 }
             }
         } else if (jsResult.type === 'urls') {
-            // JavaScript returned an array of URLs
+            console.log('✅ JavaScript returned URL array, count:', jsResult.value.length);
             for (const url of jsResult.value) {
                 directUrls.push({ url, selector: actualSelector });
             }
         } else if (jsResult.type === 'elements') {
-            // JavaScript returned DOM elements
+            console.log('✅ JavaScript returned DOM elements, count:', jsResult.value.length);
             for (const element of jsResult.value) {
                 const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
                 if (!alreadyExists) {
                     imgElementsWithSelectors.push({ element, selector: actualSelector });
+                } else {
+                    console.log('⚠️ Element already exists, skipping duplicate');
                 }
             }
+        } else if (jsResult.type === 'empty') {
+            console.log('⚠️ JavaScript returned no results');
         }
     } else if (Array.isArray(imageSelectors)) {
+        console.log('✅ Selection Method: CSS Selectors Array');
+        console.log('Number of CSS selectors:', imageSelectors.length);
+        
         // Array - treat as CSS selectors
-        for (const selector of imageSelectors) {
+        for (let i = 0; i < imageSelectors.length; i++) {
+            const selector = imageSelectors[i];
+            console.group(`🎯 Processing CSS Selector ${i + 1}/${imageSelectors.length}: "${selector}"`);
+            
             try {
                 const elements = Array.from(container.querySelectorAll(selector));
+                console.log('Elements found:', elements.length);
+                
+                if (elements.length === 0) {
+                    console.log('❌ No elements found for selector:', selector);
+                    console.log('Container has children:', container.children.length);
+                    console.log('Container tag name:', container.tagName);
+                } else {
+                    console.log('✅ Found elements:', elements.map(el => ({
+                        tagName: el.tagName,
+                        className: el.className,
+                        id: el.id,
+                        src: el.src,
+                        'data-src': el.getAttribute('data-src')
+                    })));
+                }
+                
                 for (const element of elements) {
                     const alreadyExists = imgElementsWithSelectors.some(item => item.element === element);
                     if (!alreadyExists) {
                         imgElementsWithSelectors.push({ element, selector });
+                    } else {
+                        console.log('⚠️ Element already exists, skipping duplicate');
                     }
                 }
             } catch (error) {
-                console.error(`Error with CSS selector "${selector}":`, error);
+                console.error(`❌ CSS Selector error for "${selector}":`, error);
+                console.error('Error details:', {
+                    name: error.name,
+                    message: error.message,
+                    selector: selector,
+                    containerValid: container && container.querySelectorAll ? 'yes' : 'no'
+                });
             }
+            console.groupEnd();
         }
     } else {
-        console.error('imageSelectors must be either a function, a string (JavaScript code), or an array (CSS selectors)');
+        console.error('❌ Invalid imageSelectors type:', typeof imageSelectors);
+        console.error('Expected: function, string (JavaScript), or array (CSS selectors)');
+        console.groupEnd();
+        console.groupEnd();
         return {
             imgElements: [],
             imgSelectorMatched: null,
             imgUrls: [],
-            primaryImg: null
+            primaryImg: null,
+            error: 'Invalid imageSelectors type'
         };
     }
+
+    console.groupEnd(); // End Processing Image Selectors
 
     const imgElements = imgElementsWithSelectors.map(item => item.element);
     const imgSelectorMatched = imgElementsWithSelectors[0]?.selector || directUrls[0]?.selector || null;
 
+    console.group('📊 Results Summary');
+    console.log('Total DOM elements found:', imgElements.length);
+    console.log('Total direct URLs found:', directUrls.length);
+    console.log('Selector that matched:', imgSelectorMatched);
+    console.groupEnd();
+
     // Extract image URLs from attributes
-    const imgUrls = imgElements.flatMap(el => {
-        return imageAttributes
-            .map(attr => el?.getAttribute(attr?.replaceAll(" ", "")))
+    console.group('🔍 Extracting URLs from Attributes');
+    console.log('Attributes to check:', imageAttributes);
+    
+    const imgUrls = imgElements.flatMap((el, index) => {
+        console.group(`Element ${index + 1}/${imgElements.length}`);
+        console.log('Element:', el.tagName, el.className, el.id);
+        
+        const urls = imageAttributes
+            .map(attr => {
+                const cleanAttr = attr?.replaceAll(" ", "");
+                const value = el?.getAttribute(cleanAttr);
+                console.log(`Attribute "${cleanAttr}":`, value || 'not found');
+                return value;
+            })
             .filter(Boolean);
+            
+        console.log('URLs found from attributes:', urls);
+        console.groupEnd();
+        return urls;
     });
+
+    console.log('All URLs from attributes:', imgUrls);
+    console.groupEnd();
 
     // Add URLs from direct JavaScript execution
     const directUrlValues = directUrls.map(item => item.url);
+    console.log('Direct URLs from JavaScript execution:', directUrlValues);
 
     // Extract background image URLs
+    console.group('🎨 Extracting Background Images');
     function getBackgroundImageUrl(el) {
         const bgImage = el?.style?.backgroundImage;
         const urlMatch = bgImage?.match(/url\(["']?(.*?)["']?\)/);
-        return urlMatch ? urlMatch[1] : null;
+        const result = urlMatch ? urlMatch[1] : null;
+        console.log('Element background image:', bgImage, '-> extracted:', result);
+        return result;
     }
 
     const bgImgs = imgElements
         .map(el => getBackgroundImageUrl(el))
         .filter(Boolean);
+        
+    console.log('Background image URLs found:', bgImgs);
+    console.groupEnd();
 
     // Define stop words for irrelevant URLs
     const imageStopWords = [
-        'placeholder', 'loading', 'spinner', 'loader', 'blank', 'empty',
-        'icon', 'logo', 'sprite', 'thumbnail', 'thumb', 'avatar',
-        'banner', 'header', 'footer', 'background', 'bg',
-        'watermark', 'overlay', 'mask', 'pattern',
+        // 'placeholder', 'loading', 'spinner', 'loader', 'blank', 'empty',
+        // 'icon', 'logo', 'sprite', 'thumbnail', 'thumb', 'avatar',
+        // 'banner', 'header', 'footer', 'background', 'bg',
+        // 'watermark', 'overlay', 'mask', 'pattern',
         'sample', 'demo', 'test', 'example', 'default','lazy','base64','data:image/'
     ];
 
-    const allImgs = [...new Set([...imgUrls, ...directUrlValues, ...bgImgs])]
-        .filter(image => {
+    console.group('🧹 Filtering URLs');
+    const allImgsBeforeFilter = [...new Set([...imgUrls, ...directUrlValues, ...bgImgs])];
+    console.log('All URLs before filtering:', allImgsBeforeFilter);
+    console.log('Stop words for filtering:', imageStopWords);
+
+    const allImgs = allImgsBeforeFilter
+        .filter((image, index) => {
+            console.group(`Filtering URL ${index + 1}: ${image}`);
+            
             // Filter out specific extensions
-            if (!/\.(png|svg|gif)(\?.*)?$/i.test(image)) {
+            const hasBlockedExtension = /\.(png|svg|gif)(\?.*)?$/i.test(image);
+            console.log('Has blocked extension (png|svg|gif):', hasBlockedExtension);
+            
+            if (!hasBlockedExtension) {
                 // Check for stop words in the URL
                 const imageLower = image.toLowerCase();
-                const hasStopWord = imageStopWords.some(stopWord => 
-                    imageLower.includes(stopWord.toLowerCase())
-                );
+                const hasStopWord = imageStopWords.some(stopWord => {
+                    const includes = imageLower.includes(stopWord.toLowerCase());
+                    if (includes) {
+                        console.log(`Found stop word "${stopWord}" in URL`);
+                    }
+                    return includes;
+                });
+                console.log('Has stop word:', hasStopWord);
+                console.log('URL passes filter:', !hasStopWord);
+                console.groupEnd();
                 return !hasStopWord;
+            } else {
+                console.log('URL blocked by extension filter');
+                console.groupEnd();
+                return false;
             }
-            return false;
         });
+
+    console.log('URLs after filtering:', allImgs);
+    console.groupEnd();
 
     // Pick the first valid image as primary
     const primaryImg = allImgs.length > 0 ? allImgs[0] : null;
+    console.log('Primary image selected:', primaryImg);
 
-    return {
+    const result = {
         imgElements,
         imgSelectorMatched,
         imgUrls: allImgs,
         primaryImg
     };
+
+    console.group('📋 Final Results');
+    console.log('Image elements found:', result.imgElements.length);
+    console.log('Selector that matched:', result.imgSelectorMatched);
+    console.log('Image URLs:', result.imgUrls);
+    console.log('Primary image:', result.primaryImg);
+    console.groupEnd();
+
+    console.groupEnd(); // End main group
+    
+    return result;
 }
 
 // CONSOLIDATED LINK OPERATIONS
