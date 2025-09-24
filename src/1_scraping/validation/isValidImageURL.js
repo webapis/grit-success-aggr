@@ -2,9 +2,9 @@ export default function isValidImageURL(value) {
   try {
     if (typeof value !== 'string') return false;
 
-    if (value.startsWith('//')) {
-      value = 'https:' + value;
-    }
+    // if (value.startsWith('//')) {
+    //   value = 'https:' + value;
+    // }
 
     // Handle encoding
     try {

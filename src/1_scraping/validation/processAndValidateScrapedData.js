@@ -15,7 +15,7 @@ export default function processAndValidateScrapedData(data, siteUrls) {
     return data.map(item => {
         // Process images
         const processedImgs = (item.img || [])
-            .map(m => getMiddleImageUrl(m, siteUrls.imageCDN || siteUrls.urls[0]))
+            .map(m => m /*getMiddleImageUrl(m, siteUrls.imageCDN || siteUrls.urls[0])*/)
             .filter(Boolean);
 
         // Validate images
@@ -26,7 +26,7 @@ export default function processAndValidateScrapedData(data, siteUrls) {
 
         // Validate videos
         const videoValid = item.videos && item.videos.length > 0 && item.videos.every(isValidVideoURL);
-        
+
         // Parse and validate prices
         const { parsedPrices, priceValid } = priceParser(item);
 
