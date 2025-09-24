@@ -653,7 +653,7 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
         // 'icon', 'logo', 'sprite', 'thumbnail', 'thumb', 'avatar',
         // 'banner', 'header', 'footer', 'background', 'bg',
         // 'watermark', 'overlay', 'mask', 'pattern',
-        'sample', 'demo', 'test', 'example', 'default','lazy','base64','data:image/'
+        'sample', 'demo', 'test', 'example', 'default','lazy','base64','data:image/','a570a12d-981c-4878-b476-526687bbc0a4'
     ];
 
     console.group('🧹 Filtering URLs');
