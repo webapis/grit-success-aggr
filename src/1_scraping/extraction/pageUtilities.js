@@ -525,7 +525,7 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
         'icon', 'logo', 'sprite', 'thumbnail', 'thumb', 'avatar',
         'banner', 'header', 'footer', 'background', 'bg',
         'watermark', 'overlay', 'mask', 'pattern',
-        'sample', 'demo', 'test', 'example', 'default','lazy'
+        'sample', 'demo', 'test', 'example', 'default','lazy','base64','data:image/'
     ];
 
     const allImgs = [...new Set([...imgUrls, ...directUrlValues, ...bgImgs])]
