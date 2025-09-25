@@ -8,6 +8,16 @@ const fetch = require('node-fetch')
 
 async function uploadCollection({ fileName, data, gitFolder, compress = true, maxRetries = 3 }) {
 
+    if (!data || (Array.isArray(data) && data.length === 0) || (typeof data === 'object' && data !== null && !Array.isArray(data) && Object.keys(data).length === 0)) {
+        console.log(`Skipping upload for ${fileName}: data is empty.`);
+        return {
+            response: null,
+            url: 'skipped',
+            downloadUrl: 'skipped',
+            branch: fileName
+        };
+    }
+
     console.log('process.env.GH_TOKEN__', process.env.GH_TOKEN)
 
     const fileExtension = compress ? '.json.gz' : '.json'
