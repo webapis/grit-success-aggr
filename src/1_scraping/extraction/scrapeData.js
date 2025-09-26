@@ -154,13 +154,28 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         productNotAvailable: productNotAvailable,
         videoSelector: videoSelectors,
         videoAttribute: videoAttributes,
-        imgExtToFilterOut,
-        keywordsToFilterOut
+        imgExtToFilterOut
     });
+
+    let filteredData = data;
+    if (keywordsToFilterOut && keywordsToFilterOut.length > 0) {
+        console.log('Filtering out items with keywords:', keywordsToFilterOut);
+        const lowerCaseKeywords = keywordsToFilterOut.map(kw => kw.toLowerCase());
+        
+        filteredData = data.filter(item => {
+            if (!item.title) {
+                return true; // Keep items without a title
+            }
+            const lowerCaseTitle = item.title.toLowerCase();
+            const hasKeyword = lowerCaseKeywords.some(keyword => lowerCaseTitle.includes(keyword));
+            if (hasKeyword) console.log(`Filtering out item with title: "${item.title}"`);
+            return !hasKeyword;
+        });
+    }
 
     // Use the extracted processing function
     debugger
-    const validData = processAndValidateScrapedData(data, siteUrls);
+    const validData = processAndValidateScrapedData(filteredData, siteUrls);
     const { totalItemsToBeCallected, totalItemsPerPage, debug } = logToLocalSheet()
 
     if (debug) {
