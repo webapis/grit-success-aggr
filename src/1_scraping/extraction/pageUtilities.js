@@ -320,7 +320,7 @@ function extractTitleInfo(container, titleSelectors, titleAttributes) {
 }
 
 // CONSOLIDATED IMAGE OPERATIONS
-function extractImageInfo(container, imageSelectors, imageAttributes) {
+function extractImageInfo(container, imageSelectors, imageAttributes,imgExtToFilterOut) {
     console.group('🖼️ Image Extraction Process Started');
     console.log('Container:', container);
     console.log('Image Selectors Type:', typeof imageSelectors);
@@ -663,32 +663,42 @@ function extractImageInfo(container, imageSelectors, imageAttributes) {
     console.log('Stop words for filtering:', imageStopWords);
 
     const allImgs = allImgsBeforeFilter
-        .filter((image, index) => {
-            console.group(`Filtering URL ${index + 1}: ${image}`);
-            
-            // Filter out specific extensions
-            const hasBlockedExtension = /\.(png|svg|gif)(\?.*)?$/i.test(image);
-            console.log('Has blocked extension (png|svg|gif):', hasBlockedExtension);
-            
-            if (!hasBlockedExtension) {
-                // Check for stop words in the URL
-                const imageLower = image.toLowerCase();
-                const hasStopWord = imageStopWords.some(stopWord => {
-                    const includes = imageLower.includes(stopWord.toLowerCase());
-                    if (includes) {
-                        console.log(`Found stop word "${stopWord}" in URL`);
-                    }
-                    return includes;
-                });
-                console.log('Has stop word:', hasStopWord);
-                console.log('URL passes filter:', !hasStopWord);
-                console.groupEnd();
-                return !hasStopWord;
-            } else {
-                console.log('URL blocked by extension filter');
-                console.groupEnd();
-                return false;
+        .filter((image) => {
+            console.group(`Filtering URL: ${image}`);
+
+            // 1. Filter by extension if imgExtToFilterOut is provided
+            if (imgExtToFilterOut && imgExtToFilterOut.length > 0) {
+                // Normalize extensions: remove leading dots and escape for regex.
+                const extensions = imgExtToFilterOut.map(ext => 
+                    ext.replace(/^\./, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+                );
+                const regex = new RegExp(`\\.(${extensions.join('|')})(\\?.*)?$`, 'i');
+                if (regex.test(image)) {
+                    console.log(`URL blocked by extension filter (${extensions.join(', ')}).`);
+                    console.groupEnd();
+                    return false; // Exclude if it matches a blocked extension
+                }
             }
+
+            // 2. Filter by stop words
+            const imageLower = image.toLowerCase();
+            const hasStopWord = imageStopWords.some(stopWord => {
+                const includes = imageLower.includes(stopWord.toLowerCase());
+                if (includes) {
+                    console.log(`URL contains stop word: "${stopWord}"`);
+                }
+                return includes;
+            });
+
+            if (hasStopWord) {
+                console.log('URL blocked by stop word filter.');
+                console.groupEnd();
+                return false; // Exclude if it contains a stop word
+            }
+
+            console.log('URL passed all filters.');
+            console.groupEnd();
+            return true; // Keep the URL
         });
 
     console.log('URLs after filtering:', allImgs);

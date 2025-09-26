@@ -48,6 +48,8 @@ function convertFunctionToString(func) {
 
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
     const imageSelectorsOverride = (siteUrls.imageSelector && siteUrls.imageSelector) || imageSelectors;
+    const imgExtToFilterOut = siteUrls.imgExtToFilterOut
+    const keywordsToFilterOut = siteUrls.keywordsToFilterOut || []
     const url = await page.url()
     console.log('URL:', url)
     debugger
@@ -74,7 +76,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
                 const titleInfo = window.extractTitleInfo(m, params.titleSelector, params.titleAttribute);
                 const { titleElement, titleSelectorMatched, title, linkFromTitle } = titleInfo;
 
-                const imageInfo = window.extractImageInfo(m, params.imageSelector, params.imageAttributes);
+                const imageInfo = window.extractImageInfo(m, params.imageSelector, params.imageAttributes, params.imgExtToFilterOut);
                 const { imgElements, imgSelectorMatched, imgUrls: allImgs, primaryImg } = imageInfo;
 
                 const linkInfo = window.extractLinkInfo(m, params.linkSelector);
@@ -151,7 +153,9 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         priceAttribute: priceAttribute,
         productNotAvailable: productNotAvailable,
         videoSelector: videoSelectors,
-        videoAttribute: videoAttributes
+        videoAttribute: videoAttributes,
+        imgExtToFilterOut,
+        keywordsToFilterOut
     });
 
     // Use the extracted processing function

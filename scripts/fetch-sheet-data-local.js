@@ -40,7 +40,7 @@ async function fetchSheetDataLocal() {
         console.log(`📊 Fetching data from sheet: ${sheetName}...`);
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId: process.env.GOOGLE_SHEET_ID,
-            range: `${sheetName}!A:L`,
+            range: `${sheetName}!A:N`,
         });
         
         const rows = response.data.values;

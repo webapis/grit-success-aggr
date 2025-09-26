@@ -122,7 +122,9 @@ debugger
                     paused: row[8] ? row[8].trim().toLowerCase() === 'true' : false,
                     pausedReason: row[9] ? row[9].trim() : '',
                     inflexible_notes: row[10] ? row[10].trim() : '',
-                     imageSelector: row[11] ? row[11].trim() : '',
+                    imageSelector: row[11] ? row[11].trim() : '',
+                    imgExtToFilterOut: row[12] ? row[12].trim().split(',').map(ext => ext.trim()).filter(ext => ext !== '') : [],
+                    keywordsToFilterOut: row[13] ? row[13].trim().split(',').map(kw => kw.trim()).filter(kw => kw !== '') : [],
                     rowIndex: index + 2
                 };
 
@@ -150,6 +152,8 @@ debugger
         pausedReason: pausedReason,
         inflexible_notes: siteConfigurations[0]?.inflexible_notes || '',
         imageSelector: siteConfigurations[0]?.imageSelector || '',
+        imgExtToFilterOut: siteConfigurations[0]?.imgExtToFilterOut || '',
+        keywordsToFilterOut: siteConfigurations[0]?.keywordsToFilterOut || [],
         configurations: siteConfigurations,
         paginationSelector: siteConfigurations[0]?.paginationSelector || '',
         paginationParameterName: siteConfigurations[0]?.paginationParameterName || '',
