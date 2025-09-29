@@ -649,7 +649,7 @@ function extractImageInfo(container, imageSelectors, imageAttributes,imgExtToFil
 
     // Define stop words for irrelevant URLs
     const imageStopWords = [
-         'placeholder','load.gif','hebebedundefined','loader.gif'
+         'placeholder','load.gif','hebebedundefined','loader.gif',
         // 'loading', 'spinner', 'loader', 'blank', 'empty',
         // 'icon', 'logo', 'sprite', 'thumbnail', 'thumb', 'avatar',
         // 'banner', 'header', 'footer', 'background', 'bg',
