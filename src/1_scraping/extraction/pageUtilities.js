@@ -649,7 +649,7 @@ function extractImageInfo(container, imageSelectors, imageAttributes,imgExtToFil
 
     // Define stop words for irrelevant URLs
     const imageStopWords = [
-         'placeholder','load.gif','hebebedundefined','loader.gif','https://mynameiso.co/wp-content/uploads/2025/03/trapeziosage-500x600.jpg',
+         'placeholder','load.gif','hebebedundefined','loader.gif',
         // 'loading', 'spinner', 'loader', 'blank', 'empty',
         // 'icon', 'logo', 'sprite', 'thumbnail', 'thumb', 'avatar',
         // 'banner', 'header', 'footer', 'background', 'bg',
@@ -672,7 +672,7 @@ function extractImageInfo(container, imageSelectors, imageAttributes,imgExtToFil
                 const extensions = imgExtToFilterOut.map(ext => 
                     ext.replace(/^\./, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
                 );
-                const regex = new RegExp(`\\.(${extensions.join('|')})(\\?.*)?$`, 'i');
+               const regex = new RegExp(`\\.(${extensions.join('|')})(\\?.*)?`, 'i');
                 if (regex.test(image)) {
                     console.log(`URL blocked by extension filter (${extensions.join(', ')}).`);
                     console.groupEnd();
