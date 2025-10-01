@@ -165,7 +165,8 @@ function validateUrls(urls) {
                         '--disable-setuid-sandbox',
                         '--disable-dev-shm-usage',
                         '--disable-gpu',
-                        '--window-size=1920,1080'
+                        '--window-size=1920,1080',
+                        '--lang=tr-TR,tr'
                     ],
                     protocolTimeout: 600000,
                     timeout: 120000,

@@ -33,6 +33,8 @@ const preNavigationHooks = [
             };
         });
 
+        await page.emulateTimezone('Europe/Istanbul');
+
 
         page.on('request', req => {
             const resourceType = req.resourceType();
