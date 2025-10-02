@@ -125,6 +125,7 @@ debugger
                     imageSelector: row[11] ? row[11].trim() : '',
                     imgExtToFilterOut: row[12] ? row[12].trim().split(',').map(ext => ext.trim()).filter(ext => ext !== '') : [],
                     keywordsToFilterOut: row[13] ? row[13].trim().split(',').map(kw => kw.trim()).filter(kw => kw !== '') : [],
+                    conversionRate: row[14] ? parseFloat(row[14].trim()) : null,
                     rowIndex: index + 2
                 };
 
@@ -154,6 +155,7 @@ debugger
         imageSelector: siteConfigurations[0]?.imageSelector || '',
         imgExtToFilterOut: siteConfigurations[0]?.imgExtToFilterOut || '',
         keywordsToFilterOut: siteConfigurations[0]?.keywordsToFilterOut || [],
+        conversionRate: siteConfigurations[0]?.conversionRate || null,
         configurations: siteConfigurations,
         paginationSelector: siteConfigurations[0]?.paginationSelector || '',
         paginationParameterName: siteConfigurations[0]?.paginationParameterName || '',
