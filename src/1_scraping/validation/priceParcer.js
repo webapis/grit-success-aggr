@@ -1,13 +1,16 @@
 import mapPrice from './mapPrice.js';
+import addCurrency from '../../2_data/processing/addCurrency.js';
 export default function priceParser(item) {
     const parsedPrices = Array.isArray(item.price)
         ? item.price.map(priceObj => {
             try {
-                const numericPrice = mapPrice(priceObj.value); // or priceObj.rawValue if that is correct
+                const priceInfo = mapPrice(priceObj.value, {}, { returnObject: true });
+                const priceWithCurrency = addCurrency({ price: [priceObj] });
                 return {
                     ...priceObj,
-                    numericValue: numericPrice,
-                    unsetPrice:  numericPrice=== 0? true: false,
+                    numericValue: priceInfo.value,
+                    currency: priceWithCurrency.price[0].currency,
+                    unsetPrice:  priceInfo.value === 0 ? true: false,
                 };
             } catch (error) {
                 return {
