@@ -2,9 +2,19 @@ import mapPrice from './mapPrice.js';
 import addCurrency from '../../2_data/processing/addCurrency.js';
 import { getCachedSiteConfigFromFile } from '../../config/siteConfig.js';
 
+const FALLBACK_RATES = {
+    USD: 33.5,
+    EUR: 37.01
+};
+
 export default async function priceParser(item) {
     const siteConfig = await getCachedSiteConfigFromFile();
-    const conversionRate = siteConfig ? siteConfig.conversionRate : null;
+    if (siteConfig) {
+        console.log('Successfully loaded siteConfig.json. Conversion rate from config:', siteConfig.conversionRate);
+    } else {
+        console.log('Could not load siteConfig.json or file is empty. Will rely on fallback rates.');
+    }
+    const configRate = siteConfig ? siteConfig.conversionRate : null;
 
     const parsedPricePromises = Array.isArray(item.price)
         ? item.price.map(async priceObj => {
@@ -12,10 +22,16 @@ export default async function priceParser(item) {
                 const priceInfo = mapPrice(priceObj.value, {}, { returnObject: true });
                 const priceWithCurrency = addCurrency({ price: [priceObj] });
                 const currency = priceWithCurrency.price[0].currency;
-                
+
+                // Determine the correct rate to use
+                const rate = configRate || FALLBACK_RATES[currency];
+                if (!rate && currency && currency !== 'TL') {
+                    console.log(`No conversion rate found for currency: ${currency}. Conversion will be skipped.`);
+                }
+
                 let convertedPrice = null;
-                if (currency && currency !== 'TL' && conversionRate && priceInfo.value) {
-                    convertedPrice = priceInfo.value * conversionRate;
+                if (currency && currency !== 'TL' && rate && priceInfo.value) {
+                    convertedPrice = priceInfo.value * rate;
                 }
 
                 let displayPrice = '';
