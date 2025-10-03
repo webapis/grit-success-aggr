@@ -8,7 +8,7 @@
     "test": "node test.js",
     "start": "node src/test/index.js",
     "sheet": "node scripts/fetch-sheet-data-local.js",
-    "startProdPuppteer": "node scripts/crawl-ecommerce-site.js",
+    "startProdPuppteer": "node scripts/refactored-crawl.js",
     "categorize": "node scripts/run-categorization.js",
     "uploadData": "node src/2_data/persistence/sheet/uploadToGoogleSheet.js",
     "uploadCategorizationResults": "node scripts/upload-categorization-results-to-sheet.js"

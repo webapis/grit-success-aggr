@@ -127,8 +127,7 @@ jobs:
           echo "🌐 Will fetch fresh data from Google Sheets API"
         fi
         
-        node scripts/crawl-ecommerce-site.js
-
+                  node scripts/refactored-crawl.js
     - name: Run categorization
       if: always()
       run: |
