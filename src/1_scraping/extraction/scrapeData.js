@@ -175,7 +175,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
     // Use the extracted processing function
     debugger
-    const validData = processAndValidateScrapedData(filteredData, siteUrls);
+    const validData = await processAndValidateScrapedData(filteredData, siteUrls);
     const { totalItemsToBeCallected, totalItemsPerPage, debug } = logToLocalSheet()
 
     if (debug) {

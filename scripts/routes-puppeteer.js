@@ -25,19 +25,19 @@ export const createRouter = async (siteUrls) => {
       });
 
     }
-    debugger
+    
     const data = await first({ ...props, label: "default", siteUrls });
 
-    debugger
+    
    await productsDataset.pushData(data);
-    debugger
+    
 
   });
 
   router.addHandler("second", async (props) => {
-    debugger
+    
     const data = await second({ ...props, label: "second", siteUrls });
-    debugger
+    
     await productsDataset.pushData(data);
   });
 

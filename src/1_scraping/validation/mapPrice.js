@@ -70,15 +70,13 @@ export default function mapPrice(
   rawPrice,
   obj = {},
   {
-    usdRate = 33.5,
-    eurRate = 37.01,
     strictMode = false,
     returnObject = false,
   } = {}
 ) {
   if (rawPrice === undefined || rawPrice === null) {
     if (strictMode) throw `Price is undefined: ${JSON.stringify(obj)}`;
-    return returnObject ? { value: 0, currency: null, raw: rawPrice } : 0;
+    return returnObject ? { value: 0, raw: rawPrice } : 0;
   }
 
   // Clean known words and symbols
@@ -126,14 +124,6 @@ export default function mapPrice(
     cleaned = cleaned.replace(regex, '');
   }
 
-  // Currency detection BEFORE removing currency symbols
-  let currency = 'TRY';
-  if (cleaned.includes('$') || /USD/gi.test(cleaned)) {
-    currency = 'USD';
-  } else if (cleaned.includes('€') || /EUR/gi.test(cleaned)) {
-    currency = 'EUR';
-  }
-
   // Now clean currency symbols and words
   cleaned = cleaned
     .replace(/(USD|\$)/gi, '')
@@ -153,14 +143,7 @@ export default function mapPrice(
     throw `Unparsable price "${rawPrice}" in: ${JSON.stringify(obj)}`;
   }
 
-  let converted = numeric;
-  if (currency === 'USD') {
-    converted = parseFloat((numeric * usdRate).toFixed(2));
-  } else if (currency === 'EUR') {
-    converted = parseFloat((numeric * eurRate).toFixed(2));
-  }
-
   return returnObject
-    ? { value: converted, currency, raw: rawPrice }
-    : converted;
+    ? { value: numeric, raw: rawPrice }
+    : numeric;
 }

@@ -18,12 +18,31 @@ export default async function priceParser(item) {
                     convertedPrice = priceInfo.value * conversionRate;
                 }
 
+                let displayPrice = '';
+                const valueToDisplay = convertedPrice !== null ? convertedPrice : priceInfo.value;
+                let formatCurrency = convertedPrice !== null ? 'TRY' : currency;
+                if (formatCurrency === 'TL') formatCurrency = 'TRY';
+
+                if (typeof valueToDisplay === 'number' && formatCurrency && ['TRY', 'USD', 'EUR'].includes(formatCurrency)) {
+                    try {
+                        displayPrice = new Intl.NumberFormat('tr-TR', {
+                            style: 'currency',
+                            currency: formatCurrency
+                        }).format(valueToDisplay);
+                    } catch (e) {
+                        displayPrice = `${valueToDisplay} ${currency}`;
+                    }
+                } else if (typeof valueToDisplay === 'number') {
+                    displayPrice = `${valueToDisplay}`;
+                }
+
                 return {
                     ...priceObj,
                     numericValue: priceInfo.value,
                     currency: currency,
                     unsetPrice: priceInfo.value === 0 ? true : false,
-                    convertedPrice: convertedPrice
+                    convertedPrice: convertedPrice,
+                    displayPrice: displayPrice
                 };
             } catch (error) {
                 return {

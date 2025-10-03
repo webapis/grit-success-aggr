@@ -9,10 +9,10 @@ import priceParser from "./priceParcer.js";
  * Process and validate scraped data items
  * @param {Array} data - Array of scraped data items
  * @param {Object} siteUrls - Site URLs configuration containing imageCDN and urls
- * @returns {Array} Array of processed and validated data items
+ * @returns {Promise<Array>} A promise that resolves to an array of processed and validated data items
  */
-export default function processAndValidateScrapedData(data, siteUrls) {
-    return data.map(item => {
+export default async function processAndValidateScrapedData(data, siteUrls) {
+    return Promise.all(data.map(async item => {
         // Process images
         const processedImgs = (item.img || [])
             .map(m => m /*getMiddleImageUrl(m, siteUrls.imageCDN || siteUrls.urls[0])*/)
@@ -28,7 +28,7 @@ export default function processAndValidateScrapedData(data, siteUrls) {
         const videoValid = item.videos && item.videos.length > 0 && item.videos.every(isValidVideoURL);
 
         // Parse and validate prices
-        const { parsedPrices, priceValid } = priceParser(item);
+        const { parsedPrices, priceValid } = await priceParser(item);
 
         // Return processed item with all validations
         return {
@@ -43,5 +43,5 @@ export default function processAndValidateScrapedData(data, siteUrls) {
             videoValid,
             mediaType: item.videos && item.videos.length > 0 ? 'video' : 'image'
         };
-    });
+    }));
 }
