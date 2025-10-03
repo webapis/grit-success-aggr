@@ -1,14 +1,13 @@
 import mapPrice from './mapPrice.js';
 import addCurrency from '../../2_data/processing/addCurrency.js';
-import { getCachedSiteConfigFromFile } from '../../config/siteConfig.js';
 
 const FALLBACK_RATES = {
     USD: 33.5,
     EUR: 37.01
 };
 
-export default async function priceParser(item) {
-    const siteConfig = await getCachedSiteConfigFromFile();
+export default async function priceParser(item,siteConfig) {
+
     if (siteConfig) {
         console.log('Successfully loaded siteConfig.json. Conversion rate from config:', siteConfig.conversionRate);
     } else {

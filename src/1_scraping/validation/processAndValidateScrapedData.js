@@ -14,6 +14,7 @@ import priceParser from "./priceParcer.js";
 export default async function processAndValidateScrapedData(data, siteUrls) {
     return Promise.all(data.map(async item => {
         // Process images
+        debugger
         const processedImgs = (item.img || [])
             .map(m => m /*getMiddleImageUrl(m, siteUrls.imageCDN || siteUrls.urls[0])*/)
             .filter(Boolean);
@@ -28,7 +29,7 @@ export default async function processAndValidateScrapedData(data, siteUrls) {
         const videoValid = item.videos && item.videos.length > 0 && item.videos.every(isValidVideoURL);
 
         // Parse and validate prices
-        const { parsedPrices, priceValid } = await priceParser(item);
+        const { parsedPrices, priceValid } = await priceParser(item,siteUrls);
 
         // Return processed item with all validations
         return {
