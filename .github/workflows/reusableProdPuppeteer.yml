@@ -132,12 +132,16 @@ jobs:
       if: always()
       run: |
         echo "🔍 Starting validation pipeline..."
-        npm run validate
-    - name: Run categorization
+        (
+          npm run validate &
+          npm run categorize &
+          wait
+        )
+    - name: Merge validation and categorization results
       if: always()
       run: |
-        echo "📊 Starting categorization..."
-        node scripts/run-categorization.js
+        echo "🤝 Merging results..."
+        npm run merge
 
     - name: Upload results
       run: |

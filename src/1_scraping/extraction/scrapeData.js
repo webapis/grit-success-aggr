@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import fs from 'fs';
+import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -176,5 +177,16 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
     const timestamp = generateTimestampId()
 
     debugger
-    return filteredData.map((m, i) => { return { ...m, processId: timestamp, index: i } });
+    return filteredData.map((m, i) => {
+        // Generate a unique, stable ID from the item's link.
+        // This ensures the ID is consistent across different runs.
+        const id = m.link ? crypto.createHash('sha256').update(m.link).digest('hex') : null;
+
+        return {
+            id,
+            ...m,
+            processId: timestamp,
+            index: i
+        };
+    });
 }

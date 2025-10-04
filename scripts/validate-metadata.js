@@ -2,22 +2,38 @@
 import fs from 'fs';
 import path from 'path';
 import { validateItemMetadata } from '../src/1_scraping/validation/metadataValidator.js';
-
-const FINAL_OUTPUT_DIR = path.join(process.cwd(), 'artifacts', 'final-output');
-const FINAL_FILE_PATH = path.join(FINAL_OUTPUT_DIR, 'validated-products.json');
+const RAW_DATA_DIR = path.join(process.cwd(), 'storage', 'datasets', 'default');
+const ARTIFACTS_DIR = path.join(process.cwd(), 'artifacts');
+const OUTPUT_FILE = path.join(ARTIFACTS_DIR, 'metadata-validated.json');
 
 async function main() {
     console.log('\n🔍 Starting metadata validation process...\n');
-    console.log(`Reading data from: ${FINAL_FILE_PATH}\n`);
+    console.log(`Reading data from: ${RAW_DATA_DIR}\n`);
 
-    if (!fs.existsSync(FINAL_FILE_PATH)) {
-        console.error(`Error: Final output file not found at ${FINAL_FILE_PATH}`);
-        console.error('Please run the price and media validation scripts first.');
+    if (!fs.existsSync(RAW_DATA_DIR)) {
+        console.error(`Error: Dataset directory not found at ${RAW_DATA_DIR}`);
+        console.error('Please run the scraping process first to generate data.');
         process.exit(1);
     }
 
-    const rawData = fs.readFileSync(FINAL_FILE_PATH, 'utf-8');
-    const items = JSON.parse(rawData);
+    if (!fs.existsSync(ARTIFACTS_DIR)) {
+        fs.mkdirSync(ARTIFACTS_DIR, { recursive: true });
+    }
+
+    const files = fs.readdirSync(RAW_DATA_DIR).filter(file => file.endsWith('.json'));
+
+    if (files.length === 0) {
+        console.log('No JSON files found in the dataset directory. Nothing to process.');
+        return;
+    }
+
+    const items = [];
+    for (const file of files) {
+        const filePath = path.join(RAW_DATA_DIR, file);
+        const rawData = fs.readFileSync(filePath, 'utf-8');
+        const fileItems = JSON.parse(rawData);
+        items.push(...(Array.isArray(fileItems) ? fileItems : [fileItems]));
+    }
 
     if (!Array.isArray(items)) {
         console.error('Error: The input file does not contain a valid JSON array.');
@@ -33,11 +49,11 @@ async function main() {
     });
 
     // Overwrite the file with the final, fully enriched data
-    fs.writeFileSync(FINAL_FILE_PATH, JSON.stringify(enrichedItems, null, 2));
+    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(enrichedItems, null, 2));
 
     console.log('\n--- Metadata Validation Summary ---\n');
     console.log(`Total Items Processed: ${enrichedItems.length}`);
-    console.log(`✅ Successfully updated final validated data at: ${FINAL_FILE_PATH}`);
+    console.log(`✅ Successfully created final validated data at: ${OUTPUT_FILE}`);
     console.log('-----------------------------------\n');
 }
 

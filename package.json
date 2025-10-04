@@ -12,9 +12,10 @@
     "validate:prices": "node scripts/validate-prices.js",
     "validate:media": "node scripts/validate-media.js",
     "validate:metadata": "node scripts/validate-metadata.js",
-    "validate": "npm run validate:prices && npm run validate:media && npm run validate:metadata",
+    "validate": "npm run validate:prices & npm run validate:media & npm run validate:metadata & wait",
     "categorize": "node scripts/run-categorization.js",
-    "uploadData": "node src/2_data/persistence/sheet/uploadToGoogleSheet.js",
+    "merge": "node scripts/merge-results.js",
+    "uploadData": "node src/2_data/persistence/sheet/uploadToGoogleSheet.js",    
     "uploadCategorizationResults": "node scripts/upload-categorization-results-to-sheet.js"
   },
   "keywords": [],
