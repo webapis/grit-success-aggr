@@ -14,7 +14,7 @@ import priceAttribute from "../../config/selectors/selector-attibutes/priceAttri
 import videoAttributes from "../../config/selectors/selector-attibutes/videoAttributes.js";
 import videoSelectors from "../../config/selectors/selector-attibutes/videoSelectors.js";
 import productNotAvailable from "../../config/selectors/selector-attibutes/productNotAvailable.js";
-import processAndValidateScrapedData from "../validation/processAndValidateScrapedData.js";
+
 import { emitAsync } from "../../shared/events.js";
 import logToLocalSheet from "../../2_data/persistence/sheet/logToLocalSheet.js";
 
@@ -173,25 +173,8 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         });
     }
 
-    // Use the extracted processing function
-    debugger
-    const validData = await processAndValidateScrapedData(filteredData, siteUrls);
-    const { totalItemsToBeCallected, totalItemsPerPage, debug } = logToLocalSheet()
-
-    if (debug) {
-        // await emitAsync('log-to-sheet', {
-        //     sheetTitle: 'debug',
-        //     message: `Site crawler result`,
-        //     rowData: { "URL": url, totalItemsToBeCallected, totalItemsPerPage, "Scraped Items": data.length, "Valid Items": validData.length, "Timestamp": new Date().toISOString() }
-        // });
-
-
-
-    }
-
-
     const timestamp = generateTimestampId()
 
     debugger
-    return validData.map((m, i) => { return { ...m, processId: timestamp, index: i } });
+    return filteredData.map((m, i) => { return { ...m, processId: timestamp, index: i } });
 }

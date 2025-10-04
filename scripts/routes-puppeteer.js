@@ -10,7 +10,7 @@ const site = process.env.site;
 
 export const createRouter = async (siteUrls) => {
 
-  const productsDataset = await Dataset.open(site);
+  const productsDataset = await Dataset.open();
   const router = createPuppeteerRouter();
   let hasRunFirstPageFunction = false;
   router.addDefaultHandler(async (props) => {

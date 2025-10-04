@@ -128,6 +128,11 @@ jobs:
         fi
         
                   node scripts/refactored-crawl.js
+    - name: Run validation pipeline
+      if: always()
+      run: |
+        echo "🔍 Starting validation pipeline..."
+        npm run validate
     - name: Run categorization
       if: always()
       run: |
