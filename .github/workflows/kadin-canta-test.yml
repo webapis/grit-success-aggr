@@ -1,4 +1,4 @@
-name: Kadin Canta Aggregator
+name: WB Aggregator
 on:
   workflow_dispatch:
     inputs:
