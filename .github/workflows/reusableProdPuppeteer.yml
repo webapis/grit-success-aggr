@@ -146,7 +146,7 @@ jobs:
     - name: Upload results
       run: |
         echo "📤 Uploading results..."
-        node src/2_data/persistence/sheet/uploadToGoogleSheet.js
+        npm run uploadData
       env:
         UPLOAD_TO_SHEET: ${{ inputs.upload_results }}
 
