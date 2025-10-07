@@ -1,11 +1,13 @@
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
 import analyzeData from '../src/2_data/processing/analize-data/analizeData.js';
-import { getDatasetItems } from '../src/1_scraping/crawlee/datasetOperations.js';
-import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 
 dotenv.config({ silent: true });
 
 const site = process.env.site;
+const FINAL_OUTPUT_FILE = path.join(process.cwd(), 'artifacts', 'final-products.json');
+const ANALYSIS_SUMMARY_FILE = path.join(process.cwd(), 'artifacts', 'analysis-summary.json');
 
 if (!site) {
     console.error('Error: "site" environment variable is not set.');
@@ -15,8 +17,15 @@ if (!site) {
 
 (async () => {
     try {
-        console.log(`Fetching categorized data for site: ${site}`);
-        const data = await getDatasetItems(`${site}-categorized`);
+        console.log(`Reading final merged data for site: ${site}`);
+        
+        if (!fs.existsSync(FINAL_OUTPUT_FILE)) {
+            console.error(`Error: Final data file not found at ${FINAL_OUTPUT_FILE}`);
+            console.error('Please ensure the merge process has run successfully.');
+            process.exit(1);
+        }
+
+        const data = JSON.parse(fs.readFileSync(FINAL_OUTPUT_FILE, 'utf-8'));
 
         if (!data || data.length === 0) {
             console.log('No data found to analyze.');
@@ -27,8 +36,11 @@ if (!site) {
         const analysisResult = await analyzeData(data);
 
         console.log('\n--- Analysis Complete ---');
-        logToLocalSheet(analysisResult);
-        console.log('Analysis results saved to logToLocalSheet.json');
+        if (!fs.existsSync(path.dirname(ANALYSIS_SUMMARY_FILE))) {
+            fs.mkdirSync(path.dirname(ANALYSIS_SUMMARY_FILE), { recursive: true });
+        }
+        fs.writeFileSync(ANALYSIS_SUMMARY_FILE, JSON.stringify(analysisResult, null, 2));
+        console.log(`Analysis results saved to ${ANALYSIS_SUMMARY_FILE}`);
         console.log('-----------------------\n');
         console.log(JSON.stringify(analysisResult, null, 2));
 
