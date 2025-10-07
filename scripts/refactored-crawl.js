@@ -190,16 +190,18 @@ async function main() {
 
 
 
-        if (!siteConfig) {
-            console.error(`Could not retrieve configuration for site: ${site}. Exiting.`);
-            process.exit(1); // This is now correctly placed after all fetch attempts have failed.
+        if (!siteConfig || !siteConfig.configurations || siteConfig.configurations.length === 0) {
+            console.error(`Could not retrieve a valid configuration for site: ${site}. Exiting.`);
+            process.exit(1);
         }
+
+        const mainConfig = siteConfig.configurations[0];
 
         console.log(`Configuration loaded for site: ${site}`, {
             totalUrls: siteConfig.totalUrls || siteConfig.urls?.length,
             paused: siteConfig.paused,
-            scrollable: siteConfig.scrollable,
-            itemsPerPage: siteConfig.itemsPerPage,
+            scrollable: mainConfig.scrollable,
+            itemsPerPage: mainConfig.itemsPerPage,
             cachedAt: siteConfig.cachedAt || 'not cached'
         });
 
@@ -210,10 +212,10 @@ async function main() {
         console.log(`Starting crawler for site: ${site} with ${urlsToScrape.length} valid URLs`);
         console.log('Valid URLs to crawl:', urlsToScrape);
         console.log('Site configuration:', {
-            paginationSelector: siteConfig.paginationSelector,
-            scrollable: siteConfig.scrollable,
-            itemsPerPage: siteConfig.itemsPerPage,
-            filteringNeeded: siteConfig.filteringNeeded
+            paginationSelector: mainConfig.paginationSelector,
+            scrollable: mainConfig.scrollable,
+            itemsPerPage: mainConfig.itemsPerPage,
+            filteringNeeded: mainConfig.filteringNeeded
         });
 
         // Create router with siteConfig

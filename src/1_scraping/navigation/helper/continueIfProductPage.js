@@ -24,7 +24,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         const previousTotalItemsToBeCallected = totalItemsToBeCallected || 0;
 
         const { count: totalItemsToBeCallectedCount, selector: totalItemsSelector } =
-            await getTotalItemsCount(page, siteUrls?.totalProductCounterSelector);
+            await getTotalItemsCount(page, siteUrls.configurations[0]?.totalProductCounterSelector);
 
         logToLocalSheet({
             totalItemsToBeCallected: totalItemsToBeCallectedCount + previousTotalItemsToBeCallected,

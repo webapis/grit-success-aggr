@@ -151,18 +151,7 @@ debugger
         totalUrls: allUrls.length,
         paused: isPaused,
         pausedReason: pausedReason,
-        inflexible_notes: siteConfigurations[0]?.inflexible_notes || '',
-        imageSelector: siteConfigurations[0]?.imageSelector || '',
-        imgExtToFilterOut: siteConfigurations[0]?.imgExtToFilterOut || '',
-        keywordsToFilterOut: siteConfigurations[0]?.keywordsToFilterOut || [],
-        conversionRate: siteConfigurations[0]?.conversionRate || null,
         configurations: siteConfigurations,
-        paginationSelector: siteConfigurations[0]?.paginationSelector || '',
-        paginationParameterName: siteConfigurations[0]?.paginationParameterName || '',
-        scrollable: siteConfigurations[0]?.scrollable || false,
-        showMoreButtonSelector: siteConfigurations[0]?.showMoreButtonSelector || '',
-        totalProductCounterSelector: siteConfigurations[0]?.totalProductCounterSelector || '',
-        debug: siteConfigurations[0]?.debug || false,
         cachedAt: sheetData.timestamp || new Date().toISOString()
     };
 }

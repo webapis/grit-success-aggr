@@ -48,9 +48,10 @@ function convertFunctionToString(func) {
 }
 
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
-    const imageSelectorsOverride = (siteUrls.imageSelector && siteUrls.imageSelector) || imageSelectors;
-    const imgExtToFilterOut = siteUrls.imgExtToFilterOut
-    const keywordsToFilterOut = siteUrls.keywordsToFilterOut || []
+    const mainConfig = siteUrls.configurations[0];
+    const imageSelectorsOverride = (mainConfig.imageSelector && mainConfig.imageSelector) || imageSelectors;
+    const imgExtToFilterOut = mainConfig.imgExtToFilterOut
+    const keywordsToFilterOut = mainConfig.keywordsToFilterOut || []
     const url = await page.url()
     console.log('URL:', url)
     debugger
@@ -62,7 +63,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
  
 
-    if (siteUrls.debug) {
+    if (mainConfig.debug) {
         page.on('console', msg => console.log('PAGE LOG:', msg.text()));
     }
 

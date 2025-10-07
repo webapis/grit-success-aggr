@@ -16,7 +16,7 @@ export default async function second({
 }) {
   debugger
   console.log('inside second route')
-  const paginationParameterName = siteUrls?.paginationParameterName
+  const paginationParameterName = siteUrls.configurations[0]?.paginationParameterName
   const { productItemSelector } = logToLocalSheet()
   debugger
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));

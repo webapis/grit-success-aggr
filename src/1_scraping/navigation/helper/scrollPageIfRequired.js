@@ -7,8 +7,8 @@ dotenv.config({ silent: true });
 export async function scrollPageIfRequired({ page, siteUrls, routeName }) {
     const { totalItemsToBeCallected, totalItemsPerPage } = logToLocalSheet()
 
-    const scrollable = siteUrls?.scrollable || false;
-    const showMoreButtonSelector = siteUrls?.showMoreButtonSelector || '';
+    const scrollable = siteUrls.configurations[0]?.scrollable || false;
+    const showMoreButtonSelector = siteUrls.configurations[0]?.showMoreButtonSelector || '';
     // const totalProductCounterSelector = siteUrls?.totalProductCounterSelector || '';
   
 
