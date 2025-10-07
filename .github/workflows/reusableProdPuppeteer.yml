@@ -127,18 +127,26 @@ jobs:
           echo "🌐 Will fetch fresh data from Google Sheets API"
         fi
         
-        node scripts/crawl-ecommerce-site.js
-
-    - name: Run categorization
+                  node scripts/refactored-crawl.js
+    - name: Run validation pipeline
       if: always()
       run: |
-        echo "📊 Starting categorization..."
-        node scripts/run-categorization.js
+        echo "🔍 Starting validation pipeline..."
+        (
+          npm run validate &
+          npm run categorize &
+          wait
+        )
+    - name: Merge validation and categorization results
+      if: always()
+      run: |
+        echo "🤝 Merging results..."
+        npm run merge
 
     - name: Upload results
       run: |
         echo "📤 Uploading results..."
-        node src/2_data/persistence/sheet/uploadToGoogleSheet.js
+        npm run uploadData
       env:
         UPLOAD_TO_SHEET: ${{ inputs.upload_results }}
 

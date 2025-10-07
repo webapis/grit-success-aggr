@@ -10,7 +10,7 @@ const site = process.env.site;
 
 export const createRouter = async (siteUrls) => {
 
-  const productsDataset = await Dataset.open(site);
+  const productsDataset = await Dataset.open();
   const router = createPuppeteerRouter();
   let hasRunFirstPageFunction = false;
   router.addDefaultHandler(async (props) => {
@@ -20,24 +20,25 @@ export const createRouter = async (siteUrls) => {
       
       hasRunFirstPageFunction = true
 
-      logToLocalSheet({ paginationParameterName: siteUrls.paginationParameterName, scrollable: siteUrls.scrollable, showMoreButtonSelector: siteUrls.showMoreButtonSelector, debug: siteUrls.debug || false,inflexible_notes: siteUrls.inflexible_notes || '',paused:siteUrls.paused || false,pausedReason:siteUrls.pausedReason || ''
+      const mainConfig = siteUrls.configurations[0];
+      logToLocalSheet({ paginationParameterName: mainConfig.paginationParameterName, scrollable: mainConfig.scrollable, showMoreButtonSelector: mainConfig.showMoreButtonSelector, debug: mainConfig.debug || false,inflexible_notes: mainConfig.inflexible_notes || '',paused:siteUrls.paused || false,pausedReason:siteUrls.pausedReason || ''
       
       });
 
     }
-    debugger
+    
     const data = await first({ ...props, label: "default", siteUrls });
 
-    debugger
+    
    await productsDataset.pushData(data);
-    debugger
+    
 
   });
 
   router.addHandler("second", async (props) => {
-    debugger
+    
     const data = await second({ ...props, label: "second", siteUrls });
-    debugger
+    
     await productsDataset.pushData(data);
   });
 

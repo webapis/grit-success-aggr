@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import fs from 'fs';
+import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -14,7 +15,7 @@ import priceAttribute from "../../config/selectors/selector-attibutes/priceAttri
 import videoAttributes from "../../config/selectors/selector-attibutes/videoAttributes.js";
 import videoSelectors from "../../config/selectors/selector-attibutes/videoSelectors.js";
 import productNotAvailable from "../../config/selectors/selector-attibutes/productNotAvailable.js";
-import processAndValidateScrapedData from "../validation/processAndValidateScrapedData.js";
+
 import { emitAsync } from "../../shared/events.js";
 import logToLocalSheet from "../../2_data/persistence/sheet/logToLocalSheet.js";
 
@@ -47,9 +48,10 @@ function convertFunctionToString(func) {
 }
 
 export default async function scrapeData({ page, siteUrls, productItemSelector }) {
-    const imageSelectorsOverride = (siteUrls.imageSelector && siteUrls.imageSelector) || imageSelectors;
-    const imgExtToFilterOut = siteUrls.imgExtToFilterOut
-    const keywordsToFilterOut = siteUrls.keywordsToFilterOut || []
+    const mainConfig = siteUrls.configurations[0];
+    const imageSelectorsOverride = (mainConfig.imageSelector && mainConfig.imageSelector) || imageSelectors;
+    const imgExtToFilterOut = mainConfig.imgExtToFilterOut
+    const keywordsToFilterOut = mainConfig.keywordsToFilterOut || []
     const url = await page.url()
     console.log('URL:', url)
     debugger
@@ -61,7 +63,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
  
 
-    if (siteUrls.debug) {
+    if (mainConfig.debug) {
         page.on('console', msg => console.log('PAGE LOG:', msg.text()));
     }
 
@@ -173,25 +175,30 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         });
     }
 
-    // Use the extracted processing function
-    debugger
-    const validData = processAndValidateScrapedData(filteredData, siteUrls);
-    const { totalItemsToBeCallected, totalItemsPerPage, debug } = logToLocalSheet()
-
-    if (debug) {
-        // await emitAsync('log-to-sheet', {
-        //     sheetTitle: 'debug',
-        //     message: `Site crawler result`,
-        //     rowData: { "URL": url, totalItemsToBeCallected, totalItemsPerPage, "Scraped Items": data.length, "Valid Items": validData.length, "Timestamp": new Date().toISOString() }
-        // });
-
-
-
-    }
-
-
     const timestamp = generateTimestampId()
 
     debugger
-    return validData.map((m, i) => { return { ...m, processId: timestamp, index: i } });
+    const processedData = filteredData.map((m, i) => {
+        // Generate a unique, stable ID from the item's link.
+        // This ensures the ID is consistent across different runs.
+        const id = m.link ? crypto.createHash('sha256').update(m.link).digest('hex') : null;
+
+        return {
+            id,
+            ...m,
+            processId: timestamp,
+            index: i
+        };
+    });
+
+    logToLocalSheet({
+        [timestamp]: {
+            site: site,
+            url: url,
+            count: processedData.length,
+            data: processedData
+        }
+    });
+
+    return processedData;
 }

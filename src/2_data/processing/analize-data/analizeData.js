@@ -134,6 +134,7 @@ export default async function analyzeData(data) {
     }
 
     return {
+        'Site': site,
         // === OVERVIEW METRICS ===
         'Total Collected Items': data.length,
         'Total Valid Items': dataWithoutError.length,
@@ -163,6 +164,7 @@ export default async function analyzeData(data) {
         'Unset Prices': unsetPrices,
         'Price Scrape Errors': priceScrapeErrors,
         'Total Not Availables': totalNotAvailables,
+        'Currency Used': dataWithoutError.length > 0 ? dataWithoutError[0]?.price[0]?.currency || 'N/A' : 'N/A',
 
         // === SAMPLE DATA LINKS ===
         'Valid Sample Data (Drive)': ValidJSONSampleDataDriveLink ? ValidJSONSampleDataDriveLink.webViewLink : 'N/A',

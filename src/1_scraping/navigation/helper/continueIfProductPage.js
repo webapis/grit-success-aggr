@@ -16,7 +16,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
 
     await delay(5000); // wait for 5 seconds
     const bestSelector = await findBestSelector(page, productItemSelector);
-    debugger
+    
     const { totalItemsToBeCallected, debug } = logToLocalSheet() || {};
     if (bestSelector.count > 0) {
         // Safely extract with default 0
@@ -24,7 +24,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         const previousTotalItemsToBeCallected = totalItemsToBeCallected || 0;
 
         const { count: totalItemsToBeCallectedCount, selector: totalItemsSelector } =
-            await getTotalItemsCount(page, siteUrls?.totalProductCounterSelector);
+            await getTotalItemsCount(page, siteUrls.configurations[0]?.totalProductCounterSelector);
 
         logToLocalSheet({
             totalItemsToBeCallected: totalItemsToBeCallectedCount + previousTotalItemsToBeCallected,
