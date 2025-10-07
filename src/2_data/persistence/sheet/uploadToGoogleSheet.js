@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import analyzeData from "../../processing/analize-data/analizeData.js";
 import fs from 'fs';
 import logToLocalSheet from "./logToLocalSheet.js";
 import { getDatasetItems } from "../../../1_scraping/crawlee/datasetOperations.js";
@@ -16,9 +15,7 @@ export default async function uploadToGoogleSheet() {
     debugger
     const data = await getDatasetItems(`${site}-categorized`);
     debugger
-    const analyzedData = await analyzeData(data);
-    debugger
-    const { pageItems = [], pageNumbers = [] } = logToLocalSheet(analyzedData);
+    const { pageItems = [], pageNumbers = [] } = logToLocalSheet();
     debugger
     console.log('pageItems--, pageNumbers--', pageItems, pageNumbers);
     const result = sortPageData(pageItems, pageNumbers);
@@ -33,7 +30,7 @@ export default async function uploadToGoogleSheet() {
         console.log('Not in GitHub Actions. Skipping artifact file creation.');
     }
 
-    return { analyzedData, logResult };
+    return { logResult };
 }
 
 debugger

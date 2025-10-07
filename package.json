@@ -16,7 +16,8 @@
     "categorize": "node scripts/run-categorization.js",
     "merge": "node scripts/merge-results.js",
     "uploadData": "node src/2_data/persistence/sheet/uploadToGoogleSheet.js",    
-    "uploadCategorizationResults": "node scripts/upload-categorization-results-to-sheet.js"
+    "uploadCategorizationResults": "node scripts/upload-categorization-results-to-sheet.js",
+    "preuploadData": "node scripts/run-analysis.js"
   },
   "keywords": [],
   "author": "",

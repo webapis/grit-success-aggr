@@ -177,7 +177,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
     const timestamp = generateTimestampId()
 
     debugger
-    return filteredData.map((m, i) => {
+    const processedData = filteredData.map((m, i) => {
         // Generate a unique, stable ID from the item's link.
         // This ensures the ID is consistent across different runs.
         const id = m.link ? crypto.createHash('sha256').update(m.link).digest('hex') : null;
@@ -189,4 +189,15 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             index: i
         };
     });
+
+    logToLocalSheet({
+        [timestamp]: {
+            site: site,
+            url: url,
+            count: processedData.length,
+            data: processedData
+        }
+    });
+
+    return processedData;
 }
