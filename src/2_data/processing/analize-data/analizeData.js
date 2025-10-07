@@ -134,6 +134,7 @@ export default async function analyzeData(data) {
     }
 
     return {
+        'Site': site,
         // === OVERVIEW METRICS ===
         'Total Collected Items': data.length,
         'Total Valid Items': dataWithoutError.length,
