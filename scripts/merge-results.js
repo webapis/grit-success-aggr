@@ -2,51 +2,48 @@ import fs from 'fs';
 import path from 'path';
 
 const ARTIFACTS_DIR = path.join(process.cwd(), 'artifacts');
-const VALIDATED_FILE = path.join(ARTIFACTS_DIR, 'metadata-validated.json');
-const CATEGORIZED_FILE = path.join(ARTIFACTS_DIR, 'categorized-products.json');
 const FINAL_OUTPUT_FILE = path.join(ARTIFACTS_DIR, 'final-products.json');
 
 async function main() {
-    console.log('\n🤝 Starting merge process...\n');
+    console.log('\n🤝 Starting dynamic merge process...\n');
 
-    // --- Read Validated Data ---
-    if (!fs.existsSync(VALIDATED_FILE)) {
-        console.error(`Error: Validated data file not found at ${VALIDATED_FILE}`);
-        console.error('Please run the validation pipeline first.');
+    // --- Find all JSON files in the artifacts directory ---
+    const allFiles = fs.readdirSync(ARTIFACTS_DIR);
+    const jsonFilesToMerge = allFiles.filter(file =>
+        file.endsWith('.json') && path.join(ARTIFACTS_DIR, file) !== FINAL_OUTPUT_FILE
+    );
+
+    if (jsonFilesToMerge.length === 0) {
+        console.error('No JSON files to merge in the artifacts directory.');
         process.exit(1);
     }
-    const validatedData = JSON.parse(fs.readFileSync(VALIDATED_FILE, 'utf-8'));
-    console.log(`🔍 Found ${validatedData.length} items in validated data.`);
 
-    // --- Read Categorized Data ---
-    if (!fs.existsSync(CATEGORIZED_FILE)) {
-        console.error(`Error: Categorized data file not found at ${CATEGORIZED_FILE}`);
-        console.error('Please run the categorization script first.');
-        process.exit(1);
-    }
-    const categorizedData = JSON.parse(fs.readFileSync(CATEGORIZED_FILE, 'utf-8'));
-    console.log(`📊 Found ${categorizedData.length} items in categorized data.`);
+    console.log('🔍 Found the following JSON files to merge:');
+    jsonFilesToMerge.forEach(file => console.log(`  - ${file}`));
 
     // --- Merge Data ---
-    console.log('🔄 Merging datasets based on item ID...');
+    console.log('\n🔄 Merging datasets based on item ID...');
 
-    // Create a map for quick lookups of categorization data by ID
-    const categorizationMap = new Map(categorizedData.map(item => [item.id, item]));
+    // Create a map for quick lookups and merging of data by ID
+    const mergedDataMap = new Map();
 
-    const mergedData = validatedData.map(validatedItem => {
-        const categorizedItem = categorizationMap.get(validatedItem.id);
+    for (const jsonFile of jsonFilesToMerge) {
+        const filePath = path.join(ARTIFACTS_DIR, jsonFile);
+        const fileContent = fs.readFileSync(filePath, 'utf-8');
+        const data = JSON.parse(fileContent);
 
-        if (categorizedItem) {
-            // Merge categorization fields into the validated item
-            return {
-                ...validatedItem,
-                categories: categorizedItem.categories,
-                seo: categorizedItem.seo,
-            };
+        console.log(`📊 Processing ${data.length} items from ${jsonFile}`);
+
+        for (const item of data) {
+            if (item.id) {
+                const existingItem = mergedDataMap.get(item.id) || {};
+                // Deep merge of item properties
+                mergedDataMap.set(item.id, { ...existingItem, ...item });
+            }
         }
-        // If no matching category data, return the validated item as is
-        return validatedItem;
-    });
+    }
+
+    const mergedData = Array.from(mergedDataMap.values());
 
     fs.writeFileSync(FINAL_OUTPUT_FILE, JSON.stringify(mergedData, null, 2));
 
