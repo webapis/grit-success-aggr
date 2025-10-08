@@ -1,1 +1,0 @@
-export default ['.left-menu.js-left-menu .left-menu__item']

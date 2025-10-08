@@ -1,1 +1,0 @@
-export default ['.trunk__item.js-trunk-item.-hasBranch']

@@ -1,1 +1,0 @@
-export default [{ name: "kadın", alternativeNames: ["kadın", "bayan", "hanım", "woman", "women"]}];

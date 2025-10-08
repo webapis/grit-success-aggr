@@ -1,1 +1,0 @@
-export default ["kadin-canta","kadin-cuzdan","valiz-modelleri"]
