@@ -45,6 +45,17 @@ async function main() {
 
     const mergedData = Array.from(mergedDataMap.values());
 
+    // --- Clean up redundant data ---
+    console.log('\n🧹 Cleaning up redundant fields...');
+    mergedData.forEach(item => {
+        if (item.priceAnalysis && item.price) {
+            delete item.price;
+        }
+        if (item.seo && item.seo.tags) {
+            delete item.seo.tags;
+        }
+    });
+
     fs.writeFileSync(FINAL_OUTPUT_FILE, JSON.stringify(mergedData, null, 2));
 
     console.log('\n--- Merge Summary ---\n');
