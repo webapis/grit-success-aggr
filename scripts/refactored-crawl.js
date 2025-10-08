@@ -1,5 +1,6 @@
 
 import { PuppeteerCrawler } from "crawlee";
+import fs from 'fs';
 import { createRouter } from "./routes-puppeteer.js"; // Import factory function
 import preNavigationHooks from "./helpers/preNavigationHooksProd2.js";
 import puppeteer from '../src/1_scraping/helpers/puppeteer-stealth.js';
@@ -73,6 +74,9 @@ async function validateConfig(siteConfig) {
             message: `Site ${site} is paused`,
             rowData,
         });
+        if (process.env.GITHUB_OUTPUT) {
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, "status=paused\n");
+        }
         console.log(`Site ${site} is paused from aggregating. Reason: ${pausedReason}`);
         return true;
     }

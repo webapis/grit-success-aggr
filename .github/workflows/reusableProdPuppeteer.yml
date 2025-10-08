@@ -32,6 +32,8 @@ jobs:
   crawler-job:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    outputs:
+      status: ${{ steps.crawler.outputs.status }}
 
     steps:
     - name: Checkout code
@@ -117,6 +119,7 @@ jobs:
         npm ci --prefer-offline --no-audit
 
     - name: Run crawler
+      id: crawler
       run: |
         echo "🚀 Starting crawler for site: ${{ inputs.site }}"
         echo "📊 Cache status: $CACHE_STATUS"
@@ -129,7 +132,7 @@ jobs:
         
                   node scripts/refactored-crawl.js
     - name: Run validation pipeline
-      if: always()
+      if: steps.crawler.outputs.status != 'paused'
       run: |
         echo "🔍 Starting validation pipeline..."
         (
@@ -138,12 +141,13 @@ jobs:
           wait
         )
     - name: Merge validation and categorization results
-      if: always()
+      if: steps.crawler.outputs.status != 'paused'
       run: |
         echo "🤝 Merging results..."
         npm run merge
 
     - name: Upload results
+      if: steps.crawler.outputs.status != 'paused'
       run: |
         echo "📤 Uploading results..."
         npm run uploadData
@@ -151,13 +155,13 @@ jobs:
         UPLOAD_TO_SHEET: ${{ inputs.upload_results }}
 
     - name: Upload categorization results
-      if: always() && inputs.upload_categorization_results == true
+      if: steps.crawler.outputs.status != 'paused' && inputs.upload_categorization_results == true
       run: |
         echo "📤 Uploading categorization results..."
         node scripts/upload-categorization-results-to-sheet.js
 
     - name: Upload Summary Artifact
-      if: always()
+      if: steps.crawler.outputs.status != 'paused'
       uses: actions/upload-artifact@v4
       with:
         name: upload-summary-${{ inputs.site }}
