@@ -2,6 +2,14 @@
 import { PuppeteerCrawler } from "crawlee";
 import fs from 'fs';
 import { createRouter } from "./routes-puppeteer.js"; // Import factory function
+
+class ForbiddenError extends Error {
+    constructor(message, request) {
+        super(message);
+        this.name = 'ForbiddenError';
+        this.request = request;
+    }
+}
 import preNavigationHooks from "./helpers/preNavigationHooksProd2.js";
 import puppeteer from '../src/1_scraping/helpers/puppeteer-stealth.js';
 import { getSiteConfig, getCachedSiteConfigFromFile } from '../src/config/siteConfig.js';
@@ -150,6 +158,7 @@ function initializeCrawler(siteConfig, router) {
             // Log specific error types for debugging
             if (error.message.includes('403 status code')) {
                 console.log('🚫 Detected 403 Forbidden error - possible anti-bot protection');
+                throw new ForbiddenError('Site is protected by anti-bot measures.', request);
             } else if (error.message.includes('timeout')) {
                 console.log('⏰ Request timeout detected');
             }
@@ -182,9 +191,30 @@ async function runCrawler(crawler, urlsToScrape) {
 
         logToLocalSheet({ Duration: duration });
     } catch (crawlerError) {
-        console.error('❌ Crawler execution failed:', crawlerError);
-        logToLocalSheet({ Status: 'Fatal Error', Notes: `Crawler crashed: ${crawlerError.message}` });
-        throw crawlerError; // Re-throw to allow higher-level error handling
+        if (crawlerError.name === 'ForbiddenError') {
+            console.log(`🚫 Site is protected by anti-bot measures (403 Forbidden) at ${crawlerError.request.url}. Stopping crawl.`);
+            // 1. Log to sheet '403'
+            const rowData = {
+                site: site,
+                url: crawlerError.request.url,
+                timestamp: new Date().toISOString(),
+                githubRunUrl: GitHubRunUrl,
+            };
+            await emitAsync('log-to-sheet', {
+                sheetTitle: '403',
+                message: `Site ${site} is blocked.`,
+                rowData,
+            });
+
+            // 2. Signal GH Actions
+            if (process.env.GITHUB_OUTPUT) {
+                fs.appendFileSync(process.env.GITHUB_OUTPUT, "status=paused\n");
+            }
+        } else {
+            console.error('❌ Crawler execution failed:', crawlerError);
+            logToLocalSheet({ Status: 'Fatal Error', Notes: `Crawler crashed: ${crawlerError.message}` });
+            throw crawlerError; // Re-throw to allow higher-level error handling
+        }
     }
 }
 
