@@ -7,6 +7,8 @@ import { getSiteConfig, getCachedSiteConfigFromFile } from '../src/config/siteCo
 import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 import getGitHubActionsRunUrl from '../src/shared/getGitHubActionsRunUrl.js';
 import { validateUrls } from "./helpers/urlValidation.js";
+import { emitAsync } from '../src/shared/events.js';
+import '../src/shared/listeners.js'; // This registers the event handlers
 
 const site = process.env.site;
 const local = process.env.local;
@@ -54,15 +56,31 @@ async function getConfig(site) {
 }
 
 
-function validateConfig(siteConfig) {
+async function validateConfig(siteConfig) {
     if (siteConfig.paused) {
-        logToLocalSheet({ Status: 'Paused', pausedReason: siteConfig.pausedReason || 'No reason provided' })
-        throw new Error(`Site ${site} is paused from aggregating. Reason: ${siteConfig.pausedReason || 'No reason provided'}`);
+        const pausedReason = siteConfig.pausedReason || 'No reason provided';
+        logToLocalSheet({ Status: 'Paused', pausedReason });
+
+        const rowData = {
+            site,
+            pausedReason,
+            timestamp: new Date().toISOString(),
+            githubRunUrl: GitHubRunUrl,
+        };
+        
+        await emitAsync('log-to-sheet', {
+            sheetTitle: 'paused-sites', // Specify a dedicated sheet for run summaries
+            message: `Site ${site} is paused`,
+            rowData,
+        });
+        console.log(`Site ${site} is paused from aggregating. Reason: ${pausedReason}`);
+        return true;
     }
 
     if (!siteConfig.urls || siteConfig.urls.length === 0) {
         throw new Error(`No valid URLs found for site: ${site}.`);
     }
+    return false;
 }
 
 
@@ -205,7 +223,9 @@ async function main() {
             cachedAt: siteConfig.cachedAt || 'not cached'
         });
 
-        validateConfig(siteConfig);
+        if (await validateConfig(siteConfig)) {
+            return;
+        }
 
         const urlsToScrape = prepareUrls(siteConfig);
 
