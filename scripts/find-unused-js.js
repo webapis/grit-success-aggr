@@ -4,9 +4,10 @@
  *
  * Usage:
  *   node find-unused-js.js --list
- *   node find-unused-js.js          # Preview unused files (safe)
- *   node find-unused-js.js --delete # Delete with confirmation
- *   node find-unused-js.js --delete --yes # Delete without asking
+ *   node find-unused-js.js                  # Preview unused files (safe)
+ *   node find-unused-js.js --delete         # Delete with confirmation
+ *   node find-unused-js.js --delete --yes   # Delete without asking
+ *   node find-unused-js.js --json           # Save unused file list to JSON
  */
 
 import fs from "fs/promises";
@@ -21,6 +22,7 @@ const args = process.argv.slice(2);
 const modeList = args.includes("--list");
 const modeDelete = args.includes("--delete");
 const modeYes = args.includes("--yes");
+const modeJson = args.includes("--json");
 
 function color(text, code) {
   return `\x1b[${code}m${text}\x1b[0m`;
@@ -62,7 +64,7 @@ async function walk(dir) {
   return out;
 }
 
-function parseImports(content) {
+function parseImports(content, importer) {
   const sources = new Set();
   const patterns = [
     /import\s+[^;]*?from\s+['"]([^'"]+)['"]/g,
@@ -74,30 +76,90 @@ function parseImports(content) {
     let m;
     while ((m = re.exec(content))) sources.add(m[1]);
   }
+
+  // Detect path.join(__dirname, 'file.js') patterns and __dirname + '/file.js' concatenations
+  try {
+    const pjRe = /path\.join\(\s*__dirname\s*,\s*['"]([^'"]+)['"]\s*\)/g;
+    let m2;
+    while ((m2 = pjRe.exec(content))) {
+      const part = m2[1];
+      // convert to relative spec relative to importer
+      const rel = part.startsWith('.') ? part : `./${part}`;
+      sources.add(rel);
+    }
+
+    const plusRe = /__dirname\s*\+\s*['"]\/?([^'"]+)['"]/g;
+    while ((m2 = plusRe.exec(content))) {
+      const part = m2[1];
+      const rel = part.startsWith('.') ? part : `./${part}`;
+      sources.add(rel);
+    }
+  } catch (e) {
+    // ignore parsing errors
+  }
+
+  // If importer provided, return array of specs. Some specs may be relative like './file.js'
   return Array.from(sources);
 }
 
 async function resolveImport(importer, spec) {
-  if (!spec.startsWith(".") && !spec.startsWith("/")) return null;
-  const importerDir = path.dirname(importer);
-  const base = path.resolve(importerDir, spec);
-  const candidates = [
-    base,
-    base + ".js",
-    base + ".ts",
-    base + ".mjs",
-    base + ".cjs",
-    base + ".jsx",
-    base + ".tsx",
-    path.join(base, "index.js"),
-    path.join(base, "index.ts"),
-  ];
-  for (const c of candidates) {
-    try {
-      const st = await fs.stat(c);
-      if (st.isFile()) return path.normalize(c);
-    } catch {}
+  // Resolve relative or absolute imports first
+  if (spec.startsWith(".") || spec.startsWith("/")) {
+    const importerDir = path.dirname(importer);
+    const base = path.resolve(importerDir, spec);
+    const candidates = [
+      base,
+      base + ".js",
+      base + ".ts",
+      base + ".mjs",
+      base + ".cjs",
+      base + ".jsx",
+      base + ".tsx",
+      path.join(base, "index.js"),
+      path.join(base, "index.ts"),
+    ];
+    for (const c of candidates) {
+      try {
+        const st = await fs.stat(c);
+        if (st.isFile()) return path.normalize(c);
+      } catch {}
+    }
+    return null;
   }
+
+  // Handle bare imports that point to workspace top-level folders like 'src/...'
+  // Treat them as project-root relative when the first path segment matches a known folder.
+  const first = spec.split('/')[0];
+  const knownTop = new Set([
+    'src',
+    'scripts',
+    'config',
+    'test',
+    'questions',
+    'storage',
+  ]);
+  if (knownTop.has(first)) {
+    const base = path.resolve(root, spec);
+    const candidates = [
+      base,
+      base + ".js",
+      base + ".ts",
+      base + ".mjs",
+      base + ".cjs",
+      base + ".jsx",
+      base + ".tsx",
+      path.join(base, "index.js"),
+      path.join(base, "index.ts"),
+    ];
+    for (const c of candidates) {
+      try {
+        const st = await fs.stat(c);
+        if (st.isFile()) return path.normalize(c);
+      } catch {}
+    }
+  }
+
+  // Otherwise we don't resolve package or external imports here
   return null;
 }
 
@@ -108,7 +170,7 @@ async function buildGraph(files) {
     try {
       content = await fs.readFile(f, "utf8");
     } catch {}
-    const specs = parseImports(content);
+  const specs = parseImports(content, f);
     const deps = new Set();
     for (const s of specs) {
       const resolved = await resolveImport(f, s);
@@ -189,6 +251,19 @@ async function confirm(message) {
     console.log(yellow("Used files:"), used.size);
     console.log(red("Unused files:"), unused.length);
     process.exit(0);
+  }
+
+  // ✅ New JSON mode
+  if (modeJson) {
+    const outputPath = path.join(root, "unused-files.json");
+    const jsonData = {
+      timestamp: new Date().toISOString(),
+      total: unused.length,
+      unused: unused.map((f) => path.relative(root, f).replace(/\\/g, "/")),
+    };
+    await fs.writeFile(outputPath, JSON.stringify(jsonData, null, 2), "utf8");
+    console.log(green(`\n📁 Saved unused file list to ${outputPath}\n`));
+    return;
   }
 
   if (!modeDelete) {
