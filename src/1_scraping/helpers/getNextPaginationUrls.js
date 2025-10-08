@@ -8,12 +8,12 @@ export default async function getNextPaginationUrls(page, url, siteUrls) {
   const mainConfig = siteUrls.configurations[0];
   const {
     productItemSelector } = logToLocalSheet()
-
+debugger
   const { count: totalItemsToCallect } =
     await getTotalItemsCount(page, mainConfig?.totalProductCounterSelector);
 
-  const itemsPerPage = await page.$eval(productItemSelector, els => els.length);
-  
+  const itemsPerPage = await page.$$eval(productItemSelector, els => els.length);
+  debugger
   const paginationSelector = mainConfig?.paginationSelector
   const paginationParameterName = mainConfig?.paginationParameterName
   if (itemsPerPage && paginationParameterName && totalItemsToCallect > 0) {
