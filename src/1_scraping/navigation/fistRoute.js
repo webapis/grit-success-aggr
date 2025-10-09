@@ -33,14 +33,14 @@ debugger
         const mergePageItems = [...pageItems, data.length]
         const pageNumber = extractPageNumber(url, paginationParameterName) || 1
         logToLocalSheet({ pageItems: mergePageItems, pageNumbers: [...pageNumbers, pageNumber] })
-
+        console.log('data',data.length)
         return data
     } else {
         const { pageItems = [], pageNumbers = [] } = logToLocalSheet()
         const pageNumber = extractPageNumber(url, paginationParameterName) || 1
         const mergePageItems = [...pageItems, 0]
         logToLocalSheet({ pageItems: mergePageItems, pageNumbers: [...pageNumbers, pageNumber] })
-  
+       console.log('data2',0)
         return []
     }
 
