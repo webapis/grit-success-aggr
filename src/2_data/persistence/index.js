@@ -1,5 +1,5 @@
-import { uploadCollection } from './github/uploadCollection.js';
-import { uploadImage, uploadImageFromUrl } from './github/uploadImage.js';
+import { uploadCollection } from './uploadCollection.js';
+import { uploadImage, uploadImageFromUrl } from '../../shared/git/uploadImage.js';
 import uploadJSONToGoogleDrive from './drive/uploadJSONToGoogleDrive.js';
 
 export {
