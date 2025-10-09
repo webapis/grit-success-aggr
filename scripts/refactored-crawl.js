@@ -152,21 +152,32 @@ function initializeCrawler(siteConfig, router) {
         // maxRequestsPerCrawl: 50
 
         // Minimal error logging for debugging (no sheet logging)
-        errorHandler: async ({ request, error }) => {
-            console.error(`❌ Request failed: ${request.url} - ${error.message}`);
-
-            // Log specific error types for debugging
+        errorHandler: async ({ request, error, page }) => {
+            console.error(`❌ Request failed on attempt ${request.retryCount + 1}: ${request.url} - ${error.message}`);
+        
             if (error.message.includes('403 status code')) {
                 console.log('🚫 Detected 403 Forbidden error - possible anti-bot protection');
                 throw new ForbiddenError('Site is protected by anti-bot measures.', request);
             } else if (error.message.includes('timeout')) {
                 console.log('⏰ Request timeout detected');
+                // This is a retryable error, so we just log it here. 
+                // The failedRequestHandler will handle the permanent failure.
             }
         },
 
         // Minimal permanent failure logging for debugging
-        failedRequestHandler: async ({ request, error }) => {
-            console.error(`💀 Permanently failed: ${request.url} - ${error.message}`);
+        failedRequestHandler: async ({ request, error, page }) => {
+            console.error(`💀 Request permanently failed after ${request.retryCount} retries: ${request.url} - ${error.message}`);
+            
+            // If the permanent failure is a timeout, log it and set the status.
+            if (error.message.includes('timeout')) {
+                const failureReason = `Navigation timed out after ${request.retryCount + 1} attempts.`;
+                logToLocalSheet({ 
+                    Status: 'Navigation Timeout', 
+                    Notes: failureReason, 
+                    url: request.url 
+                });
+            }
         },
 
         retryOnBlocked: false,
