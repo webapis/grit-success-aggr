@@ -185,11 +185,33 @@ async function runCrawler(crawler, urlsToScrape) {
         const statsJson = stats.toJSON();
         const totalRequests = statsJson.requestsFinished;
         const successfulRequests = totalRequests - statsJson.requestsFailed;
-
-        console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
-        console.log(`Stats: ${successfulRequests}/${totalRequests} successful, ${statsJson.requestsFailed} failed`);
-
-        logToLocalSheet({ Duration: duration });
+        
+        // NEW: Check for specific failure conditions from local sheet after crawl
+        const finalLocalSheetData = logToLocalSheet();
+        if (finalLocalSheetData.Status === 'No Product Selector') {
+            console.log(`⚠️ Crawler stopped for site ${site} due to no product selector found.`);
+            const rowData = {
+                site: site,
+                url: finalLocalSheetData.url || 'N/A', // Use the last URL if available
+                timestamp: new Date().toISOString(),
+                githubRunUrl: GitHubRunUrl,
+                reason: finalLocalSheetData.Notes || 'No valid product item selector found',
+            };
+            await emitAsync('log-to-sheet', {
+                sheetTitle: 'no-product-selector-failures', // New dedicated sheet
+                message: `Site ${site} failed to find product selector.`,
+                rowData,
+            });
+            if (process.env.GITHUB_OUTPUT) {
+                fs.appendFileSync(process.env.GITHUB_OUTPUT, "status=paused\n");
+            }
+            logToLocalSheet({ Duration: duration, Status: 'Paused', Notes: finalLocalSheetData.Notes });
+        } else {
+            // Existing success logging
+            console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
+            console.log(`Stats: ${successfulRequests}/${totalRequests} successful, ${statsJson.requestsFailed} failed`);
+            logToLocalSheet({ Duration: duration });
+        }
     } catch (crawlerError) {
         if (crawlerError.name === 'ForbiddenError') {
             console.log(`🚫 Site is protected by anti-bot measures (403 Forbidden) at ${crawlerError.request.url}. Stopping crawl.`);
