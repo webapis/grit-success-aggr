@@ -128,6 +128,7 @@ function initializeCrawler(siteConfig, router) {
                     '--window-size=1920,1080',
                     '--lang=tr-TR,tr'
                 ],
+                ignoreHTTPSErrors: true, // <-- This will ignore SSL certificate errors
                 protocolTimeout: 600000,
                 timeout: 120000,
             }
