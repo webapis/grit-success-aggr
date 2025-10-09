@@ -29,7 +29,8 @@ if (!site) {
 
         if (!data || data.length === 0) {
             console.log('No data found to analyze.');
-            return;
+            // Exit gracefully so the npm script doesn't fail
+            process.exit(0);
         }
 
         console.log(`Found ${data.length} items. Starting analysis...`);

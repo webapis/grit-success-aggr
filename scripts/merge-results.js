@@ -45,6 +45,12 @@ async function main() {
 
     const mergedData = Array.from(mergedDataMap.values());
 
+    // --- CRITICAL CHECK: Ensure data was actually merged ---
+    if (mergedData.length === 0 && jsonFilesToMerge.length > 0) {
+        console.error('💥 Merge Error: 0 items were merged. This is likely due to missing "id" fields in the source files.');
+        process.exit(1); // Exit with a failure code
+    }
+
     // --- Clean up redundant data ---
     console.log('\n🧹 Cleaning up redundant fields...');
     mergedData.forEach(item => {
