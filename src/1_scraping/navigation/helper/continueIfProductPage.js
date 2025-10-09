@@ -69,8 +69,11 @@ export default async function continueIfProductPage({ page, siteUrls }) {
             logToLocalSheet({ ScreenshotGit: result.url });
         }
 
+        const failureReason = bestSelector.error || 'No valid product item selector found';
         logToLocalSheet({ totalItemsPerPage: 0 });
-        logToLocalSheet({ productItemSelector: 'not defined' });
+        logToLocalSheet({ productItemSelector: `not defined - ${failureReason}` });
+        // Set status and current URL for refactored-crawl.js to pick up
+        logToLocalSheet({ Status: 'No Product Selector', Notes: failureReason, url: page.url() });
 
         return false;
     }
