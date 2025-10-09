@@ -199,10 +199,21 @@ async function runCrawler(crawler, urlsToScrape) {
         
         // NEW: Check for specific failure conditions from local sheet after crawl
         const finalLocalSheetData = logToLocalSheet();
-        if (finalLocalSheetData.Status === 'No Product Selector' || finalLocalSheetData.Status === 'Navigation Timeout') {
+        if (['No Product Selector', 'Navigation Timeout', 'Invalid Data'].includes(finalLocalSheetData.Status)) {
             const isNavTimeout = finalLocalSheetData.Status === 'Navigation Timeout';
-            const statusOutput = isNavTimeout ? 'navigation_timeout' : 'selector_failure';
-            const finalStatus = isNavTimeout ? 'Navigation Timeout' : 'Selector Failure';
+            const isInvalidData = finalLocalSheetData.Status === 'Invalid Data';
+
+            let statusOutput, finalStatus;
+            if (isNavTimeout) {
+                statusOutput = 'navigation_timeout';
+                finalStatus = 'Navigation Timeout';
+            } else if (isInvalidData) {
+                statusOutput = 'invalid_data';
+                finalStatus = 'Invalid Data';
+            } else {
+                statusOutput = 'selector_failure';
+                finalStatus = 'Selector Failure';
+            }
 
             console.log(`⚠️ Crawler failed for site ${site}: ${finalStatus}.`);
             const rowData = {

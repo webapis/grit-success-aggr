@@ -191,6 +191,18 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         };
     });
 
+    // --- CRITICAL CHECK: Ensure all items have an ID ---
+    const itemsWithNullId = processedData.filter(item => item.id === null);
+    if (itemsWithNullId.length > 0) {
+        const failureReason = `${itemsWithNullId.length} out of ${processedData.length} scraped item(s) have a null link, preventing ID generation.`;
+        console.error(`💥 Invalid Data Detected: ${failureReason}`);
+        logToLocalSheet({
+            Status: 'Invalid Data',
+            Notes: failureReason,
+            url: url
+        });
+    }
+
     logToLocalSheet({
         [timestamp]: {
             site: site,
@@ -199,6 +211,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             data: processedData
         }
     });
-   console.log('processedData', processedData.filter((f,i)=>i<=10))
+ 
     return processedData;
 }
