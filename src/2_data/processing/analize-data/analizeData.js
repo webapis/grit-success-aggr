@@ -1,177 +1,56 @@
 import dotenv from 'dotenv';
-
-import countUnique from "./countUnique.js";
-import countByField from "./countByField.js";
-import getAggrTimeSpan from "./getAggrTimeSpan.js";
-import findDuplicatesByLink from './findDuplicatesByLink.js';
-import getUniquePageURLs from "./getUniquePageURLs.js";
-import { uploadCollection } from "../../persistence/uploadCollection.js";
-import uploadJSONToGoogleDrive from "../../persistence/drive/uploadJSONToGoogleDrive.js";
-import extractCSSSelectors from '../../../1_scraping/helpers/extractCSSSelectors.js';
 import logToLocalSheet from '../../persistence/sheet/logToLocalSheet.js';
+import { calculateMetrics } from './calculateMetrics.js';
+import { uploadAnalysisSamples } from './uploadAnalysisSamples.js';
 dotenv.config({ silent: true });
 
 const site = process.env.site;
 
 export default async function analyzeData(data) {
-    debugger
-    const { debug } = logToLocalSheet()
+    const { debug } = logToLocalSheet();
     console.log('Analyzing data for site:', site);
     console.log(`debug: ${debug}`);
 
-    debugger
-    const dataWithoutError = data.filter(f => !f.error);
-    const dataWithError = data.filter(f => f.error);
-    const { oldestTimestamp, newestTimestamp, minutesSpan } = getAggrTimeSpan({ data });
-    const totalPages = countUnique({ data, key: 'pageURL' });
-    const totalUniqueItems = countUnique({ data, key: 'link' });
-    const invalidLinks = countByField(data, 'linkValid');
-    const invalidimgs = countByField(data.filter(f => f.mediaType === 'image'), 'imgValid');
-    const invalidVideos = countByField(data.filter(f => f.mediaType === 'video'), 'videoValid');
-    const invalidTitles = countByField(data, 'titleValid');
-    const invalidPageTitles = countByField(data, 'pageTitleValid');
-    const invalidPrices = countByField(data, 'priceValid');
-    const unsetPrices = countByField(data, 'priceisUnset', true);
-    const priceScrapeErrors = countByField(data, 'priceScrapeError', true);
-    const totalNotAvailables = countByField(data, 'productNotInStock', true);
-    const duplicateURLs = findDuplicatesByLink(data);
-    const uniquePageURLs = getUniquePageURLs({ data: dataWithoutError });
+    // 1. Calculate all metrics and get data subsets
+    const metrics = calculateMetrics(data);
 
-    const invalidItems = data.filter(item =>
-        !item.imgValid ||
-        !item.linkValid ||
-        !item.titleValid ||
-        !item.pageTitleValid ||
-        !item.priceValid
-    );
-
-    // Upload error samples if any
-    let JSONSampleDataWithErrorDriveLink = null;
-    let JSONSampleDataWithErrorGitLink = null;
-    let JSONSampleDataWithDuplicateUrlDataGitLink = null;
-    let JSONCSSSelectorsGitLink = null
-    if (invalidItems.length > 0) {
-        console.log(`Found ${invalidItems.length} invalid items, uploading samples...`);
-
-
-        if (debug) {
-            const jsonBuffer = Buffer.from(JSON.stringify(invalidItems.filter((f, i) => i < 5), null, 2), 'utf-8');
-            JSONSampleDataWithErrorDriveLink = await uploadJSONToGoogleDrive({
-                buffer: jsonBuffer,
-                fileName: `${site}-error.json`,
-                mimeType: 'application/json',
-                folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-                serviceAccountCredentials: JSON.parse(
-                    Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
-                ),
-            });
-
-            console.log('Uploaded invalid items sample to Google Drive:', JSONSampleDataWithErrorDriveLink ? JSONSampleDataWithErrorDriveLink.webViewLink : 'N/A');
-        }
-
-
-        if (debug) {
-            JSONSampleDataWithErrorGitLink = await uploadCollection({
-                fileName: site,
-                data: invalidItems.filter((f, i) => i < 5),
-                gitFolder: "ErrorSample",
-                compress: false
-            });
-            console.log('Uploaded invalid items sample to Git:', JSONSampleDataWithErrorGitLink ? JSONSampleDataWithErrorGitLink.url : 'N/A');
-        }
-
-    }
-
-    // Upload valid data samples
-
-    let ValidJSONSampleDataDriveLink = null;
-    let ValidJSONSampleDataGitLink = null;
-    const jsonBuffer2 = Buffer.from(JSON.stringify(dataWithoutError.filter((f, i) => i < 5), null, 2), 'utf-8');
-    if (dataWithoutError.length > 0) {
-        ValidJSONSampleDataDriveLink = await uploadJSONToGoogleDrive({
-            buffer: jsonBuffer2,
-            fileName: `${site}.json`,
-            mimeType: 'application/json',
-            folderId: process.env.GOOGLE_DRIVE_FOLDER_ID,
-            serviceAccountCredentials: JSON.parse(
-                Buffer.from(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS, 'base64').toString('utf-8')
-            ),
-        });
-        console.log('Uploaded valid items sample to Google Drive:', ValidJSONSampleDataDriveLink ? ValidJSONSampleDataDriveLink.webViewLink : 'N/A');
-
-        ValidJSONSampleDataGitLink = await uploadCollection({
-            fileName: site,
-            data: dataWithoutError,//.filter((f, i) => i < 5),
-            gitFolder: "validSample",
-            compress: false
-        });
-
-    }
-
-
-
-
-    // Upload duplicate URL samples if any
-    if (duplicateURLs.length > 1 && debug) {
-        JSONSampleDataWithDuplicateUrlDataGitLink = await uploadCollection({
-            fileName: site,
-            data: duplicateURLs.filter((f, i) => i < 5),
-            gitFolder: "duplicateUrl",
-            compress: false
-        });
-        console.log('Uploaded duplicate URL samples to Git:', JSONSampleDataWithDuplicateUrlDataGitLink ? JSONSampleDataWithDuplicateUrlDataGitLink.url : 'N/A');
-    }
-
-    if (debug) {
-        const cssSelectors = extractCSSSelectors(dataWithoutError);
-        JSONCSSSelectorsGitLink = await uploadCollection({
-            fileName: site,
-            data: cssSelectors,
-            gitFolder: "cssselectors",
-            compress: false
-        });
-        console.log('Uploaded CSS selectors to Git:', JSONCSSSelectorsGitLink ? JSONCSSSelectorsGitLink.url : 'N/A');
-    }
+    // 2. Upload samples and get back the links
+    const sampleLinks = await uploadAnalysisSamples({ metrics, site, isDebug: debug });
 
     return {
         'Site': site,
         // === OVERVIEW METRICS ===
         'Total Collected Items': data.length,
-        'Total Valid Items': dataWithoutError.length,
-        'Total Error Items': dataWithError.length,
-        'Total Invalid Items': invalidItems.length,
+        'Total Valid Items': metrics.dataWithoutError.length,
+        'Total Error Items': metrics.dataWithError.length,
+        'Total Invalid Items': metrics.invalidItems.length,
 
         // === TIME SPAN ===
-        'Start Timestamp': oldestTimestamp,
-        'End Timestamp': newestTimestamp,
-        'Minutes Span': minutesSpan,
+        'Start Timestamp': metrics.oldestTimestamp,
+        'End Timestamp': metrics.newestTimestamp,
+        'Minutes Span': metrics.minutesSpan,
 
         // === PAGE & CONTENT METRICS ===
-        'Total Pages': totalPages.count || 0,
-        'Total Unique Page URLs': uniquePageURLs.length,
-        'Total Unique Items': totalUniqueItems.count || 0,
-        'Total Duplicate URLs': duplicateURLs.length,
+        'Total Pages': metrics.totalPages.count || 0,
+        'Total Unique Page URLs': metrics.uniquePageURLs.length,
+        'Total Unique Items': metrics.totalUniqueItems.count || 0,
+        'Total Duplicate URLs': metrics.duplicateURLs.length,
 
         // === VALIDATION ERRORS ===
-        'Total Invalid Links': invalidLinks,
-        'Total Invalid Titles': invalidTitles,
-        'Total Invalid Page Titles': invalidPageTitles,
-        'Total Invalid Images': invalidimgs,
-        'Total Invalid Videos': invalidVideos,
+        'Total Invalid Links': metrics.totalInvalidLinks,
+        'Total Invalid Titles': metrics.totalInvalidTitles,
+        'Total Invalid Page Titles': metrics.totalInvalidPageTitles,
+        'Total Invalid Images': metrics.totalInvalidImgs,
+        'Total Invalid Videos': metrics.totalInvalidVideos,
 
         // === PRICE & AVAILABILITY ISSUES ===
-        'Total Invalid Prices': invalidPrices,
-        'Unset Prices': unsetPrices,
-        'Price Scrape Errors': priceScrapeErrors,
-        'Total Not Availables': totalNotAvailables,
-        'Currency Used': dataWithoutError.length > 0 ? dataWithoutError[0]?.price[0]?.currency || 'N/A' : 'N/A',
+        'Total Invalid Prices': metrics.totalInvalidPrices,
+        'Unset Prices': metrics.totalUnsetPrices,
+        'Price Scrape Errors': metrics.totalPriceScrapeErrors,
+        'Total Not Availables': metrics.totalNotAvailables,
+        'Currency Used': metrics.dataWithoutError.length > 0 ? metrics.dataWithoutError[0]?.price[0]?.currency || 'N/A' : 'N/A',
 
         // === SAMPLE DATA LINKS ===
-        'Valid Sample Data (Drive)': ValidJSONSampleDataDriveLink ? ValidJSONSampleDataDriveLink.webViewLink : 'N/A',
-        'Valid Sample Data (Git)': ValidJSONSampleDataGitLink ? ValidJSONSampleDataGitLink.url : 'N/A',
-        'Error Sample Data (Drive)': JSONSampleDataWithErrorDriveLink ? JSONSampleDataWithErrorDriveLink.webViewLink : 'N/A',
-        'Error Sample Data (Git)': JSONSampleDataWithErrorGitLink ? JSONSampleDataWithErrorGitLink.url : 'N/A',
-        'Duplicate URL Sample Data (Git)': JSONSampleDataWithDuplicateUrlDataGitLink ? JSONSampleDataWithDuplicateUrlDataGitLink.url : 'N/A',
-        'CSS Selectors Data (Git)': JSONCSSSelectorsGitLink ? JSONCSSSelectorsGitLink.url : 'N/A'
+        ...sampleLinks,
     };
 }
