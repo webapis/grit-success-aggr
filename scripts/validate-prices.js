@@ -34,7 +34,18 @@ async function main() {
     for (const file of files) {
         const filePath = path.join(RAW_DATA_DIR, file);
         const rawData = fs.readFileSync(filePath, 'utf-8');
-        let items = JSON.parse(rawData);
+        // --- Robustness Check ---
+        if (!rawData.trim()) {
+            console.warn(`⚠️  Skipping empty file: ${file}`);
+            continue;
+        }
+        let items;
+        try {
+            items = JSON.parse(rawData);
+        } catch (e) {
+            console.error(`💥 Error parsing JSON from ${file}: ${e.message}`);
+            continue;
+        }
 
         // Handle both single object and array of objects
         if (!Array.isArray(items)) {

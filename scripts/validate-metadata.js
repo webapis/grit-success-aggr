@@ -31,8 +31,21 @@ async function main() {
     for (const file of files) {
         const filePath = path.join(RAW_DATA_DIR, file);
         const rawData = fs.readFileSync(filePath, 'utf-8');
-        const fileItems = JSON.parse(rawData);
-        items.push(...(Array.isArray(fileItems) ? fileItems : [fileItems]));
+        // --- Robustness Check ---
+        if (!rawData.trim()) {
+            console.warn(`⚠️  Skipping empty file: ${file}`);
+            continue;
+        }
+        try {
+            const fileItems = JSON.parse(rawData);
+            if (Array.isArray(fileItems)) {
+                items.push(...fileItems);
+            } else if (fileItems) { // Ensure it's not null/undefined
+                items.push(fileItems);
+            }
+        } catch (e) {
+            console.error(`💥 Error parsing JSON from ${file}: ${e.message}`);
+        }
     }
 
     if (!Array.isArray(items)) {
