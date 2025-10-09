@@ -189,22 +189,22 @@ async function runCrawler(crawler, urlsToScrape) {
         // NEW: Check for specific failure conditions from local sheet after crawl
         const finalLocalSheetData = logToLocalSheet();
         if (finalLocalSheetData.Status === 'No Product Selector' || finalLocalSheetData.Status === 'Navigation Timeout') {
-            console.log(`⚠️ Crawler failed for site ${site}: No product selector was found.`);
+            const isNavTimeout = finalLocalSheetData.Status === 'Navigation Timeout';
+            const statusOutput = isNavTimeout ? 'navigation_timeout' : 'selector_failure';
+            const finalStatus = isNavTimeout ? 'Navigation Timeout' : 'Selector Failure';
+
+            console.log(`⚠️ Crawler failed for site ${site}: ${finalStatus}.`);
             const rowData = {
                 site: site,
                 url: finalLocalSheetData.url || 'N/A', // Use the last URL if available
                 timestamp: new Date().toISOString(),
                 githubRunUrl: GitHubRunUrl,
-                reason: finalLocalSheetData.Notes || 'No valid product item selector found',
+                reason: finalLocalSheetData.Notes || 'No details provided',
+                failureType: finalStatus, // Add failure type for easy filtering
             };
 
-            const isNavTimeout = finalLocalSheetData.Status === 'Navigation Timeout';
-            const sheetTitle = isNavTimeout ? 'navigation-timeout-failures' : 'no-product-selector-failures';
-            const statusOutput = isNavTimeout ? 'navigation_timeout' : 'selector_failure';
-            const finalStatus = isNavTimeout ? 'Navigation Timeout' : 'Selector Failure';
-
             await emitAsync('log-to-sheet', {
-                sheetTitle: sheetTitle,
+                sheetTitle: 'crawler-failures', // Log to the unified sheet
                 message: `Site ${site} failed: ${finalLocalSheetData.Notes}`,
                 rowData,
             });
@@ -229,9 +229,11 @@ async function runCrawler(crawler, urlsToScrape) {
                 url: crawlerError.request.url,
                 timestamp: new Date().toISOString(),
                 githubRunUrl: GitHubRunUrl,
+                reason: 'Blocked with 403 Forbidden status',
+                failureType: '403 Forbidden', // Add failure type for easy filtering
             };
             await emitAsync('log-to-sheet', {
-                sheetTitle: '403',
+                sheetTitle: 'crawler-failures', // Log to the unified sheet
                 message: `Site ${site} is blocked.`,
                 rowData,
             });
