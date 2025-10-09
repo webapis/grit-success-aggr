@@ -16,7 +16,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
 
     await delay(5000); // wait for 5 seconds
     const bestSelector = await findBestSelector(page, productItemSelector);
-    console.log('bestSelector', bestSelector)
+
     debugger
     const { totalItemsToBeCallected, debug } = logToLocalSheet() || {};
     if (bestSelector.count > 0) {
