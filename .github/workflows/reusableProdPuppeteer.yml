@@ -132,7 +132,7 @@ jobs:
         
                   node scripts/refactored-crawl.js
     - name: Run validation pipeline
-      if: steps.crawler.outputs.status != 'paused'
+      if: steps.crawler.outputs.status != 'paused' && steps.crawler.outputs.status != 'selector_failure'
       run: |
         echo "🔍 Starting validation pipeline..."
         (
@@ -141,13 +141,13 @@ jobs:
           wait
         )
     - name: Merge validation and categorization results
-      if: steps.crawler.outputs.status != 'paused'
+      if: steps.crawler.outputs.status != 'paused' && steps.crawler.outputs.status != 'selector_failure'
       run: |
         echo "🤝 Merging results..."
         npm run merge
 
     - name: Upload results
-      if: steps.crawler.outputs.status != 'paused'
+      if: steps.crawler.outputs.status != 'paused' && steps.crawler.outputs.status != 'selector_failure'
       run: |
         echo "📤 Uploading results..."
         npm run uploadData
@@ -155,13 +155,13 @@ jobs:
         UPLOAD_TO_SHEET: ${{ inputs.upload_results }}
 
     - name: Upload categorization results
-      if: steps.crawler.outputs.status != 'paused' && inputs.upload_categorization_results == true
+      if: steps.crawler.outputs.status != 'paused' && steps.crawler.outputs.status != 'selector_failure' && inputs.upload_categorization_results == true
       run: |
         echo "📤 Uploading categorization results..."
         node scripts/upload-categorization-results-to-sheet.js
 
     - name: Upload Summary Artifact
-      if: steps.crawler.outputs.status != 'paused'
+      if: steps.crawler.outputs.status != 'paused' && steps.crawler.outputs.status != 'selector_failure'
       uses: actions/upload-artifact@v4
       with:
         name: upload-summary-${{ inputs.site }}

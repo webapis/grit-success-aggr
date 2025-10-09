@@ -189,7 +189,7 @@ async function runCrawler(crawler, urlsToScrape) {
         // NEW: Check for specific failure conditions from local sheet after crawl
         const finalLocalSheetData = logToLocalSheet();
         if (finalLocalSheetData.Status === 'No Product Selector') {
-            console.log(`⚠️ Crawler stopped for site ${site} due to no product selector found.`);
+            console.log(`⚠️ Crawler failed for site ${site}: No product selector was found.`);
             const rowData = {
                 site: site,
                 url: finalLocalSheetData.url || 'N/A', // Use the last URL if available
@@ -203,9 +203,9 @@ async function runCrawler(crawler, urlsToScrape) {
                 rowData,
             });
             if (process.env.GITHUB_OUTPUT) {
-                fs.appendFileSync(process.env.GITHUB_OUTPUT, "status=paused\n");
+                fs.appendFileSync(process.env.GITHUB_OUTPUT, "status=selector_failure\n");
             }
-            logToLocalSheet({ Duration: duration, Status: 'Paused', Notes: finalLocalSheetData.Notes });
+            logToLocalSheet({ Duration: duration, Status: 'Selector Failure', Notes: finalLocalSheetData.Notes });
         } else {
             // Existing success logging
             console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
