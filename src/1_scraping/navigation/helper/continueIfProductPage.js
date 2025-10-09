@@ -48,7 +48,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
                 gitFolder: 'screenshots'
             });
 
-
+            console.log('ScreenshotGit', result.url)
             logToLocalSheet({ ScreenshotGit: result.url });
         }
 
