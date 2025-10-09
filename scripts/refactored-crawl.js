@@ -126,7 +126,8 @@ function initializeCrawler(siteConfig, router) {
                     '--disable-dev-shm-usage',
                     '--disable-gpu',
                     '--window-size=1920,1080',
-                    '--lang=tr-TR,tr'
+                    '--lang=tr-TR,tr',
+                    '--ignore-certificate-errors' // Add argument to ignore SSL errors
                 ],
                 ignoreHTTPSErrors: true, // <-- This will ignore SSL certificate errors
                 protocolTimeout: 600000,
