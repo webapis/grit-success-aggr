@@ -54,7 +54,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
 
         return true;
     } else {
-        if (debug) {
+        if (true) {
             // Take screenshot if initial pages could not be retrieved.
             const screenshotBuffer = await page.screenshot({ fullPage: true });
 
