@@ -48,7 +48,7 @@ export default async function analyzeData(data) {
         'Unset Prices': metrics.totalUnsetPrices,
         'Price Scrape Errors': metrics.totalPriceScrapeErrors,
         'Total Not Availables': metrics.totalNotAvailables,
-        'Currency Used': metrics.dataWithoutError.length > 0 ? metrics.dataWithoutError[0]?.price[0]?.currency || 'N/A' : 'N/A',
+        'Currency Used': metrics.dataWithoutError.length > 0 ? metrics.dataWithoutError[0]?.price?.[0]?.currency || 'N/A' : 'N/A',
 
         // === SAMPLE DATA LINKS ===
         ...sampleLinks,
