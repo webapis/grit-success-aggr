@@ -199,6 +199,6 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
             data: processedData
         }
     });
-
+console.log('processedData', processedData.filter((f,i)=>i<=10))
     return processedData;
 }
