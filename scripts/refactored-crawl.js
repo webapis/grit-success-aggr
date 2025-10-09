@@ -188,7 +188,7 @@ async function runCrawler(crawler, urlsToScrape) {
         
         // NEW: Check for specific failure conditions from local sheet after crawl
         const finalLocalSheetData = logToLocalSheet();
-        if (finalLocalSheetData.Status === 'No Product Selector') {
+        if (finalLocalSheetData.Status === 'No Product Selector' || finalLocalSheetData.Status === 'Navigation Timeout') {
             console.log(`⚠️ Crawler failed for site ${site}: No product selector was found.`);
             const rowData = {
                 site: site,
@@ -197,15 +197,23 @@ async function runCrawler(crawler, urlsToScrape) {
                 githubRunUrl: GitHubRunUrl,
                 reason: finalLocalSheetData.Notes || 'No valid product item selector found',
             };
+
+            const isNavTimeout = finalLocalSheetData.Status === 'Navigation Timeout';
+            const sheetTitle = isNavTimeout ? 'navigation-timeout-failures' : 'no-product-selector-failures';
+            const statusOutput = isNavTimeout ? 'navigation_timeout' : 'selector_failure';
+            const finalStatus = isNavTimeout ? 'Navigation Timeout' : 'Selector Failure';
+
             await emitAsync('log-to-sheet', {
-                sheetTitle: 'no-product-selector-failures', // New dedicated sheet
-                message: `Site ${site} failed to find product selector.`,
+                sheetTitle: sheetTitle,
+                message: `Site ${site} failed: ${finalLocalSheetData.Notes}`,
                 rowData,
             });
+
             if (process.env.GITHUB_OUTPUT) {
-                fs.appendFileSync(process.env.GITHUB_OUTPUT, "status=selector_failure\n");
+                fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=${statusOutput}\n`);
             }
-            logToLocalSheet({ Duration: duration, Status: 'Selector Failure', Notes: finalLocalSheetData.Notes });
+
+            logToLocalSheet({ Duration: duration, Status: finalStatus, Notes: finalLocalSheetData.Notes });
         } else {
             // Existing success logging
             console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);

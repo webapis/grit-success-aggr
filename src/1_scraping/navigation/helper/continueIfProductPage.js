@@ -15,6 +15,19 @@ export default async function continueIfProductPage({ page, siteUrls }) {
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     await delay(5000); // wait for 5 seconds
+    try {
+        console.log('Waiting for page to be fully loaded...');
+        // Replace the fixed delay with a more reliable wait for network and DOM readiness.
+        // This waits until there are no more than 0 network connections for at least 500 ms.
+        await page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 });
+        console.log('Page is fully loaded.');
+    } catch (e) {
+        console.error(`Timeout or error while waiting for page navigation to complete: ${e.message}`);
+        // If the page fails to load, we can't find selectors.
+        logToLocalSheet({ Status: 'Navigation Timeout', Notes: `Page failed to load: ${e.message}`, url: page.url() });
+        return false; // Exit early
+    }
+
     const bestSelector = await findBestSelector(page, productItemSelector);
 
     debugger
