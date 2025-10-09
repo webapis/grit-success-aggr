@@ -54,7 +54,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
 
         return true;
     } else {
-        if (true) {
+        if (debug) {
             // Take screenshot if initial pages could not be retrieved.
             const screenshotBuffer = await page.screenshot({ fullPage: true });
 
@@ -64,7 +64,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
                 imageBuffer: screenshotBuffer,
                 gitFolder: 'screenshots'
             });
-
+            console.log('ScreenshotGit', result.url)
             logToLocalSheet({ ScreenshotGit: result.url });
         }
 
