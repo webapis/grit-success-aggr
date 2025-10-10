@@ -3,6 +3,7 @@ import { createPuppeteerRouter, Dataset } from "crawlee";
 import first from "../src/1_scraping/navigation/fistRoute.js";
 import second from "../src/1_scraping/navigation/secondRoute.js";
 import logToLocalSheet from "../src/2_data/persistence/sheet/logToLocalSheet.js";
+import { uploadScreenshot } from "../src/2_data/persistence/uploadScreenshot.js";
 dotenv.config({ silent: true });
 
 const site = process.env.site;
@@ -27,7 +28,7 @@ export const createRouter = async (siteUrls) => {
 
     }
     
-    const data = await first({ ...props, label: "default", siteUrls });
+    const data = await first({ ...props, label: "default", siteUrls, uploadScreenshot });
 
     
    await productsDataset.pushData(data);
@@ -37,7 +38,7 @@ export const createRouter = async (siteUrls) => {
 
   router.addHandler("second", async (props) => {
     
-    const data = await second({ ...props, label: "second", siteUrls });
+    const data = await second({ ...props, label: "second", siteUrls, uploadScreenshot });
     
     await productsDataset.pushData(data);
   });
