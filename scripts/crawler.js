@@ -1,7 +1,7 @@
 import { PuppeteerCrawler } from "crawlee";
 import fs from 'fs';
 import puppeteer from '../src/1_scraping/helpers/puppeteer-stealth.js';
-import preNavigationHooks from "../helpers/preNavigationHooksProd2.js";
+import preNavigationHooks from "./helpers/preNavigationHooksProd2.js";
 import { ForbiddenError, handleRequestFailure, handleForbiddenError } from '../src/2_data/processing/failure/failureHandler.js';
 import { summarizeAndReportRun } from '../src/2_data/processing/failure/runReporter.js';
 import { emitAsync } from '../src/shared/events.js';

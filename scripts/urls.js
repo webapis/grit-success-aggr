@@ -1,4 +1,4 @@
-import { validateUrls } from "../helpers/urlValidation.js";
+import { validateUrls } from "./helpers/urlValidation.js";
 import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 
 export function prepareUrls(siteConfig, site) {
