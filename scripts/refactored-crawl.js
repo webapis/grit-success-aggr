@@ -200,39 +200,51 @@ async function runCrawler(crawler, urlsToScrape) {
         const statsJson = stats.toJSON();
         const totalRequests = statsJson.requestsFinished;
         const successfulRequests = totalRequests - statsJson.requestsFailed;
-        
-        // NEW: Check for specific failure conditions from local sheet after crawl
-        const finalLocalSheetData = logToLocalSheet();
-        if (['No Product Selector', 'Request Failed', 'Invalid Data'].includes(finalLocalSheetData.Status)) {
-            const isRequestFailure = finalLocalSheetData.Status === 'Request Failed';
+        const failedRequests = statsJson.requestsFailed;
+        const allRequestsFailed = totalRequests > 0 && totalRequests === statsJson.requestsFailed;
+        const someRequestsFailed = failedRequests > 0 && successfulRequests > 0;
+
+        // Check for failure conditions.
+        // A run is considered failed if ALL processed requests failed,
+        // or if a critical error like 'No Product Selector' was logged.
+        const finalLocalSheetData = logToLocalSheet(); // Get data from the local log
+        const isCriticalFailure = ['No Product Selector', 'Invalid Data'].includes(finalLocalSheetData.Status);
+
+        if (allRequestsFailed || isCriticalFailure) {
+            // --- COMPLETE FAILURE ---
+            const isRequestFailure = allRequestsFailed;
             const isInvalidData = finalLocalSheetData.Status === 'Invalid Data';
 
             let statusOutput, finalStatus;
             if (isRequestFailure) {
-                statusOutput = 'navigation_timeout';
-                finalStatus = 'Navigation Timeout';
+                statusOutput = 'complete_failure';
+                finalStatus = 'Complete Failure';
             } else if (isInvalidData) {
                 statusOutput = 'invalid_data';
                 finalStatus = 'Invalid Data';
             } else {
                 statusOutput = 'selector_failure';
-                finalStatus = 'Selector Failure';
+                finalStatus = 'Selector Failure'; // This is a type of critical failure
             }
 
-            console.log(`⚠️ Crawler failed for site ${site}: ${finalStatus}.`);
+            const failureReason = allRequestsFailed
+                ? `All ${totalRequests} requests failed during the run.`
+                : finalLocalSheetData.Notes || 'No details provided';
+
+            console.log(`❌ Crawler failed completely for site ${site}: ${finalStatus}. Reason: ${failureReason}`);
             const rowData = {
                 site: site,
                 url: finalLocalSheetData.url || 'N/A', // Use the last URL if available
                 timestamp: new Date().toISOString(),
                 githubRunUrl: GitHubRunUrl,
                 screenshotUrl: finalLocalSheetData.screenshotUrl || 'N/A',
-                reason: finalLocalSheetData.Notes || 'No details provided',
+                reason: failureReason,
                 failureType: finalStatus, // Add failure type for easy filtering
             };
 
             await emitAsync('log-to-sheet', {
                 sheetTitle: 'crawler-failures', // Log to the unified sheet
-                message: `Site ${site} failed: ${finalLocalSheetData.Notes}`,
+                message: `Site ${site} failed: ${failureReason}`,
                 rowData,
             });
 
@@ -240,9 +252,37 @@ async function runCrawler(crawler, urlsToScrape) {
                 fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=${statusOutput}\n`);
             }
 
-            logToLocalSheet({ Duration: duration, Status: finalStatus, Notes: finalLocalSheetData.Notes });
+            logToLocalSheet({ Duration: duration, Status: finalStatus, Notes: failureReason });
+        } else if (someRequestsFailed) {
+            // --- PARTIAL FAILURE ---
+            const finalStatus = 'Partial Failure';
+            const failureReason = `${failedRequests} out of ${totalRequests} requests failed.`;
+
+            console.log(`⚠️ Crawler partially failed for site ${site}: ${failureReason}`);
+
+            const rowData = {
+                site: site,
+                url: 'Multiple URLs',
+                timestamp: new Date().toISOString(),
+                githubRunUrl: GitHubRunUrl,
+                screenshotUrl: 'N/A', // Not applicable for multiple failures
+                reason: failureReason,
+                failureType: finalStatus,
+            };
+
+            await emitAsync('log-to-sheet', {
+                sheetTitle: 'crawler-failures',
+                message: `Site ${site} partially failed.`,
+                rowData,
+            });
+
+            if (process.env.GITHUB_OUTPUT) {
+                fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=partial_failure\n`);
+            }
+
+            logToLocalSheet({ Duration: duration, Status: finalStatus, Notes: failureReason });
         } else {
-            // Existing success logging
+            // --- SUCCESS ---
             console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
             console.log(`Stats: ${successfulRequests}/${totalRequests} successful, ${statsJson.requestsFailed} failed`);
             logToLocalSheet({ Duration: duration });
@@ -250,12 +290,15 @@ async function runCrawler(crawler, urlsToScrape) {
     } catch (crawlerError) {
         if (crawlerError.name === 'ForbiddenError') {
             console.log(`🚫 Site is protected by anti-bot measures (403 Forbidden) at ${crawlerError.request.url}. Stopping crawl.`);
+            const screenshotUrl = await uploadScreenshot(crawlerError.page, site);
+
             // 1. Log to sheet '403'
             const rowData = {
                 site: site,
                 url: crawlerError.request.url,
                 timestamp: new Date().toISOString(),
                 githubRunUrl: GitHubRunUrl,
+                screenshotUrl: screenshotUrl || 'N/A',
                 reason: 'Blocked with 403 Forbidden status',
                 failureType: '403 Forbidden', // Add failure type for easy filtering
             };
