@@ -1,9 +1,9 @@
 import { createRouter } from "./routes-puppeteer.js";
 import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 import getGitHubActionsRunUrl from '../src/shared/getGitHubActionsRunUrl.js';
-import { getConfig, validateConfig } from './crawler-helpers/config.js';
-import { prepareUrls } from './crawler-helpers/urls.js';
-import { initializeCrawler, runCrawler } from './crawler-helpers/crawler.js';
+import { getConfig, validateConfig } from './config.js';
+import { prepareUrls } from './urls.js';
+import { initializeCrawler, runCrawler } from './crawler.js';
 import '../src/shared/listeners.js'; // This registers the event handlers
 
 const site = process.env.site;
@@ -36,7 +36,6 @@ async function main() {
             totalUrls: siteConfig.totalUrls || siteConfig.urls?.length,
             paused: siteConfig.paused,
             scrollable: mainConfig.scrollable,
-            itemsPerPage: mainConfig.itemsPerPage,
             cachedAt: siteConfig.cachedAt || 'not cached'
         });
 
