@@ -1,23 +1,15 @@
 
 import { PuppeteerCrawler } from "crawlee";
 import fs from 'fs';
-import { createRouter } from "./routes-puppeteer.js"; // Import factory function
-
-class ForbiddenError extends Error {
-    constructor(message, request, screenshotUrl) {
-        super(message);
-        this.name = 'ForbiddenError';
-        this.request = request;
-        this.screenshotUrl = screenshotUrl; // Store the screenshot URL
-    }
-}
+import { createRouter } from "./routes-puppeteer.js";
 import preNavigationHooks from "./helpers/preNavigationHooksProd2.js";
 import puppeteer from '../src/1_scraping/helpers/puppeteer-stealth.js';
 import { getSiteConfig, getCachedSiteConfigFromFile } from '../src/config/siteConfig.js';
 import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 import getGitHubActionsRunUrl from '../src/shared/getGitHubActionsRunUrl.js';
 import { validateUrls } from "./helpers/urlValidation.js";
-import { uploadScreenshot } from '../src/2_data/persistence/uploadScreenshot.js';
+import { ForbiddenError, handleRequestFailure, handleForbiddenError } from '../src/2_data/processing/failure/failureHandler.js';
+import { summarizeAndReportRun } from '../src/2_data/processing/failure/runReporter.js';
 import { emitAsync } from '../src/shared/events.js';
 import '../src/shared/listeners.js'; // This registers the event handlers
 
@@ -158,32 +150,15 @@ function initializeCrawler(siteConfig, router) {
         // Minimal error logging for debugging (no sheet logging)
         errorHandler: async ({ request, error, page }) => {
             console.error(`❌ Request failed on attempt ${request.retryCount + 1}: ${request.url} - ${error.message}`);
-
             if (error.message.includes('403 status code')) {
-                console.log('🚫 Detected 403 Forbidden error - possible anti-bot protection');
-                const screenshotUrl = await uploadScreenshot(page, site);
-                throw new ForbiddenError('Site is protected by anti-bot measures.', request, screenshotUrl);
+                await handleForbiddenError({ request, page });
             } else if (error.message.includes('timeout')) {
                 console.log('⏰ Request timeout detected');
-                // This is a retryable error, so we just log it here.
-                // The failedRequestHandler will handle the permanent failure.
             }
         },
 
         // Minimal permanent failure logging for debugging
-        failedRequestHandler: async ({ request, error, page }) => {
-            console.error(`💀 Request permanently failed after ${request.retryCount + 1} attempts: ${request.url} - ${error.message}`);
-
-            const screenshotUrl = await uploadScreenshot(page, site);
-            const failureReason = `Request failed: ${error.message}`;
-
-            logToLocalSheet({
-                Status: 'Request Failed',
-                Notes: failureReason,
-                url: request.url,
-                screenshotUrl: screenshotUrl || 'N/A',
-            });
-        },
+        failedRequestHandler: handleRequestFailure,
 
         retryOnBlocked: false,
     });
@@ -196,98 +171,7 @@ async function runCrawler(crawler, urlsToScrape) {
         await crawler.run(urlsToScrape);
         const endTime = Date.now();
         const duration = Math.round((endTime - startTime) / 1000);
-
-        const stats = crawler.stats;
-        const statsJson = stats.toJSON();
-        const totalRequests = statsJson.requestsFinished;
-        const successfulRequests = totalRequests - statsJson.requestsFailed;
-        const failedRequests = statsJson.requestsFailed;
-        const allRequestsFailed = totalRequests > 0 && totalRequests === statsJson.requestsFailed;
-        const someRequestsFailed = failedRequests > 0 && successfulRequests > 0;
-
-        // Check for failure conditions.
-        // A run is considered failed if ALL processed requests failed,
-        // or if a critical error like 'No Product Selector' was logged.
-        const finalLocalSheetData = logToLocalSheet(); // Get data from the local log
-        const isCriticalFailure = ['No Product Selector', 'Invalid Data'].includes(finalLocalSheetData.Status);
-
-        if (allRequestsFailed || isCriticalFailure) {
-            // --- COMPLETE FAILURE ---
-            const isRequestFailure = allRequestsFailed;
-            const isInvalidData = finalLocalSheetData.Status === 'Invalid Data';
-
-            let statusOutput, finalStatus;
-            if (isRequestFailure) {
-                statusOutput = 'complete_failure';
-                finalStatus = 'Complete Failure';
-            } else if (isInvalidData) {
-                statusOutput = 'invalid_data';
-                finalStatus = 'Invalid Data';
-            } else {
-                statusOutput = 'selector_failure';
-                finalStatus = 'Selector Failure'; // This is a type of critical failure
-            }
-
-            const failureReason = allRequestsFailed
-                ? `All ${totalRequests} requests failed during the run.`
-                : finalLocalSheetData.Notes || 'No details provided';
-
-            console.log(`❌ Crawler failed completely for site ${site}: ${finalStatus}. Reason: ${failureReason}`);
-            const rowData = {
-                site: site,
-                url: finalLocalSheetData.url || 'N/A', // Use the last URL if available
-                timestamp: new Date().toISOString(),
-                githubRunUrl: GitHubRunUrl,
-                screenshotUrl: finalLocalSheetData.screenshotUrl || 'N/A',
-                reason: failureReason,
-                failureType: finalStatus, // Add failure type for easy filtering
-            };
-
-            await emitAsync('log-to-sheet', {
-                sheetTitle: 'crawler-failures', // Log to the unified sheet
-                message: `Site ${site} failed: ${failureReason}`,
-                rowData,
-            });
-
-            if (process.env.GITHUB_OUTPUT) {
-                fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=${statusOutput}\n`);
-            }
-
-            logToLocalSheet({ Duration: duration, Status: finalStatus, Notes: failureReason });
-        } else if (someRequestsFailed) {
-            // --- PARTIAL FAILURE ---
-            const finalStatus = 'Partial Failure';
-            const failureReason = `${failedRequests} out of ${totalRequests} requests failed.`;
-
-            console.log(`⚠️ Crawler partially failed for site ${site}: ${failureReason}`);
-
-            const rowData = {
-                site: site,
-                url: 'Multiple URLs',
-                timestamp: new Date().toISOString(),
-                githubRunUrl: GitHubRunUrl,
-                screenshotUrl: 'N/A', // Not applicable for multiple failures
-                reason: failureReason,
-                failureType: finalStatus,
-            };
-
-            await emitAsync('log-to-sheet', {
-                sheetTitle: 'crawler-failures',
-                message: `Site ${site} partially failed.`,
-                rowData,
-            });
-
-            if (process.env.GITHUB_OUTPUT) {
-                fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=partial_failure\n`);
-            }
-
-            logToLocalSheet({ Duration: duration, Status: finalStatus, Notes: failureReason });
-        } else {
-            // --- SUCCESS ---
-            console.log(`✅ Crawler completed for site: ${site} in ${duration} seconds`);
-            console.log(`Stats: ${successfulRequests}/${totalRequests} successful, ${statsJson.requestsFailed} failed`);
-            logToLocalSheet({ Duration: duration });
-        }
+        await summarizeAndReportRun({ stats: crawler.stats, duration, githubRunUrl: GitHubRunUrl });
     } catch (crawlerError) {
         if (crawlerError.name === 'ForbiddenError') {
             console.log(`🚫 Site is protected by anti-bot measures (403 Forbidden) at ${crawlerError.request.url}. Stopping crawl.`);
