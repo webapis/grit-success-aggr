@@ -41,7 +41,13 @@ async function main() {
         }
         let items;
         try {
-            items = JSON.parse(rawData);
+            // Ensure rawData is not just whitespace which can cause JSON.parse to fail on some Node versions
+            if (rawData && rawData.trim()) {
+                items = JSON.parse(rawData);
+            } else {
+                console.warn(`⚠️  Skipping file with only whitespace: ${file}`);
+                continue;
+            }
         } catch (e) {
             console.error(`💥 Error parsing JSON from ${file}: ${e.message}`);
             continue;
