@@ -4,11 +4,11 @@ import fs from 'fs';
 import { createRouter } from "./routes-puppeteer.js"; // Import factory function
 
 class ForbiddenError extends Error {
-    constructor(message, request, page) {
+    constructor(message, request, screenshotUrl) {
         super(message);
         this.name = 'ForbiddenError';
         this.request = request;
-        this.page = page; // Store the page object
+        this.screenshotUrl = screenshotUrl; // Store the screenshot URL
     }
 }
 import preNavigationHooks from "./helpers/preNavigationHooksProd2.js";
@@ -161,7 +161,8 @@ function initializeCrawler(siteConfig, router) {
 
             if (error.message.includes('403 status code')) {
                 console.log('🚫 Detected 403 Forbidden error - possible anti-bot protection');
-                throw new ForbiddenError('Site is protected by anti-bot measures.', request, page);
+                const screenshotUrl = await uploadScreenshot(page, site);
+                throw new ForbiddenError('Site is protected by anti-bot measures.', request, screenshotUrl);
             } else if (error.message.includes('timeout')) {
                 console.log('⏰ Request timeout detected');
                 // This is a retryable error, so we just log it here.
@@ -290,7 +291,6 @@ async function runCrawler(crawler, urlsToScrape) {
     } catch (crawlerError) {
         if (crawlerError.name === 'ForbiddenError') {
             console.log(`🚫 Site is protected by anti-bot measures (403 Forbidden) at ${crawlerError.request.url}. Stopping crawl.`);
-            const screenshotUrl = await uploadScreenshot(crawlerError.page, site);
 
             // 1. Log to sheet '403'
             const rowData = {
@@ -298,7 +298,7 @@ async function runCrawler(crawler, urlsToScrape) {
                 url: crawlerError.request.url,
                 timestamp: new Date().toISOString(),
                 githubRunUrl: GitHubRunUrl,
-                screenshotUrl: screenshotUrl || 'N/A',
+                screenshotUrl: crawlerError.screenshotUrl || 'N/A',
                 reason: 'Blocked with 403 Forbidden status',
                 failureType: '403 Forbidden', // Add failure type for easy filtering
             };
