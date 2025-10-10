@@ -67,15 +67,53 @@ async function deleteGitFile(site, gitFolder) {
 }
 
 /**
+ * Deletes a Git branch from the repository.
+ * @param {string} branchName - The name of the branch to delete.
+ */
+async function deleteGitBranch(branchName) {
+    if (!GITHUB_TOKEN) {
+        console.warn(`Skipping branch deletion for ${branchName}: GH_TOKEN not set.`);
+        return;
+    }
+
+    // Safety check to prevent deleting the main branch
+    if (branchName === 'main') {
+        console.warn('Attempted to delete main branch. Operation skipped.');
+        return;
+    }
+
+    const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/refs/heads/${branchName}`;
+
+    try {
+        console.log(`Attempting to delete branch: ${branchName}...`);
+        const response = await fetch(apiUrl, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/vnd.github.v3+json',
+                'Authorization': `token ${GITHUB_TOKEN}`,
+                'X-GitHub-Api-Version': '2022-11-28',
+            },
+        });
+
+        if (response.status === 204) {
+            console.log(`✅ Successfully deleted branch: ${branchName}`);
+        } else if (response.status === 404 || response.status === 422) { // 422 is returned if ref doesn't exist
+            console.log(`Branch ${branchName} not found. Nothing to delete.`);
+        } else {
+            throw new Error(`Failed to delete branch: ${response.status} ${await response.text()}`);
+        }
+    } catch (error) {
+        console.error(`❌ Error deleting branch ${branchName}:`, error.message);
+    }
+}
+
+/**
  * Deletes all previous analysis sample files for a given site.
  * @param {string} site - The name of the site.
  */
 export async function deletePreviousSamples(site) {
     console.log(`🧹 Deleting previous analysis samples for site: ${site}...`);
-    const sampleFolders = ["ErrorSample", "validSample", "duplicateUrl", "cssselectors"];
-
-    for (const folder of sampleFolders) {
-        await deleteGitFile(site, folder);
-    }
-    console.log('Finished cleanup of previous samples.');
+    // The branch is deleted first. This makes file deletions unnecessary as they are part of the branch.
+    await deleteGitBranch(site);
+    console.log('Finished branch cleanup.');
 }
