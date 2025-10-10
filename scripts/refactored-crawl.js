@@ -8,6 +8,7 @@ class ForbiddenError extends Error {
         super(message);
         this.name = 'ForbiddenError';
         this.request = request;
+        this.page = page; // Store the page object
     }
 }
 import preNavigationHooks from "./helpers/preNavigationHooksProd2.js";
@@ -16,6 +17,7 @@ import { getSiteConfig, getCachedSiteConfigFromFile } from '../src/config/siteCo
 import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 import getGitHubActionsRunUrl from '../src/shared/getGitHubActionsRunUrl.js';
 import { validateUrls } from "./helpers/urlValidation.js";
+import { uploadScreenshot } from '../src/2_data/persistence/uploadScreenshot.js';
 import { emitAsync } from '../src/shared/events.js';
 import '../src/shared/listeners.js'; // This registers the event handlers
 
@@ -156,30 +158,30 @@ function initializeCrawler(siteConfig, router) {
         // Minimal error logging for debugging (no sheet logging)
         errorHandler: async ({ request, error, page }) => {
             console.error(`❌ Request failed on attempt ${request.retryCount + 1}: ${request.url} - ${error.message}`);
-        
+
             if (error.message.includes('403 status code')) {
                 console.log('🚫 Detected 403 Forbidden error - possible anti-bot protection');
-                throw new ForbiddenError('Site is protected by anti-bot measures.', request);
+                throw new ForbiddenError('Site is protected by anti-bot measures.', request, page);
             } else if (error.message.includes('timeout')) {
                 console.log('⏰ Request timeout detected');
-                // This is a retryable error, so we just log it here. 
+                // This is a retryable error, so we just log it here.
                 // The failedRequestHandler will handle the permanent failure.
             }
         },
 
         // Minimal permanent failure logging for debugging
         failedRequestHandler: async ({ request, error, page }) => {
-            console.error(`💀 Request permanently failed after ${request.retryCount} retries: ${request.url} - ${error.message}`);
-            
-            // If the permanent failure is a timeout, log it and set the status.
-            if (error.message.includes('timeout')) {
-                const failureReason = `Navigation timed out after ${request.retryCount + 1} attempts.`;
-                logToLocalSheet({ 
-                    Status: 'Navigation Timeout', 
-                    Notes: failureReason, 
-                    url: request.url 
-                });
-            }
+            console.error(`💀 Request permanently failed after ${request.retryCount + 1} attempts: ${request.url} - ${error.message}`);
+
+            const screenshotUrl = await uploadScreenshot(page, site);
+            const failureReason = `Request failed: ${error.message}`;
+
+            logToLocalSheet({
+                Status: 'Request Failed',
+                Notes: failureReason,
+                url: request.url,
+                screenshotUrl: screenshotUrl || 'N/A',
+            });
         },
 
         retryOnBlocked: false,
@@ -201,12 +203,12 @@ async function runCrawler(crawler, urlsToScrape) {
         
         // NEW: Check for specific failure conditions from local sheet after crawl
         const finalLocalSheetData = logToLocalSheet();
-        if (['No Product Selector', 'Navigation Timeout', 'Invalid Data'].includes(finalLocalSheetData.Status)) {
-            const isNavTimeout = finalLocalSheetData.Status === 'Navigation Timeout';
+        if (['No Product Selector', 'Request Failed', 'Invalid Data'].includes(finalLocalSheetData.Status)) {
+            const isRequestFailure = finalLocalSheetData.Status === 'Request Failed';
             const isInvalidData = finalLocalSheetData.Status === 'Invalid Data';
 
             let statusOutput, finalStatus;
-            if (isNavTimeout) {
+            if (isRequestFailure) {
                 statusOutput = 'navigation_timeout';
                 finalStatus = 'Navigation Timeout';
             } else if (isInvalidData) {
@@ -223,6 +225,7 @@ async function runCrawler(crawler, urlsToScrape) {
                 url: finalLocalSheetData.url || 'N/A', // Use the last URL if available
                 timestamp: new Date().toISOString(),
                 githubRunUrl: GitHubRunUrl,
+                screenshotUrl: finalLocalSheetData.screenshotUrl || 'N/A',
                 reason: finalLocalSheetData.Notes || 'No details provided',
                 failureType: finalStatus, // Add failure type for easy filtering
             };
