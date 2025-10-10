@@ -4,7 +4,7 @@ import getGitHubActionsRunUrl from '../src/shared/getGitHubActionsRunUrl.js';
 import { getConfig, validateConfig } from './config.js';
 import { prepareUrls } from './urls.js';
 import { initializeCrawler, runCrawler } from './crawler.js';
-import { deletePreviousSamples } from './crawler-helpers/cleanup.js';
+import { deletePreviousSamples } from './cleanup.js';
 import '../src/shared/listeners.js'; // This registers the event handlers
 
 const site = process.env.site;
