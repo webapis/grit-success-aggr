@@ -4,7 +4,7 @@ import fs from 'fs';
 import { createRouter } from "./routes-puppeteer.js"; // Import factory function
 
 class ForbiddenError extends Error {
-    constructor(message, request) {
+    constructor(message, request, page) {
         super(message);
         this.name = 'ForbiddenError';
         this.request = request;
