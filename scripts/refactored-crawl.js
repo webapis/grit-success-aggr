@@ -4,6 +4,7 @@ import getGitHubActionsRunUrl from '../src/shared/getGitHubActionsRunUrl.js';
 import { getConfig, validateConfig } from './config.js';
 import { prepareUrls } from './urls.js';
 import { initializeCrawler, runCrawler } from './crawler.js';
+import { deletePreviousSamples } from './crawler-helpers/cleanup.js';
 import '../src/shared/listeners.js'; // This registers the event handlers
 
 const site = process.env.site;
@@ -22,6 +23,9 @@ async function main() {
             console.error('Error: site environment variable is not set.');
             process.exit(1);
         }
+
+        // Delete previous analysis samples before starting the new scrape.
+        await deletePreviousSamples(site);
 
         console.log(`Fetching configuration for site: ${site}`);
         const siteConfig = await getConfig(site);
