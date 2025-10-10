@@ -1,4 +1,7 @@
 import fetch from 'node-fetch';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const GITHUB_TOKEN = process.env.GH_TOKEN;
 const REPO_OWNER = 'webapis';
