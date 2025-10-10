@@ -112,8 +112,15 @@ async function deleteGitBranch(branchName) {
  * @param {string} site - The name of the site.
  */
 export async function deletePreviousSamples(site) {
-    console.log(`🧹 Deleting previous analysis samples for site: ${site}...`);
-    // The branch is deleted first. This makes file deletions unnecessary as they are part of the branch.
+    console.log(`🧹 Starting cleanup for site: ${site}...`);
+    const sampleFolders = ["ErrorSample", "validSample", "duplicateUrl", "cssselectors"];
+
+    // Step 1: Delete individual sample files from the last run.
+    for (const folder of sampleFolders) {
+        await deleteGitFile(site, folder);
+    }
+
+    // Step 2: Delete the entire branch.
     await deleteGitBranch(site);
-    console.log('Finished branch cleanup.');
+    console.log('✅ Finished cleanup process.');
 }
