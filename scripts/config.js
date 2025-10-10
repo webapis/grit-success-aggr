@@ -1,7 +1,7 @@
 import fs from 'fs';
-import { getSiteConfig, getCachedSiteConfigFromFile, processCachedSheetData } from '../../src/config/siteConfig.js';
-import logToLocalSheet from '../../src/2_data/persistence/sheet/logToLocalSheet.js';
-import { emitAsync } from '../../src/shared/events.js';
+import { getSiteConfig, getCachedSiteConfigFromFile, processCachedSheetData } from '../src/config/siteConfig.js';
+import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
+import { emitAsync } from '../src/shared/events.js';
 
 export async function getConfig(site) {
     let siteConfig = null;

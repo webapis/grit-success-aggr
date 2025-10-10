@@ -1,5 +1,5 @@
-import { uploadScreenshot } from '../../persistence/uploadScreenshot.js';
-import logToLocalSheet from '../../persistence/sheet/logToLocalSheet.js';
+import { uploadScreenshot } from '../src/2_data/persistence/uploadScreenshot.js';
+import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 
 const site = process.env.site;
 

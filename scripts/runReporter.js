@@ -1,6 +1,6 @@
 import fs from 'fs';
-import { emitAsync } from '../../../shared/events.js';
-import logToLocalSheet from '../../persistence/sheet/logToLocalSheet.js';
+import { emitAsync } from '../src/shared/events.js';
+import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 
 const site = process.env.site;
 

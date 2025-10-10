@@ -1,5 +1,5 @@
 import { validateUrls } from "../helpers/urlValidation.js";
-import logToLocalSheet from '../../src/2_data/persistence/sheet/logToLocalSheet.js';
+import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 
 export function prepareUrls(siteConfig, site) {
     console.log('🔍 Validating URLs for specific paths...');
