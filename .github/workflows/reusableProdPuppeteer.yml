@@ -32,6 +32,8 @@ jobs:
   crawler-job:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    outputs:
+      status: ${{ steps.crawler.outputs.status }}
 
     steps:
     - name: Checkout code
@@ -116,7 +118,15 @@ jobs:
       run: |
         npm ci --prefer-offline --no-audit
 
+    - name: Cleanup Previous Run
+      run: |
+        echo "🧹 Cleaning up previous run for site: ${{ inputs.site }}"
+        npm run cleanup
+      env:
+        site: ${{ inputs.site }}
+
     - name: Run crawler
+      id: crawler
       run: |
         echo "🚀 Starting crawler for site: ${{ inputs.site }}"
         echo "📊 Cache status: $CACHE_STATUS"
@@ -127,29 +137,37 @@ jobs:
           echo "🌐 Will fetch fresh data from Google Sheets API"
         fi
         
-        node scripts/crawl-ecommerce-site.js
-
-    - name: Run categorization
-      if: always()
+                  node scripts/refactored-crawl.js
+    - name: Run validation pipeline
+      if: steps.crawler.outputs.status != 'paused' && steps.crawler.outputs.status != 'selector_failure' && steps.crawler.outputs.status != 'navigation_timeout' && steps.crawler.outputs.status != 'invalid_data'
       run: |
-        echo "📊 Starting categorization..."
-        node scripts/run-categorization.js
+        echo "🔍 Starting validation pipeline..."
+        npm run validate:prices
+        npm run validate:media
+        npm run validate:metadata
+        npm run categorize
+    - name: Merge validation and categorization results
+      if: steps.crawler.outputs.status != 'paused' && steps.crawler.outputs.status != 'selector_failure' && steps.crawler.outputs.status != 'navigation_timeout' && steps.crawler.outputs.status != 'invalid_data'
+      run: |
+        echo "🤝 Merging results..."
+        npm run merge
 
     - name: Upload results
+      if: steps.crawler.outputs.status != 'paused' && steps.crawler.outputs.status != 'selector_failure' && steps.crawler.outputs.status != 'navigation_timeout' && steps.crawler.outputs.status != 'invalid_data'
       run: |
         echo "📤 Uploading results..."
-        node src/2_data/persistence/sheet/uploadToGoogleSheet.js
+        npm run uploadData
       env:
         UPLOAD_TO_SHEET: ${{ inputs.upload_results }}
 
     - name: Upload categorization results
-      if: always() && inputs.upload_categorization_results == true
+      if: steps.crawler.outputs.status != 'paused' && steps.crawler.outputs.status != 'selector_failure' && steps.crawler.outputs.status != 'navigation_timeout' && steps.crawler.outputs.status != 'invalid_data' && inputs.upload_categorization_results == true
       run: |
         echo "📤 Uploading categorization results..."
         node scripts/upload-categorization-results-to-sheet.js
 
     - name: Upload Summary Artifact
-      if: always()
+      if: steps.crawler.outputs.status != 'paused' && steps.crawler.outputs.status != 'selector_failure' && steps.crawler.outputs.status != 'navigation_timeout' && steps.crawler.outputs.status != 'invalid_data'
       uses: actions/upload-artifact@v4
       with:
         name: upload-summary-${{ inputs.site }}

@@ -15,7 +15,10 @@ export default async function continueIfProductPage({ page, siteUrls }) {
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     await delay(5000); // wait for 5 seconds
+
+
     const bestSelector = await findBestSelector(page, productItemSelector);
+
     debugger
     const { totalItemsToBeCallected, debug } = logToLocalSheet() || {};
     if (bestSelector.count > 0) {
@@ -24,7 +27,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
         const previousTotalItemsToBeCallected = totalItemsToBeCallected || 0;
 
         const { count: totalItemsToBeCallectedCount, selector: totalItemsSelector } =
-            await getTotalItemsCount(page, siteUrls?.totalProductCounterSelector);
+            await getTotalItemsCount(page, siteUrls.configurations[0]?.totalProductCounterSelector);
 
         logToLocalSheet({
             totalItemsToBeCallected: totalItemsToBeCallectedCount + previousTotalItemsToBeCallected,
@@ -48,7 +51,7 @@ export default async function continueIfProductPage({ page, siteUrls }) {
                 gitFolder: 'screenshots'
             });
 
-
+            console.log('ScreenshotGit', result.url)
             logToLocalSheet({ ScreenshotGit: result.url });
         }
 
@@ -64,12 +67,15 @@ export default async function continueIfProductPage({ page, siteUrls }) {
                 imageBuffer: screenshotBuffer,
                 gitFolder: 'screenshots'
             });
-
+            console.log('ScreenshotGit', result.url)
             logToLocalSheet({ ScreenshotGit: result.url });
         }
 
+        const failureReason = bestSelector.error || 'No valid product item selector found';
         logToLocalSheet({ totalItemsPerPage: 0 });
-        logToLocalSheet({ productItemSelector: 'not defined' });
+        logToLocalSheet({ productItemSelector: `not defined - ${failureReason}` });
+        // Set status and current URL for refactored-crawl.js to pick up
+        logToLocalSheet({ Status: 'No Product Selector', Notes: failureReason, url: page.url() });
 
         return false;
     }

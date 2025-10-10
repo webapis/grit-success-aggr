@@ -13,14 +13,14 @@ dotenv.config({ silent: true });
 const site = process.env.site;
 
 export default async function first(props) {
-    const { page, addRequests, siteUrls, request: { url } } = props
+    const { page, addRequests, siteUrls, request: { url }, uploadScreenshot } = props
 
 
     console.log('inside first route')
 
 
     const success = await continueIfProductPage({ page, siteUrls });
-       const paginationParameterName = siteUrls?.paginationParameterName
+       const paginationParameterName = siteUrls.configurations[0]?.paginationParameterName
     if (success) {
         const { productItemSelector } = logToLocalSheet()
 
@@ -33,14 +33,17 @@ debugger
         const mergePageItems = [...pageItems, data.length]
         const pageNumber = extractPageNumber(url, paginationParameterName) || 1
         logToLocalSheet({ pageItems: mergePageItems, pageNumbers: [...pageNumbers, pageNumber] })
-
+        console.log('data',data.length)
         return data
     } else {
+        // This is where the selector failure is handled.
+        // We will now take a screenshot and log its URL.
+        const screenshotUrl = await uploadScreenshot(page, site);
         const { pageItems = [], pageNumbers = [] } = logToLocalSheet()
         const pageNumber = extractPageNumber(url, paginationParameterName) || 1
         const mergePageItems = [...pageItems, 0]
-        logToLocalSheet({ pageItems: mergePageItems, pageNumbers: [...pageNumbers, pageNumber] })
-  
+        logToLocalSheet({ pageItems: mergePageItems, pageNumbers: [...pageNumbers, pageNumber], screenshotUrl: screenshotUrl || 'N/A' })
+        console.log('data2',0)
         return []
     }
 

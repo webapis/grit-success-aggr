@@ -20,7 +20,8 @@ const preNavigationHooks = [
         );
 
         await page.setExtraHTTPHeaders({
-            'Accept-Language': 'en-US,en;q=0.9',
+            "Accept-Language": "tr-TR,tr;q=0.9",
+            "Cookie": "currency=TRY; locale=tr_TR"
         });
         await page.evaluate(() => {
             navigator.geolocation.getCurrentPosition = () => {
@@ -32,6 +33,8 @@ const preNavigationHooks = [
                 };
             };
         });
+
+        await page.emulateTimezone('Europe/Istanbul');
 
 
         page.on('request', req => {

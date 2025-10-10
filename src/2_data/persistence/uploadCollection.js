@@ -6,6 +6,7 @@ const fs = require('fs')
 var zlib = require('zlib');
 const fetch = require('node-fetch')
 
+import { ensureBranchExists } from '../../shared/git/ensureBranchExists.js';
 async function uploadCollection({ fileName, data, gitFolder, compress = true, maxRetries = 3 }) {
 
     if (!data || (Array.isArray(data) && data.length === 0) || (typeof data === 'object' && data !== null && !Array.isArray(data) && Object.keys(data).length === 0)) {
@@ -151,81 +152,6 @@ async function uploadCollection({ fileName, data, gitFolder, compress = true, ma
             // Wait before retrying
             await new Promise(resolve => setTimeout(resolve, 2000 * attempt))
         }
-    }
-}
-
-async function ensureBranchExists(branchName) {
-    try {
-        console.log(`Checking if branch ${branchName} exists...`)
-        
-        // Check if branch exists
-        const branchResponse = await fetch(`https://api.github.com/repos/webapis/grit-2-state/branches/${branchName}`, {
-            method: 'get',
-            headers: {
-                Accept: "application/vnd.github.v3+json",
-                authorization: `token ${process.env.GH_TOKEN}`,
-                "X-GitHub-Api-Version": "2022-11-28"
-            }
-        })
-
-        if (branchResponse.ok) {
-            console.log(`Branch ${branchName} already exists`)
-            return
-        }
-
-        if (branchResponse.status === 404) {
-            console.log(`Branch ${branchName} doesn't exist, creating it...`)
-            
-            // Get the main branch's latest commit SHA
-            const mainBranchResponse = await fetch(`https://api.github.com/repos/webapis/grit-2-state/branches/main`, {
-                method: 'get',
-                headers: {
-                    Accept: "application/vnd.github.v3+json",
-                    authorization: `token ${process.env.GH_TOKEN}`,
-                    "X-GitHub-Api-Version": "2022-11-28"
-                }
-            })
-
-            if (!mainBranchResponse.ok) {
-                throw new Error(`Failed to get main branch info: ${mainBranchResponse.status} ${mainBranchResponse.statusText}`)
-            }
-
-            const mainBranchData = await mainBranchResponse.json()
-            const mainSha = mainBranchData.commit.sha
-
-            // Create new branch from main
-            const createBranchResponse = await fetch(`https://api.github.com/repos/webapis/grit-2-state/git/refs`, {
-                method: 'post',
-                headers: {
-                    Accept: "application/vnd.github.v3+json",
-                    authorization: `token ${process.env.GH_TOKEN}`,
-                    "X-GitHub-Api-Version": "2022-11-28"
-                },
-                body: JSON.stringify({
-                    ref: `refs/heads/${branchName}`,
-                    sha: mainSha
-                })
-            })
-
-            if (!createBranchResponse.ok) {
-                const errorBody = await createBranchResponse.text()
-                
-                // Handle the case where branch was created between our check and create attempt
-                if (createBranchResponse.status === 422 && errorBody.includes('Reference already exists')) {
-                    console.log(`Branch ${branchName} was created by another process, continuing...`)
-                    return
-                }
-                
-                throw new Error(`Failed to create branch ${branchName}: ${createBranchResponse.status} ${createBranchResponse.statusText} - ${errorBody}`)
-            }
-
-            console.log(`✅ Successfully created branch ${branchName}`)
-        } else {
-            throw new Error(`Failed to check branch existence: ${branchResponse.status} ${branchResponse.statusText}`)
-        }
-    } catch (error) {
-        console.error(`Error ensuring branch ${branchName} exists:`, error.message)
-        throw error
     }
 }
 

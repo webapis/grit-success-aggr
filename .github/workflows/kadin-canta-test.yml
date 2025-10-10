@@ -1,4 +1,4 @@
-name: Kadin Canta Aggregator
+name: WB Aggregator
 on:
   workflow_dispatch:
     inputs:
@@ -101,7 +101,7 @@ jobs:
               console.log('📊 Fetching data from Google Sheets...');
               const response = await sheets.spreadsheets.values.get({
                 spreadsheetId: process.env.GOOGLE_SHEET_ID,
-                range: 'wbags-scroll!A:N',
+                range: 'wbags-scroll!A:O',
               });
 
               const rows = response.data.values;
