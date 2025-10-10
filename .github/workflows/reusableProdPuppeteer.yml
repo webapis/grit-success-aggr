@@ -118,6 +118,13 @@ jobs:
       run: |
         npm ci --prefer-offline --no-audit
 
+    - name: Cleanup Previous Run
+      run: |
+        echo "🧹 Cleaning up previous run for site: ${{ inputs.site }}"
+        npm run cleanup
+      env:
+        site: ${{ inputs.site }}
+
     - name: Run crawler
       id: crawler
       run: |
