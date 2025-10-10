@@ -88,7 +88,7 @@ export default async function processAllPrices(item, siteConfig) {
     const priceScrapeError = parsedPrices.some(p => p.priceScrapeError);
 
     if (priceScrapeError || priceisUnset) {
-        console.log('Invalid price data for item (and product is in stock):', parsedPrices);
+        console.log(`Invalid price data for item (link: ${item.link}):`, parsedPrices);
     }
 
     return { parsedPrices, priceValid, priceisUnset, priceScrapeError };
