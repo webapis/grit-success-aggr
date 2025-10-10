@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { emitAsync } from '../src/shared/events.js';
+import { deletePreviousSamples } from './cleanup-helpers.js';
 import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 
 const site = process.env.site;
@@ -71,6 +72,10 @@ export async function summarizeAndReportRun({ stats, duration, githubRunUrl }) {
 
         await reportFailure({ finalStatus, failureReason, url: finalLocalSheetData.url, screenshotUrl: finalLocalSheetData.screenshotUrl, githubRunUrl, statusOutput });
         logToLocalSheet({ Duration: duration, Status: finalStatus, Notes: failureReason });
+
+        // --- Trigger cleanup on complete failure ---
+        console.log(`\n🚨 Complete failure detected. Cleaning up branch for site: ${site}`);
+        await deletePreviousSamples(site);
 
     } else if (someRequestsFailed) {
         // --- PARTIAL FAILURE ---

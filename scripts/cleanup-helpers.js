@@ -1,68 +1,38 @@
 import fetch from 'node-fetch';
-import { ensureBranchExists } from '../src/shared/git/ensureBranchExists.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 const GITHUB_TOKEN = process.env.GH_TOKEN;
 const REPO_OWNER = 'webapis';
 const REPO_NAME = 'grit-2-state';
 
+// Cache for main branch SHA to reduce API calls
+let cachedMainSha = null;
+
 /**
- * Deletes a specific file from a GitHub repository branch.
- * @param {string} site - The site name, used as the branch name.
- * @param {string} gitFolder - The folder in the repository where the file resides.
+ * Gets the main branch SHA, with caching to reduce API calls
  */
-async function deleteGitFile(site, gitFolder) {
-    if (!GITHUB_TOKEN) {
-        throw new Error(`GitHub token (GH_TOKEN) is not configured for file deletion in '${gitFolder}'.`);
+async function getMainBranchSha() {
+    if (cachedMainSha) {
+        return cachedMainSha;
     }
 
-    const branchName = site;
-    const fileName = `${site}.json`; // uploadAnalysisSamples.js uses compress=false
-    const path = `${gitFolder}/${fileName}`;
-    const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
-
-    try {
-        // First, get the file's SHA, which is required for deletion.
-        const getResponse = await fetch(`${apiUrl}?ref=${branchName}`, {
-            headers: {
-                'Accept': 'application/vnd.github.v3+json',
-                'Authorization': `token ${GITHUB_TOKEN}`,
-                'X-GitHub-Api-Version': '2022-11-28',
-            },
-        });
-
-        if (getResponse.status === 404) {
-            console.log(`File not found in ${path} on branch ${branchName}. Nothing to delete.`);
-            return;
+    const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/branches/main`, {
+        headers: {
+            'Accept': 'application/vnd.github.v3+json',
+            'Authorization': `token ${GITHUB_TOKEN}`,
+            'X-GitHub-Api-Version': '2022-11-28',
         }
+    });
 
-        if (!getResponse.ok) {
-            throw new Error(`Failed to get file info: ${getResponse.status} ${await getResponse.text()}`);
-        }
-
-        const { sha } = await getResponse.json();
-
-        // Now, delete the file using its SHA.
-        const deleteResponse = await fetch(apiUrl, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/vnd.github.v3+json',
-                'Authorization': `token ${GITHUB_TOKEN}`,
-                'X-GitHub-Api-Version': '2022-11-28',
-            },
-            body: JSON.stringify({
-                message: `chore: Remove previous analysis sample ${fileName}`,
-                sha: sha,
-                branch: branchName,
-            }),
-        });
-
-        if (deleteResponse.ok) {
-            console.log(`✅ Successfully deleted previous sample: ${path}`);
-        } else {
-            throw new Error(`Failed to delete file: ${deleteResponse.status} ${await deleteResponse.text()}`);
-        }
-    } catch (error) {
-        console.error(`❌ Error deleting file from ${path}:`, error.message);
+    if (!response.ok) {
+        throw new Error(`Failed to get main branch info: ${response.status} ${response.statusText}`);
     }
+
+    const data = await response.json();
+    cachedMainSha = data.commit.sha;
+    return cachedMainSha;
 }
 
 /**
@@ -95,7 +65,7 @@ async function deleteGitBranch(branchName) {
 
         if (response.status === 204) {
             console.log(`✅ Successfully deleted branch: ${branchName}`);
-        } else if (response.status === 404 || response.status === 422) { // 422 is returned if ref doesn't exist
+        } else if (response.status === 404 || response.status === 422) {
             console.log(`Branch ${branchName} not found. Nothing to delete.`);
         } else {
             throw new Error(`Failed to delete branch: ${response.status} ${await response.text()}`);
@@ -106,18 +76,58 @@ async function deleteGitBranch(branchName) {
 }
 
 /**
+ * Creates a new branch from main
+ * @param {string} branchName - The name of the branch to create
+ * @param {string} mainSha - The SHA of the main branch commit
+ */
+async function createBranchFromMain(branchName, mainSha) {
+    const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/git/refs`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/vnd.github.v3+json',
+            'Authorization': `token ${GITHUB_TOKEN}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            ref: `refs/heads/${branchName}`,
+            sha: mainSha,
+        }),
+    });
+
+    if (!response.ok) {
+        const errorBody = await response.text();
+        if (response.status === 422 && errorBody.includes('Reference already exists')) {
+            console.log(`Branch ${branchName} was created by another process, continuing...`);
+            return;
+        }
+        throw new Error(`Failed to create branch ${branchName}: ${response.status} - ${errorBody}`);
+    }
+    console.log(`✅ Successfully created branch ${branchName}`);
+}
+
+/**
  * Deletes all previous analysis sample files for a given site.
  * @param {string} site - The name of the site.
  */
 export async function deletePreviousSamples(site) {
     console.log(`🧹 Starting cleanup for site: ${site}. Attempting to delete and recreate branch...`);
 
-    // Step 1: Delete the old branch if it exists.
-    // This is the most efficient way to remove all old files.
-    await deleteGitBranch(site);
+    try {
+        // Step 1: Get main branch SHA BEFORE deleting (saves an API call)
+        console.log('Fetching main branch SHA...');
+        const mainSha = await getMainBranchSha();
+        console.log(`Got main branch SHA: ${mainSha.substring(0, 7)}...`);
 
-    // Step 2: Immediately recreate a fresh branch from `main`.
-    await ensureBranchExists(site);
+        // Step 2: Delete the old branch if it exists
+        await deleteGitBranch(site);
 
-    console.log(`✅ Finished cleanup and recreation of branch '${site}'.`);
+        // Step 3: Recreate branch using the cached SHA
+        console.log(`Creating fresh branch '${site}' from main...`);
+        await createBranchFromMain(site, mainSha);
+
+        console.log(`✅ Finished cleanup and recreation of branch '${site}'.`);
+    } catch (error) {
+        console.error(`Error during cleanup for site ${site}:`, error.message);
+        throw error;
+    }
 }
