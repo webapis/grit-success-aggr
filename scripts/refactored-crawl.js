@@ -4,68 +4,115 @@ import getGitHubActionsRunUrl from '../src/shared/getGitHubActionsRunUrl.js';
 import { getConfig, validateConfig } from './config.js';
 import { prepareUrls } from './urls.js';
 import { initializeCrawler, runCrawler } from './crawler.js';
+import { pipe } from './pipe.js';
 
 import '../src/shared/listeners.js'; // This registers the event handlers
 
-const site = process.env.site;
-const GITHUB_BRANCH = process.env.GITHUB_REF_NAME; // Get branch name from GitHub Actions env
+// Custom error for controlled pipeline exits
+class EarlyExitError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'EarlyExitError';
+    }
+}
+
+// --- Pipeline Stages ---
+
+const initializeContext = async (context) => {
+    const site = process.env.site;
+    const branch = process.env.GITHUB_REF_NAME || 'local';
+    const githubRunUrl = getGitHubActionsRunUrl();
+
+    console.log(`🚀 Starting crawler for site: ${site}${branch !== 'local' ? ` on branch: ${branch}` : ''}`);
+    console.log(githubRunUrl ? `GitHub Actions Run URL: ${githubRunUrl}` : 'Not running in GitHub Actions');
+    logToLocalSheet({ GitHubRunUrl: githubRunUrl, Site: site, Branch: branch });
+
+    if (!site) {
+        throw new Error('site environment variable is not set.');
+    }
+
+    return { ...context, site, branch, githubRunUrl };
+};
+
+const fetchConfiguration = async (context) => {
+    console.log(`Fetching configuration for site: ${context.site}`);
+    const siteConfig = await getConfig(context.site);
+
+    if (!siteConfig || !siteConfig.configurations || siteConfig.configurations.length === 0) {
+        throw new Error(`Could not retrieve a valid configuration for site: ${context.site}.`);
+    }
+
+    const mainConfig = siteConfig.configurations[0];
+    console.log(`Configuration loaded for site: ${context.site}`, {
+        totalUrls: siteConfig.totalUrls || siteConfig.urls?.length,
+        paused: siteConfig.paused,
+        scrollable: mainConfig.scrollable,
+        cachedAt: siteConfig.cachedAt || 'not cached'
+    });
+
+    return { ...context, siteConfig };
+};
+
+const validateConfiguration = async (context) => {
+    if (await validateConfig(context.siteConfig, context.site, context.githubRunUrl)) {
+        throw new EarlyExitError('Validation logic determined an early exit is needed.');
+    }
+    return context;
+};
+
+const prepareCrawlUrls = (context) => {
+    const urlsToScrape = prepareUrls(context.siteConfig, context.site);
+
+    console.log(`Starting crawler for site: ${context.site} with ${urlsToScrape.length} valid URLs`);
+    console.log('Valid URLs to crawl:', urlsToScrape);
+    console.log('Site configuration:', {
+        paginationSelector: context.siteConfig.configurations[0].paginationSelector,
+        scrollable: context.siteConfig.configurations[0].scrollable,
+        itemsPerPage: context.siteConfig.configurations[0].itemsPerPage,
+        filteringNeeded: context.siteConfig.configurations[0].filteringNeeded
+    });
+
+    return { ...context, urlsToScrape };
+};
+
+const setupCrawler = async (context) => {
+    const router = await createRouter(context.siteConfig);
+    const crawler = initializeCrawler(router);
+    return { ...context, crawler };
+};
+
+const executeCrawl = async (context) => {
+    await runCrawler(context.crawler, context.urlsToScrape, context.site, context.githubRunUrl);
+    return { ...context, completed: true };
+};
+
+// --- Pipeline Definition ---
+
+const crawlPipeline = pipe(
+    initializeContext,
+    fetchConfiguration,
+    validateConfiguration,
+    prepareCrawlUrls,
+    setupCrawler,
+    executeCrawl
+);
 
 // Main execution block
 async function main() {
-    // Get GitHub Actions run URL early for consistent logging
-    const githubRunUrl = getGitHubActionsRunUrl();
-    console.log(`🚀 Starting crawler for site: ${site}${GITHUB_BRANCH ? ` on branch: ${GITHUB_BRANCH}` : ''}`);
-    console.log(githubRunUrl ? `GitHub Actions Run URL: ${githubRunUrl}` : 'Not running in GitHub Actions');
-    logToLocalSheet({ GitHubRunUrl: githubRunUrl, Site: site, Branch: GITHUB_BRANCH || 'local' });
-
     try {
-        if (!site) {
-            console.error('Error: site environment variable is not set.');
-            process.exit(1);
+        const result = await crawlPipeline({});
+        if (result.completed) {
+            console.log(`✅ Crawler for site ${result.site} finished successfully.`);
         }
-
-        console.log(`Fetching configuration for site: ${site}`);
-        const siteConfig = await getConfig(site);
-
-        if (!siteConfig || !siteConfig.configurations || siteConfig.configurations.length === 0) {
-            console.error(`Could not retrieve a valid configuration for site: ${site}. Exiting.`);
-            process.exit(1);
-        }
-
-        const mainConfig = siteConfig.configurations[0];
-        console.log(`Configuration loaded for site: ${site}`, {
-            totalUrls: siteConfig.totalUrls || siteConfig.urls?.length,
-            paused: siteConfig.paused,
-            scrollable: mainConfig.scrollable,
-            cachedAt: siteConfig.cachedAt || 'not cached'
-        });
-
-        if (await validateConfig(siteConfig, site, githubRunUrl)) {
-            return;
-        }
-
-        const urlsToScrape = prepareUrls(siteConfig, site);
-
-        console.log(`Starting crawler for site: ${site} with ${urlsToScrape.length} valid URLs`);
-        console.log('Valid URLs to crawl:', urlsToScrape);
-        console.log('Site configuration:', {
-            paginationSelector: mainConfig.paginationSelector,
-            scrollable: mainConfig.scrollable,
-            itemsPerPage: mainConfig.itemsPerPage,
-            filteringNeeded: mainConfig.filteringNeeded
-        });
-
-        // Create router with siteConfig
-        const router = await createRouter(siteConfig);
-
-        const crawler = initializeCrawler(router);
-
-        await runCrawler(crawler, urlsToScrape, site, githubRunUrl);
-
     } catch (error) {
-        console.error('💥 Fatal error in main execution:', error);
-        logToLocalSheet({ Status: 'Fatal Error', Notes: `Main execution failed: ${error.message}` });
-        process.exit(1);
+        if (error instanceof EarlyExitError) {
+            console.log(`➡️ Pipeline exited early: ${error.message}`);
+            // This is a controlled exit, not a fatal error.
+        } else {
+            console.error('💥 Fatal error in main execution:', error);
+            logToLocalSheet({ Status: 'Fatal Error', Notes: `Main execution failed: ${error.message}` });
+            process.exit(1);
+        }
     }
 }
 

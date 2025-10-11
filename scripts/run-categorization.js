@@ -1,3 +1,4 @@
+// categorize-products.pipe.js
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -8,73 +9,168 @@ import { categorizeProducts } from '../src/categorization/categorizer.js';
 import { countCategorizedItems } from '../src/categorization/countCategorizedItems.js';
 import { analyzeProductTitles, getSuggestionsByStatus } from '../src/categorization/analyzeProductTitles.js';
 
-dotenv.config({ silent: true });
+// --- Pipe Utility ---
+const pipe = (...fns) => async (initialValue) =>
+  fns.reduce(async (acc, fn) => fn(await acc), Promise.resolve(initialValue));
 
-const site = process.env.site;
-const RAW_DATA_DIR = path.join(process.cwd(), 'storage', 'datasets', 'default');
-const ARTIFACTS_DIR = path.join(process.cwd(), 'artifacts');
-const CATEGORIZATION_RESULTS_DIR = path.join(process.cwd(), 'categorization_results');
-const OUTPUT_FILE = path.join(ARTIFACTS_DIR, 'categorized-products.json');
-const SUMMARY_OUTPUT_FILE = path.join(CATEGORIZATION_RESULTS_DIR, `categorization-summary-${site}.json`);
-const NEW_WORDS_OUTPUT_FILE = path.join(CATEGORIZATION_RESULTS_DIR, `new-words-${site}.json`);
+// --- Stages ---
 
-async function main() {
-    console.log('\n📊 Starting independent categorization process...\n');
-    console.log(`Reading raw data from: ${RAW_DATA_DIR}\n`);
+const initializeContext = async (ctx = {}) => {
+  dotenv.config({ silent: true });
 
-    if (!fs.existsSync(RAW_DATA_DIR)) {
-        console.error(`Error: Raw data directory not found at ${RAW_DATA_DIR}`);
-        console.error('Please run the scraping process first to generate data.');
-        process.exit(1);
+  const site = process.env.site;
+  const baseDir = process.cwd();
+
+  return {
+    ...ctx,
+    site,
+    paths: {
+      RAW_DATA_DIR: path.join(baseDir, 'storage', 'datasets', 'default'),
+      ARTIFACTS_DIR: path.join(baseDir, 'artifacts'),
+      CATEGORIZATION_RESULTS_DIR: path.join(baseDir, 'categorization_results'),
+    },
+    metadata: {
+      startTime: Date.now(),
+    },
+  };
+};
+
+// Stage 1: Validate directories and prepare filesystem
+const prepareEnvironment = async (ctx) => {
+  const { RAW_DATA_DIR, ARTIFACTS_DIR, CATEGORIZATION_RESULTS_DIR } = ctx.paths;
+
+  console.log('\n📊 Starting independent categorization process...\n');
+  console.log(`Reading raw data from: ${RAW_DATA_DIR}\n`);
+
+  if (!fs.existsSync(RAW_DATA_DIR)) {
+    throw new Error(`Dataset directory not found: ${RAW_DATA_DIR}`);
+  }
+
+  [ARTIFACTS_DIR, CATEGORIZATION_RESULTS_DIR].forEach((dir) => {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  });
+
+  return { ...ctx, status: 'env_ready' };
+};
+
+// Stage 2: Load data
+const loadData = async (ctx) => {
+  const { RAW_DATA_DIR } = ctx.paths;
+  const files = fs.readdirSync(RAW_DATA_DIR).filter((f) => f.endsWith('.json'));
+
+  if (files.length === 0) {
+    console.log('No JSON files found. Nothing to process.');
+    return { ...ctx, items: [], files: [], skipped: true };
+  }
+
+  const allItems = [];
+  for (const file of files) {
+    const filePath = path.join(RAW_DATA_DIR, file);
+    const rawData = fs.readFileSync(filePath, 'utf-8');
+    try {
+      const parsed = JSON.parse(rawData);
+      allItems.push(...(Array.isArray(parsed) ? parsed : [parsed]));
+    } catch (e) {
+      console.warn(`⚠️ Error parsing ${file}: ${e.message}`);
     }
+  }
 
-    if (!fs.existsSync(ARTIFACTS_DIR)) {
-        fs.mkdirSync(ARTIFACTS_DIR, { recursive: true });
-    }
+  return { ...ctx, files, items: allItems };
+};
 
-    if (!fs.existsSync(CATEGORIZATION_RESULTS_DIR)) {
-        fs.mkdirSync(CATEGORIZATION_RESULTS_DIR, { recursive: true });
-    }
+// Stage 3: Categorize items
+const categorizeItems = async (ctx) => {
+  if (ctx.skipped) return ctx;
 
-    const files = fs.readdirSync(RAW_DATA_DIR).filter(file => file.endsWith('.json'));
+  const allRules = [...productCategoryRules, ...colorsRule, ...genderRule];
+  console.log(`🔍 Categorizing ${ctx.items.length} items from ${ctx.files.length} file(s)...`);
 
-    if (files.length === 0) {
-        console.log('No JSON files found in the raw data directory. Nothing to process.');
-        return;
-    }
+  const categorizedItems = categorizeProducts(ctx.items, allRules, true);
+  const outputFile = path.join(ctx.paths.ARTIFACTS_DIR, 'categorized-products.json');
 
-    const allItems = [];
-    for (const file of files) {
-        const filePath = path.join(RAW_DATA_DIR, file);
-        const rawData = fs.readFileSync(filePath, 'utf-8');
-        const items = JSON.parse(rawData);
-        allItems.push(...(Array.isArray(items) ? items : [items]));
-    }
+  fs.writeFileSync(outputFile, JSON.stringify(categorizedItems, null, 2));
 
-    console.log(`🔍 Categorizing ${allItems.length} items from ${files.length} file(s)...`);
-    const allRules = [...productCategoryRules, ...colorsRule, ...genderRule];
-    const categorizedItems = categorizeProducts(allItems, allRules, true);
+  console.log('\n--- Categorization Summary ---\n');
+  console.log(`Total Items Processed: ${categorizedItems.length}`);
+  console.log(`✅ Output: ${outputFile}\n`);
 
-    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(categorizedItems, null, 2));
+  return { ...ctx, categorizedItems, outputFile };
+};
 
-    console.log('\n--- Categorization Summary ---\n');
-    console.log(`Total Items Processed: ${categorizedItems.length}`);
-    console.log(`✅ Successfully created categorized data at: ${OUTPUT_FILE}`);
-    console.log('-----------------------------------\n');
+// Stage 4: Generate summary
+const generateSummary = async (ctx) => {
+  if (ctx.skipped) return ctx;
 
-    // Generate and save categorization summary
-    const categorySummary = countCategorizedItems(categorizedItems);
-    fs.writeFileSync(SUMMARY_OUTPUT_FILE, JSON.stringify(categorySummary, null, 2));
-    console.log(`✅ Successfully created categorization summary at: ${SUMMARY_OUTPUT_FILE}`);
+  const summary = countCategorizedItems(ctx.categorizedItems);
+  const summaryFile = path.join(
+    ctx.paths.CATEGORIZATION_RESULTS_DIR,
+    `categorization-summary-${ctx.site}.json`
+  );
 
-    // Generate and save new words analysis
-    const titleAnalysis = analyzeProductTitles(categorizedItems);
-    const newWords = getSuggestionsByStatus(titleAnalysis, false);
-    fs.writeFileSync(NEW_WORDS_OUTPUT_FILE, JSON.stringify(newWords, null, 2));
-    console.log(`✅ Successfully created new words analysis at: ${NEW_WORDS_OUTPUT_FILE}`);
-}
+  fs.writeFileSync(summaryFile, JSON.stringify(summary, null, 2));
+  console.log(`✅ Summary saved at: ${summaryFile}`);
 
-main().catch(error => {
-    console.error('💥 An error occurred during the categorization process:', error);
+  return { ...ctx, summary, summaryFile };
+};
+
+// Stage 5: Analyze and extract new words
+const analyzeTitles = async (ctx) => {
+  if (ctx.skipped) return ctx;
+
+  const analysis = analyzeProductTitles(ctx.categorizedItems);
+  const newWords = getSuggestionsByStatus(analysis, false);
+  const newWordsFile = path.join(
+    ctx.paths.CATEGORIZATION_RESULTS_DIR,
+    `new-words-${ctx.site}.json`
+  );
+
+  fs.writeFileSync(newWordsFile, JSON.stringify(newWords, null, 2));
+  console.log(`✅ New words saved at: ${newWordsFile}`);
+
+  return { ...ctx, analysis, newWords, newWordsFile };
+};
+
+// Stage 6: Format final output
+const finalizeOutput = async (ctx) => {
+  const endTime = Date.now();
+  const duration = endTime - ctx.metadata.startTime;
+
+  return {
+    success: !ctx.error,
+    site: ctx.site,
+    totalFiles: ctx.files?.length || 0,
+    totalItems: ctx.items?.length || 0,
+    categorizedCount: ctx.categorizedItems?.length || 0,
+    outputFiles: {
+      categorized: ctx.outputFile,
+      summary: ctx.summaryFile,
+      newWords: ctx.newWordsFile,
+    },
+    durationMs: duration,
+    finishedAt: new Date().toISOString(),
+    error: ctx.error || null,
+  };
+};
+
+// --- Compose the Pipeline ---
+const pipeline = pipe(
+  initializeContext,
+  prepareEnvironment,
+  loadData,
+  categorizeItems,
+  generateSummary,
+  analyzeTitles,
+  finalizeOutput
+);
+
+// --- Execute ---
+(async () => {
+  try {
+    const result = await pipeline({});
+    console.log('\n✅ Categorization Pipeline Completed Successfully!\n');
+    console.log(JSON.stringify(result, null, 2));
+  } catch (error) {
+    console.error('\n💥 Pipeline Failed:', error.message);
     process.exit(1);
-});
+  }
+})();

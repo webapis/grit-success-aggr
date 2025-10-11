@@ -1,122 +1,179 @@
-
 import fs from 'fs';
 import path from 'path';
 import { validateItemMedia } from '../src/1_scraping/validation/mediaValidator.js';
+import { pipe } from './pipe.js';
 
+// --- Constants ---
 const RAW_DATA_DIR = path.join(process.cwd(), 'storage', 'datasets', 'default');
 const ARTIFACTS_DIR = path.join(process.cwd(), 'artifacts');
 const OUTPUT_FILE = path.join(ARTIFACTS_DIR, 'media-validated.json');
 
-async function main() {
-    console.log(`
-🔍 Starting media validation process...
-`);
-    console.log(`Reading data from: ${RAW_DATA_DIR}`);
-
-    if (!fs.existsSync(RAW_DATA_DIR)) {
-        console.error(`Error: Dataset directory not found at ${RAW_DATA_DIR}`);
-        console.error('Please run the scraping process first to generate data.');
-        process.exit(1);
-    }
-
-    if (!fs.existsSync(ARTIFACTS_DIR)) {
-        fs.mkdirSync(ARTIFACTS_DIR, { recursive: true });
-    }
-
-    const files = fs.readdirSync(RAW_DATA_DIR).filter(file => file.endsWith('.json'));
-
-    if (files.length === 0) {
-        console.log('No JSON files found in the dataset directory. Nothing to process.');
-        return;
-    }
-
-    const items = [];
-    for (const file of files) {
-        const filePath = path.join(RAW_DATA_DIR, file);
-        const rawData = fs.readFileSync(filePath, 'utf-8');
-        // --- Robustness Check ---
-        if (!rawData.trim()) {
-            console.warn(`⚠️  Skipping empty file: ${file}`);
-            continue;
-        }
-        try {
-            const fileItems = JSON.parse(rawData);
-            if (Array.isArray(fileItems)) {
-                items.push(...fileItems);
-            } else if (fileItems) { // Ensure it's not null/undefined
-                items.push(fileItems);
-            }
-        } catch (e) {
-            console.error(`💥 Error parsing JSON from ${file}: ${e.message}`);
-        }
-    }
-
-    if (!Array.isArray(items) || items.length === 0) {
-        console.log('No items found in the input file. Nothing to process.');
-        return;
-    }
-
-    const allImageUrls = new Map();
-    const allItems = [];
-
-    // First pass: Read all items and validate media individually
-    console.log(`🔍 Processing ${items.length} item(s)...`);
-    for (const item of items) {
-        // Assuming a mock siteConfig for now
-        const mockSiteConfig = { urls: [item.pageUrl] }; // Use pageUrl for context
-        const mediaValidationResult = validateItemMedia(item, mockSiteConfig);
-
-        const enrichedItem = {
-            ...item,
-            img: mediaValidationResult.processedImages,
-            imgValid: mediaValidationResult.imgValid,
-            videoValid: mediaValidationResult.videoValid,
-            mediaType: mediaValidationResult.mediaType,
-            imageAnalysis: { // Nesting image-specific results
-                isDuplicate: false, // Default value
-                duplicateOf: []
-            }
-        };
-
-        // Store URLs for cross-item duplicate check
-        for (const imgUrl of enrichedItem.img) {
-            if (!allImageUrls.has(imgUrl)) {
-                allImageUrls.set(imgUrl, []);
-            }
-            allImageUrls.get(imgUrl).push(item.link); // Store item link
-        }
-        allItems.push(enrichedItem);
-    }
-
-    // Second pass: Identify duplicates
-    console.log('🕵️  Checking for duplicate images across all items...');
-    for (const item of allItems) {
-        for (const imgUrl of item.img) {
-            const itemsWithThisImage = allImageUrls.get(imgUrl);
-            if (itemsWithThisImage.length > 1) {
-                item.imageAnalysis.isDuplicate = true;
-                item.imageAnalysis.duplicateOf = itemsWithThisImage.filter(
-                    (link) => link !== item.link
-                );
-                break; // Mark as duplicate and move to the next item
-            }
-        }
-    }
-
-    // Save the final enriched data
-    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(allItems, null, 2));
-
-    console.log(`
---- Media Validation Summary ---
-`);
-    console.log(`Total Items Processed: ${allItems.length}`);
-    console.log(`Unique Image URLs Found: ${allImageUrls.size}`);
-    console.log(`✅ Saved media-validated data to: ${OUTPUT_FILE}`);
-    console.log(`--------------------------------
-`);
+// --- Custom Error for controlled exits ---
+class EarlyExitError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'EarlyExitError';
+  }
 }
 
-main().catch(error => {
-    console.error('💥 An error occurred during the media validation process:', error);
-    process.exit(1);
-});
+// --- Stage 1: Initialize Context ---
+const initializeContext = async (context) => {
+  console.log(`
+🔍 Starting media validation process...
+`);
+  console.log(`Reading data from: ${RAW_DATA_DIR}`);
+
+  if (!fs.existsSync(RAW_DATA_DIR)) {
+    throw new Error(`Dataset directory not found at ${RAW_DATA_DIR}. Please run the scraping process first.`);
+  }
+
+  if (!fs.existsSync(ARTIFACTS_DIR)) {
+    fs.mkdirSync(ARTIFACTS_DIR, { recursive: true });
+  }
+
+  const files = fs.readdirSync(RAW_DATA_DIR).filter(f => f.endsWith('.json'));
+
+  if (files.length === 0) {
+    throw new EarlyExitError('No JSON files found in the dataset directory.');
+  }
+
+  return { ...context, files, items: [] };
+};
+
+// --- Stage 2: Load and Parse Files ---
+const loadAndParseFiles = async (context) => {
+  const { files } = context;
+  const items = [];
+
+  for (const file of files) {
+    const filePath = path.join(RAW_DATA_DIR, file);
+    const rawData = fs.readFileSync(filePath, 'utf-8');
+
+    if (!rawData.trim()) {
+      console.warn(`⚠️ Skipping empty file: ${file}`);
+      continue;
+    }
+
+    try {
+      const fileItems = JSON.parse(rawData);
+      if (Array.isArray(fileItems)) {
+        items.push(...fileItems);
+      } else if (fileItems) {
+        items.push(fileItems);
+      }
+    } catch (e) {
+      console.error(`💥 Error parsing JSON from ${file}: ${e.message}`);
+    }
+  }
+
+  if (items.length === 0) {
+    throw new EarlyExitError('No valid items found to process after parsing.');
+  }
+
+  console.log(`🔍 Loaded ${items.length} item(s) from ${files.length} file(s).`);
+  return { ...context, items };
+};
+
+// --- Stage 3: Validate Media ---
+const validateMedia = async (context) => {
+  const { items } = context;
+  const allImageUrls = new Map();
+  const allItems = [];
+
+  console.log(`🔍 Validating media for ${items.length} item(s)...`);
+
+  for (const item of items) {
+    const mockSiteConfig = { urls: [item.pageUrl] };
+    const mediaResult = validateItemMedia(item, mockSiteConfig);
+
+    const enrichedItem = {
+      ...item,
+      img: mediaResult.processedImages,
+      imgValid: mediaResult.imgValid,
+      videoValid: mediaResult.videoValid,
+      mediaType: mediaResult.mediaType,
+      imageAnalysis: {
+        isDuplicate: false,
+        duplicateOf: []
+      }
+    };
+
+    for (const imgUrl of enrichedItem.img) {
+      if (!allImageUrls.has(imgUrl)) {
+        allImageUrls.set(imgUrl, []);
+      }
+      allImageUrls.get(imgUrl).push(item.link);
+    }
+
+    allItems.push(enrichedItem);
+  }
+
+  return { ...context, allItems, allImageUrls };
+};
+
+// --- Stage 4: Detect Duplicates ---
+const detectDuplicates = async (context) => {
+  const { allItems, allImageUrls } = context;
+
+  console.log('🕵️ Checking for duplicate images across all items...');
+
+  for (const item of allItems) {
+    for (const imgUrl of item.img) {
+      const relatedItems = allImageUrls.get(imgUrl);
+      if (relatedItems.length > 1) {
+        item.imageAnalysis.isDuplicate = true;
+        item.imageAnalysis.duplicateOf = relatedItems.filter(link => link !== item.link);
+        break;
+      }
+    }
+  }
+
+  return context;
+};
+
+// --- Stage 5: Save Results ---
+const saveResults = async (context) => {
+  const { allItems } = context;
+  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(allItems, null, 2));
+
+  console.log(`✅ Saved media-validated data to: ${OUTPUT_FILE}`);
+  return { ...context, totalItems: allItems.length };
+};
+
+// --- Stage 6: Print Summary ---
+const printSummary = async (context) => {
+  console.log(`
+--- Media Validation Summary ---
+`);
+  console.log(`Total Items Processed: ${context.totalItems}`);
+  console.log(`Unique Image URLs Found: ${context.allImageUrls.size}`);
+  console.log('--------------------------------\n');
+  return context;
+};
+
+// --- Pipeline Definition ---
+const validateMediaPipeline = pipe(
+  initializeContext,
+  loadAndParseFiles,
+  validateMedia,
+  detectDuplicates,
+  saveResults,
+  printSummary
+);
+
+// --- Main Execution ---
+async function main() {
+  try {
+    await validateMediaPipeline({});
+    console.log('🎉 Media validation pipeline completed successfully.');
+  } catch (error) {
+    if (error instanceof EarlyExitError) {
+      console.log(`➡️ Pipeline exited early: ${error.message}`);
+    } else {
+      console.error('💥 Fatal error in media validation process:', error);
+      process.exit(1);
+    }
+  }
+}
+
+main();

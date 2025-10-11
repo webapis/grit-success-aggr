@@ -3,45 +3,84 @@ import path from 'path';
 import dotenv from 'dotenv';
 import { emitAsync } from '../src/shared/events.js';
 import '../src/shared/listeners.js'; // This registers the event handlers
+import { pipe } from './pipe.js';
 
 dotenv.config({ silent: true });
 
-/**
- * Reads the final summary JSON and uploads the aggregated metrics to Google Sheets.
- * @param {string} summaryFilePath - The path to the final-summary.json file.
- */
-async function uploadSummaryToSheet(summaryFilePath) {
+// --- Pipeline Stages ---
+
+const initialize = (context) => {
+    const summaryPath = process.argv[2] || './artifacts/final-summary.json';
+    console.log(`Initializing summary upload from: ${summaryPath}`);
+    return {
+        ...context,
+        summaryFilePath: path.resolve(summaryPath),
+    };
+};
+
+const loadSummaryData = async (context) => {
+    const { summaryFilePath } = context;
+    console.log(`Reading final summary from: ${summaryFilePath}`);
     try {
-        console.log(`Reading final summary from: ${summaryFilePath}`);
         const content = await fs.readFile(summaryFilePath, 'utf-8');
         const summaryData = JSON.parse(content);
-
-        if (!summaryData.aggregatedMetrics) {
-            throw new Error('`aggregatedMetrics` not found in summary file.');
-        }
-
-        const metrics = summaryData.aggregatedMetrics;
-
-        // Convert array fields to comma-separated strings for better sheet readability
-        const rowData = { ...metrics };
-        for (const key in rowData) {
-            if (Array.isArray(rowData[key])) {
-                rowData[key] = rowData[key].join(', ');
-            }
-        }
-
-        await emitAsync('log-to-sheet', {
-            sheetTitle: 'Total Run Logs', // Specify a dedicated sheet for run summaries
-            message: `Aggregated run summary`,
-            rowData: rowData,
-        });
-
-        console.log('✅ Successfully uploaded aggregated metrics to Google Sheet.');
+        return { ...context, summaryData };
     } catch (error) {
-        console.error('❌ Error uploading summary to Google Sheet:', error);
+        if (error.code === 'ENOENT') {
+            throw new Error(`Summary file not found at ${summaryFilePath}. Please run the summarize script first.`);
+        }
+        throw error;
+    }
+};
+
+const prepareSheetData = (context) => {
+    const { summaryData } = context;
+    if (!summaryData.aggregatedMetrics) {
+        throw new Error('`aggregatedMetrics` not found in summary file.');
+    }
+
+    const metrics = summaryData.aggregatedMetrics;
+    const rowData = { ...metrics };
+
+    // Convert array fields to comma-separated strings for better sheet readability
+    for (const key in rowData) {
+        if (Array.isArray(rowData[key])) {
+            rowData[key] = rowData[key].join(', ');
+        }
+    }
+
+    console.log('Data prepared for Google Sheet upload.');
+    return { ...context, sheetData: rowData };
+};
+
+const uploadToSheet = async (context) => {
+    const { sheetData } = context;
+    await emitAsync('log-to-sheet', {
+        sheetTitle: 'Total Run Logs', // Specify a dedicated sheet for run summaries
+        message: 'Aggregated run summary',
+        rowData: sheetData,
+    });
+    console.log('✅ Successfully uploaded aggregated metrics to Google Sheet.');
+    return context;
+};
+
+// --- Pipeline Definition ---
+
+const uploadSummaryPipeline = pipe(
+    initialize,
+    loadSummaryData,
+    prepareSheetData,
+    uploadToSheet
+);
+
+// --- Main Execution ---
+
+(async () => {
+    try {
+        await uploadSummaryPipeline({});
+        console.log('\n✅ Summary upload pipeline completed successfully.');
+    } catch (error) {
+        console.error('❌ Error in the summary upload pipeline:', error.message);
         process.exit(1);
     }
-}
-
-const summaryPath = process.argv[2] || './artifacts/final-summary.json';
-uploadSummaryToSheet(path.resolve(summaryPath));
+})();
