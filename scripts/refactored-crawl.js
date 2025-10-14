@@ -60,8 +60,8 @@ const validateConfiguration = async (context) => {
     return context;
 };
 
-const prepareCrawlUrls = (context) => {
-    const urlsToScrape = prepareUrls(context.siteConfig, context.site);
+const prepareCrawlUrls = async(context) => {
+    const urlsToScrape = await prepareUrls(context.siteConfig, context.site);
 
     console.log(`Starting crawler for site: ${context.site} with ${urlsToScrape.length} valid URLs`);
     console.log('Valid URLs to crawl:', urlsToScrape);
