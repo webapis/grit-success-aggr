@@ -66,15 +66,19 @@ const SCRAPER_ISSUES = {
 const githubRunUrl = getGitHubActionsRunUrl();
 const branch = process.env.GITHUB_REF_NAME || 'local';
 
-export default async function scraperIssuesReporter({ SCRAPER_ISSUE, failureReason, url, urls, statusOutput }) {
+export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls }) {
     let screenshotUrl = null;
     let failureReason = null;
     let failureType = null;
+    let statusOutput = '';
+
     switch (SCRAPER_ISSUE) {
         case SCRAPER_ISSUES.NO_VALID_URLS:
 
             failureReason = ` no valid urls found for site ${site}: ${urls}}`
             failureType = SCRAPER_ISSUES.NO_VALID_URLS
+            statusOutput = 'paused'
+
             break;
         case SCRAPER_ISSUES.NO_VALID_SITE:
             ''
