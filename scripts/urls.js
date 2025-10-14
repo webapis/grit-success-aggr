@@ -1,7 +1,7 @@
 import { validateUrls } from "./helpers/urlValidation.js";
 import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 import scraperIssuesReporter, { SCRAPER_ISSUES } from "./scraper_issue_reporter.js";
-export async function prepareUrls(siteConfig, site) {
+export async function prepareUrls(siteConfig, site) {    
     console.log('🔍 Validating URLs for specific paths...');
     const { validUrls, invalidUrls } = validateUrls(siteConfig.urls);
 
@@ -16,5 +16,5 @@ export async function prepareUrls(siteConfig, site) {
         }
     }
 
-    return validUrls;
+    return await validUrls;
 }
