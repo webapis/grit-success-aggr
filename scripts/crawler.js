@@ -67,7 +67,8 @@ export function initializeCrawler(router) {
 export async function runCrawler(crawler, urlsToScrape, site, githubRunUrl) {
     try {
         const startTime = Date.now();
-        await crawler.run(urlsToScrape);
+        const urls = Array.isArray(urlsToScrape) ? urlsToScrape : [urlsToScrape];
+        await crawler.run(urls);
         const endTime = Date.now();
         const duration = Math.round((endTime - startTime) / 1000);
         await summarizeAndReportRun({ stats: crawler.stats, duration, githubRunUrl });
