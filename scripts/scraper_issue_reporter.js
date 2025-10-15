@@ -7,9 +7,9 @@ const site = process.env.site;
 
 const SCRAPER_ISSUES = {
 
-    NO_VALID_URLS: 'NO_VALID_URLS',//NO VALID URLS FOUND
+      NO_VALID_URLS: 'NO_VALID_URLS',//NO VALID URLS FOUND
     NO_VALID_SITE: 'NO_VALID_SITE',//MISSPELLED SITE NAME
-    PAUSED_FORM_SCRAPING: 'PAUSED_FORM_SCRAPING',
+      PAUSED_FORM_SCRAPING: 'PAUSED_FORM_SCRAPING',
     PARTIAL_FORBIDDEN_403: 'PARTIAL_FORBIDDEN_403',
     UNREACHABLE_SITE: 'UNREACHABLE_SITE',// SITE IS TEMPORARILY DOWN
     REDIRECTION: 'REDIRECTION',//PAGE GETS REDIRECTED
@@ -66,7 +66,7 @@ const SCRAPER_ISSUES = {
 const githubRunUrl = getGitHubActionsRunUrl();
 const branch = process.env.GITHUB_REF_NAME || 'local';
 
-export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, pausedReason }) {
+export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, pausedReason, page }) {
     let screenshotUrl = null;
     let failureReason = null;
     let failureType = null;
@@ -76,13 +76,13 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
 
     let rowData = {
         site: site,
-        //  url: url || 'N/A',
+        url: url || 'N/A',
         timestamp: new Date().toISOString(),
         githubRunUrl: githubRunUrl,
-        //  screenshotUrl: screenshotUrl || 'N/A',
+        screenshotUrl: screenshotUrl || 'N/A',
         branch,
-        //  failureReason,
-        //failureType,
+        failureReason,
+        failureType,
     };
     switch (SCRAPER_ISSUE) {
         case SCRAPER_ISSUES.NO_VALID_URLS:
@@ -114,8 +114,11 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
 
             break;
         case SCRAPER_ISSUES.FORBIDDEN_403:
-            screenshotUrl = await uploadScreenshot(page, site);
-            rowData = { ...rowData, screenshotUrl }
+            failureReason = `Blocked with 403 Forbidden status at ${url}`;
+            failureType = SCRAPER_ISSUES.FORBIDDEN_403;
+            statusOutput = 'paused';
+            screenshotUrl = await uploadScreenshot(page, site); 
+            rowData = { ...rowData, screenshotUrl, failureReason, failureType };
             break;
         case SCRAPER_ISSUES.ANTIBOT_DETECTION:
             screenshotUrl = await uploadScreenshot(page, site);
@@ -139,10 +142,6 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
 
     }
 
-
-
-
-
     await emitAsync('log-to-sheet', {
         sheetTitle,
         message: `Site ${site} failed: ${failureReason}`,
@@ -152,6 +151,8 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
     if (process.env.GITHUB_OUTPUT && statusOutput) {
         fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=${statusOutput}\n`);
     }
+
+    return { screenshotUrl };
 }
 
 

@@ -2,10 +2,12 @@ import { PuppeteerCrawler } from "crawlee";
 import fs from 'fs';
 import puppeteer from '../src/1_scraping/helpers/puppeteer-stealth.js';
 import preNavigationHooks from "./helpers/preNavigationHooksProd2.js";
-import { ForbiddenError, handleRequestFailure, handleForbiddenError } from './failureHandler.js';
+import { ForbiddenError, handleRequestFailure } from './failureHandler.js';
 import { summarizeAndReportRun } from './runReporter.js';
 import { emitAsync } from '../src/shared/events.js';
 import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
+import scraperIssuesReporter, { SCRAPER_ISSUES } from "./scraper_issue_reporter.js";
+import { EarlyExitError } from "./refactored-crawl.js";
 
 export function initializeCrawler(router) {
     const local = process.env.local;
@@ -53,7 +55,9 @@ export function initializeCrawler(router) {
         errorHandler: async ({ request, error, page }) => {
             console.error(`❌ Request failed on attempt ${request.retryCount + 1}: ${request.url} - ${error.message}`);
             if (error.message.includes('403 status code')) {
-                await handleForbiddenError({ request, page });
+                const report = await scraperIssuesReporter({ SCRAPER_ISSUE: SCRAPER_ISSUES.FORBIDDEN_403, page, url: request.url });
+                // Throw a custom error to be caught by the runCrawler function, allowing a graceful shutdown.
+                throw new ForbiddenError('Site is protected by anti-bot measures.', request, report.screenshotUrl);
             } else if (error.message.includes('timeout')) {
                 console.log('⏰ Request timeout detected');
             }
@@ -74,22 +78,10 @@ export async function runCrawler(crawler, urlsToScrape, site, githubRunUrl) {
         await summarizeAndReportRun({ stats: crawler.stats, duration, githubRunUrl });
     } catch (crawlerError) {
         if (crawlerError.name === 'ForbiddenError') {
-            console.log(`🚫 Site is protected by anti-bot measures (403 Forbidden) at ${crawlerError.request.url}. Stopping crawl.`);
+            console.log(`🚫 Crawl stopped due to 403 Forbidden error at ${crawlerError.request.url}. The issue has been reported.`);
 
-            const rowData = {
-                site: site,
-                url: crawlerError.request.url,
-                timestamp: new Date().toISOString(),
-                githubRunUrl: githubRunUrl,
-                screenshotUrl: crawlerError.screenshotUrl || 'N/A',
-                reason: 'Blocked with 403 Forbidden status',
-                failureType: '403 Forbidden',
-            };
-            await emitAsync('log-to-sheet', { sheetTitle: 'crawler-failures', message: `Site ${site} is blocked.`, rowData });
-
-            if (process.env.GITHUB_OUTPUT) {
-                fs.appendFileSync(process.env.GITHUB_OUTPUT, "status=paused\n");
-            }
+            // Throw a specific error that the main pipeline can catch for a graceful exit.
+            throw new EarlyExitError(`Crawl stopped due to 403 Forbidden error at ${crawlerError.request.url}`);
         } else {
             console.error('❌ Crawler execution failed:', crawlerError);
             logToLocalSheet({ Status: 'Fatal Error', Notes: `Crawler crashed: ${crawlerError.message}` });

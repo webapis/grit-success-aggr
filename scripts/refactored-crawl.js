@@ -9,7 +9,7 @@ import scraperIssuesReporter,{SCRAPER_ISSUES} from "./scraper_issue_reporter.js"
 import '../src/shared/listeners.js'; // This registers the event handlers
 
 // Custom error for controlled pipeline exits
-class EarlyExitError extends Error {
+export class EarlyExitError extends Error {
     constructor(message) {
         super(message);
         this.name = 'EarlyExitError';
