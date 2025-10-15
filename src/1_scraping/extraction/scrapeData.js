@@ -18,6 +18,7 @@ import productNotAvailable from "../../config/selectors/selector-attibutes/produ
 
 import { emitAsync } from "../../shared/events.js";
 import logToLocalSheet from "../../2_data/persistence/sheet/logToLocalSheet.js";
+import scraperIssuesReporter, { SCRAPER_ISSUES } from '../../../scripts/scraper_issue_reporter.js';
 
 import { generateTimestampId } from "../navigation/micro/generateTimestampId.js";
 import '../../shared/listeners.js'; // ← This registers event handlers
@@ -191,26 +192,17 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         };
     });
 
-    // --- CRITICAL CHECK: Ensure all items have an ID ---
-    const itemsWithNullId = processedData.filter(item => item.id === null);
-    if (itemsWithNullId.length > 0) {
-        const failureReason = `${itemsWithNullId.length} out of ${processedData.length} scraped item(s) have a null link, preventing ID generation.`;
-        console.error(`💥 Invalid Data Detected: ${failureReason}`);
-        logToLocalSheet({
-            Status: 'Invalid Data',
-            Notes: failureReason,
-            url: url
+    if (processedData.length === 0) {
+        await scraperIssuesReporter({
+            SCRAPER_ISSUE: SCRAPER_ISSUES.NO_PRODUCT_ITEMS,
+            url,
+            page
         });
     }
 
-    logToLocalSheet({
-        [timestamp]: {
-            site: site,
-            url: url,
-            count: processedData.length,
-            data: processedData
-        }
-    });
+
+
+
  
     return processedData;
 }

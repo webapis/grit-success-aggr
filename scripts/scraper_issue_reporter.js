@@ -55,7 +55,7 @@ const SCRAPER_ISSUES = {
     ITEMS_WITH_DOUBLICATE_PRICES: 'ITEMS_WITH_DOUBLICATE_PRICES',
     ITEMS_WITH_DOUBLICATE_TITLES: 'ITEMS_WITH_DOUBLICATE_TITLES',
     //PRODUCT ITEM SELECTOR IS USED BY NONE PRODUCT ITEM ALONGSIDE PRODUCT ITEMS
-    NONE_PRODUCT_ITEMS: 'NONE_PRODUCT_ITEMS',
+    NO_PRODUCT_ITEMS: 'NO_PRODUCT_ITEMS',
     //ITEMS NOT ITENTIFIED BY CATEGORIZATION PROCESS
     UNCATEGORIZED_ITEMS: 'UNCATEGORIZED_ITEMS',
     //ITEMS COLORS OF WHICH NO IDENTIFIED
@@ -151,6 +151,12 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
             rowData = { ...rowData, failureReason, failureType };
             break;
 
+        case SCRAPER_ISSUES.NO_PRODUCT_ITEMS:
+            failureReason = `No product items found on page ${url}. possible reason is wrong css selector or not product page`
+            failureType = SCRAPER_ISSUES.NO_PRODUCT_ITEMS
+            screenshotUrl = await uploadScreenshot(page, site);
+            rowData = { ...rowData, failureReason, failureType, screenshotUrl }
+            break;
     }
 
     await emitAsync('log-to-sheet', {
