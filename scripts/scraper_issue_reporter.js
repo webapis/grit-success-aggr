@@ -72,6 +72,19 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
     let failureType = null;
     let statusOutput = '';
     let sheetTitle = 'crawler-failures'
+
+
+    let rowData = {
+        site: site,
+        sheetTitle,
+        //  url: url || 'N/A',
+        timestamp: new Date().toISOString(),
+        githubRunUrl: githubRunUrl,
+        //  screenshotUrl: screenshotUrl || 'N/A',
+        branch,
+        //  failureReason,
+        //failureType,
+    };
     switch (SCRAPER_ISSUE) {
         case SCRAPER_ISSUES.NO_VALID_URLS:
 
@@ -89,48 +102,46 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
             failureType = SCRAPER_ISSUES.PAUSED_FORM_SCRAPING
             sheetTitle = 'paused-sites'
             statusOutput = 'paused'
+            rowData = { ...rowData, sheetTitle, failureReason, failureType }
             break;
         case SCRAPER_ISSUES.PARTIAL_FORBIDDEN_403:
 
             break;
         case SCRAPER_ISSUES.UNREACHABLE_SITE:
             screenshotUrl = await uploadScreenshot(page, site);
+            rowData = { ...rowData, screenshotUrl }
             break;
         case SCRAPER_ISSUES.REDIRECTION:
 
             break;
         case SCRAPER_ISSUES.FORBIDDEN_403:
             screenshotUrl = await uploadScreenshot(page, site);
+            rowData = { ...rowData, screenshotUrl }
             break;
         case SCRAPER_ISSUES.ANTIBOT_DETECTION:
             screenshotUrl = await uploadScreenshot(page, site);
+            rowData = { ...rowData, screenshotUrl }
             break;
         case SCRAPER_ISSUES.FORBIDDEN_IMAGE_403:
 
             break;
         case SCRAPER_ISSUES.PAGE_NOT_FOUND_404:
             screenshotUrl = await uploadScreenshot(page, site);
+            rowData = { ...rowData, screenshotUrl }
             break;
         case SCRAPER_ISSUES.TIMEOUT:
             screenshotUrl = await uploadScreenshot(page, site);
+            rowData = { ...rowData, screenshotUrl }
             break;
         case SCRAPER_ISSUES.NAVIGATION_TIMEOUT:
             screenshotUrl = await uploadScreenshot(page, site);
+            rowData = { ...rowData, screenshotUrl }
             break;
 
     }
 
 
-    const rowData = {
-        site: site,
-        url: url || 'N/A',
-        timestamp: new Date().toISOString(),
-        githubRunUrl: githubRunUrl,
-        screenshotUrl: screenshotUrl || 'N/A',
-        branch,
-        failureReason,
-        failureType,
-    };
+
 
 
     await emitAsync('log-to-sheet', {
