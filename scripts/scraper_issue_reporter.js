@@ -168,6 +168,7 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
     if (process.env.GITHUB_OUTPUT && statusOutput) {
         fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=${statusOutput}\n`);
     }
+    process.exit(0);
 
     return { screenshotUrl };
 }
