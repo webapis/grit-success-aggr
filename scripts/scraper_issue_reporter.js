@@ -76,7 +76,6 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
 
     let rowData = {
         site: site,
-        sheetTitle,
         //  url: url || 'N/A',
         timestamp: new Date().toISOString(),
         githubRunUrl: githubRunUrl,
@@ -145,7 +144,6 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
 
 
     await emitAsync('log-to-sheet', {
-        sheetTitle,
         message: `Site ${site} failed: ${failureReason}`,
         rowData,
     });
