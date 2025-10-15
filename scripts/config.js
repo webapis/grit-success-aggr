@@ -2,7 +2,7 @@ import fs from 'fs';
 import { getSiteConfig, getCachedSiteConfigFromFile, processCachedSheetData } from '../src/config/siteConfig.js';
 import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 import { emitAsync } from '../src/shared/events.js';
-
+import scraperIssuesReporter,{SCRAPER_ISSUES} from './scraper_issue_reporter.js';
 export async function getConfig(site) {
     let siteConfig = null;
 
@@ -36,23 +36,8 @@ export async function getConfig(site) {
 export async function validateConfig(siteConfig, site, githubRunUrl) {
     if (siteConfig.paused) {
         const pausedReason = siteConfig.pausedReason || 'No reason provided';
-        logToLocalSheet({ Status: 'Paused', pausedReason });
-
-        const rowData = {
-            site,
-            pausedReason,
-            timestamp: new Date().toISOString(),
-            githubRunUrl: githubRunUrl,
-        };
-        
-        await emitAsync('log-to-sheet', {
-            sheetTitle: 'paused-sites', // Specify a dedicated sheet for run summaries
-            message: `Site ${site} is paused`,
-            rowData,
-        });
-        if (process.env.GITHUB_OUTPUT) {
-            fs.appendFileSync(process.env.GITHUB_OUTPUT, "status=paused\n");
-        }
+        await scraperIssuesReporter({ SCRAPER_ISSUE: SCRAPER_ISSUES.PAUSED_FORM_SCRAPING, urls: siteConfig.urls,pausedReason })
+    
         console.log(`Site ${site} is paused from aggregating. Reason: ${pausedReason}`);
         return true;
     }
