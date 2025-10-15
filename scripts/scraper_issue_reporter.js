@@ -70,7 +70,7 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
     let screenshotUrl = null;
     let failureReason = null;
     let failureType = null;
-    let statusOutput = '';
+    let statusOutput = 'paused';
     let sheetTitle = 'crawler-failures'
 
 
@@ -89,7 +89,7 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
 
             failureReason = ` no valid urls found for site ${site}: ${urls}`
             failureType = SCRAPER_ISSUES.NO_VALID_URLS
-            statusOutput = 'paused'
+          
 
             break;
         case SCRAPER_ISSUES.NO_VALID_SITE:
@@ -100,8 +100,8 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
             failureReason = `${pausedReason}`
             failureType = SCRAPER_ISSUES.PAUSED_FORM_SCRAPING
             sheetTitle = 'paused-sites'
-            statusOutput = 'paused'
-            rowData = { ...rowData, sheetTitle, failureReason, failureType }
+      
+            rowData = { ...rowData, failureReason, failureType }
             break;
         case SCRAPER_ISSUES.PARTIAL_FORBIDDEN_403:
 
@@ -144,6 +144,7 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
 
 
     await emitAsync('log-to-sheet', {
+        sheetTitle,
         message: `Site ${site} failed: ${failureReason}`,
         rowData,
     });
