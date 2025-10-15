@@ -192,7 +192,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
         };
     });
 
-    if (processedData.length === 0) {
+    if (processedData.length <= 1 ) {
         await scraperIssuesReporter({
             SCRAPER_ISSUE: SCRAPER_ISSUES.NO_PRODUCT_ITEMS,
             url,
