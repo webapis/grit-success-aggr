@@ -59,7 +59,7 @@ export function initializeCrawler(router) {
                 // Throw a custom error to be caught by the runCrawler function, allowing a graceful shutdown.
                 throw new ForbiddenError('Site is protected by anti-bot measures.', request, report.screenshotUrl);
             } else if (error.message.includes('timeout')) {
-                console.log('⏰ Request timeout detected');
+                await scraperIssuesReporter({ SCRAPER_ISSUE: SCRAPER_ISSUES.TIMEOUT, page, url: request.url, error });
             }
         },
 
@@ -83,8 +83,11 @@ export async function runCrawler(crawler, urlsToScrape, site, githubRunUrl) {
             // Throw a specific error that the main pipeline can catch for a graceful exit.
             throw new EarlyExitError(`Crawl stopped due to 403 Forbidden error at ${crawlerError.request.url}`);
         } else {
-            console.error('❌ Crawler execution failed:', crawlerError);
-            logToLocalSheet({ Status: 'Fatal Error', Notes: `Crawler crashed: ${crawlerError.message}` });
+            // Use the centralized reporter for fatal errors.
+            await scraperIssuesReporter({
+                SCRAPER_ISSUE: SCRAPER_ISSUES.CRAWLER_CRASH,
+                error: crawlerError
+            });
             throw crawlerError; // Re-throw to allow higher-level error handling
         }
     }

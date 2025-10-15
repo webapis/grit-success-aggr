@@ -6,6 +6,7 @@ import { uploadScreenshot } from '../src/2_data/persistence/uploadScreenshot.js'
 const site = process.env.site;
 
 const SCRAPER_ISSUES = {
+    CRAWLER_CRASH: 'CRAWLER_CRASH', // A generic fatal error during the crawl
 
       NO_VALID_URLS: 'NO_VALID_URLS',//NO VALID URLS FOUND
     NO_VALID_SITE: 'NO_VALID_SITE',//MISSPELLED SITE NAME
@@ -13,7 +14,7 @@ const SCRAPER_ISSUES = {
     PARTIAL_FORBIDDEN_403: 'PARTIAL_FORBIDDEN_403',
     UNREACHABLE_SITE: 'UNREACHABLE_SITE',// SITE IS TEMPORARILY DOWN
     REDIRECTION: 'REDIRECTION',//PAGE GETS REDIRECTED
-    FORBIDDEN_403: 'FORBIDDEN_403',//PAGE GETS BLOCKED,
+      FORBIDDEN_403: 'FORBIDDEN_403',//PAGE GETS BLOCKED,
     ANTIBOT_DETECTION: 'ANTIBOT_DETECTION',//PAGE IS BEING PREVENTED FROM SCRAPING
     FORBIDDEN_IMAGE_403: 'FORBIDDEN_IMAGE_403',
     PAGE_NOT_FOUND_404: 'PAGE_NOT_FOUND_404',
@@ -66,7 +67,7 @@ const SCRAPER_ISSUES = {
 const githubRunUrl = getGitHubActionsRunUrl();
 const branch = process.env.GITHUB_REF_NAME || 'local';
 
-export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, pausedReason, page }) {
+export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, pausedReason, page, error }) {
     let screenshotUrl = null;
     let failureReason = null;
     let failureType = null;
@@ -132,12 +133,22 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
             rowData = { ...rowData, screenshotUrl }
             break;
         case SCRAPER_ISSUES.TIMEOUT:
+            failureReason = `Request timed out at ${url}: ${error.message}`;
+            failureType = SCRAPER_ISSUES.TIMEOUT;
             screenshotUrl = await uploadScreenshot(page, site);
-            rowData = { ...rowData, screenshotUrl }
+            rowData = { ...rowData, screenshotUrl, failureReason, failureType };
             break;
         case SCRAPER_ISSUES.NAVIGATION_TIMEOUT:
             screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, screenshotUrl }
+            break;
+        case SCRAPER_ISSUES.CRAWLER_CRASH:
+            failureReason = `Crawler crashed with a fatal error: ${error.message}`;
+            failureType = SCRAPER_ISSUES.CRAWLER_CRASH;
+            statusOutput = 'fatal_error';
+            // A generic crash might not have a page context, so a screenshot is not possible.
+            // The URL will also be 'N/A' unless passed in.
+            rowData = { ...rowData, failureReason, failureType };
             break;
 
     }
