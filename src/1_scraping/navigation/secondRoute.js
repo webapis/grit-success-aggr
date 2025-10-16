@@ -7,9 +7,9 @@ import scrapeData from "../extraction/scrapeData.js";
 import { scrollPageIfRequired } from "./helper/scrollPageIfRequired.js";
 import logToLocalSheet from "../../2_data/persistence/sheet/logToLocalSheet.js";
 import extractPageNumber from "./helper/extractPageNumber.js";
+import updateTotalItemsToBeCallected from "./helper/updateTotalItemsToBeCallected.js";
 export default async function second({
   page,
-
   addRequests,
   siteUrls,
   request: { url }
@@ -21,6 +21,7 @@ export default async function second({
   debugger
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   await delay(5000); // wait for 5 seconds
+  await updateTotalItemsToBeCallected({ page, siteUrls });
   await scrollPageIfRequired({ page, siteUrls, routeName: "second" })
   const data = await scrapeData({ page, siteUrls, productItemSelector })
   const { pageItems, pageNumbers } = logToLocalSheet()

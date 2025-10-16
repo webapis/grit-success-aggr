@@ -5,7 +5,7 @@ import { uploadScreenshot } from '../src/2_data/persistence/uploadScreenshot.js'
 
 const site = process.env.site;
 
-const SCRAPER_ISSUES = {
+const SCRAPER_STATES = {
     CRAWLER_CRASH: 'CRAWLER_CRASH', // A generic fatal error during the crawl
 
       NO_VALID_URLS: 'NO_VALID_URLS',//NO VALID URLS FOUND
@@ -35,7 +35,16 @@ const SCRAPER_ISSUES = {
     UNFOUND_IMAGE_SELECTOR: 'UNFOUND_IMAGE_SELECTOR',//PROBABLY  WRONG SELECTOR PROVIDED
     UNFOUND_ITEM_COUNT_SELECTOR: 'UNFOUND_ITEM_COUNT_SELECTOR',//PROBABLY  WRONG SELECTOR PROVIDED
     UNFOUND_PAGINATION_SELECTOR: 'UNFOUND_PAGINATION_SELECTOR',//PROBABLY  WRONG SELECTOR PROVIDED
-    UNFOUND_PRODUCT_ITEMS_SELECTOR: 'UNFOUND_PRODUCT_ITEMS_SELECTOR',//PROBABLY NOT A PRODUCT PAGE OR WRONG SELECTOR PROVIDED
+
+    PRODUCT_ITEMS_CANDIDATE_SELECTOR_FOUND: 'PRODUCT_ITEMS_CANDIDATE_SELECTOR_FOUND',//CANDIDATE PRODUCT ITEM SELECTOR FOUND
+    PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_FOUND: 'PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_FOUND',//CANDIDATE PRODUCT ITEM SELECTOR NOT FOUND
+
+
+    TOTAL_ITEMS_TO_BE_CALLECTED_MORE_THAN_ONE: 'TOTAL_ITEMS_TO_BE_CALLECTED_MORE_THAN_ONE',
+    TOTAL_ITEMS_TO_BE_CALLECTED_LESS_THAN_ONE: 'TOTAL_ITEMS_TO_BE_CALLECTED_LESS_THAN_ONE',
+
+
+    PRODUCT_ITEMS_NOT_FOUND: 'PRODUCT_ITEMS_SELECTOR_NOT_FOUND',//PROBABLY NOT A PRODUCT PAGE OR WRONG SELECTOR PROVIDED
     //SELECTOR IS FOUND BUT NO DATA IS PRESENT
     INVALID_PRICE_SELECTOR: 'INVALID_PRICE_SELECTOR',//EMPTY OR NULL VALUE
     INVALID_TITLE_SELECTOR: 'INVALID_TITLE_SELECTOR',//EMPTY OR NULL VALUE
@@ -55,7 +64,7 @@ const SCRAPER_ISSUES = {
     ITEMS_WITH_DOUBLICATE_PRICES: 'ITEMS_WITH_DOUBLICATE_PRICES',
     ITEMS_WITH_DOUBLICATE_TITLES: 'ITEMS_WITH_DOUBLICATE_TITLES',
     //PRODUCT ITEM SELECTOR IS USED BY NONE PRODUCT ITEM ALONGSIDE PRODUCT ITEMS
-    NO_PRODUCT_ITEMS: 'NO_PRODUCT_ITEMS',
+      NO_PRODUCT_ITEMS: 'NO_PRODUCT_ITEMS',
     //ITEMS NOT ITENTIFIED BY CATEGORIZATION PROCESS
     UNCATEGORIZED_ITEMS: 'UNCATEGORIZED_ITEMS',
     //ITEMS COLORS OF WHICH NO IDENTIFIED
@@ -85,77 +94,96 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
         failureReason,
         failureType,
     };
+    let shouldExit = true;
+
     switch (SCRAPER_ISSUE) {
-        case SCRAPER_ISSUES.NO_VALID_URLS:
+        case SCRAPER_STATES.PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_FOUND:
+            failureReason = `No product item candidate selector found on page ${url}.`;
+            failureType = SCRAPER_STATES.PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_FOUND;
+            screenshotUrl = await uploadScreenshot(page, site);
+            rowData = { ...rowData, failureReason, failureType, screenshotUrl };
+            statusOutput = 'paused'; // or some other status
+            shouldExit = true;
+            break;
+        case SCRAPER_STATES.TOTAL_ITEMS_TO_BE_CALLECTED_LESS_THAN_ONE:
+            failureReason = `Total items to be collected is less than one on page ${url}.`;
+            failureType = SCRAPER_STATES.TOTAL_ITEMS_TO_BE_CALLECTED_LESS_THAN_ONE;
+            screenshotUrl = await uploadScreenshot(page, site);
+            rowData = { ...rowData, failureReason, failureType, screenshotUrl };
+            statusOutput = 'paused'; // or some other status
+            shouldExit = true;
+            break;
+        case SCRAPER_STATES.NO_VALID_URLS:
 
             failureReason = ` no valid urls found for site ${site}: ${urls}`
-            failureType = SCRAPER_ISSUES.NO_VALID_URLS
-          
+            failureType = SCRAPER_STATES.NO_VALID_URLS
+
 
             break;
-        case SCRAPER_ISSUES.NO_VALID_SITE:
+        case SCRAPER_STATES.NO_VALID_SITE:
             ''
             break;
 
-        case SCRAPER_ISSUES.PAUSED_FORM_SCRAPING:
+        case SCRAPER_STATES.PAUSED_FORM_SCRAPING:
             failureReason = `${pausedReason}`
-            failureType = SCRAPER_ISSUES.PAUSED_FORM_SCRAPING
+            failureType = SCRAPER_STATES.PAUSED_FORM_SCRAPING
             sheetTitle = 'paused-sites'
-      
+
             rowData = { ...rowData, failureReason, failureType }
             break;
-        case SCRAPER_ISSUES.PARTIAL_FORBIDDEN_403:
+        case SCRAPER_STATES.PARTIAL_FORBIDDEN_403:
 
             break;
-        case SCRAPER_ISSUES.UNREACHABLE_SITE:
+        case SCRAPER_STATES.UNREACHABLE_SITE:
             screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, screenshotUrl }
             break;
-        case SCRAPER_ISSUES.REDIRECTION:
+        case SCRAPER_STATES.REDIRECTION:
 
             break;
-        case SCRAPER_ISSUES.FORBIDDEN_403:
+        case SCRAPER_STATES.FORBIDDEN_403:
             failureReason = `Blocked with 403 Forbidden status at ${url}`;
-            failureType = SCRAPER_ISSUES.FORBIDDEN_403;
+            failureType = SCRAPER_STATES.FORBIDDEN_403;
             statusOutput = 'paused';
-            screenshotUrl = await uploadScreenshot(page, site); 
+            screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, screenshotUrl, failureReason, failureType };
             break;
-        case SCRAPER_ISSUES.ANTIBOT_DETECTION:
+        case SCRAPER_STATES.ANTIBOT_DETECTION:
             screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, screenshotUrl }
             break;
-        case SCRAPER_ISSUES.FORBIDDEN_IMAGE_403:
+        case SCRAPER_STATES.FORBIDDEN_IMAGE_403:
 
             break;
-        case SCRAPER_ISSUES.PAGE_NOT_FOUND_404:
+        case SCRAPER_STATES.PAGE_NOT_FOUND_404:
             screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, screenshotUrl }
             break;
-        case SCRAPER_ISSUES.TIMEOUT:
+        case SCRAPER_STATES.TIMEOUT:
             failureReason = `Request timed out at ${url}: ${error.message}`;
-            failureType = SCRAPER_ISSUES.TIMEOUT;
+            failureType = SCRAPER_STATES.TIMEOUT;
             screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, screenshotUrl, failureReason, failureType };
             break;
-        case SCRAPER_ISSUES.NAVIGATION_TIMEOUT:
+        case SCRAPER_STATES.NAVIGATION_TIMEOUT:
             screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, screenshotUrl }
             break;
-        case SCRAPER_ISSUES.CRAWLER_CRASH:
+        case SCRAPER_STATES.CRAWLER_CRASH:
             failureReason = `Crawler crashed with a fatal error: ${error.message}`;
-            failureType = SCRAPER_ISSUES.CRAWLER_CRASH;
+            failureType = SCRAPER_STATES.CRAWLER_CRASH;
             statusOutput = 'fatal_error';
             // A generic crash might not have a page context, so a screenshot is not possible.
             // The URL will also be 'N/A' unless passed in.
             rowData = { ...rowData, failureReason, failureType };
             break;
 
-        case SCRAPER_ISSUES.NO_PRODUCT_ITEMS:
+        case SCRAPER_STATES.NO_PRODUCT_ITEMS:
             failureReason = `No product items found on page ${url}. possible reason is wrong css selector or not product page`
-            failureType = SCRAPER_ISSUES.NO_PRODUCT_ITEMS
+            failureType = SCRAPER_STATES.NO_PRODUCT_ITEMS
             screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, failureReason, failureType, screenshotUrl }
+            shouldExit = false;
             break;
     }
 
@@ -168,11 +196,13 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
     if (process.env.GITHUB_OUTPUT && statusOutput) {
         fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=${statusOutput}\n`);
     }
-    process.exit(0);
+    if (shouldExit) {
+        process.exit(0);
+    }
 
     return { screenshotUrl };
 }
 
 
 
-export { SCRAPER_ISSUES }
+export { SCRAPER_STATES }

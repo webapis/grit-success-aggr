@@ -5,7 +5,7 @@ import { getConfig, validateConfig } from './config.js';
 import { prepareUrls } from './urls.js';
 import { initializeCrawler, runCrawler } from './crawler.js';
 import { pipe } from './pipe.js';
-import scraperIssuesReporter,{SCRAPER_ISSUES} from "./scraper_issue_reporter.js";
+
 import '../src/shared/listeners.js'; // This registers the event handlers
 
 // Custom error for controlled pipeline exits

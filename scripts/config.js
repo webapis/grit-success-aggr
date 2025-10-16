@@ -2,7 +2,7 @@ import fs from 'fs';
 import { getSiteConfig, getCachedSiteConfigFromFile, processCachedSheetData } from '../src/config/siteConfig.js';
 import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
 import { emitAsync } from '../src/shared/events.js';
-import scraperIssuesReporter,{SCRAPER_ISSUES} from './scraper_issue_reporter.js';
+import scraperIssuesReporter,{SCRAPER_STATES} from './scraper_issue_reporter.js';
 export async function getConfig(site) {
     let siteConfig = null;
 
@@ -36,7 +36,7 @@ export async function getConfig(site) {
 export async function validateConfig(siteConfig, site, githubRunUrl) {
     if (siteConfig.paused) {
         const pausedReason = siteConfig.pausedReason || 'No reason provided';
-        await scraperIssuesReporter({ SCRAPER_ISSUE: SCRAPER_ISSUES.PAUSED_FORM_SCRAPING, urls: siteConfig.urls,pausedReason })
+        await scraperIssuesReporter({ SCRAPER_ISSUE: SCRAPER_STATES.PAUSED_FORM_SCRAPING, urls: siteConfig.urls,pausedReason })
     
         console.log(`Site ${site} is paused from aggregating. Reason: ${pausedReason}`);
         return true;

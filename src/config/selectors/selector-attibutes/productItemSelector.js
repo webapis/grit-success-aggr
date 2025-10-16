@@ -1,6 +1,5 @@
 export default [
-  '.catalog__meta--product-count'
-  // '.yit-wcan-container .product.product-item.grid',
+  '.yit-wcan-container .product.product-item.grid',
   // '.product-list.js-customize .p-item.col',
   // 'li div article[data-articlecode][data-category]',
   // '.product-list [data-product-id].product-block.none[data-cc-animate]',

@@ -1,12 +1,12 @@
 import { PuppeteerCrawler } from "crawlee";
-import fs from 'fs';
+
 import puppeteer from '../src/1_scraping/helpers/puppeteer-stealth.js';
 import preNavigationHooks from "./helpers/preNavigationHooksProd2.js";
 import { ForbiddenError, handleRequestFailure } from './failureHandler.js';
 import { summarizeAndReportRun } from './runReporter.js';
-import { emitAsync } from '../src/shared/events.js';
-import logToLocalSheet from '../src/2_data/persistence/sheet/logToLocalSheet.js';
-import scraperIssuesReporter, { SCRAPER_ISSUES } from "./scraper_issue_reporter.js";
+
+
+import scraperIssuesReporter, { SCRAPER_STATES } from "./scraper_issue_reporter.js";
 import { EarlyExitError } from "./refactored-crawl.js";
 
 export function initializeCrawler(router) {
@@ -55,11 +55,11 @@ export function initializeCrawler(router) {
         errorHandler: async ({ request, error, page }) => {
             console.error(`❌ Request failed on attempt ${request.retryCount + 1}: ${request.url} - ${error.message}`);
             if (error.message.includes('403 status code')) {
-                const report = await scraperIssuesReporter({ SCRAPER_ISSUE: SCRAPER_ISSUES.FORBIDDEN_403, page, url: request.url });
+                const report = await scraperIssuesReporter({ SCRAPER_ISSUE: SCRAPER_STATES.FORBIDDEN_403, page, url: request.url });
                 // Throw a custom error to be caught by the runCrawler function, allowing a graceful shutdown.
                 throw new ForbiddenError('Site is protected by anti-bot measures.', request, report.screenshotUrl);
             } else if (error.message.includes('timeout')) {
-                await scraperIssuesReporter({ SCRAPER_ISSUE: SCRAPER_ISSUES.TIMEOUT, page, url: request.url, error });
+                await scraperIssuesReporter({ SCRAPER_ISSUE: SCRAPER_STATES.TIMEOUT, page, url: request.url, error });
             }
         },
 
@@ -85,7 +85,7 @@ export async function runCrawler(crawler, urlsToScrape, site, githubRunUrl) {
         } else {
             // Use the centralized reporter for fatal errors.
             await scraperIssuesReporter({
-                SCRAPER_ISSUE: SCRAPER_ISSUES.CRAWLER_CRASH,
+                SCRAPER_ISSUE: SCRAPER_STATES.CRAWLER_CRASH,
                 error: crawlerError
             });
             throw crawlerError; // Re-throw to allow higher-level error handling

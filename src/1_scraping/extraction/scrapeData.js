@@ -16,9 +16,8 @@ import videoAttributes from "../../config/selectors/selector-attibutes/videoAttr
 import videoSelectors from "../../config/selectors/selector-attibutes/videoSelectors.js";
 import productNotAvailable from "../../config/selectors/selector-attibutes/productNotAvailable.js";
 
-import { emitAsync } from "../../shared/events.js";
-import logToLocalSheet from "../../2_data/persistence/sheet/logToLocalSheet.js";
-import scraperIssuesReporter, { SCRAPER_ISSUES } from '../../../scripts/scraper_issue_reporter.js';
+
+import scraperIssuesReporter, { SCRAPER_STATES} from '../../../scripts/scraper_issue_reporter.js';
 
 import { generateTimestampId } from "../navigation/micro/generateTimestampId.js";
 import '../../shared/listeners.js'; // ← This registers event handlers
@@ -194,7 +193,7 @@ export default async function scrapeData({ page, siteUrls, productItemSelector }
 
     if (processedData.length <= 1 ) {
         await scraperIssuesReporter({
-            SCRAPER_ISSUE: SCRAPER_ISSUES.NO_PRODUCT_ITEMS,
+            SCRAPER_ISSUE: SCRAPER_STATES.NO_PRODUCT_ITEMS,
             url,
             page
         });
