@@ -39,6 +39,7 @@ const SCRAPER_STATES = {
     PRODUCT_ITEMS_CANDIDATE_SELECTOR_FOUND: 'PRODUCT_ITEMS_CANDIDATE_SELECTOR_FOUND',//CANDIDATE PRODUCT ITEM SELECTOR FOUND
     PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_FOUND: 'PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_FOUND',//CANDIDATE PRODUCT ITEM SELECTOR NOT FOUND
     INVALID_PRODUCT_ITEMS_CANDIDATE_SELECTOR: 'INVALID_PRODUCT_ITEMS_CANDIDATE_SELECTOR', //CANDIDATE IS FOUND BUT LACKS CHILD ELEMENTS (PRICE, TITLE, ETC.)
+    PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_A_PARENT_CONTAINER: 'PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_A_PARENT_CONTAINER',
 
 
     TOTAL_ITEMS_TO_BE_CALLECTED_MORE_THAN_ONE: 'TOTAL_ITEMS_TO_BE_CALLECTED_MORE_THAN_ONE',
@@ -78,6 +79,7 @@ const githubRunUrl = getGitHubActionsRunUrl();
 const branch = process.env.GITHUB_REF_NAME || 'local';
 
 export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, pausedReason, page, error }) {
+    debugger
     let screenshotUrl = null;
     let failureReason = null;
     let failureType = null;
@@ -104,7 +106,8 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
             screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, failureReason, failureType, screenshotUrl };
             statusOutput = 'paused'; // or some other status
-            shouldExit = true;
+    
+            debugger;
             break;
         case SCRAPER_STATES.INVALID_PRODUCT_ITEMS_CANDIDATE_SELECTOR:
             failureReason = `Product item candidate selector is invalid on page ${url}. ${error?.message}`;
@@ -112,15 +115,24 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
             screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, failureReason, failureType, screenshotUrl };
             statusOutput = 'paused';
-            shouldExit = true;
+      
             break;
+        case SCRAPER_STATES.PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_A_PARENT_CONTAINER:
+            failureReason = `Product item candidate selector is not a parent container on page ${url}. ${error?.message}`;
+            failureType = SCRAPER_STATES.PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_A_PARENT_CONTAINER;
+            screenshotUrl = await uploadScreenshot(page, site);
+            rowData = { ...rowData, failureReason, failureType, screenshotUrl };
+            statusOutput = 'paused';
+         
+            break;
+
         case SCRAPER_STATES.TOTAL_ITEMS_TO_BE_CALLECTED_LESS_THAN_ONE:
             failureReason = `Total items to be collected is less than one on page ${url}.`;
             failureType = SCRAPER_STATES.TOTAL_ITEMS_TO_BE_CALLECTED_LESS_THAN_ONE;
             screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, failureReason, failureType, screenshotUrl };
             statusOutput = 'paused'; // or some other status
-            shouldExit = true;
+         
             break;
         case SCRAPER_STATES.NO_VALID_URLS:
 
@@ -192,7 +204,7 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
             failureType = SCRAPER_STATES.NO_PRODUCT_ITEMS
             screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, failureReason, failureType, screenshotUrl }
-            shouldExit = false;
+       
             break;
     }
 

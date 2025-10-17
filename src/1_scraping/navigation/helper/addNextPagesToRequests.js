@@ -10,7 +10,7 @@ dotenv.config({ silent: true });
 export default async function addNextPagesToRequests({ page, addRequests, siteUrls,url }) {
 
   
-debugger
+
     if (
  
         url.length > 0 

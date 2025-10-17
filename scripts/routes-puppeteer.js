@@ -21,11 +21,8 @@ export const createRouter = async (siteUrls) => {
       console.log('First request being processed------------------', url);
 
       hasRunFirstPageFunction = true
-      const isPageReady = await validateProductPage({ page, siteUrls });
-      if (!isPageReady) {
-        console.log('Page preparation failed. Halting processing for this URL.');
-        return; // Stop execution if preparation fails
-      }
+        await validateProductPage({ page, siteUrls });
+
 
       const mainConfig = siteUrls.configurations[0];
       logToLocalSheet({
