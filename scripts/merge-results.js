@@ -180,6 +180,30 @@ const saveOutput = async (ctx) => {
   return { ...ctx, outputFile: validOutputFile }; // For finalize stage, point to the main valid output
 };
 
+// --- New Stage: Cleanup Artifacts ---
+const cleanupArtifacts = async (ctx) => {
+  console.log('\n🗑️  Cleaning up merged artifact files...\n');
+  const { ARTIFACTS_DIR, FINAL_OUTPUT_FILE } = ctx.paths;
+  const { jsonFilesToMerge } = ctx;
+
+  // Combine intermediate files and the old final output file for cleanup
+  const filesToDelete = [...jsonFilesToMerge];
+  if (fs.existsSync(FINAL_OUTPUT_FILE)) {
+    filesToDelete.push(path.basename(FINAL_OUTPUT_FILE));
+  }
+
+  for (const file of filesToDelete) {
+    const filePath = path.join(ARTIFACTS_DIR, file);
+    try {
+      fs.unlinkSync(filePath);
+      console.log(`  - Deleted ${file}`);
+    } catch (err) {
+      console.warn(`⚠️  Could not delete ${file}: ${err.message}`);
+    }
+  }
+  return ctx;
+};
+
 // --- Stage 6: Finalize Output ---
 const finalize = async (ctx) => {
   const endTime = Date.now();
@@ -205,6 +229,7 @@ const pipeline = pipe(
   validateData, // New stage
   cleanData,
   saveOutput,
+  cleanupArtifacts,
   finalize
 );
 

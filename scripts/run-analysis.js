@@ -19,7 +19,7 @@ const initializeAnalysis = (context) => {
     return {
         ...context,
         site,
-        finalOutputFile: path.join(process.cwd(), 'artifacts', 'final-products.json'),
+        finalOutputFile: path.join(process.cwd(), 'artifacts', 'valid', 'valid-products.json'),
         analysisSummaryFile: path.join(process.cwd(), 'artifacts', 'analysis-summary.json'),
     };
 };
