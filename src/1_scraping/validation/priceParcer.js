@@ -1,76 +1,98 @@
-
 import mapPrice from './mapPrice.js';
 import addCurrency from '../../2_data/processing/addCurrency.js';
+import { pipe } from '../../shared/pipe.js';
 
-// --- FILTER FUNCTIONS ---
+// --- PIPE STAGES ---
 
-function getNumericValue(priceString) {
-    const priceInfo = mapPrice(priceString, {}, { returnObject: true });
-    return priceInfo.value;
-}
+const getNumericValue = async (context) => {
+    const { priceObj } = context;
+    const priceInfo = mapPrice(priceObj.value, {}, { returnObject: true });
+    return { ...context, numericValue: priceInfo.value };
+};
 
-function getCurrency(priceObj) {
+const getCurrency = async (context) => {
+    const { priceObj } = context;
     const priceWithCurrency = addCurrency({ price: [priceObj] });
-    return priceWithCurrency.price[0].currency;
-}
+    return { ...context, currency: priceWithCurrency.price[0].currency };
+};
 
-function applyConversion(numericValue, currency, conversionRate) {
-    if (currency && currency !== 'TL' && conversionRate && numericValue) {
-        return numericValue * conversionRate;
+const applyConversion = async (context) => {
+    const { numericValue, currency, siteConfig } = context;
+    const conversionRate = siteConfig ? siteConfig.conversionRate : null;
+
+    if (!conversionRate && currency && currency !== 'TL') {
+        console.log(`No conversion rate found for currency: ${currency}. Conversion skipped.`);
     }
-    return null;
-}
 
-function formatForDisplay(value, currency, convertedValue) {
-    const valueToDisplay = convertedValue !== null ? convertedValue : value;
-    let formatCurrency = convertedValue !== null ? 'TRY' : currency;
+    const convertedPrice = (currency && currency !== 'TL' && conversionRate && numericValue)
+        ? numericValue * conversionRate
+        : null;
+
+    return { ...context, convertedPrice };
+};
+
+const formatForDisplay = async (context) => {
+    const { numericValue, currency, convertedPrice } = context;
+    const valueToDisplay = convertedPrice !== null ? convertedPrice : numericValue;
+    let formatCurrency = convertedPrice !== null ? 'TRY' : currency;
     if (formatCurrency === 'TL') formatCurrency = 'TRY';
 
-    if (typeof valueToDisplay !== 'number') return '';
-
-    if (formatCurrency && ['TRY', 'USD', 'EUR'].includes(formatCurrency)) {
-        try {
-            return new Intl.NumberFormat('tr-TR', {
-                style: 'currency',
-                currency: formatCurrency
-            }).format(valueToDisplay);
-        } catch (e) {
-            return `${valueToDisplay} ${currency}`;
+    let displayPrice = '';
+    if (typeof valueToDisplay === 'number') {
+        if (formatCurrency && ['TRY', 'USD', 'EUR'].includes(formatCurrency)) {
+            try {
+                displayPrice = new Intl.NumberFormat('tr-TR', {
+                    style: 'currency',
+                    currency: formatCurrency
+                }).format(valueToDisplay);
+            } catch (e) {
+                displayPrice = `${valueToDisplay} ${currency}`;
+            }
+        } else {
+            displayPrice = `${valueToDisplay}`;
         }
     }
-    return `${valueToDisplay}`;
-}
+
+    return { ...context, displayPrice };
+};
+
+const assemblePriceResult = async (context) => {
+    const { priceObj, numericValue, currency, convertedPrice, displayPrice } = context;
+    return {
+        ...priceObj,
+        numericValue,
+        currency,
+        unsetPrice: numericValue === 0,
+        convertedPrice,
+        displayPrice,
+    };
+};
+
+const handlePriceError = async (error, context) => {
+    const { priceObj } = context;
+    return {
+        ...priceObj,
+        numericValue: 0,
+        priceScrapeError: true,
+        error: error.message
+    };
+};
 
 // --- PIPE FUNCTION for a single price object ---
 
-function parsePrice(priceObj, siteConfig) {
+const parsePricePipeline = pipe(
+    getNumericValue,
+    getCurrency,
+    applyConversion,
+    formatForDisplay,
+    assemblePriceResult
+);
+
+async function parsePrice(priceObj, siteConfig) {
     try {
-        const numericValue = getNumericValue(priceObj.value);
-        const currency = getCurrency(priceObj);
-        const conversionRate = siteConfig ? siteConfig.conversionRate : null;
-
-        if (!conversionRate && currency && currency !== 'TL') {
-            console.log(`No conversion rate found for currency: ${currency}. Conversion skipped.`);
-        }
-
-        const convertedPrice = applyConversion(numericValue, currency, conversionRate);
-        const displayPrice = formatForDisplay(numericValue, currency, convertedPrice);
-
-        return {
-            ...priceObj,
-            numericValue,
-            currency,
-            unsetPrice: numericValue === 0,
-            convertedPrice,
-            displayPrice,
-        };
+        return await parsePricePipeline({ priceObj, siteConfig });
     } catch (error) {
-        return {
-            ...priceObj,
-            numericValue: 0,
-            priceScrapeError: true,
-            error: error.message
-        };
+        return await handlePriceError(error, { priceObj });
     }
 }
 
