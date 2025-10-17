@@ -1,8 +1,11 @@
+import dotenv from 'dotenv';
 import {
     uploadCollection,
     uploadJSONToGoogleDrive
 } from "../../persistence/index.js";
 import extractCSSSelectors from '../../../1_scraping/helpers/extractCSSSelectors.js';
+
+dotenv.config({ silent: true });
 
 const SAMPLE_SIZE = 5;
 

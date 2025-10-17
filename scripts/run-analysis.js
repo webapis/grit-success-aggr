@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
-import fs from 'fs';
+dotenv.config({ silent: true });
+
+import fs from 'fs/promises';
 import path from 'path';
 import analyzeData from '../src/2_data/processing/analize-data/analizeData.js';
 import { pipe } from './pipe.js';
-
-dotenv.config({ silent: true });
 
 // --- Pipeline Stages ---
 
@@ -24,16 +24,18 @@ const initializeAnalysis = (context) => {
     };
 };
 
-const loadData = (context) => {
+const loadData = async (context) => {
     const { finalOutputFile } = context;
     console.log(`Reading final merged data from: ${finalOutputFile}`);
 
-    if (!fs.existsSync(finalOutputFile)) {
+    try {
+        await fs.access(finalOutputFile);
+    } catch {
         throw new Error(`Error: Final data file not found at ${finalOutputFile}. Please ensure the merge process has run successfully.`);
     }
 
-    const rawData = fs.readFileSync(finalOutputFile, 'utf-8');
-    const data = JSON.parse(rawData);
+    const rawData = await fs.readFile(finalOutputFile, 'utf-8');
+    const data = rawData ? JSON.parse(rawData) : [];
 
     if (!data || data.length === 0) {
         console.log('No data found to analyze. Exiting gracefully.');
@@ -54,7 +56,7 @@ const performAnalysis = async (context) => {
     return { ...context, analysisResult };
 };
 
-const saveAnalysisResults = (context) => {
+const saveAnalysisResults = async (context) => {
     if (context.analysisSkipped) {
         console.log('Analysis was skipped, no results to save.');
         return context;
@@ -64,11 +66,8 @@ const saveAnalysisResults = (context) => {
     console.log('\n--- Analysis Complete ---');
 
     const dir = path.dirname(analysisSummaryFile);
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-
-    fs.writeFileSync(analysisSummaryFile, JSON.stringify(analysisResult, null, 2));
+    await fs.mkdir(dir, { recursive: true });
+    await fs.writeFile(analysisSummaryFile, JSON.stringify(analysisResult, null, 2));
     console.log(`Analysis results saved to ${analysisSummaryFile}`);
     console.log('-----------------------\n');
     return context;
@@ -101,6 +100,7 @@ const analysisPipeline = pipe(
         await analysisPipeline({});
         console.log('✅ Analysis pipeline completed successfully.');
     } catch (error) {
+        debugger
         console.error('💥 An error occurred during the analysis pipeline:', error.message);
         process.exit(1);
     }

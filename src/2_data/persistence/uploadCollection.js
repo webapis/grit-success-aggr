@@ -5,7 +5,7 @@ require('dotenv').config()
 const fs = require('fs')
 var zlib = require('zlib');
 const fetch = require('node-fetch')
-
+debugger
 import { ensureBranchExists } from '../../shared/git/ensureBranchExists.js';
 async function uploadCollection({ fileName, data, gitFolder, compress = true, maxRetries = 3 }) {
 

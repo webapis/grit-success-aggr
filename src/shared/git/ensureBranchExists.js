@@ -1,9 +1,11 @@
 import fetch from 'node-fetch';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const GITHUB_TOKEN = process.env.GH_TOKEN;
 const REPO_OWNER = 'webapis';
 const REPO_NAME = 'grit-2-state';
-
+debugger
 /**
  * Checks GitHub API rate limit status
  */
