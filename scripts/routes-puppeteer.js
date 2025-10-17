@@ -4,7 +4,7 @@ import first from "../src/1_scraping/navigation/fistRoute.js";
 import second from "../src/1_scraping/navigation/secondRoute.js";
 import logToLocalSheet from "../src/2_data/persistence/sheet/logToLocalSheet.js";
 import { uploadScreenshot } from "../src/2_data/persistence/uploadScreenshot.js";
-import prepareProductPage from "../src/1_scraping/navigation/helper/prepareProductPage.js";
+import validateProductPage from "../src/1_scraping/navigation/helper/validateProductPage.js";
 dotenv.config({ silent: true });
 
 const site = process.env.site;
@@ -21,7 +21,12 @@ export const createRouter = async (siteUrls) => {
       console.log('First request being processed------------------', url);
 
       hasRunFirstPageFunction = true
-      await prepareProductPage({ page, siteUrls });
+      const isPageReady = await validateProductPage({ page, siteUrls });
+      if (!isPageReady) {
+        console.log('Page preparation failed. Halting processing for this URL.');
+        return; // Stop execution if preparation fails
+      }
+
       const mainConfig = siteUrls.configurations[0];
       logToLocalSheet({
         paginationParameterName: mainConfig.paginationParameterName, scrollable: mainConfig.scrollable, showMoreButtonSelector: mainConfig.showMoreButtonSelector, debug: mainConfig.debug || false, inflexible_notes: mainConfig.inflexible_notes || '', paused: siteUrls.paused || false, pausedReason: siteUrls.pausedReason || ''

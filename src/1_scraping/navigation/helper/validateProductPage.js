@@ -1,15 +1,18 @@
 import dotenv from "dotenv";
 import productItemSelector from "../../../config/selectors/selector-attibutes/productItemSelector.js";
-import findCandidateProductItemSelector from "../micro/findBestSelector.js";
-import { uploadImage } from "../../../shared/git/uploadImage.js";
+import priceSelector from "../../../config/selectors/selector-attibutes/priceSelector.js";
+import titleSelector from "../../../config/selectors/selector-attibutes/titleSelector.js";
+import imageSelector from "../../../config/selectors/selector-attibutes/imageSelector.js";
+import linkSelector from "../../../config/selectors/selector-attibutes/linkSelector.js";
 
+import findCandidateProductItemSelector from "../micro/findBestSelector.js";
 import logToLocalSheet from "../../../2_data/persistence/sheet/logToLocalSheet.js";
 import scraperIssuesReporter, { SCRAPER_STATES } from "../../../../scripts/scraper_issue_reporter.js";
 
 dotenv.config({ silent: true });
 const site = process.env.site;
 
-export default async function prepareProductPage({ page, siteUrls }) {
+export default async function validateProductPage({ page, siteUrls }) {
     page.on("console", (message) => {
         //  console.log("Message from Puppeteer page:", message.text());
     });
@@ -26,25 +29,11 @@ export default async function prepareProductPage({ page, siteUrls }) {
         console.log(SCRAPER_STATES.PRODUCT_ITEMS_CANDIDATE_SELECTOR_FOUND)
         // Safely extract with default 0
 
-
-
         const totalItemsPerPage = candidateProductItemSelector['count'];
         logToLocalSheet({ totalItemsPerPage });
 
         logToLocalSheet({ productItemSelector: candidateProductItemSelector.selector });
 
-        if (totalItemsPerPage < 1) {
-            await scraperIssuesReporter({
-                SCRAPER_ISSUE: SCRAPER_STATES.TOTAL_ITEMS_TO_BE_CALLECTED_LESS_THAN_ONE,
-                page,
-                url: page.url(),
-                error: new Error('Total items to be collected is less than one')
-            });
-        }
-
-
-
-        return true;
     } else {
 
         console.log(SCRAPER_STATES.PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_FOUND)

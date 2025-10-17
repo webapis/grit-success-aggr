@@ -38,10 +38,11 @@ const SCRAPER_STATES = {
 
     PRODUCT_ITEMS_CANDIDATE_SELECTOR_FOUND: 'PRODUCT_ITEMS_CANDIDATE_SELECTOR_FOUND',//CANDIDATE PRODUCT ITEM SELECTOR FOUND
     PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_FOUND: 'PRODUCT_ITEMS_CANDIDATE_SELECTOR_NOT_FOUND',//CANDIDATE PRODUCT ITEM SELECTOR NOT FOUND
+    INVALID_PRODUCT_ITEMS_CANDIDATE_SELECTOR: 'INVALID_PRODUCT_ITEMS_CANDIDATE_SELECTOR', //CANDIDATE IS FOUND BUT LACKS CHILD ELEMENTS (PRICE, TITLE, ETC.)
 
 
     TOTAL_ITEMS_TO_BE_CALLECTED_MORE_THAN_ONE: 'TOTAL_ITEMS_TO_BE_CALLECTED_MORE_THAN_ONE',
-    TOTAL_ITEMS_TO_BE_CALLECTED_LESS_THAN_ONE: 'TOTAL_ITEMS_TO_BE_CALLECTED_LESS_THAN_ONE',
+    TOTAL_ITEMS_TO_BE_CALLECTED_LESS_THAN_FOUR: 'TOTAL_ITEMS_TO_BE_CALLECTED_LESS_THAN_FOUR',
 
 
     PRODUCT_ITEMS_NOT_FOUND: 'PRODUCT_ITEMS_SELECTOR_NOT_FOUND',//PROBABLY NOT A PRODUCT PAGE OR WRONG SELECTOR PROVIDED
@@ -103,6 +104,14 @@ export default async function scraperIssuesReporter({ SCRAPER_ISSUE, url, urls, 
             screenshotUrl = await uploadScreenshot(page, site);
             rowData = { ...rowData, failureReason, failureType, screenshotUrl };
             statusOutput = 'paused'; // or some other status
+            shouldExit = true;
+            break;
+        case SCRAPER_STATES.INVALID_PRODUCT_ITEMS_CANDIDATE_SELECTOR:
+            failureReason = `Product item candidate selector is invalid on page ${url}. ${error?.message}`;
+            failureType = SCRAPER_STATES.INVALID_PRODUCT_ITEMS_CANDIDATE_SELECTOR;
+            screenshotUrl = await uploadScreenshot(page, site);
+            rowData = { ...rowData, failureReason, failureType, screenshotUrl };
+            statusOutput = 'paused';
             shouldExit = true;
             break;
         case SCRAPER_STATES.TOTAL_ITEMS_TO_BE_CALLECTED_LESS_THAN_ONE:
